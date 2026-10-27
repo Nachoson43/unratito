@@ -79,7 +79,9 @@ header.top{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-in
 .brand .unra{font-family:var(--display);font-weight:700;font-size:calc(var(--k)*26px);color:#FFFFFF;margin-right:calc(var(--k)*2px)}
 .brand .tito{display:inline-flex;align-items:flex-end}
 .brand .tito span{display:inline-block;font-family:var(--cartoon);color:var(--c);-webkit-text-stroke:calc(var(--k)*3px) var(--K);paint-order:stroke fill;text-shadow:0 calc(var(--k)*3px) 0 var(--K);transform:rotate(var(--rt)) translateY(calc(var(--k)*var(--dy)));font-size:calc(var(--k)*var(--s));margin-right:-1px}
-.coins{margin-left:auto;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.3);color:#fff;border-radius:999px;padding:4px 12px 4px 6px;font-weight:800}
+.coins{margin-left:auto;display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.3);color:#fff;border-radius:999px;padding:5px 14px 5px 7px;font-weight:800;font-size:1.22em}
+.coins.bump{animation:cbump .45s ease}
+@keyframes cbump{0%{transform:scale(1)}35%{transform:scale(1.18)}100%{transform:scale(1)}}
 .coins b{font-family:var(--cartoon);font-weight:400;font-size:1.05em;letter-spacing:.02em;color:var(--y);-webkit-text-stroke:2px var(--K);paint-order:stroke fill}
 .coin{display:inline-block;width:1em;height:1em;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFF3B0,#F2B705 60%,#B37A00);border:2px solid var(--K);vertical-align:-.15em;flex:none}
 .gear{width:42px;height:42px;border-radius:13px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center;padding:0}
@@ -439,7 +441,6 @@ nav.tabs button[aria-current="page"] .ti{background:var(--c);border:2px solid va
 .sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}
 .sheet form{display:flex;flex-direction:column;gap:14px}
 .sheet .close-float{position:absolute;top:12px;right:12px;z-index:2;border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.14);color:#fff}
-#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 150px);transform:translateX(-50%);background:var(--K);color:#fff;padding:10px 16px;border-radius:14px;font-weight:800;z-index:90;display:none;max-width:90%;text-align:center;border:2px solid var(--y);animation:pop .3s both}
 #liveNotif{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:10px;right:10px;max-width:500px;margin:0 auto;z-index:80;display:none;gap:10px;background:var(--surface);color:var(--ink);border:var(--bw) solid var(--K);border-radius:18px;padding:12px;text-align:left;box-shadow:var(--pop)}
 #liveNotif.show{display:flex;animation:up .3s}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:95;overflow:hidden}
@@ -690,6 +691,48 @@ p.report-line{text-decoration:none}
 .dc-games em{white-space:nowrap}
 .dc-go{font-size:.95em;padding:9px 10px}
 .streak-mini{height:78px;align-self:center}
+
+/* ---- Toasts: tarjeta centrada arriba ---- */
+#toast{position:fixed;left:0;right:0;margin:0 auto;top:calc(env(safe-area-inset-top) + 70px);width:max-content;max-width:min(92vw,420px);z-index:95;display:none;align-items:center;gap:10px;background:#fff;color:var(--K);border:3px solid var(--K);border-radius:18px;padding:9px 16px 9px 9px;box-shadow:0 5px 0 var(--K);font-weight:800;text-align:left;animation:tdrop .45s cubic-bezier(.3,1.6,.5,1) both;pointer-events:none}
+@keyframes tdrop{from{transform:translateY(-30px) scale(.8);opacity:0}to{transform:none;opacity:1}}
+#toast .ti{width:36px;height:36px;border-radius:50%;border:2.5px solid var(--K);display:grid;place-items:center;flex:none;background:var(--tc,#6C4CE0);color:#fff;font-family:var(--cartoon);font-size:1.15em}
+#toast .ti .coin{width:24px;height:24px;border:0;animation:tspin 1s ease}
+@keyframes tspin{from{transform:rotateY(0)}to{transform:rotateY(720deg)}}
+#toast .tm{display:flex;flex-direction:column;gap:4px;min-width:0}
+#toast.t-pts{--tc:var(--y);background:#FFF6CF}
+#toast.t-pts .tm>span:first-child{font-family:var(--cartoon);font-weight:400;font-size:1.25em;letter-spacing:.02em}
+#toast.t-money{--tc:var(--r);background:#FFE4E0}
+#toast.t-ok{--tc:var(--g);background:#E3F8E8}
+#toast.t-info{--tc:#6C4CE0;background:#EFE9FF}
+.t-bar{display:block;height:9px;width:190px;max-width:60vw;border-radius:9px;background:#fff;border:2px solid var(--K);overflow:hidden}
+.t-bar span{display:block;height:100%;background:var(--y);border-right:2px solid var(--K)}
+.t-sub{font-size:.75em;font-weight:700;opacity:.75}
+/* ---- Monedas que vuelan al monedero ---- */
+.fly-coin{position:fixed;z-index:96;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFF3B0,#F2B705 60%,#B37A00);border:2px solid var(--K);pointer-events:none;animation:flyc .8s cubic-bezier(.5,-0.4,.7,1) both}
+@keyframes flyc{0%{transform:translate(0,0) scale(.3);opacity:0}15%{transform:translate(0,-18px) scale(1.15);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.55);opacity:.9}}
+/* ---- Puntaje grande dentro del juego ---- */
+.arc-live{position:absolute;top:8px;left:0;right:0;margin:0 auto;width:max-content;z-index:1;pointer-events:none;font-family:var(--cartoon);font-size:2.5em;line-height:1;color:#fff;-webkit-text-stroke:4px var(--K);paint-order:stroke fill;text-shadow:0 4px 0 var(--K);letter-spacing:.03em;transition:opacity .2s}
+.arc-live.bump{animation:sbump .3s ease}
+.arc-live.hide{opacity:0}
+@keyframes sbump{0%{transform:scale(1)}40%{transform:scale(1.28);color:var(--y)}100%{transform:scale(1)}}
+.arc-cele{position:absolute;left:0;right:0;bottom:12%;margin:0 auto;width:max-content;z-index:1;pointer-events:none;display:none;flex-direction:column;align-items:center;gap:2px}
+.arc-cele.on{display:flex;animation:celein 2.4s ease both}
+.arc-cele b{font-family:var(--cartoon);font-weight:400;font-size:1.5em;color:var(--y);-webkit-text-stroke:3px var(--K);paint-order:stroke fill;text-shadow:0 3px 0 var(--K);white-space:nowrap}
+@keyframes celein{0%{transform:scale(.4);opacity:0}12%{transform:scale(1.08);opacity:1}20%{transform:scale(1)}85%{opacity:1}100%{opacity:0;transform:translateY(-14px)}}
+.cele-dance{display:inline-block}
+.arc-box .cele-dance.in-box{display:block;margin:-4px auto 0;line-height:0}
+.arc-ov.compact .cele-dance.in-box svg{width:48px;height:48px}
+.arc-ov.full .cele-dance.in-box{display:none}
+.pts-pop{display:inline-block;font-family:var(--cartoon);font-weight:400;font-size:1.7em;color:var(--y);-webkit-text-stroke:3px var(--K);paint-order:stroke fill;text-shadow:0 3px 0 var(--K);vertical-align:-.12em;margin-left:4px;animation:ppop .6s cubic-bezier(.3,1.8,.5,1) both}
+@keyframes ppop{0%{transform:scale(.2) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+/* ---- Juego diario: íconos con color ---- */
+.dc-g.ico{width:34px;height:34px;border-radius:11px;background:var(--c);box-shadow:inset 0 -3px 0 rgba(0,0,0,.15)}
+.dc-g.ico svg{width:74%;height:74%}
+.dc-g.ico:not(.done){opacity:.92}
+/* ---- Tienda en 3 pestañas ---- */
+.seg3 button{padding:8px 4px}
+.skin-note{margin:8px 0 0;font-size:.82em;font-weight:700;color:var(--muted);background:var(--surface-2);border:2px dashed rgba(11,15,36,.25);border-radius:12px;padding:7px 10px}
+@media (prefers-reduced-motion: reduce){#toast,.arc-live.bump,.fly-coin,.arc-cele.on,.pts-pop{animation:none}}
 
 </style>
 </head>
@@ -4026,8 +4069,8 @@ function renderArcade(){
 function renderArcPlay(){
   const g = ARC[arcCur], rec = arcState().rec[arcCur];
   return `<div class="play-head"><button class="icon-btn" data-act="arc-exit" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1>${esc(g.t)}</h1></div>
-    <div class="arc-hud"><span class="arc-info" id="arcInfo"></span><span class="arc-pill">Puntos <b id="arcScore">0</b></span><span class="arc-pill dim">Récord <b id="arcRec">${rec != null ? NUM.format(rec) : "—"}</b></span></div>
-    <div class="arc-stage ${g.stageClass || ""}" id="arcStage"><canvas id="arcCv"></canvas><div class="arc-ov" id="arcOv"></div></div>
+    <div class="arc-hud"><span class="arc-info" id="arcInfo"></span>${g.noBig ? `<span class="arc-pill">Puntos <b id="arcScore">0</b></span>` : ""}<span class="arc-pill dim">Récord <b id="arcRec">${rec != null ? NUM.format(rec) : "—"}</b></span></div>
+    <div class="arc-stage ${g.stageClass || ""}" id="arcStage"><canvas id="arcCv"></canvas>${g.noBig ? "" : `<div class="arc-live" id="arcBig">0</div>`}<div class="arc-cele" id="arcCele"></div><div class="arc-ov" id="arcOv"></div></div>
     <div class="arc-ctl" id="arcCtl"></div>`;
 }
 
@@ -4048,7 +4091,10 @@ function arcMount(){
   const run = { id:arcCur, state:"ready", score:0, revived:false, done:false, raf:0, last:0, listeners:[] };
   const api = {
     W, H, c:c2, cv, stage, ctl, tito:S.tito,
-    score(n){ run.score = n; const e = $("#arcScore"); if (e) e.textContent = NUM.format(n); },
+    score(n){ const up = n > run.score; run.score = n; const e = $("#arcScore"); if (e) e.textContent = NUM.format(n);
+      const b = $("#arcBig"); if (b) { b.textContent = NUM.format(n); if (up) { b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); } } },
+    celebrate(txt){ const el = $("#arcCele"); if (!el || typeof danceHTML !== "function") return; el.innerHTML = `${danceHTML(70)}<b>${txt || "¡Bien!"}</b>`; el.classList.remove("on"); void el.offsetWidth; el.classList.add("on");
+      celebrate(2); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 2400); },
     over(){ if (run.state !== "play") return; run.state = "over"; overScreen(); },
     info(h){ const e = $("#arcInfo"); if (e && e._h !== h) { e._h = h; e.innerHTML = h; } },
     opt(){ const st = arcState(); st.opt = st.opt || {}; return st.opt[arcCur] || (g.options ? g.options[0].k : null); },
@@ -4057,7 +4103,7 @@ function arcMount(){
     on(el, ev, fn, opt){ el.addEventListener(ev, fn, opt); run.listeners.push([el, ev, fn, opt]); },
     playing(){ return run.state === "play"; }
   };
-  const game = g.make(api); run.game = game;
+  const game = g.make(api); run.game = game; run.api = api;
   const paused = () => adOpen() || document.hidden || $("#sheetRoot").classList.contains("open");
   const loop = t => {
     run.raf = requestAnimationFrame(loop);
@@ -4067,7 +4113,7 @@ function arcMount(){
     game.draw(run.state);
   };
   run.raf = requestAnimationFrame(loop);
-  const show = h => { ov.innerHTML = h; ov.classList.toggle("on", !!h); ov.classList.remove("compact", "full"); if (!h) return;
+  const show = h => { const b = $("#arcBig"); if (b) b.classList.toggle("hide", !!h && run.state !== "count"); ov.innerHTML = h; ov.classList.toggle("on", !!h); ov.classList.remove("compact", "full"); if (!h) return;
     const box = ov.querySelector(".arc-box"); if (!box) return;
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact");
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full"); };
@@ -4084,10 +4130,11 @@ function arcMount(){
   const overScreen = () => {
     const st = arcState(), prev = st.rec[run.id], isRec = prev == null ? run.score > 0 : run.score > prev;
     if (isRec) { st.rec[run.id] = run.score; save(); const r = $("#arcRec"); if (r) r.textContent = NUM.format(run.score); }
-    if (run.won) { SND.fx("victory"); confetti(90); } else { SND.fx(isRec && prev != null ? "record" : run.drawn ? "turn" : "over"); if (isRec && prev != null) confetti(40); }
+    const party = run.won || (isRec && prev != null && run.score > 0);
+    if (party) { confetti(run.won ? 90 : 60); if (typeof celebrate === "function") celebrate(2); else SND.fx("victory"); } else SND.fx(run.drawn ? "turn" : "over");
     const canRevive = g.revive && !run.revived && !run.won && run.score > 0;
     const pts = ptsFor();
-    show(`<div class="arc-box">${run.score ? `<span class="arc-big">${NUM.format(run.score)}</span>` : ""}<b>${isRec && prev != null ? "¡Nuevo récord!" : run.won ? "¡Ganaste!" : run.drawn ? "¡Empate!" : g.overText || "¡Uh, se terminó!"}</b>
+    show(`<div class="arc-box">${party && typeof danceHTML === "function" ? danceHTML(64, "in-box") : ""}${run.score ? `<span class="arc-big">${NUM.format(run.score)}</span>` : ""}<b>${isRec && prev != null ? "¡Nuevo récord!" : run.won ? "¡Ganaste!" : run.drawn ? "¡Empate!" : g.overText || "¡Uh, se terminó!"}</b>
       <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${g.overExtra ? g.overExtra() : ""}
       ${canRevive ? `<button class="btn reward block" data-act="arc-revive">${isPrem() ? "Seguir jugando (PREMIUM)" : "Revivir · ver video"}</button>` : ""}
       <div class="btn-row"><button class="btn" data-act="arc-exit">Salir</button><button class="btn primary" data-act="arc-again">Otra vez</button></div></div>`);
@@ -4571,7 +4618,7 @@ arcRegister("bricks", {
         parts.forEach(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 500 * dt; p.a -= dt * 1.6; p.rot += p.vr * dt; }); parts = parts.filter(p => p.a > 0);
         pops.forEach(p => p.t += dt); pops = pops.filter(p => p.t < .8);
         if (!balls.length) { lives--; info(); combo = 0; for (const k in effects) effects[k] = 0; if (lives <= 0) { SND.fx("crash"); api.over(); return; } SND.fx("over"); balls = [newBall()]; ready = 1; banner = { txt:"¡Ups! Te quedan " + lives, t:0, col:"#EE3B2B", bad:true }; }
-        if (!bricks.some(b => b.hp > 0 && b.kind !== "metal")) { const bonus = 100 + level * 50; sc += bonus; api.score(sc); SND.fx("record"); confetti(30); level++; startLevel(); }
+        if (!bricks.some(b => b.hp > 0 && b.kind !== "metal")) { const bonus = 100 + level * 50; sc += bonus; api.score(sc); confetti(30); api.celebrate("¡Nivel " + (level + 1) + " superado!"); level++; startLevel(); }
       },
       draw(){
         c.save(); if (shake > 0) c.translate((rnd() - .5) * 8 * shake / .35, (rnd() - .5) * 8 * shake / .35);
@@ -4618,7 +4665,7 @@ arcRegister("bricks", {
 
 /* =================== BUSCAMINAS (con huevos podridos) =================== */
 const MS_SIZES = { chico:[10, 8, 12, 300], mediano:[13, 10, 20, 600], grande:[16, 12, 33, 1000] };
-arcRegister("mines", {
+arcRegister("mines", { noBig:true,
   t:"Buscaminas", d:"Encuentra los huevos podridos sin pisar ninguno.", col:"y", revive:true, noCount:true, ctlH:76,
   ratio(){ const z = MS_SIZES[(arcState().opt || {}).mines] || MS_SIZES.chico; return z[0] / z[1]; },
   options:[{ k:"chico", l:"Chico" }, { k:"mediano", l:"Mediano" }, { k:"grande", l:"Grande" }], onOpt:true,
@@ -4814,7 +4861,7 @@ const CH = (() => {
   }
   return { start, legal, make, inCheck, key, insufficient, best, isW };
 })();
-arcRegister("chess", {
+arcRegister("chess", { noBig:true,
   t:"Ajedrez", d:"Juega una partida contra Tito. Tres niveles.", col:"b", revive:false, noCount:true, ratio:1, ctlH:76,
   options:[{ k:"facil", l:"Fácil" }, { k:"medio", l:"Medio" }, { k:"dificil", l:"Difícil" }],
   intro:"Juegas con las blancas. Toca una pieza para ver a dónde puede ir. Tiene todas las reglas: enroque, captura al paso y coronación.",
@@ -4928,7 +4975,7 @@ const iconImgCache = {};
 function iconImg(name){ if (iconImgCache[name]) return iconImgCache[name]; const im = new Image(); im.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(icon(name).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" ')); return iconImgCache[name] = im; }
 
 /* =================== 2048 =================== */
-arcRegister("t2048", {
+arcRegister("t2048", { noBig:true,
   t:"2048", d:"Desliza y junta números iguales hasta llegar a 2048.", col:"y", revive:true, noCount:true, ratio:1, ctlH:0,
   intro:"Desliza hacia cualquier lado: todas las fichas se mueven y las iguales se suman. Si se llena el tablero, pierdes.",
   help:"Desliza sobre el tablero o usa las flechas del teclado",
@@ -4989,7 +5036,7 @@ arcRegister("t2048", {
 
 /* =================== MEMOTEST =================== */
 const MEMO_ICONS = ["ball","cup","star","music","gift","crown","flag","shirt","flame","trivia","clock","arcade"];
-arcRegister("memo", {
+arcRegister("memo", { noBig:true,
   t:"Memotest", d:"Encuentra los pares lo más rápido que puedas.", col:"r", revive:false, noCount:true, ctlH:0,
   ratio(){ return (arcState().opt || {}).memo === "dificil" ? 1.5 : 1; },
   options:[{ k:"normal", l:"8 pares" }, { k:"dificil", l:"12 pares" }], onOpt:true,
@@ -5138,7 +5185,7 @@ arcRegister("flappy", {
 });
 
 /* =================== 4 EN LÍNEA =================== */
-arcRegister("connect", {
+arcRegister("connect", { noBig:true,
   t:"4 en línea", d:"Suelta tus fichas y haz cuatro en línea antes que Tito.", col:"g", revive:false, noCount:true, ratio:1, ctlH:0,
   options:[{ k:"facil", l:"Fácil" }, { k:"dificil", l:"Difícil" }],
   intro:"Toca una columna para soltar tu ficha roja. Gana el primero que junta cuatro seguidas: en fila, en columna o en diagonal.",
@@ -5864,7 +5911,7 @@ arcRegister("tower", {
       else { combo = 0; const cutL = x < top.x, cw = w - (r - l);
         falls.push({ x:cutL ? x : r, w:cw, y:yOf(n), vy:0, vx:(cutL ? -1 : 1) * 60, rot:0, vr:(cutL ? -1 : 1) * (2 + rnd() * 2), col:cur.col }); x = l; w = r - l; SND.fx("chop"); SND.fx("place", n % 12); }
       stack.push({ x, w, col:cur.col }); score += perfect ? 2 : 1; api.score(score); tHop = 0;
-      if (n % 10 === 0) { SND.fx("milestone"); api.info(`¡${n} tapitas!`); } else api.info(`Altura: <b>${n}</b>`);
+      if (n % 10 === 0) { api.celebrate(`¡${n} tapitas!`); api.info(`¡${n} tapitas!`); } else api.info(`Altura: <b>${n}</b>`);
       camT = Math.max(0, (stack.length + 1) * LH - H * .46);
       newCur();
     }
@@ -5931,7 +5978,6 @@ arcRegister("tower", {
         parts.forEach(p => { c.globalAlpha = Math.max(0, p.a); c.fillStyle = p.col; c.beginPath(); c.arc(p.x, scr(p.y), p.r, 0, 7); c.fill(); }); c.globalAlpha = 1;
         pops.forEach(p => { const s = Math.min(1, p.t * 7), a = Math.max(0, 1 - Math.max(0, p.t - .55) * 2.2); c.save(); c.globalAlpha = a; c.translate(W / 2, H * .22 - p.t * 20); c.scale(.6 + s * .5, .6 + s * .5); c.font = `26px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "center"; c.lineWidth = 6; c.strokeStyle = IK; c.strokeText(p.txt, 0, 0); c.fillStyle = "#FFC425"; c.fillText(p.txt, 0, 0); c.restore(); });
         c.textAlign = "left";
-        c.fillStyle = "rgba(11,15,36,.35)"; c.font = `bold ${Math.round(W * .2)}px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "center"; c.globalAlpha = .35; c.fillText(n - 1, W / 2, H * .14 + W * .1); c.globalAlpha = 1; c.textAlign = "left";
       },
       destroy(){}
     };
@@ -6030,7 +6076,14 @@ const mmss = s => Math.floor(s/60)+":"+pad(Math.floor(s%60));
 const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
 const flag = cc => !cc || cc === "XX" ? "🌎" : String.fromCodePoint(...[...cc].map(c => 127397 + c.charCodeAt(0)));
 const countryName = cc => (COUNTRIES.find(c => c[0] === cc) || ["","Otro país"])[1];
-function toast(m){ const t = $("#toast"); t.textContent = m; t.style.display = "none"; void t.offsetWidth; t.style.display = "block"; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = "none", 2600); }
+function toast(m, kind, o){
+  const t = $("#toast"); o = o || {};
+  if (!kind) kind = /^\+\d|\+[\d.]+ puntos/.test(m) ? "pts" : /falta|no te alcanza/i.test(m) ? "money" : /^¡/.test(m) ? "ok" : "info";
+  const ico = kind === "pts" ? coin : kind === "money" ? "<b>!</b>" : kind === "ok" ? "<b>✓</b>" : "<b>i</b>";
+  const bar = o.need ? `<span class="t-bar"><span style="width:${Math.min(100, Math.round(100 * o.have / o.need))}%"></span></span><span class="t-sub">Tienes ${NUM.format(o.have)} de ${NUM.format(o.need)}</span>` : "";
+  t.className = "t-" + kind; t.innerHTML = `<span class="ti">${ico}</span><span class="tm"><span>${esc(m)}</span>${bar}</span>`;
+  t.style.display = "none"; void t.offsetWidth; t.style.display = "flex"; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = "none", o.need ? 3200 : 2600);
+}
 const COL = { g:"var(--g)", r:"var(--r)", y:"var(--y)", b:"var(--b)" };
 const SOFT = { g:"var(--g-soft)", r:"var(--r-soft)", y:"var(--y-soft)", b:"var(--b-soft)" };
 const coin = `<span class="coin" aria-hidden="true"></span>`;
@@ -6336,7 +6389,8 @@ function roomHTML(house, tito, o){
 }
 
 /* ---------- Tienda ---------- */
-const TITO_CATS = ["skin","kit","hat","clothes","glasses","feet","float","dance"], CASA_CATS = ["wall","floor","frame","furni","deco"];
+const TITO_CATS = ["skin","kit","hat","clothes","glasses","feet","float","dance"], CASA_CATS = ["wall","floor","frame","furni","deco"], ROPA_CATS = ["skin","kit","hat","clothes","glasses","feet","float"], BAILE_CATS = ["dance"];
+const shopCatsOf = g => g === "casa" ? CASA_CATS : g === "baile" ? BAILE_CATS : ROPA_CATS;
 const DEF = { dance:"funk", skin:"hueso", hat:"none", clothes:"none", glasses:"none", feet:"none", float:"none", wall:"lisa", floor:"gris", frame:"none", furni:"none", deco:"none" };
 function itemOf(cat, key){ return SHOP[cat].items.find(i => i[0] === key); }
 const lockLv = p => typeof p === "string" && p[0] === "L" ? Number(p.slice(1)) : 0;
@@ -6560,10 +6614,10 @@ function checkLevelUp(){
   let bonus = 0, hints = 0; for (let x = S.lvlSeen + 1; x <= L; x++) { bonus += lvlBonus(x); hints++; }
   S.lvlSeen = L; S.coins += bonus; S.hints += hints; save();
   const news = LV_GIFTS.filter(g => g.l === L);
-  openSheet("¡Subiste de nivel!", `<div style="text-align:center"><span class="anim-jump">${titoSVG(S.tito, 110, { level:L, mood:"star" })}</span><div class="lvl-up">Nivel ${L}</div>
+  openSheet("¡Subiste de nivel!", `<div style="text-align:center">${danceHTML(110)}<div class="lvl-up">Nivel ${L}</div>
     <p style="margin:6px 0 10px">Ganaste <b>+${NUM.format(bonus)} puntos</b> y <b>${hints} ${hints === 1 ? "pista" : "pistas"}</b>.</p>${news.map(g => `<p class="lvl-new">${esc(g.t)}</p>`).join("")}
     <div class="btn-row"><button class="btn" data-act="level">Ver niveles</button><button class="btn primary" data-act="close-sheet">¡Genial!</button></div></div>`, { center:true });
-  SND.prize(); confetti(); renderHeader();
+  celebrate(2); confetti(); renderHeader();
 }
 const isPrem = () => !!S.settings.premium || (S.premUntil || 0) > Date.now();
 const dayCounter = key => { const T = today(); if (!S[key] || S[key].day !== T) S[key] = { day:T, n:0 }; return S[key]; };
@@ -6666,9 +6720,22 @@ let view = "home", curDay = null, ctx = null, curGroup = null, moreTab = "arch",
 let sLen = 0, wInput = "", sSel = null, sTap = null, sDrag = false, tQ = 0, tPicked = null, tResolved = false;
 let react = { mood:"normal", until:0 }, miniShown = "", timeOffer = false, wheelRot = 0, spinning = false;
 const groupCache = {};
+let coinShown = null, coinAnim = null;
+function flyCoins(from, to){
+  const pill = $("#coinPill"), num = $("#coinNum"); if (!pill || !num) return; coinShown = to;
+  const r = pill.getBoundingClientRect(), tx = r.left + 18, ty = r.top + r.height / 2, n = Math.min(10, 3 + Math.floor(Math.log10(Math.max(10, to - from)) * 2));
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) for (let i = 0; i < n; i++) { const c = document.createElement("span"); c.className = "fly-coin"; const sx = innerWidth / 2 + (Math.random() - .5) * 120, sy = innerHeight * .42 + (Math.random() - .5) * 80;
+    c.style.left = sx + "px"; c.style.top = sy + "px"; c.style.setProperty("--dx", (tx - sx) + "px"); c.style.setProperty("--dy", (ty - sy) + "px"); c.style.animationDelay = (i * 55) + "ms"; document.body.appendChild(c); setTimeout(() => c.remove(), 900 + i * 55); }
+  cancelAnimationFrame(coinAnim); const t0 = performance.now() + 420, dur = 750, start = from;
+  setTimeout(() => { pill.classList.remove("bump"); void pill.offsetWidth; pill.classList.add("bump"); SND.fx("coin"); }, 450);
+  const stepN = now => { const k = Math.max(0, Math.min(1, (now - t0) / dur)), e = 1 - Math.pow(1 - k, 3); num.textContent = NUM.format(Math.round(start + (to - start) * e)); if (k < 1) coinAnim = requestAnimationFrame(stepN); };
+  coinAnim = requestAnimationFrame(stepN);
+}
 function renderHeader(){
   $("#brandSlot").innerHTML = brandHTML("");
-  $("#coinPill").innerHTML = `${coin}<b>${NUM.format(S.coins)}</b>`;
+  const pill = $("#coinPill"); if (!pill.querySelector("#coinNum")) pill.innerHTML = `${coin}<b id="coinNum"></b>`;
+  if (coinShown == null || S.coins < coinShown) { coinShown = S.coins; $("#coinNum").textContent = NUM.format(S.coins); return; }
+  if (S.coins > coinShown) flyCoins(coinShown, S.coins);
 }
 function setView(v, opt){
   opt = opt || {};
@@ -6735,9 +6802,9 @@ function renderHome(){
   const pendingGroup = S.groups.find(code => { const g = S.groupMeta[code]; if (!g) return false; const gc = makeCtx("g", code, today()); return !play(gc)[gc.game].done; });
   const wl = LIMITS.spins - dayCounter("wheel").n;
   const wheelBanner = `<button class="card wheel-banner press ${wl <= 0 ? "used" : ""}" data-act="tab:ruleta"><span class="wb-wheel">${wheelMini()}</span><span class="wb-txt"><b>Ruleta del día</b><small>${wl <= 0 ? "Mañana tienes otro giro" : dayCounter("wheel").n === 0 ? "Tienes 1 giro gratis" : "Otro giro con " + videoWord()}</small></span><span class="go ${wl <= 0 ? "done" : "y"}" style="--c:var(--y)">${wl <= 0 ? "Listo" : "Girar"}</span></button>`;
-  const games = [["word", p.w.done, "Palabra"], ["soup", p.s.done, "Sopa"], ["trivia", p.t.done, "Trivia"]];
+  const games = [["word", p.w.done, "Palabra", "g"], ["soup", p.s.done, "Sopa", "r"], ["trivia", p.t.done, "Trivia", "b"]];
   const daily = `<div class="daily-row"><button class="daily-card press" data-act="games"><span class="dc-txt"><b>JUEGO DIARIO</b><small>Un desafío distinto cada día</small>
-      <span class="dc-games">${games.map(([ic, done, l]) => `<span class="dc-g ${done ? "done" : ""}" title="${l}">${icon(ic)}${done ? `<i>✓</i>` : ""}</span>`).join("")}<em>${doneN === 3 ? "¡Completo!" : doneN + " de 3"}</em></span></span>
+      <span class="dc-games">${games.map(([ic, done, l, col]) => `<span class="dc-g ico ${done ? "done" : ""}" style="--c:${COL[col]}" title="${l}">${icon(ic)}${done ? `<i>✓</i>` : ""}</span>`).join("")}<em>${doneN === 3 ? "¡Completo!" : doneN + " de 3"}</em></span></span>
       <span class="dc-go">${doneN === 3 ? "VER" : doneN ? "SEGUIR" : "JUGAR"}</span></button>
     <button class="streak-mini press ${streakOpen ? "open" : ""} ${c ? "" : "off"}" data-act="streak-toggle" aria-expanded="${streakOpen}" aria-label="Racha: ${c} días seguidos"><span class="flame">${icon("flame")}</span><span class="cartoon-num">${c}</span></button></div>
     ${streakOpen ? `<div class="card streak-drop"><div class="sd-head"><b>${c} ${c === 1 ? "día seguido" : "días seguidos"}</b><span>${c % 7 === 0 && c ? "¡Regalo ganado!" : "Regalo en " + toGift + (toGift === 1 ? " día" : " días")}</span></div>${weekHTML()}<div class="perk"><b>Día 3:</b> pista · <b>Día 5:</b> +50 · <b>Día 7:</b> regalo</div></div>` : ""}`;
@@ -7065,7 +7132,7 @@ function renderTrivia(){
   let after = "";
   if (answered) {
     const a = d.ans[i];
-    if (tPicked === q.right) after = `<div class="msg ok">¡Correcto! +${ctx.practice ? 0 : ansPoints(q, a)}</div>` + next;
+    if (tPicked === q.right) after = `<div class="msg ok">¡Correcto! <span class="pts-pop">+${ctx.practice ? 0 : ansPoints(q, a)}</span></div>` + next;
     else if (tPicked === "__timeout") after = `<div class="msg bad">¡Se acabó el tiempo! Era: ${esc(q.right)}</div>` + next;
     else if (!tResolved) after = `<div class="msg bad">No era esa.</div><div class="btn-row"><button class="btn reward" data-act="t-second">${isPrem() ? "Otra oportunidad" : "Ver video · otra oportunidad"}</button><button class="btn" data-act="t-reveal">Seguir</button></div>`;
     else after = `<div class="msg bad">La respuesta era: ${esc(q.right)}</div>` + next;
@@ -7083,7 +7150,7 @@ function ansPoints(q, a){ if (!a || !a.ok) return 0; const t = q.time || TIME.q,
 
 /* ---------- Códigos de regalo (se guardan como hash; más adelante se validan en el servidor) ---------- */
 const DEV = (() => { try { return !!window.claude || /[?#&]dev\b/.test(location.href) || localStorage.getItem("unratito.dev") === "1"; } catch(e){ return false; } })();
-const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" } };
+const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" }, 2599833649:{ pts:100000, t:"Código de prueba" } };
 function openRedeem(){
   openSheet("Canjear código", `<form id="redeemForm"><div class="field"><label for="rCode">Escribe tu código</label><input id="rCode" maxlength="24" required placeholder="Ej.: TITO2026" style="text-transform:uppercase;letter-spacing:.08em;font-weight:800" autocomplete="off" autocapitalize="characters"></div><button class="btn yellow block" type="submit">Canjear</button><p class="small muted">Los códigos se consiguen en eventos, sorteos y en la comunidad de unraTITO.</p></form>`);
   setTimeout(() => { const i = $("#rCode"); if (i) i.focus(); }, 250);
@@ -7101,12 +7168,16 @@ function redeemCode(raw){
   if (r.char) { S.chars = S.chars || ["tito"]; if (!S.chars.includes(r.char)) S.chars.push(r.char); }
   save(); pushMember(); renderHeader(); closeSheet();
   setTimeout(() => {
-    openSheet("¡Código canjeado!", `<div class="redeem-win"><span class="anim-enter"><span class="anim-idle">${titoSVG(S.tito, 130, { mood:"star", level:level() })}</span></span>${r.pts ? `<b class="rw-big">+${NUM.format(r.pts)}</b><span class="rw-sub">puntos para la tienda</span>` : ""}<p class="small muted">${esc(r.t)}</p><button class="btn yellow block" data-act="close-sheet">¡Genial!</button></div>`);
-    SND.prize(); confetti(90);
+    openSheet("¡Código canjeado!", `<div class="redeem-win">${danceHTML(130)}${r.pts ? `<b class="rw-big">+${NUM.format(r.pts)}</b><span class="rw-sub">puntos para la tienda</span>` : ""}<p class="small muted">${esc(r.t)}</p><button class="btn yellow block" data-act="close-sheet">¡Genial!</button></div>`);
+    celebrate(2); confetti(90);
   }, 280);
 }
 
 
+/* Festejo: tu personaje baila con tu baile y suena su música */
+const myDance = () => (S.tito && S.tito.dance && S.tito.dance !== "none") ? S.tito.dance : "funk";
+function danceHTML(px, extra){ return `<span class="cele-dance ${extra || ""}">${titoSVG(S.tito, px, { mood:"happy", level:level(), dance:myDance(), noFloat:true })}</span>`; }
+function celebrate(bars){ if (S.settings.music !== false) SND.dance(myDance(), bars || 2); else SND.fx("victory"); }
 /* ---------- Personajes y caja misteriosa ---------- */
 const BOX_SVG = `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="mbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9B6BFF"/><stop offset="1" stop-color="#5B2DB8"/></linearGradient></defs>
   <g class="mb-base"><rect x="18" y="52" width="84" height="58" rx="8" fill="url(#mbg)" stroke="${IK}" stroke-width="4"/><rect x="52" y="52" width="16" height="58" fill="#FFC425" stroke="${IK}" stroke-width="3"/><text x="38" y="92" font-family="'Luckiest Guy', sans-serif" font-size="24" fill="#fff" stroke="${IK}" stroke-width="1.5" paint-order="stroke">?</text><text x="74" y="92" font-family="'Luckiest Guy', sans-serif" font-size="24" fill="#fff" stroke="${IK}" stroke-width="1.5" paint-order="stroke">?</text></g>
@@ -7128,16 +7199,17 @@ function charsSection(){
 function openMBox(){
   const own = ownedChars(), left = CHAR_ORDER.filter(c => !own.includes(c));
   if (!left.length) { toast("Ya tienes todos los personajes"); return; }
-  if (S.coins < MBOX_PRICE) { SND.bad(); toast(`Te faltan ${NUM.format(MBOX_PRICE - S.coins)} puntos`); return; }
+  if (S.coins < MBOX_PRICE) { SND.bad(); toast(`Te faltan ${NUM.format(MBOX_PRICE - S.coins)} puntos`, "money", { have:S.coins, need:MBOX_PRICE }); return; }
   const id = left[Math.floor(rnd() * left.length)];
   S.coins -= MBOX_PRICE; own.push(id); save(); pushMember(); renderHeader(); SND.buy();
-  const fig = titoSVG(Object.assign({}, S.tito, { char:id }), 150, { mood:"star", level:level(), noFloat:true });
+  const fig = titoSVG(Object.assign({}, S.tito, { char:id }), 150, { mood:"happy", level:level(), noFloat:true, dance:myDance() });
   openSheet("Caja misteriosa", `<div class="mbox"><div class="mb-rays"></div><div class="mb-box">${BOX_SVG}</div><div class="mb-char">${fig}</div>
     <div class="mb-reveal"><span class="eyebrow">¡Nuevo personaje!</span><b class="mb-name">${esc(CHARS[id].n)}</b><p class="small muted">${esc(CHARS[id].d)}</p>
     <div class="btn-row"><button class="btn" data-act="close-sheet">Seguir</button><button class="btn yellow" data-act="char-use:${id}">¡Usarlo ahora!</button></div></div></div>`, { center:true, sticky:true });
   SND.spin(1500);
   setTimeout(() => { SND.fx("boom"); }, 1500);
   setTimeout(() => { SND.prize(); confetti(110); }, 1700);
+  setTimeout(() => { if ($(".mbox")) celebrate(2); }, 2900);
 }
 
 /* ---------- Puntos, racha y resultados ---------- */
@@ -7373,7 +7445,7 @@ function genCode(){ const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; fo
 async function createGroup(name, theme, game){
   const code = genCode(), meta = { name, theme, game, owner:remote.uid || "me", created:Date.now() };
   if (remote.db) { try { await remote.db.doc("groups/"+code).set(meta); } catch(e){ meta.local = true; } } else meta.local = true;
-  S.groupMeta[code] = meta; S.groups.unshift(code); save(); pushMember(); closeSheet(); setView("group", { group:code }); toast("Grupo creado. Pasales el código "+code);
+  S.groupMeta[code] = meta; S.groups.unshift(code); save(); pushMember(); closeSheet(); setView("group", { group:code }); toast("Grupo creado. Pásales el código "+code);
 }
 async function joinGroup(code){
   code = code.toUpperCase().replace(/[^A-Z0-9]/g,"");
@@ -7399,14 +7471,14 @@ function renderTito(){
     const it = itemOf(tryOn.cat, tryOn.key), price = priceOf(tryOn.cat, tryOn.key), rar = rarityOf(it[2]), can = typeof price === "number" && S.coins >= price;
     const kitNote = tryOn.cat === "kit" ? `<div class="small muted">Trae ${kitParts(tryOn.key).map(([c, k]) => (itemOf(c, k) || [,""])[1].toLowerCase()).join(", ")}.${price < it[2] ? " Descontamos lo que ya tienes." : ""}</div>` : "";
     h += `<section class="card buybar"><div style="flex:1"><div style="font-weight:800">${esc(it[1])}</div>${kitNote}<div class="small" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="rar ${rar}" style="--rc:${RAR[rar][1]}">${RAR[rar][0]}</span>${lockLv(price) ? "Se gana al llegar al nivel "+lockLv(price) : price === "P" ? "Solo con PREMIUM" : `<span class="price-l">${coin}${NUM.format(price)}</span>`}</div></div>
-      ${lockLv(price) ? `<button class="btn" data-act="level">Nivel ${lockLv(price)}</button>` : price === "P" ? `<button class="btn gold" data-act="premium">Ver PREMIUM</button>` : can ? `<button class="btn green" data-act="buy">Comprar</button>` : `<button class="btn" disabled>Faltan ${NUM.format(price - S.coins)}</button>`}<button class="btn" data-act="untry" aria-label="Dejar de probar" style="min-width:52px">✕</button></section>`;
+      ${lockLv(price) ? `<button class="btn" data-act="level">Nivel ${lockLv(price)}</button>` : price === "P" ? `<button class="btn gold" data-act="premium">Ver PREMIUM</button>` : can ? `<button class="btn green" data-act="buy">Comprar</button>` : `<button class="btn" data-act="need:${price}">Faltan ${NUM.format(price - S.coins)}</button>`}<button class="btn" data-act="untry" aria-label="Dejar de probar" style="min-width:52px">✕</button></section>`;
   }
   const meter = (label, v, col) => `<div class="meter"><span>${label} <span class="muted num">${Math.round(v)}%</span></span><div class="bar"><span style="width:${v}%;background:${v < 30 ? "var(--r)" : col}"></span></div></div>`;
   h += `<section class="card"><div class="meters">${meter("Panza de saber", S.care.food, "var(--g)")}${meter("Ánimo", S.care.mood, "var(--b)")}</div>
     <div class="btn-row" style="margin-top:12px"><button class="btn green" data-act="snack">${icon("croissant").replace("<svg","<svg width='24' height='24'")}Merienda${snacksUsed >= LIMITS.freeSnacks ? " · "+videoWord() : ""}</button><button class="btn reward" data-act="bonus" ${bonusLeft <= 0 ? "disabled" : ""}>+30 pts · ${videoWord()} (${Math.max(0,bonusLeft)})</button></div>
     <p class="small muted" style="margin-top:10px">La panza se llena respondiendo bien y el ánimo jugando. Si no juegas, bajan un poco cada día. ${lv < 20 ? "En el nivel "+(lv < 5 ? 5 : lv < 10 ? 10 : lv < 15 ? 15 : 20)+" Tito cambia." : ""}</p></section>`;
   h += charsSection();
-  const cats = shopGroup === "tito" ? TITO_CATS : CASA_CATS; if (!cats.includes(shopCat)) shopCat = cats[0];
+  const cats = shopCatsOf(shopGroup); if (!cats.includes(shopCat)) shopCat = cats[0];
   const items = SHOP[shopCat].items.map(([key, name, base, sec]) => {
     const own = owns(shopCat, key), on = worn(shopCat) === key, trying = tryOn && tryOn.cat === shopCat && tryOn.key === key, rar = rarityOf(base), price = priceOf(shopCat, key);
     const head = sec ? `<div class="shop-sec">${esc(sec)}</div>` : "";
@@ -7414,8 +7486,9 @@ function renderTito(){
     return head + `<button class="item ${on ? "on" : ""} ${trying ? "try" : ""}" data-act="pick:${shopCat}:${key}" aria-pressed="${on}"><span class="thumb">${thumb(shopCat, key)}</span><span>${esc(name)}</span>${base ? `<span class="rar ${rar}" style="--rc:${RAR[rar][1]}">${RAR[rar][0]}</span>` : ""}<span class="small">${label}</span></button>`;
   }).join("");
   h += `<section class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="font-size:1.25em">Tienda</h2><span class="group-tag" style="background:var(--y-soft)">${coin}${NUM.format(S.coins)}</span></div>
-    <div class="seg" style="margin-top:10px"><button data-act="shopgroup:tito" aria-pressed="${shopGroup === "tito"}">Para Tito</button><button data-act="shopgroup:casa" aria-pressed="${shopGroup === "casa"}">Para la casa</button></div>
-    <div class="cat-tabs" style="margin-top:10px">${cats.map(k => `<button data-act="shopcat:${k}" aria-pressed="${k===shopCat}">${SHOP[k].l}</button>`).join("")}</div><div class="shop">${items}</div>
+    <div class="seg seg3" style="margin-top:10px"><button data-act="shopgroup:tito" aria-pressed="${shopGroup === "tito"}">Personaje</button><button data-act="shopgroup:baile" aria-pressed="${shopGroup === "baile"}">Bailes</button><button data-act="shopgroup:casa" aria-pressed="${shopGroup === "casa"}">Casa</button></div>
+    ${cats.length > 1 ? `<div class="cat-tabs" style="margin-top:10px">${cats.map(k => `<button data-act="shopcat:${k}" aria-pressed="${k===shopCat}">${SHOP[k].l}</button>`).join("")}</div>` : `<p class="small muted" style="margin:10px 0 0">Toca un baile para verlo con su música.</p>`}
+    ${shopCat === "skin" ? `<p class="skin-note">Las pieles son solo para Tito. Los otros personajes tienen su propio color.</p>` : ""}<div class="shop">${items}</div>
     <p class="small muted" style="margin-top:10px">Toca algo para probarlo. Lo que ya es tuyo se pone al toque.</p></section>
     <button class="btn ghost block" data-act="profile">Cambiar nombre o país</button>`;
   return h;
@@ -7542,6 +7615,7 @@ document.addEventListener("click", e => {
   else if (k === "settings") { moreTab = "set"; setView("more"); }
   else if (k === "redeem") openRedeem();
   else if (k === "mbox") openMBox();
+  else if (k === "need") { SND.bad(); toast(`Te faltan ${NUM.format(+v - S.coins)} puntos`, "money", { have:S.coins, need:+v }); }
   else if (k === "char-use") { if (!ownedChars().includes(v)) return; S.tito.char = v === "tito" ? undefined : v; if (v === "tito") delete S.tito.char; save(); pushMember(); closeSheet(); render(false); SND.pop(); toast("¡Ahora juegas con " + charName(v === "tito" ? null : v) + "!"); }
   else if (k === "play") { const j = v.indexOf(":"); startGame(parseCtx(v.slice(j+1)), v.slice(0, j)); }
   else if (k === "run") { const [kind, id] = v.split(":"); startGame(runCtx(kind, id), "t"); }
@@ -7581,7 +7655,7 @@ document.addEventListener("click", e => {
   else if (k === "join-group") openJoinGroup();
   else if (k === "invite") { const g = S.groupMeta[v]; copy("¡Únete a mi grupo «"+g.name+"» en unraTITO! Todos los días jugamos contra reloj y competimos. Código: "+v, "Invitación copiada. Mándala por WhatsApp."); }
   else if (k === "leave") { if (el.dataset.confirm) { S.groups = S.groups.filter(c => c !== v); save(); pushMember(); setView("groups"); toast("Saliste del grupo"); } else { el.dataset.confirm = "1"; el.textContent = "Toca de nuevo para salir"; } }
-  else if (k === "shopgroup") { shopGroup = v; shopCat = (v === "tito" ? TITO_CATS : CASA_CATS)[0]; tryOn = null; render(false); }
+  else if (k === "shopgroup") { shopGroup = v; shopCat = shopCatsOf(v)[0]; tryOn = null; render(false); }
   else if (k === "shopcat") { shopCat = v; render(false); }
   else if (k === "pick") { const [cat, key] = v.split(":"); if (cat === "dance" && owns(cat, key)) { wear(cat, key); tryOn = { cat, key }; save(); render(false); setTimeout(() => { if (tryOn && tryOn.key === key && owns(cat, key)) { tryOn = null; if (view === "tito") render(false); } }, 3000); return; } if (owns(cat, key)) { wear(cat, key); tryOn = null; save(); pushMember(); render(false); } else { tryOn = { cat, key }; render(false); $("#main").scrollTo({ top:0, behavior:"smooth" }); } }
   else if (k === "untry") { tryOn = null; render(false); }
