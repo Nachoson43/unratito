@@ -20,6 +20,7 @@
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:url" content="https://nachoson43.github.io/unratito/">
 <meta name="twitter:card" content="summary_large_image">
+<script>window.UNRA_CFG={};</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4306,6 +4307,7 @@ function arcMount(){
     if (run.done || run.state === "ready" || run.score == null) return; run.done = true;
     const pts = ptsFor(); if (pts > 0) { addCoins(pts); toast("+"+pts+" puntos"); }
     const st = arcState(); st.games = (st.games || 0) + 1; save(); pushMember && pushMember();
+    if (typeof logEv === "function") logEv("arcade_terminado", { juego:run.id, puntaje:run.score, puntos:pts, gano:!!run.won });
   };
   run.api = api; run.show = show; run.startNew = startNew; run.finalize = finalize; run.countdown = countdown;
   arcRun = run;
@@ -6213,7 +6215,10 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "runner", "flappy", "cross", "penal", "tow
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "27/10 16:09";
+const APP_VER = "27/10 16:15";
+/* Medición (Google Analytics) y opiniones: solo se activan en la versión web si están configuradas */
+const CFG = (typeof window !== "undefined" && window.UNRA_CFG) || {};
+function logEv(name, params){ try { if (window.gtag) window.gtag("event", name, Object.assign({ app_version:APP_VER }, params || {})); } catch(e){} }
 /* ---------- Utilidades ---------- */
 const pad = n => String(n).padStart(2,"0");
 const ymd = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
@@ -6812,6 +6817,7 @@ function checkLevelUp(){
   let bonus = 0, hints = 0; const prevSeen = S.lvlSeen; for (let x = S.lvlSeen + 1; x <= L; x++) { bonus += lvlBonus(x); hints++; }
   S.lvlSeen = L; S.coins += bonus; S.hints += hints; save();
   const news = lvGifts().filter(g => g.l > prevSeen && g.l <= L);
+  logEv("level_up", { level:L });
   openSheet("¡Subiste de nivel!", `<div style="text-align:center">${danceHTML(110)}<div class="lvl-up">Nivel ${L}</div>
     <p style="margin:6px 0 10px">Ganaste ${bonus ? `<b>+${NUM.format(bonus)} puntos</b> y ` : ""}<b>${hints} ${hints === 1 ? "pista" : "pistas"}</b>.</p>${news.length ? `<p class="small muted" style="margin:0 0 6px">${news.length === 1 ? "Premio exclusivo desbloqueado" : "Premios exclusivos desbloqueados"}</p><ul class="lvl-list lvlup-list">${(lvUpNews = news.slice(-4)).map(g => lvGiftRow(g, L)).join("")}</ul>${news.length > 4 ? `<p class="small muted">y ${news.length - 4} más en tu nivel</p>` : ""}` : ""}
     <div class="btn-row"><button class="btn" data-act="level">Ver niveles</button><button class="btn primary" data-act="close-sheet">¡Genial!</button></div></div>`, { center:true });
@@ -6936,7 +6942,7 @@ function renderHeader(){
   if (S.coins > coinShown) flyCoins(coinShown, S.coins);
 }
 function setView(v, opt){
-  opt = opt || {};
+  opt = opt || {}; if (v !== view) logEv("pantalla", { pantalla:v });
   if (opt.day !== undefined) curDay = opt.day;
   if (opt.group !== undefined) curGroup = opt.group;
   if (v !== "tito") tryOn = null;
@@ -7063,7 +7069,7 @@ function renderWheel(){
     ${btn}<p class="status-line">${left > 0 ? "Gírala con el dedo o tócala · te quedan "+left+(left === 1 ? " tirada" : " tiradas") : "Ya usaste tus 2 tiradas de hoy"}</p>
     <button class="btn ghost block" data-act="home">Ir al inicio</button>`;
 }
-function spin(dir, power){
+function spin(dir, power){ logEv("ruleta");
   dir = dir || 1; power = power || 0;
   if (spinning) return; const w = dayCounter("wheel"); if (w.n >= LIMITS.spins) return;
   const go = () => {
@@ -7348,13 +7354,29 @@ function ansPoints(q, a){ if (!a || !a.ok) return 0; const t = q.time || TIME.q,
 
 /* ---------- Códigos de regalo (se guardan como hash; más adelante se validan en el servidor) ---------- */
 const DEV = (() => { try { return !!window.claude || /[?#&]dev\b/.test(location.href) || localStorage.getItem("unratito.dev") === "1"; } catch(e){ return false; } })();
-const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" }, 2599833649:{ pts:100000, t:"Código de prueba" } };
+const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" } };
 function openRedeem(){
   openSheet("Canjear código", `<form id="redeemForm"><div class="field"><label for="rCode">Escribe tu código</label><input id="rCode" maxlength="24" required placeholder="Ej.: TITO2026" style="text-transform:uppercase;letter-spacing:.08em;font-weight:800" autocomplete="off" autocapitalize="characters"></div><button class="btn yellow block" type="submit">Canjear</button><p class="small muted">Los códigos se consiguen en eventos, sorteos y en la comunidad de unraTITO.</p></form>`);
   setTimeout(() => { const i = $("#rCode"); if (i) i.focus(); }, 250);
 }
+let fbType = "idea";
+function openFeedback(){
+  const T = [["error","Algo anda mal"],["idea","Una idea"],["like","Me gusta"]];
+  openSheet("Mandar opinión", `<form id="fbForm"><p class="small muted" style="margin:0 0 10px">Lo leemos todo. Si es un error, cuéntanos qué estabas haciendo.</p>
+    <div class="seg seg3" style="margin-bottom:10px">${T.map(([k,l]) => `<button type="button" data-act="fbtype:${k}" aria-pressed="${fbType === k}">${l}</button>`).join("")}</div>
+    <div class="field"><textarea id="fbText" rows="5" maxlength="1500" required placeholder="Escribe acá…" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:2px solid var(--K);resize:vertical"></textarea></div>
+    <button class="btn primary block" type="submit" style="margin-top:10px">Enviar</button></form>`);
+  setTimeout(() => { const t = $("#fbText"); if (t) t.focus(); }, 250);
+}
+function sendFeedback(text){
+  const info = `[${fbType}] ${text}\n\n— ${S.profile.name || "?"} · nivel ${level()} · ${charName(S.tito.char)} · v${APP_VER} · ${navigator.userAgent.slice(0, 120)}`;
+  const body = new URLSearchParams(); body.append(CFG.form.entry, info);
+  fetch(CFG.form.url, { method:"POST", mode:"no-cors", body }).catch(() => {});
+  logEv("opinion", { tipo:fbType, largo:text.length });
+  closeSheet(); SND.prize(); toast("¡Gracias! Ya nos llegó", "ok");
+}
 function redeemCode(raw){
-  const code = String(raw || "").toUpperCase().replace(/[^A-Z0-9]/g, ""), h = hashStr("unratito:" + code), r = CODES[h];
+  const code = String(raw || "").toUpperCase().replace(/[^A-Z0-9]/g, ""), h = hashStr("unratito:" + code), r = CODES[h]; logEv("codigo", { valido:!!r });
   S.codes = S.codes || [];
   const bad = msg => { SND.bad(); const i = $("#rCode"); if (i) { i.classList.remove("shake"); void i.offsetWidth; i.classList.add("shake"); } toast(msg); };
   if (!code) return bad("Escribe un código");
@@ -7394,7 +7416,7 @@ function charsSection(){
       : `<p class="small" style="font-weight:800;text-align:center">¡Tienes todos los personajes!</p>`}
     <p class="small muted">Todos usan la misma ropa, gorros, lentes, calzado y bailes que Tito.</p></section>`;
 }
-function openMBox(){
+function openMBox(){ logEv("caja_misteriosa", { puntos:S.coins });
   const own = ownedChars(), left = CHAR_ORDER.filter(c => !own.includes(c));
   if (!left.length) { toast("Ya tienes todos los personajes"); return; }
   if (S.coins < MBOX_PRICE) { SND.bad(); toast(`Te faltan ${NUM.format(MBOX_PRICE - S.coins)} puntos`, "money", { have:S.coins, need:MBOX_PRICE }); return; }
@@ -7427,6 +7449,7 @@ function finishGame(kind){
   const first = ctx.kind !== "m" && (ctx.n == null || ctx.n === 1), base = basePoints(kind, p), mult = isGroup() || first ? 2 : 1, rr = rating(kind);
   const v0 = view; setTimeout(() => { if (view === v0) SND.react(rr); }, 380);
   p.pts[kind] = base; addCoins(base * mult); cheer(isGroup() ? 18 : 6);
+  logEv("juego_terminado", { juego:{ w:"palabra", s:"sopa", t:"trivia" }[kind] || kind, modo:ctx.kind, puntos:base * mult, resultado:rr });
   if (ctx.kind === "m") dayCounter("snacks").n++;
   if (isGroup()) { const gs = S.gscore[ctx.code] = S.gscore[ctx.code] || { total:0, days:{} }; if (gs.days[ctx.day] == null) { gs.days[ctx.day] = base; gs.total += base; } delete groupCache[ctx.code]; }
   let msg = "+"+(base*mult)+" puntos"+(mult > 1 ? (isGroup() ? " (×2 por jugar en grupo)" : " (×2 primera del día)") : "");
@@ -7740,6 +7763,7 @@ function renderSet(){
     <div class="money"><span class="small">Ingreso estimado por mes</span><br><b id="ownerTotal">${USD.format(ads+subs)}</b><div class="small muted" id="ownerSplit">Anuncios ${USD.format(ads)} · PREMIUM ${USD.format(subs)}</div></div>
     <p class="small muted" style="margin-top:8px">Los eCPM son de ejemplo. Cámbialos por los que te muestre AdMob cuando tengas tráfico real.</p></section>${DEV ? "" : "-->"}
   <section class="card"><div class="set-row"><span><b>Canjear código</b><br><span class="small muted">Puntos, ropa o personajes de regalo</span></span><button class="btn yellow" data-act="redeem">Canjear</button></div></section>
+  ${CFG.form ? `<section class="card"><div class="set-row"><span><b>Mandar opinión</b><br><span class="small muted">Un error, una idea o lo que te gusta</span></span><button class="btn green" data-act="feedback">Escribir</button></div></section>` : ""}
   <section class="card"><button class="btn block" data-act="reset" style="color:var(--r)">Borrar mi progreso</button></section>
   <p class="small muted" style="text-align:center;margin:4px 0 0">Versión ${APP_VER}</p>`;
 }
@@ -7812,6 +7836,8 @@ document.addEventListener("click", e => {
   else if (k === "home") setView("home", { day:today() });
   else if (k === "games") setView("games", { day:today() });
   else if (k === "settings") { moreTab = "set"; setView("more"); }
+  else if (k === "feedback") openFeedback();
+  else if (k === "fbtype") { fbType = v; document.querySelectorAll('[data-act^="fbtype:"]').forEach(b => b.setAttribute("aria-pressed", b.dataset.act === "fbtype:" + v)); }
   else if (k === "redeem") openRedeem();
   else if (k === "mbox") openMBox();
   else if (k === "need") { SND.bad(); toast(`Te faltan ${NUM.format(+v - S.coins)} puntos`, "money", { have:S.coins, need:+v }); }
@@ -7860,7 +7886,7 @@ document.addEventListener("click", e => {
   else if (k === "untry") { tryOn = null; render(false); }
   else if (k === "buy") {
     if (!tryOn) return; const it = itemOf(tryOn.cat, tryOn.key), price = priceOf(tryOn.cat, tryOn.key); if (typeof price !== "number" || S.coins < price) return;
-    SND.buy(); S.coins -= price;
+    SND.buy(); S.coins -= price; logEv("spend_virtual_currency", { item_name:tryOn.cat + ":" + tryOn.key, virtual_currency_name:"puntos", value:price });
     const give = (c, k) => { const o = S.owned[c] = S.owned[c] || []; if (!o.includes(k)) o.push(k); };
     if (tryOn.cat === "kit") kitParts(tryOn.key).forEach(([c, k]) => { if (!owns(c, k)) give(c, k); }); else give(tryOn.cat, tryOn.key);
     wear(tryOn.cat, tryOn.key); cheer(15);
@@ -7888,10 +7914,11 @@ document.addEventListener("submit", e => {
   if (f.id === "groupForm") { const name = f.querySelector("#gName").value.trim(); if (!name) return; createGroup(name, f.querySelector('input[name="gTheme"]:checked').value, f.querySelector('input[name="gGame"]:checked').value); }
   if (f.id === "joinForm") joinGroup(f.querySelector("#jCode").value);
   if (f.id === "redeemForm") redeemCode(f.querySelector("#rCode").value);
+  if (f.id === "fbForm") { const t = f.querySelector("#fbText").value.trim(); if (t.length < 3) { toast("Escribe un poquito más"); return; } sendFeedback(t); return; }
   if (f.id === "profileForm") {
     const name = f.querySelector("#pfName").value.trim(); if (!name) { toast("Pon un nombre o apodo"); return; }
     S.profile.name = name; S.profile.country = f.querySelector("#pfCountry").value;
-    const first = !S.profile.done; S.profile.done = true; save(); pushMember(); closeSheet(); render(false); if (first) { toast("¡Hola, "+name+"!"); afterOnboarding(); }
+    const first = !S.profile.done; S.profile.done = true; save(); pushMember(); closeSheet(); render(false); if (first) { toast("¡Hola, "+name+"!"); afterOnboarding(); logEv("sign_up", { pais:S.profile.country }); }
   }
 });
 document.addEventListener("change", e => {
