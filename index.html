@@ -733,6 +733,22 @@ p.report-line{text-decoration:none}
 .seg3 button{padding:8px 4px}
 .skin-note{margin:8px 0 0;font-size:.82em;font-weight:700;color:var(--muted);background:var(--surface-2);border:2px dashed rgba(11,15,36,.25);border-radius:12px;padding:7px 10px}
 @media (prefers-reduced-motion: reduce){#toast,.arc-live.bump,.fly-coin,.arc-cele.on,.pts-pop{animation:none}}
+/* ---- Niveles: premios cada 5 ---- */
+.lvl-list li{gap:8px;padding:6px 8px}
+.lvl-list li.lock{opacity:.8}
+.lvl-list .lv-n{font-family:var(--cartoon);min-width:30px;text-align:center;font-size:1.05em}
+.lv-th{width:46px;height:52px;flex:none;display:grid;place-items:center;border-radius:12px;background:var(--surface);border:2px solid var(--line);overflow:hidden}
+.lv-th svg{width:42px!important;height:auto!important;margin:0!important}
+.lvl-list li.lock .lv-th{filter:grayscale(.85) brightness(.9)}
+.lv-tx{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;text-align:left}
+.lv-tx b{line-height:1.15}
+.lv-tx small{display:flex;gap:5px;align-items:center;flex-wrap:wrap;font-size:.78em}
+.lv-tx .rar{font-size:.85em}
+.lv-lock{display:flex;flex-direction:column;align-items:flex-end;font-weight:800;font-size:.85em;color:var(--muted);white-space:nowrap}
+.lv-lock small{font-size:.8em;font-weight:700}
+.btn.sm{padding:7px 12px;font-size:.85em;min-height:0;flex:none}
+.lvl-list li svg.tito{margin:0}
+.lvl-big small:last-child{display:block;opacity:.7}
 
 </style>
 </head>
@@ -954,26 +970,26 @@ const KITS = {
 };
 const SHOP = {
   skin:   { l:"Cáscara", g:"tito", items:[["hueso","Blanco hueso",0,"Lisos"],["celeste","Celeste",300],["menta","Verde menta",300],["amarillo","Amarillo pollito",300],["durazno","Durazno",300],["rosa","Rosa",400],["gris","Gris perla",400],["turquesa","Turquesa",500],["naranja","Naranja",500],["verde","Verde loro",500],["azul","Azul",600],["rojo","Rojo tomate",600],["lila","Lila",600],["chocolate","Chocolate",900],
-    ["lunares","Lunares",1200,"Con dibujo"],["vaca","Vaca",1400],["camuflaje","Camuflaje",1500],["dalmata","Dálmata",1600],["papiro","Papiro antiguo",1800],["cebra","Cebra",2000],["marmol","Mármol",2400],["atardecer","Atardecer",2800],["pelota","Pelota de fútbol",3000],["arcoiris","Arcoíris",3500],["galaxia","Galaxia",4500],["rotito","Rotito",4800],["plateada","Plateada","L10"],["negro","Negro",12000],["dorado","Oro pulido","P"]] },
-  hat:    { l:"Gorros", g:"tito", items:[["none","Nada",0,"Gorros"],["vincha","Vincha de tenis",250],["gorra","Gorra para atrás",400],["hincha","Gorro de hincha",500],["boina","Boina",600],["laureles","Corona de laureles",700],["cientifico","Pelo de científico",900],["galera","Galera",1000],["pirata","Sombrero pirata",1100],["gaucho","Sombrero de gaucho",1200],["vikingo","Casco vikingo",1500],["peluca","Peluca barroca",1600],["bicornio","Bicornio con escarapela",1800],["gladiador","Casco de gladiador",2000],["faraon","Tocado de faraón",2600],["astronauta","Casco de astronauta",3500],["corona","Corona de rockstar","P"],["laurelesoro","Laureles dorados","L15"],
+    ["lunares","Lunares",1200,"Con dibujo"],["vaca","Vaca",1400],["camuflaje","Camuflaje",1500],["dalmata","Dálmata",1600],["papiro","Papiro antiguo",1800],["cebra","Cebra",2000],["marmol","Mármol",2400],["atardecer","Atardecer",2800],["pelota","Pelota de fútbol",3000],["arcoiris","Arcoíris",3500],["galaxia","Galaxia",4500],["rotito","Rotito",4800],["negro","Negro",12000],["dorado","Oro pulido","P"],["plateada","Plateada","L15","Premios de nivel"],["rajada","Rajaduras doradas","L30"],["cristal","Cristal","L65"],["diamante","Diamante","L90"]] },
+  hat:    { l:"Gorros", g:"tito", items:[["none","Nada",0,"Gorros"],["vincha","Vincha de tenis",250],["gorra","Gorra para atrás",400],["hincha","Gorro de hincha",500],["boina","Boina",600],["laureles","Corona de laureles",700],["cientifico","Pelo de científico",900],["galera","Galera",1000],["pirata","Sombrero pirata",1100],["gaucho","Sombrero de gaucho",1200],["vikingo","Casco vikingo",1500],["peluca","Peluca barroca",1600],["bicornio","Bicornio con escarapela",1800],["gladiador","Casco de gladiador",2000],["faraon","Tocado de faraón",2600],["astronauta","Casco de astronauta",3500],["corona","Corona de rockstar","P"],
     ["murga","Galera de murga",1300,"Carnaval"],["bufon","Gorro de bufón",1500],["penacho","Penacho de plumas",2200],
-    ["vincharoja","Vincha de artes marciales",600,"De disfraces"],["ninja","Capucha ninja",1200],["mago","Sombrero de mago",1500],["yelmo","Yelmo de caballero",1800],["cascogal","Casco galáctico",2000],["dragon","Cuernos de dragón",2200]].concat(teamItems("pil","pil_", n => "Piluso "+n)) },
+    ["vincharoja","Vincha de artes marciales",600,"De disfraces"],["ninja","Capucha ninja",1200],["mago","Sombrero de mago",1500],["yelmo","Yelmo de caballero",1800],["cascogal","Casco galáctico",2000],["dragon","Cuernos de dragón",2200]].concat(teamItems("pil","pil_", n => "Piluso "+n), [["laurelesoro","Laureles dorados","L20","Premios de nivel"],["aureola","Aureola","L25"],["coronareal","Corona real","L50"],["fuego","Pelo de fuego","L80"],["leyenda","Corona de leyenda","L100"]]) },
   clothes:{ l:"Camisetas y ropa", g:"tito", items:[["none","Nada",0,"Ropa"],["bufanda","Bufanda",350],["musculosa","Camiseta sin mangas celeste",300],["buzo","Sudadera",500],["esmoquin","Esmoquin",1500],["esmoquinb","Esmoquin blanco",1600]].concat(teamItems("shirt","", n => n), [
-    ["toga","Toga romana",1400,"Disfraces"],["karate","Traje de artes marciales",1400],["ninja","Traje ninja",1500],["pirata","Camisa pirata",1500],["vikingo","Ropa vikinga",1800],["faraon","Ropa de faraón",1800],["gladiador","Coraza de gladiador",2000],["mago","Túnica de mago",2000],["heroe","Traje de superhéroe",2200],["trajegal","Traje galáctico",2200],["armadura","Armadura medieval",2800],["astro","Traje espacial",2800],["dino","Disfraz de dino",3000],["dragon","Disfraz de dragón",3200]]) },
+    ["toga","Toga romana",1400,"Disfraces"],["karate","Traje de artes marciales",1400],["ninja","Traje ninja",1500],["pirata","Camisa pirata",1500],["vikingo","Ropa vikinga",1800],["faraon","Ropa de faraón",1800],["gladiador","Coraza de gladiador",2000],["mago","Túnica de mago",2000],["heroe","Traje de superhéroe",2200],["trajegal","Traje galáctico",2200],["armadura","Armadura medieval",2800],["astro","Traje espacial",2800],["dino","Disfraz de dino",3000],["dragon","Disfraz de dragón",3200],["capareal","Capa real","L35","Premios de nivel"],["sacooro","Saco dorado","L60"],["capagal","Capa galáctica","L85"]]) },
   kit:    { l:"Disfraces", g:"tito", items:[["romano","Emperador romano",1900],["pirata","Pirata",2600],["marcial","Artista marcial",2600],["ninja","Ninja",2700],["heroe","Superhéroe",3000],["vikingo","Vikingo",3000],["faraon","Faraón",3500],["gladiador","Gladiador",3200],["mago","Mago",3400],["dragon","Dragón",3600],["galactico","Explorador galáctico",3800],["caballero","Caballero",4000],["astronauta","Astronauta",5000]] },
   dance:  { l:"Bailes", g:"tito", items:[["funk","Funk brasilero",0],["cumbia","Cumbia",600],["robot","Robot",900],["malambo","Malambo",1200],["avioncito","Avioncito de gol",1500],["trompo","Trompo",2200],["campeon","Festejo de campeón","P"]] },
-  glasses:{ l:"Lentes", g:"tito", items:[["none","Nada",0],["redondos","Redondos",300],["sol","De sol",700],["antifaz","Antifaz de héroe",800],["estrellas","Lentes de estrella","L6"],["monoculo","Monóculo",1000],["vr","Realidad virtual",2200]] },
+  glasses:{ l:"Lentes", g:"tito", items:[["none","Nada",0],["redondos","Redondos",300],["sol","De sol",700],["antifaz","Antifaz de héroe",800],["monoculo","Monóculo",1000],["vr","Realidad virtual",2200],["estrellas","Lentes de estrella","L10","Premios de nivel"],["diamante","Lentes de diamante","L45"]] },
   feet:   { l:"Calzado", g:"tito", items:[["none","Patitas",0,"Calzado"],["ojotas","Chanclas",250],["alpargatas","Alpargatas",350],["zapatillas","Zapatillas",400],["pantuflas","Pantuflas",500],["lluvia","Botas de lluvia",600],["charol","Zapatos de charol",700],["sandalias","Sandalias romanas",800],["aletas","Patas de rana",900],["potro","Botas de gaucho",1000],["botines","Botines",1200],["patines","Patines",1600],["dorados","Botines dorados","P"],
-    ["vendas","Vendas de luchador",400,"De disfraces"],["tabi","Tabi ninja",500],["botaspirata","Botas de pirata",800],["botaspiel","Botas de piel",800],["curvos","Zapatos de mago",900],["heroe","Botas de héroe",900],["botasgal","Botas galácticas",1000],["garras","Garras de dragón",1100],["botasmetal","Botas de armadura",1200],["botasastro","Botas espaciales",1400]] },
-  float:  { l:"Flotantes", g:"tito", items:[["none","Nada",0],["estrella","Estrellita","L3"],["mate","Mate",250],["silbato","Silbato",300],["libro","Libro antiguo",500],["banderin","Banderín",500],["pelota","Pelota",600],["guantes","Guantes de arquero",700],["varita","Varita mágica",800],["probeta","Probeta",900],["pelotaretro","Pelota de cuero antigua",900],["reloj","Reloj de arena",1000],["bombo","Bombo de la hinchada",1000],["pergamino","Pergamino",1100],["brujula","Brújula",1200],["joystick","Joystick",1300],["esfera","Esfera de energía",1400],["planeta","Planetita",1600],["medalla","Medalla",2500],["copa","Copa",3000],["copamundo","Copa del mundo",5000],["copaoro","Copa dorada","P"]] },
+    ["vendas","Vendas de luchador",400,"De disfraces"],["tabi","Tabi ninja",500],["botaspirata","Botas de pirata",800],["botaspiel","Botas de piel",800],["curvos","Zapatos de mago",900],["heroe","Botas de héroe",900],["botasgal","Botas galácticas",1000],["garras","Garras de dragón",1100],["botasmetal","Botas de armadura",1200],["botasastro","Botas espaciales",1400],["alas","Zapatillas con alas","L40","Premios de nivel"],["cohete","Botas cohete","L70"]] },
+  float:  { l:"Flotantes", g:"tito", items:[["none","Nada",0],["mate","Mate",250],["silbato","Silbato",300],["libro","Libro antiguo",500],["banderin","Banderín",500],["pelota","Pelota",600],["guantes","Guantes de arquero",700],["varita","Varita mágica",800],["probeta","Probeta",900],["pelotaretro","Pelota de cuero antigua",900],["reloj","Reloj de arena",1000],["bombo","Bombo de la hinchada",1000],["pergamino","Pergamino",1100],["brujula","Brújula",1200],["joystick","Joystick",1300],["esfera","Esfera de energía",1400],["planeta","Planetita",1600],["medalla","Medalla",2500],["copa","Copa",3000],["copamundo","Copa del mundo",5000],["copaoro","Copa dorada","P"],["estrella","Estrellita","L5","Premios de nivel"],["nube","Nubecita","L55"],["fenix","Fénix","L75"],["orbita","Órbita de estrellas","L95"]] },
   wall:   { l:"Pared", g:"casa", items:[["lisa","Lisa",0],["celeste","Celeste",200],["rayas","Rayada",400],["ladrillo","Ladrillos",900],["noche","Noche estrellada",1800],["tribuna","Tribuna",2500],["oro","Dorada","P"]] },
   floor:  { l:"Piso", g:"casa", items:[["gris","Cemento",0],["madera","Madera",300],["damero","Damero",700],["cesped","Césped de cancha",1500],["alfombra","Alfombra roja",2200]] },
   frame:  { l:"Cuadros", g:"casa", items:[["none","Nada",0],["argentina","Bandera argentina",300],["mapa","Mapa del mundo",600],["poster","Póster de fútbol",800],["retrato","Retrato antiguo",1500]] },
   furni:  { l:"Muebles", g:"casa", items:[["none","Nada",0],["sillon","Sillón",500],["biblio","Biblioteca",900],["tele","Tele",1200],["arco","Arco de fútbol",2000]] },
   deco:   { l:"Objetos", g:"casa", items:[["none","Nada",0],["planta","Planta",200],["lampara","Lámpara",350],["globo","Globo terráqueo",700],["trofeo","Trofeo",1600],["trofeooro","Trofeo de oro","P"]] }
 };
-const RAR = { c:["Común","var(--g)"], r:["Rara","var(--b)"], e:["Épica","var(--r)"], l:["Legendaria","#0B0F24"], p:["PREMIUM","linear-gradient(180deg,#FFD34D,#C98F00)"], n:["Por nivel","#7A4FD9"] };
-const rarityOf = price => typeof price === "string" && price[0] === "L" ? "n" : price === "P" ? "p" : price < 600 ? "c" : price < 1500 ? "r" : price < 5000 ? "e" : "l";
+const RAR = { c:["Común","var(--g)"], r:["Rara","var(--b)"], e:["Épica","var(--r)"], l:["Legendaria","#0B0F24"], p:["PREMIUM","linear-gradient(180deg,#FFD34D,#C98F00)"], n:["Por nivel","#7A4FD9"], n1:["Rara","var(--b)"], n2:["Épica","var(--r)"], n3:["Legendaria","#0B0F24"], n4:["Mítica","linear-gradient(90deg,#7A4FD9,#FF5FA2)"] };
+const rarityOf = price => typeof price === "string" && price[0] === "L" ? (+price.slice(1) <= 20 ? "n1" : +price.slice(1) <= 50 ? "n2" : +price.slice(1) <= 80 ? "n3" : "n4") : price === "P" ? "p" : price < 600 ? "c" : price < 1500 ? "r" : price < 5000 ? "e" : "l";
 
 /* ---------- Personajes: cambian el cuerpo, comparten ropa, gorros, lentes, calzado, flotantes y bailes ---------- */
 const MBOX_PRICE = 12000;
@@ -987,13 +1003,13 @@ const CHARS = {
       <rect x="10" y="10" width="104" height="18" fill="#D5DAE6"/><rect x="10" y="10" width="104" height="5" fill="#FFFFFF" opacity=".7"/><path d="M10 28 H114" stroke="${IK}" stroke-width="3"/>${[24,36,48,60,72,84,96].map(x => `<circle cx="${x}" cy="21" r="1.6" fill="#8A93A6"/>`).join("")}`,
     over:() => `<path d="M68 18 L90 -8" stroke="${IK}" stroke-width="7.5" stroke-linecap="round"/><path d="M68 18 L90 -8" stroke="#D5DAE6" stroke-width="4" stroke-linecap="round"/><path d="M71 13 L86 -4" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><rect x="85" y="-13" width="11" height="6" rx="2.5" transform="rotate(-50 90 -10)" fill="#C9AE5A" stroke="${IK}" stroke-width="2"/>
       <ellipse cx="60" cy="17" rx="22" ry="5.5" fill="#6F8F2E" stroke="${IK}" stroke-width="2.8"/><path d="M46 17 l2 -1 M52 15 l2 1 M58 18 l2 -1 M66 16 l2 1 M72 18 l2 -1" stroke="#A9C45A" stroke-width="1.6" stroke-linecap="round"/>` },
-  palti:{ n:"Palti", d:"Una palta cremosa con un carozo de oro.",
+  palti:{ n:"Palti", d:"Una palta cremosa, lista para la tostada.",
     path:"M60 12 C78 12 86 34 92 52 C102 76 106 98 100 112 C94 124 80 128 60 128 C40 128 26 124 20 112 C14 98 18 76 28 52 C34 34 42 12 60 12 Z",
     defs:id => `<radialGradient id="${id}ch" cx=".5" cy=".55" r=".55"><stop offset="0" stop-color="#F3F7B8"/><stop offset=".75" stop-color="#C9E07A"/><stop offset="1" stop-color="#A9CC5A"/></radialGradient>`,
     fill:() => "#3E7A2E",
-    decor:id => `<path d="M60 12 C78 12 86 34 92 52 C102 76 106 98 100 112 C94 124 80 128 60 128 C40 128 26 124 20 112 C14 98 18 76 28 52 C34 34 42 12 60 12 Z" transform="translate(60 74) scale(.86) translate(-60 -74)" fill="url(#${id}ch)"/>
-      <circle cx="60" cy="111" r="13" fill="#9A6234" stroke="${IK}" stroke-width="2.6"/><ellipse cx="55" cy="106" rx="4" ry="2.6" fill="#C98B55"/>`,
-    over:() => `<path d="M60 12 q2 -8 8 -10" stroke="#5A3A1E" stroke-width="3.5" fill="none" stroke-linecap="round"/>` },
+    decor:id => `<path d="M60 12 C78 12 86 34 92 52 C102 76 106 98 100 112 C94 124 80 128 60 128 C40 128 26 124 20 112 C14 98 18 76 28 52 C34 34 42 12 60 12 Z" transform="translate(60 76) scale(.84) translate(-60 -76)" fill="url(#${id}ch)"/>
+      <path d="M44 34 Q50 24 58 22" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".55"/>`,
+    over:(id, t, band) => band ? `<path d="M60 12 q2 -8 8 -10" stroke="#5A3A1E" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M66 4 q6 -6 12 -2 q-6 6 -12 2z" fill="#6FB04A" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/>` : "" },
   carpi:{ n:"Carpi", d:"Un carpincho tranqui que no se estresa por nada.",
     path:"M60 18 C92 18 106 46 106 80 C106 114 88 128 60 128 C32 128 14 114 14 80 C14 46 28 18 60 18 Z",
     fill:() => "#B07A4A",
@@ -1004,8 +1020,9 @@ const CHARS = {
     path:"M60 10 C88 10 102 54 102 84 C102 112 84 128 60 128 C36 128 18 112 18 84 C18 54 32 10 60 10 Z",
     fill:() => "#2A2F45",
     behind:() => `<ellipse cx="19" cy="94" rx="8" ry="20" transform="rotate(22 19 94)" fill="#2A2F45" stroke="${IK}" stroke-width="3"/><ellipse cx="101" cy="94" rx="8" ry="20" transform="rotate(-22 101 94)" fill="#2A2F45" stroke="${IK}" stroke-width="3"/>`,
-    decor:() => `<path d="M60 52 C64 36 94 38 92 62 C98 88 92 124 60 126 C28 124 22 88 28 62 C26 38 56 36 60 52 Z" fill="#F6F6F2"/><path d="M30 22 q10 -6 20 -4" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".25"/>`,
-    over:() => `<path d="M53 77 L67 77 L60 86 Z" fill="#F4A300" stroke="${IK}" stroke-width="2.2" stroke-linejoin="round"/>` },
+    decor:() => `<path d="M60 46 C64 30 94 32 92 56 C98 84 92 124 60 126 C28 124 22 84 28 56 C26 32 56 30 60 46 Z" fill="#F6F6F2"/><path d="M30 22 q10 -6 20 -4" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".25"/>`,
+    faceDy:-6,
+    over:() => `<path d="M53 71 L67 71 L60 80 Z" fill="#F4A300" stroke="${IK}" stroke-width="2.2" stroke-linejoin="round"/>` },
   pelotita:{ n:"Pelotita", d:"La pelota del potrero, siempre con ganas de jugar.",
     path:"M60 18 A54 54 0 1 1 59.99 18 Z",
     fill:() => "#FFFFFF",
@@ -1022,13 +1039,14 @@ const CHARS = {
     defs:id => `<linearGradient id="${id}ch" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F4F8"/><stop offset=".55" stop-color="#C3CAD8"/><stop offset="1" stop-color="#8E97AB"/></linearGradient>`,
     fill:id => `url(#${id}ch)`,
     behind:() => `<rect x="7" y="58" width="12" height="26" rx="4" fill="#7D8597" stroke="${IK}" stroke-width="3"/><rect x="101" y="58" width="12" height="26" rx="4" fill="#7D8597" stroke="${IK}" stroke-width="3"/>`,
-    decor:() => `<rect x="28" y="50" width="64" height="48" rx="14" fill="#1E2A4A" stroke="${IK}" stroke-width="3"/><rect x="34" y="55" width="22" height="4" rx="2" fill="#5CE1E6" opacity=".35"/>${[[26,24],[94,24],[26,120],[94,120]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#7D8597" stroke="${IK}" stroke-width="1.2"/>`).join("")}
-      <rect x="40" y="106" width="40" height="14" rx="4" fill="#5B6378" stroke="${IK}" stroke-width="2"/><circle cx="50" cy="113" r="3" fill="#EE3B2B"/><circle cx="60" cy="113" r="3" fill="#FFC425"/><circle cx="70" cy="113" r="3" fill="#22A447"/>`,
-    over:() => `<path d="M60 14 V0" stroke="${IK}" stroke-width="3.5"/><circle cx="60" cy="-3" r="7" fill="rgba(238,59,43,.25)"/><circle cx="60" cy="-3" r="4.6" fill="#EE3B2B" stroke="${IK}" stroke-width="2.4"/>` },
+    decor:() => `<rect x="28" y="53" width="64" height="47" rx="14" fill="#1E2A4A" stroke="${IK}" stroke-width="3"/><rect x="34" y="58" width="22" height="4" rx="2" fill="#5CE1E6" opacity=".35"/>${[[26,24],[94,24],[26,120],[94,120]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#7D8597" stroke="${IK}" stroke-width="1.2"/>`).join("")}
+      <rect x="40" y="107" width="40" height="13" rx="4" fill="#5B6378" stroke="${IK}" stroke-width="2"/><circle cx="50" cy="113.5" r="3" fill="#EE3B2B"/><circle cx="60" cy="113.5" r="3" fill="#FFC425"/><circle cx="70" cy="113.5" r="3" fill="#22A447"/>`,
+    faceDy:3,
+    over:(id, t, band) => band ? `<path d="M60 14 V0" stroke="${IK}" stroke-width="3.5"/><circle cx="60" cy="-3" r="7" fill="rgba(238,59,43,.25)"/><circle cx="60" cy="-3" r="4.6" fill="#EE3B2B" stroke="${IK}" stroke-width="2.4"/>` : "" },
   dinito:{ n:"Dinito", d:"Un dinosaurio bebé que todavía tiene la cáscara puesta.",
     path:"M60 10 C88 10 102 54 102 84 C102 112 84 128 60 128 C36 128 18 112 18 84 C18 54 32 10 60 10 Z",
     fill:() => "#5CC46A",
-    behind:() => `<path d="M40 22 L46 4 L54 16 L60 -3 L66 16 L74 4 L80 22 Z" fill="#FFB23E" stroke="${IK}" stroke-width="3" stroke-linejoin="round"/>`,
+    behind:(id, t, band) => band ? `<path d="M40 22 L46 4 L54 16 L60 -3 L66 16 L74 4 L80 22 Z" fill="#FFB23E" stroke="${IK}" stroke-width="3" stroke-linejoin="round"/>` : "",
     decor:() => `<circle cx="28" cy="50" r="5" fill="#46A956"/><circle cx="92" cy="46" r="4" fill="#46A956"/><circle cx="88" cy="58" r="2.6" fill="#46A956"/><circle cx="34" cy="38" r="2.6" fill="#46A956"/>
       <path d="M10 100 L22 92 L32 101 L44 90 L56 101 L68 90 L80 101 L92 92 L104 100 L114 96 V140 H10 Z" fill="#F7F1E3" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="34" cy="116" r="3" fill="#E8DCC2"/><circle cx="82" cy="112" r="2.4" fill="#E8DCC2"/>`,
     over:() => `<circle cx="55" cy="80" r="1.8" fill="#2E7A3A"/><circle cx="65" cy="80" r="1.8" fill="#2E7A3A"/>` }
@@ -6163,11 +6181,12 @@ function shirtSVG(j, px){
 
 /* ---------- Tito: un huevo con pies, ojos grandes y objetos flotando al costado ---------- */
 const EGG = "M60 10 C88 10 102 54 102 84 C102 112 84 128 60 128 C36 128 18 112 18 84 C18 54 32 10 60 10 Z";
-const SKIN = { hueso:"#F7F1E3", celeste:"#BFE6FA", menta:"#BDEFD0", rosa:"#FFD3E0", lila:"#DCCBFF", camuflaje:"#7D8C50", papiro:"#E9D7A6", pelota:"#FFFFFF", galaxia:"#2B1D5C", negro:"#24252D", dorado:"#F4C440",
+const SKIN = { hueso:"#F7F1E3", rajada:"#F7F1E3", celeste:"#BFE6FA", menta:"#BDEFD0", rosa:"#FFD3E0", lila:"#DCCBFF", camuflaje:"#7D8C50", papiro:"#E9D7A6", pelota:"#FFFFFF", galaxia:"#2B1D5C", negro:"#24252D", dorado:"#F4C440",
   amarillo:"#FFE680", durazno:"#FFD2B3", gris:"#D3D6DF", turquesa:"#8FE3D8", naranja:"#FFB877", verde:"#A3DE7F", azul:"#9DBBFF", rojo:"#FF8F82", chocolate:"#6E4428",
   lunares:"#FFF4EE", rotito:"#F7F1E3", vaca:"#FFFFFF", dalmata:"#FFFFFF", cebra:"#FFFFFF", marmol:"#F2F1EE" };
-const GRAD_SKINS = ["dorado","galaxia","arcoiris","atardecer","plateada"], DARK_SKINS = ["negro","galaxia","chocolate"];
-const levelOf = earned => 1 + Math.floor(Math.sqrt(Math.max(0, earned || 0) / 100));
+const GRAD_SKINS = ["dorado","galaxia","arcoiris","atardecer","plateada","cristal","diamante"], DARK_SKINS = ["negro","galaxia","chocolate"];
+const LV_MAX = 100;
+const levelOf = earned => Math.min(LV_MAX, 1 + Math.floor(Math.sqrt(Math.max(0, earned || 0) / 20)));
 let svgN = 0;
 function titoSVG(t, px, o){
   o = o || {}; t = Object.assign({ skin:"hueso", hat:"none", clothes:"none", glasses:"none", float:"none", feet:"none" }, t || {});
@@ -6180,6 +6199,8 @@ function titoSVG(t, px, o){
   if (t.skin === "galaxia") s += `<radialGradient id="${id}g" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#6B4FD8"/><stop offset=".6" stop-color="#2B1D5C"/><stop offset="1" stop-color="#120B2E"/></radialGradient>`;
   if (t.skin === "arcoiris") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1">${["#FF9A9A","#FFC48A","#FFF08A","#A8EBA0","#9CC8FF","#C9A8FF"].map((c,i) => `<stop offset="${i/5}" stop-color="${c}"/>`).join("")}</linearGradient>`;
   if (t.skin === "plateada") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#C9CED8"/><stop offset=".7" stop-color="#E9ECF2"/><stop offset="1" stop-color="#9AA1B0"/></linearGradient>`;
+  if (t.skin === "cristal") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4FDFF"/><stop offset=".45" stop-color="#C6EEFB"/><stop offset=".75" stop-color="#E6F9FF"/><stop offset="1" stop-color="#93D3EE"/></linearGradient>`;
+  if (t.skin === "diamante") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".3" stop-color="#D9F4FF"/><stop offset=".55" stop-color="#EBDDFF"/><stop offset=".8" stop-color="#C8F0FF"/><stop offset="1" stop-color="#A9B8F5"/></linearGradient>`;
   if (t.skin === "atardecer") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD27A"/><stop offset=".45" stop-color="#FF8A6B"/><stop offset=".8" stop-color="#E0609E"/><stop offset="1" stop-color="#8A5AD8"/></linearGradient>`;
   s += `<linearGradient id="${id}sh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset=".28" stop-color="#fff" stop-opacity="0"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>`;
   s += `</defs><ellipse cx="60" cy="137" rx="30" ry="4" fill="rgba(0,0,0,.18)"/>`;
@@ -6210,17 +6231,21 @@ function titoSVG(t, px, o){
       botasmetal:shaft("#A7B0C0") + shoe("#A7B0C0", "#6E788C") + `<path d="M${cx-11} 127 h22 M${cx-9} 120 h18" stroke="#6E788C" stroke-width="1.8"/><circle cx="${cx}" cy="116" r="1.6" fill="#6E788C"/>`,
       botasastro:shaft("#F2F4F8", "#9AA3B5") + `<path d="M${cx-15} 134 Q${cx-15} 121 ${cx} 122 Q${cx+15} 121 ${cx+15} 134 Z" fill="#F2F4F8" stroke="${K}" stroke-width="3"/><rect x="${cx-15.5}" y="131" width="31" height="6" rx="2.5" fill="#9AA3B5" stroke="${K}" stroke-width="2.4"/>`
     };
+    const sd = cx < 60 ? -1 : 1;
+    FT.alas = shoe("#FFFFFF", "#5CE1E6") + `<path d="M${cx-6} 127 h12" stroke="#5CE1E6" stroke-width="2.4" stroke-linecap="round"/><path d="M${cx+sd*11} 128 q${sd*6} -12 ${sd*16} -10 q${-sd*3} 3 ${-sd*3} 5 q${sd*4} -1 ${sd*6} 2 q${-sd*4} 3 ${-sd*6} 3 q${sd*2} 2 ${sd*2} 4 q${-sd*8} 1 ${-sd*15} -4 Z" fill="#fff" stroke="${K}" stroke-width="2" stroke-linejoin="round"/>`;
+    FT.cohete = `<path d="M${cx-7} 136 Q${cx} 150 ${cx+7} 136 Z" fill="#FF7A1A"/><path d="M${cx-3.5} 136 Q${cx} 145 ${cx+3.5} 136 Z" fill="#FFE27A"/>` + shaft("#D5DAE6", "#EE3B2B") + shoe("#D5DAE6", "#5B6378") + `<circle cx="${cx}" cy="120" r="2.4" fill="#5CE1E6" stroke="${K}" stroke-width="1.4"/>`;
     if (FT[t.feet]) return FT[t.feet];
     return `<ellipse cx="${cx}" cy="131" rx="11" ry="6" fill="#F2A33A" stroke="${K}" stroke-width="3"/>`;
   };
   s += `<g class="t-feet"><g class="t-foot t-foot-l">${foot(46)}</g><g class="t-foot t-foot-r">${foot(74)}</g></g><g class="t-body">`;
-  if (lvl >= 20) s += `<ellipse cx="60" cy="-3" rx="20" ry="4.5" fill="none" stroke="#FFE27A" stroke-width="4"/>`;
+  if (t.clothes === "capareal" || t.clothes === "capagal") { const g = t.clothes === "capagal"; s += `<path d="M28 88 Q4 110 8 138 L30 128 Z M92 88 Q116 110 112 138 L90 128 Z" fill="${g ? "#2B1D5C" : "#B3122E"}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M24 96 Q10 114 12 134 M96 96 Q110 114 108 134" stroke="${g ? "#7FD8FF" : "#F4C440"}" stroke-width="2.5" fill="none" opacity=".9"/>` + (g ? [[14,120],[18,104],[104,110],[108,128]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.3" fill="#fff"/>`).join("") : ""); }
   if (t.clothes === "dino") s += `<path d="M32 30 L38 2 L49 14 L60 -7 L71 14 L82 2 L88 30 Z" fill="#4CB85C" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M22 110 q-16 4 -18 -10 q8 6 18 2z" fill="#4CB85C" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`;
   if (t.clothes === "dragon") s += `<path d="M26 66 Q2 52 2 26 Q10 38 17 36 Q14 48 22 52 Q16 58 28 60 Z M94 66 Q118 52 118 26 Q110 38 103 36 Q106 48 98 52 Q104 58 92 60 Z" fill="#2E8A3D" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M6 32 L22 58 M114 32 L98 58" stroke="#1E6A2C" stroke-width="2"/><path d="M96 116 q20 4 24 -12 q-2 -6 -8 -4 q0 10 -16 8z" fill="#4CB85C" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M112 98 l6 -6 l1 8 z" fill="#F3E08A" stroke="${K}" stroke-width="2" stroke-linejoin="round"/>`;
   if (t.clothes === "heroe") s += `<path d="M26 92 Q6 112 10 136 L26 126 Z M94 92 Q114 112 110 136 L94 126 Z" fill="#D8232A" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`;
   if (t.hat === "faraon") s += `<path d="M24 36 L14 96 L32 96 L36 50 Z M96 36 L106 96 L88 96 L84 50 Z" fill="#F4C440" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M18 60 h14 M16 74 h15 M88 60 h14 M89 74 h15" stroke="#1F4FA8" stroke-width="5"/>`;
   const fill = CH ? CH.fill(id) : GRAD_SKINS.includes(t.skin) ? `url(#${id}g)` : (SKIN[t.skin] || SKIN.hueso);
-  if (CH && CH.behind) s += CH.behind(id);
+  const bandHat = ["none","vincha","vincharoja","aureola"].includes(t.hat);
+  if (CH && CH.behind) s += CH.behind(id, t, bandHat);
   s += `<path d="${BODY}" fill="${fill}"/><g clip-path="url(#${id}c)">`;
   if (CH && CH.decor) s += CH.decor(id);
   if (t.skin === "camuflaje") s += `<path d="M20 40 q14 -10 26 0 q-6 14 -26 8z M70 30 q18 -6 28 8 q-14 8 -28 -8z M30 92 q16 -12 30 2 q-12 14 -30 -2z M74 80 q14 -4 26 10 q-12 10 -26 -10z" fill="#566634"/><path d="M50 58 q12 -6 22 4 q-10 8 -22 -4z M24 70 q8 -4 12 6 q-8 4 -12 -6z M80 112 q10 -6 18 2 q-8 6 -18 -2z" fill="#B3B77A"/>`;
@@ -6235,9 +6260,15 @@ function titoSVG(t, px, o){
   if (t.skin === "dalmata") s += [[30,32,3],[50,22,2.5],[74,30,3.5],[90,48,2.5],[24,58,3],[44,50,2],[66,46,2.8],[96,72,3],[22,90,2.5],[38,106,3.2],[62,112,2.4],[84,104,3.4],[50,126,2.2],[76,124,2.6],[100,94,2]].map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#24252D"/>`).join("");
   if (t.skin === "cebra") s += `<path d="M18 30 q22 6 40 -4 M62 18 q16 8 36 2 M14 52 q24 8 34 -2 M70 44 q14 8 32 0 M16 104 q22 -6 38 4 M66 104 q16 -8 36 0 M28 120 q14 -4 26 4 M68 122 q12 -6 24 0 M18 78 q8 2 14 -2 M92 82 q6 2 12 -2" stroke="#24252D" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;
   if (t.skin === "marmol") s += `<path d="M20 40 q20 10 30 30 q8 16 30 20 M70 14 q-6 20 10 36 q14 12 12 30 M24 100 q24 -6 40 10 q10 10 24 8" stroke="#B9B6C4" stroke-width="1.6" fill="none"/><path d="M40 60 q8 4 10 12 M86 70 q-6 8 -4 18" stroke="#D2CFDA" stroke-width="1" fill="none"/>`;
+  if (t.skin === "rajada") s += ["M76 26 l-5 7 l6 4 l-4 8","M34 50 l6 4 l-3 7 l6 4","M88 98 l-6 3 l3 6 l-5 5"].map(d => `<path d="${d}" stroke="#FFE27A" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="${d}" stroke="${K}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`).join("");
+  if (t.skin === "cristal") s += `<path d="M18 50 L44 28 L60 10 M44 28 L50 62 L18 84 M50 62 L86 44 L102 70 M86 44 L76 14 M50 62 L62 100 L20 108 M62 100 L102 92 M62 100 L56 130" stroke="#fff" stroke-width="2" fill="none" opacity=".75"/><path d="M30 34 q8 -10 18 -12" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"/>`;
+  if (t.skin === "diamante") s += `<path d="M60 10 L40 40 L60 52 L80 40 Z M40 40 L18 70 L44 74 L60 52 M80 40 L102 70 L76 74 L60 52 M44 74 L60 104 L76 74 M18 70 L30 110 L60 104 L90 110 L102 70 M30 110 L60 128 L90 110" stroke="#fff" stroke-width="1.8" fill="rgba(255,255,255,.12)" stroke-linejoin="round" opacity=".85"/>` + [[34,30],[86,58],[28,92],[92,100]].map(([x,y]) => `<path d="M${x} ${y-5} L${x+1.4} ${y-1.4} L${x+5} ${y} L${x+1.4} ${y+1.4} L${x} ${y+5} L${x-1.4} ${y+1.4} L${x-5} ${y} L${x-1.4} ${y-1.4} Z" fill="#fff"/>`).join("");
   if (t.skin === "galaxia") s += [[34,34],[80,30],[90,60],[28,80],[70,110],[50,24],[96,96],[40,104]].map(([x,y],i) => `<circle cx="${x}" cy="${y}" r="${i%3?1.4:2.2}" fill="#fff" opacity=".9"/>`).join("");
   if (KIT[t.clothes]) s += shirtOnTito(t.clothes, id);
   const CL = {
+    capareal:`<rect x="10" y="90" width="104" height="48" fill="#B3122E"/><rect x="10" y="90" width="104" height="48" fill="url(#${id}sh)"/><path d="M60 98 V138" stroke="#F4C440" stroke-width="5"/><path d="M10 86 Q60 104 114 86 L114 99 Q60 117 10 99 Z" fill="#FBF8F0" stroke="${K}" stroke-width="2.4"/>` + [22,36,50,70,84,98].map((x, i) => `<path d="M${x} ${96 + (i === 2 || i === 3 ? 6 : i === 1 || i === 4 ? 4 : 1)} v3" stroke="${K}" stroke-width="2.4" stroke-linecap="round"/>`).join("") + `<circle cx="60" cy="106" r="5.5" fill="#F4C440" stroke="${K}" stroke-width="2.2"/><circle cx="60" cy="106" r="2.2" fill="#EE3B2B"/>`,
+    sacooro:`<rect x="10" y="90" width="104" height="48" fill="#E6B422"/><rect x="10" y="90" width="104" height="48" fill="url(#${id}sh)"/>` + [[22,104],[30,122],[88,104],[98,124],[24,132],[94,96],[36,98],[84,128]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="#FFF3B0"/>`).join("") + `<path d="M46 90 L60 120 L74 90 Z" fill="#fff"/><path d="M42 90 L58 124 L50 124 L36 92 Z M78 90 L62 124 L70 124 L84 92 Z" fill="#B8860B" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/><path d="M51 94 l9 4 l-9 4z M69 94 l-9 4 l9 4z" fill="#1B1D2A"/><circle cx="60" cy="98" r="2.4" fill="#1B1D2A"/><circle cx="60" cy="112" r="1.8" fill="#1B1D2A"/>`,
+    capagal:`<rect x="10" y="90" width="104" height="48" fill="#1B1640"/><rect x="10" y="90" width="104" height="48" fill="url(#${id}sh)"/>` + [[24,104,1.6],[40,128,1.2],[86,100,1.4],[100,122,1.8],[70,132,1.2],[30,118,1],[94,110,1]].map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`).join("") + `<path d="M24 120 Q60 104 98 116" stroke="#7A4FD9" stroke-width="6" fill="none" opacity=".55"/><path d="M10 88 Q60 100 114 88 L114 96 Q60 108 10 96 Z" fill="#5B3FB8" stroke="${K}" stroke-width="2.2"/><polygon points="${starPts(60,106,6.5)}" fill="#FFE27A" stroke="${K}" stroke-width="2" stroke-linejoin="round"/>`,
     dragon:`<rect x="10" y="90" width="104" height="48" fill="#4CB85C"/><path d="M42 100 Q60 95 78 100 L76 138 L44 138 Z" fill="#F3E08A"/><path d="M44 109 h32 M45 117 h30 M46 125 h28" stroke="#C9B45A" stroke-width="2"/>` + [[22,104],[30,116],[22,126],[98,104],[90,116],[98,126]].map(([x,y]) => `<path d="M${x-5} ${y} q5 -6 10 0" stroke="#2E8A3D" stroke-width="2" fill="none"/>`).join("") + `<path d="M10 92 Q60 86 114 92" stroke="${K}" stroke-width="3" fill="none"/>`,
     gladiador:`<rect x="10" y="90" width="104" height="48" fill="#8A5A2B"/><rect x="10" y="94" width="104" height="26" fill="#B57A3A"/><path d="M40 104 q10 7 20 0 M60 104 q10 7 20 0" stroke="#6B4220" stroke-width="2.5" fill="none"/>` + [...Array(12)].map((_,i) => `<rect x="${12 + i*9}" y="119" width="7" height="19" fill="#6B4220" stroke="${K}" stroke-width="1"/>`).join("") + `<path d="M10 90 H114 V98 Q60 92 10 98 Z" fill="#C8322A" stroke="${K}" stroke-width="2"/><circle cx="32" cy="96" r="3.5" fill="#F4C440" stroke="${K}" stroke-width="1.5"/>`,
     karate:`<rect x="10" y="90" width="104" height="48" fill="#F6F6F2"/><path d="M44 90 L68 138 M78 90 L56 122" stroke="#DADAD0" stroke-width="7"/><path d="M44 90 L68 138 M78 90 L56 122" stroke="${K}" stroke-width="1.3" opacity=".5"/><rect x="10" y="118" width="104" height="7" fill="#151515"/><rect x="55" y="116" width="10" height="11" rx="2" fill="#151515"/><path d="M58 126 l-5 11 M62 126 l5 11" stroke="#151515" stroke-width="4" stroke-linecap="round"/><path d="M10 92 Q60 86 114 92" stroke="${K}" stroke-width="3" fill="none"/>`,
@@ -6261,14 +6292,12 @@ function titoSVG(t, px, o){
   if (t.hat === "vincharoja") s += `<rect x="10" y="36" width="104" height="9" fill="#D8232A"/><path d="M10 36 H114 M10 45 H114" stroke="${K}" stroke-width="2.4"/>`;
   if (t.hat === "vincha") s += `<rect x="10" y="36" width="104" height="10" fill="#fff"/><rect x="10" y="39.5" width="104" height="3" fill="#EE3B2B"/><path d="M10 36 H114 M10 46 H114" stroke="${K}" stroke-width="2.5"/>`;
   s += `</g><path d="${BODY}" fill="none" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`;
-  if (CH && CH.over) s += CH.over(id);
-  const cracks = ["M76 26 l-5 7 l6 4 l-4 8","M34 50 l6 4 l-3 7 l6 4","M88 98 l-6 3 l3 6 l-5 5"];
-  const nC = CH ? 0 : lvl >= 15 ? 3 : lvl >= 10 ? 2 : lvl >= 5 ? 1 : 0;
-  cracks.slice(0, nC).forEach(d => s += `<path d="${d}" stroke="#FFE27A" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="${d}" stroke="${K}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`);
+  if (CH && CH.over) s += CH.over(id, t, bandHat);
   if (t.clothes === "bufanda") s += `<path d="M20 86 Q60 100 100 86 L101 97 Q60 111 19 97 Z" fill="#EE3B2B" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M36 92v10M52 95v10M68 95v10M84 92v10" stroke="#FFC425" stroke-width="3"/><rect x="74" y="98" width="12" height="24" rx="5" fill="#EE3B2B" stroke="${K}" stroke-width="3"/>`;
   if (t.clothes === "esmoquinb") s += `<path d="M50 90 l10 5 l-10 5z M70 90 l-10 5 l10 5z" fill="#1B1D2A" stroke="${K}" stroke-width="2.2" stroke-linejoin="round"/><circle cx="60" cy="95" r="3" fill="#1B1D2A" stroke="${K}" stroke-width="1.6"/>`;
   if (t.clothes === "esmoquin") s += `<path d="M50 90 l10 5 l-10 5z M70 90 l-10 5 l10 5z" fill="#EE3B2B" stroke="${K}" stroke-width="2.5" stroke-linejoin="round"/><circle cx="60" cy="95" r="3" fill="#C42A1C" stroke="${K}" stroke-width="2"/>`;
-  // cara según el ánimo
+  // cara según el ánimo (cada personaje puede tenerla un poco más arriba o abajo)
+  const fy = CH && CH.faceDy || 0; if (fy) s += `<g transform="translate(0 ${fy})">`;
   const eyeC = dark ? "#fff" : K;
   if (mood === "happy") s += `<path d="M38 72 Q47 61 56 72 M64 72 Q73 61 82 72" stroke="${eyeC}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
   else if (mood === "star") s += [47,73].map(x => `<path d="M${x} 59 l3.4 7 7.6 1 -5.5 5.3 1.3 7.6 -6.8 -3.6 -6.8 3.6 1.3 -7.6 -5.5 -5.3 7.6 -1z" fill="#FFC425" stroke="${K}" stroke-width="2.2" stroke-linejoin="round"/>`).join("");
@@ -6293,9 +6322,16 @@ function titoSVG(t, px, o){
   if (t.glasses === "vr") s += `<rect x="27" y="58" width="66" height="25" rx="10" fill="#26315A" stroke="${K}" stroke-width="3"/><rect x="33" y="63" width="54" height="15" rx="6" fill="#5CE1E6" opacity=".85"/><path d="M38 67h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>`;
   if (t.glasses === "estrellas") s += [47,73].map(x => `<polygon points="${starPts(x,70,15)}" fill="rgba(255,125,176,.35)" stroke="#FF5FA2" stroke-width="3" stroke-linejoin="round"/>`).join("") + `<path d="M58 68 h4" stroke="#FF5FA2" stroke-width="3" stroke-linecap="round"/>`;
   if (t.glasses === "antifaz") s += `<path fill-rule="evenodd" d="M28 64 Q46 54 60 65 Q74 54 92 64 Q94 78 82 81 Q72 83 66 75 Q60 71 54 75 Q48 83 38 81 Q26 78 28 64 Z M39 70 a8 6.5 0 1 0 16 0 a8 6.5 0 1 0 -16 0 Z M65 70 a8 6.5 0 1 0 16 0 a8 6.5 0 1 0 -16 0 Z" fill="#1F3A9E" stroke="${K}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  if (t.glasses === "diamante") s += [47,73].map(x => `<polygon points="${x-14},67 ${x-8},59 ${x+8},59 ${x+14},67 ${x},83" fill="rgba(170,235,255,.5)" stroke="${K}" stroke-width="2.6" stroke-linejoin="round"/><path d="M${x-14} 67 H${x+14} M${x-8} 59 L${x-4} 67 L${x} 83 L${x+4} 67 L${x+8} 59" stroke="#fff" stroke-width="1.4" fill="none" opacity=".9"/>`).join("") + `<path d="M58 64 q2 -2 4 0" stroke="${K}" stroke-width="2.6" fill="none"/><path d="M33 67 L22 62 M87 67 L98 62" stroke="${K}" stroke-width="2.6" stroke-linecap="round"/><path d="M80 54 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2 -3 -3 -1.2 3 -1.2z" fill="#fff" stroke="#7FD8FF" stroke-width=".8"/>`;
   if (t.glasses === "monoculo") s += `<circle cx="73" cy="70" r="12.5" fill="rgba(255,255,255,.18)" stroke="#C99A2E" stroke-width="3.5"/><path d="M84 76 Q92 92 86 108" stroke="#C99A2E" stroke-width="2" fill="none"/>`;
+  if (fy) s += `</g>`;
   // gorros y peinados
+  const hy = CH && CH.hatDy || 0; if (hy) s += `<g transform="translate(0 ${hy})">`;
   const H = {
+    aureola:`<ellipse cx="60" cy="0" rx="25" ry="7" fill="none" stroke="#FFE27A" stroke-width="10" opacity=".3"/><ellipse cx="60" cy="0" rx="22" ry="5.5" fill="none" stroke="${K}" stroke-width="7"/><ellipse cx="60" cy="0" rx="22" ry="5.5" fill="none" stroke="#FFD84D" stroke-width="3.6"/><path d="M46 -3 q8 -3 16 -3" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>`,
+    coronareal:`<path d="M36 32 Q60 -4 84 32 Z" fill="#B3122E" stroke="${K}" stroke-width="3"/><path d="M31 34 L29 10 L42 21 L51 4 L60 17 L69 4 L78 21 L91 10 L89 34 Z" fill="#F4C440" stroke="${K}" stroke-width="3.2" stroke-linejoin="round"/><path d="M36 26 L35 18 M84 26 L85 18" stroke="#FFF1A8" stroke-width="2" stroke-linecap="round"/><rect x="28" y="29" width="64" height="10" rx="4" fill="#FBF8F0" stroke="${K}" stroke-width="2.6"/>` + [36,46,56,66,76,86].map((x, i) => `<path d="M${x} ${i % 2 ? 32 : 33} v3" stroke="${K}" stroke-width="2.2" stroke-linecap="round"/>`).join("") + [[29,9,"#EE3B2B"],[51,3,"#2F7FE8"],[69,3,"#22A447"],[91,9,"#EE3B2B"]].map(([x,y,c]) => `<circle cx="${x}" cy="${y}" r="3.4" fill="${c}" stroke="${K}" stroke-width="2"/>`).join("") + `<path d="M60 9 v-9 M56 -5 h8" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 9 v-9 M56 -5 h8" stroke="#F4C440" stroke-width="2.4" stroke-linecap="round"/>`,
+    fuego:`<path d="M26 42 C16 24 30 20 28 6 C38 12 40 20 44 12 C46 2 56 0 58 -6 C64 2 70 6 70 14 C76 8 82 6 84 0 C90 12 102 22 94 42 Z" fill="#FF5A1F" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M36 42 C30 30 38 26 38 18 C44 24 48 26 52 18 C54 12 58 10 60 4 C62 14 70 16 70 24 C74 20 78 18 80 14 C82 24 88 32 84 42 Z" fill="#FFA41F"/><path d="M46 42 C44 34 50 32 52 28 C54 34 60 32 62 26 C64 32 72 34 70 42 Z" fill="#FFE27A"/>`,
+    leyenda:`<defs><linearGradient id="${id}lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF6C2"/><stop offset=".45" stop-color="#F4C440"/><stop offset=".7" stop-color="#FFE27A"/><stop offset="1" stop-color="#C98F00"/></linearGradient></defs><ellipse cx="60" cy="18" rx="42" ry="20" fill="#FFE27A" opacity=".22"/><path d="M26 38 L20 6 L37 20 L46 -2 L60 14 L74 -2 L83 20 L100 6 L94 38 Z" fill="url(#${id}lg)" stroke="${K}" stroke-width="3.2" stroke-linejoin="round"/><rect x="24" y="31" width="72" height="11" rx="4" fill="#7A4FD9" stroke="${K}" stroke-width="2.8"/>` + [[36,"#5CE1E6"],[48,"#FF5FA2"],[60,"#EE3B2B"],[72,"#22A447"],[84,"#5CE1E6"]].map(([x,c], i) => i === 2 ? `<path d="M60 30 L66 36.5 L60 43 L54 36.5 Z" fill="${c}" stroke="${K}" stroke-width="2"/>` : `<circle cx="${x}" cy="36.5" r="2.8" fill="${c}" stroke="${K}" stroke-width="1.6"/>`).join("") + [[20,5],[46,-3],[74,-3],[100,5]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="3.2" fill="#fff" stroke="${K}" stroke-width="2"/>`).join("") + [[14,20],[106,22],[60,-6]].map(([x,y]) => `<path d="M${x} ${y-5} L${x+1.4} ${y-1.4} L${x+5} ${y} L${x+1.4} ${y+1.4} L${x} ${y+5} L${x-1.4} ${y+1.4} L${x-5} ${y} L${x-1.4} ${y-1.4} Z" fill="#FFE27A" stroke="${K}" stroke-width="1.2"/>`).join(""),
     gorra:`<path d="M30 38 C30 6 90 6 90 38 Z" fill="#2F7FE8" stroke="${K}" stroke-width="3.5"/><path d="M32 34 L8 38 Q3 40 8 43 L32 40 Z" fill="#1F5FC0" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><circle cx="60" cy="12" r="3.5" fill="#FFC425" stroke="${K}" stroke-width="2"/>`,
     hincha:`<path d="M34 30 C34 4 86 4 86 30 Z" fill="#F6C700" stroke="${K}" stroke-width="3.5"/><path d="M34 22 H86" stroke="#123C8F" stroke-width="7"/><ellipse cx="60" cy="31" rx="38" ry="8" fill="#123C8F" stroke="${K}" stroke-width="3.5"/>`,
     boina:`<ellipse cx="57" cy="20" rx="34" ry="11" fill="#26315A" stroke="${K}" stroke-width="3.5"/><rect x="57" y="5" width="5" height="7" rx="2" fill="#26315A" stroke="${K}" stroke-width="2.5"/>`,
@@ -6324,9 +6360,13 @@ function titoSVG(t, px, o){
   };
   if (H[t.hat]) s += H[t.hat];
   else if (t.hat && t.hat.startsWith("pil_")) s += pilusoSVG(t.hat.slice(4), id);
+  if (hy) s += `</g>`;
   // objetos flotantes
   if (t.float !== "none" && !o.noFloat) {
     const F = {
+      nube:`<path d="M99 80 a7 7 0 0 1 1 -14 a9 9 0 0 1 17 -3 a7 7 0 0 1 4 13 a5 5 0 0 1 -4 4 Z" fill="#fff" stroke="${K}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="106" cy="72" r="1.5" fill="${K}"/><circle cx="114" cy="72" r="1.5" fill="${K}"/><path d="M107.5 75.5 q2.5 2 5 0" stroke="${K}" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="103" cy="75" r="1.8" fill="#FF7D96" opacity=".6"/><circle cx="117" cy="75" r="1.8" fill="#FF7D96" opacity=".6"/><path d="M103 84 v4 M110 85 v5 M117 84 v4" stroke="#7CC8F2" stroke-width="2.4" stroke-linecap="round"/>`,
+      fenix:`<g transform="translate(-6 3)"><path d="M104 72 Q92 76 93 92 Q98 84 102 85 Q97 94 101 101 Q104 90 108 86 Q107 95 112 98 Q111 86 112 78 Z" fill="#FFC425" stroke="${K}" stroke-width="2" stroke-linejoin="round"/><path d="M104 74 Q98 80 98 88 Q102 82 106 82 Z" fill="#FF7A1A"/><ellipse cx="110" cy="72" rx="9" ry="7.5" fill="#FF5A1F" stroke="${K}" stroke-width="2.4"/><path d="M113 58 q-1 -6 2 -9 q0 4 2 5 q1 -4 4 -5 q-2 5 0 8" fill="#FFC425" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="117" cy="62" r="6.5" fill="#FF5A1F" stroke="${K}" stroke-width="2.4"/><path d="M122.5 60.5 L128 62.5 L122.5 65 Z" fill="#FFC425" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="118.5" cy="61" r="1.5" fill="${K}"/><path d="M103 71 Q100 58 112 55 Q109 62 113 69 Z" fill="#FFA41F" stroke="${K}" stroke-width="2" stroke-linejoin="round"/><path d="M106 66 q2 -4 4 -6" stroke="#FFE27A" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`,
+      orbita:`<circle cx="108" cy="68" r="11" fill="#B9A8FF" opacity=".18"/><ellipse cx="108" cy="68" rx="13" ry="5" fill="none" stroke="#B9A8FF" stroke-width="2" transform="rotate(-20 108 68)"/><circle cx="108" cy="68" r="7" fill="#FFE27A" opacity=".4"/>${[[108,68,6.5],[96.5,73,3.6],[119.5,63,3.6],[110,57.5,2.6],[104,79,2.2]].map(([x,y,r]) => `<polygon points="${starPts(x,y,r)}" fill="#FFE27A" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/>`).join("")}`,
       mate:`<path d="M118 44 L110 62" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M118 44 L110 62" stroke="#D5DAE6" stroke-width="3" stroke-linecap="round"/><ellipse cx="108" cy="74" rx="10" ry="12" fill="#8A5A2B" stroke="${K}" stroke-width="3"/><ellipse cx="108" cy="63.5" rx="7.5" ry="2.8" fill="#6FA34A" stroke="${K}" stroke-width="2.2"/>`,
       silbato:`<path d="M98 64 h16 a6 6 0 0 1 0 12 h-8 a8 8 0 1 1 -8 -8z" fill="#D5DAE6" stroke="${K}" stroke-width="3"/><path d="M100 64 q-6 -14 6 -20" stroke="#EE3B2B" stroke-width="2.5" fill="none"/>`,
       libro:`<path d="M96 60 L108 56 L120 60 L120 80 L108 76 L96 80 Z" fill="#8A3B2B" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M108 56 V76" stroke="#F3E3BE" stroke-width="3"/>`,
@@ -6587,35 +6627,40 @@ function play(c){
 }
 const dailyDone = d => { const p = S.plays["d:"+d]; return !!(p && p.w.done && p.s.done && p.t.done); };
 const level = () => levelOf(S.earned);
-const lvlNeed = L => 100 * (L - 1) * (L - 1);
-/* Premios por nivel: lo que se gana y lo que cambia en Tito */
-const LV_GIFTS = [
-  { l:3, cat:"float", k:"estrella", t:"Flotante Estrellita" },
-  { l:5, t:"Primera rajadura dorada en la cáscara" },
-  { l:6, cat:"glasses", k:"estrellas", t:"Lentes de estrella" },
-  { l:10, t:"Segunda rajadura dorada" }, { l:10, cat:"skin", k:"plateada", t:"Cáscara Plateada" },
-  { l:15, t:"Tercera rajadura dorada" }, { l:15, cat:"hat", k:"laurelesoro", t:"Laureles dorados" },
-  { l:20, t:"Aureola dorada sobre Tito" }
-];
-const lvlBonus = L => 20 * L;
+const lvlNeed = L => 20 * (L - 1) * (L - 1);
+/* Premios por nivel: cada 5 niveles un objeto exclusivo de la tienda (se pone y se saca); los demás niveles dan monedas */
+let LV_GIFTS_C = null, lvUpNews = [];
+function lvGifts(){
+  if (LV_GIFTS_C) return LV_GIFTS_C; const out = [];
+  ROPA_CATS.forEach(cat => SHOP[cat].items.forEach(it => { const l = lockLv(it[2]); if (l) out.push({ l, cat, k:it[0], t:it[1] }); }));
+  return LV_GIFTS_C = out.sort((a, b) => a.l - b.l);
+}
+const lvlBonus = L => L % 5 ? 10 * L : 0;
+const CAT_ONE = { skin:"Cáscara", hat:"Gorro", clothes:"Ropa", glasses:"Lentes", feet:"Calzado", float:"Flotante" };
+function lvGiftRow(g, L){
+  const got = L >= g.l, on = got && S.tito[g.cat] === g.k, rar = rarityOf("L" + g.l);
+  return `<li class="${got ? "ok" : "lock"}"><span class="lv-n">${g.l}</span><span class="lv-th">${thumb(g.cat, g.k)}</span><span class="lv-tx"><b>${esc(g.t)}</b><small><span class="rar ${rar}" style="--rc:${RAR[rar][1]}">${RAR[rar][0].replace("Nivel · ", "")}</span> ${CAT_ONE[g.cat]}${g.cat === "skin" ? " · solo Tito" : ""}</small></span>
+    ${got ? `<button class="btn sm ${on ? "" : "green"}" data-act="lvwear:${g.cat}:${on ? "off" : g.k}">${on ? "Sacar" : "Ponerlo"}</button>` : `<span class="lv-lock">${NUM.format(Math.max(0, lvlNeed(g.l) - S.earned))}<small>puntos</small></span>`}</li>`;
+}
 function levelHTML(){
-  const L = level(), now = S.earned, a0 = lvlNeed(L), a1 = lvlNeed(L + 1), pc = Math.round(100 * (now - a0) / (a1 - a0));
-  const rows = LV_GIFTS.map(g => `<li class="${L >= g.l ? "ok" : ""}"><span class="lv-n">${g.l}</span><span>${esc(g.t)}${g.cat ? ` <small>(solo por nivel)</small>` : ""}</span>${L >= g.l ? CHECK.replace("#fff", "#1A8A3A") : ""}</li>`).join("");
-  return `<div class="lvl-sheet"><div class="lvl-big"><span class="anim-idle">${titoSVG(S.tito, 84, { level:L, mood:"happy" })}</span><div><small>Estás en el</small><b>Nivel ${L}</b></div></div>
-    <div class="lvl-bar"><span style="width:${pc}%"></span></div><p class="small" style="margin:6px 0 14px;text-align:center"><b>${NUM.format(now - a0)} de ${NUM.format(a1 - a0)}</b> · te faltan ${NUM.format(a1 - now)} puntos ganados para el nivel ${L + 1}</p>
+  const L = level(), now = S.earned, max = L >= LV_MAX, a0 = lvlNeed(L), a1 = lvlNeed(L + 1), pc = max ? 100 : Math.round(100 * (now - a0) / (a1 - a0));
+  const next = lvGifts().find(g => g.l > L);
+  return `<div class="lvl-sheet"><div class="lvl-big"><span class="anim-idle">${titoSVG(S.tito, 84, { level:L, mood:"happy" })}</span><div><small>Estás en el</small><b>Nivel ${L}</b><small>de ${LV_MAX}</small></div></div>
+    <div class="lvl-bar"><span style="width:${pc}%"></span></div><p class="small" style="margin:6px 0 14px;text-align:center">${max ? "<b>¡Llegaste al nivel máximo!</b> Eres una leyenda." : `<b>${NUM.format(now - a0)} de ${NUM.format(a1 - a0)}</b> · te faltan ${NUM.format(a1 - now)} puntos ganados para el nivel ${L + 1}`}</p>
     <p style="margin:0 0 8px"><b>¿Cómo se sube?</b> Cada punto que ganas jugando, en la ruleta, con la merienda o con videos suma experiencia. Gastar en la tienda no te baja de nivel.</p>
-    <p style="margin:0 0 12px"><b>Cada vez que subes:</b> 1 pista extra y puntos de regalo (nivel × 20).</p>
-    <ul class="lvl-list">${rows}</ul></div>`;
+    <p style="margin:0 0 12px"><b>Cada nivel:</b> 1 pista extra y monedas (nivel × 10). <b>Cada 5 niveles:</b> un objeto exclusivo que solo se gana así, cada vez mejor. Se pone y se saca desde acá o desde la tienda.</p>
+    ${next ? `<p class="lvl-new" style="text-align:center">Próximo premio en el nivel ${next.l}: <b>${esc(next.t)}</b></p>` : ""}
+    <ul class="lvl-list">${lvGifts().map(g => lvGiftRow(g, L)).join("")}</ul></div>`;
 }
 function openLevel(){ openSheet("Tu nivel", levelHTML()); }
 function checkLevelUp(){
   const L = level(); if (S.lvlSeen == null) { S.lvlSeen = L; save(); return; }
   if (L <= S.lvlSeen || view.startsWith("play") || adOpen() || $("#sheetRoot").classList.contains("open")) return;
-  let bonus = 0, hints = 0; for (let x = S.lvlSeen + 1; x <= L; x++) { bonus += lvlBonus(x); hints++; }
+  let bonus = 0, hints = 0; const prevSeen = S.lvlSeen; for (let x = S.lvlSeen + 1; x <= L; x++) { bonus += lvlBonus(x); hints++; }
   S.lvlSeen = L; S.coins += bonus; S.hints += hints; save();
-  const news = LV_GIFTS.filter(g => g.l === L);
+  const news = lvGifts().filter(g => g.l > prevSeen && g.l <= L);
   openSheet("¡Subiste de nivel!", `<div style="text-align:center">${danceHTML(110)}<div class="lvl-up">Nivel ${L}</div>
-    <p style="margin:6px 0 10px">Ganaste <b>+${NUM.format(bonus)} puntos</b> y <b>${hints} ${hints === 1 ? "pista" : "pistas"}</b>.</p>${news.map(g => `<p class="lvl-new">${esc(g.t)}</p>`).join("")}
+    <p style="margin:6px 0 10px">Ganaste ${bonus ? `<b>+${NUM.format(bonus)} puntos</b> y ` : ""}<b>${hints} ${hints === 1 ? "pista" : "pistas"}</b>.</p>${news.length ? `<p class="small muted" style="margin:0 0 6px">${news.length === 1 ? "Premio exclusivo desbloqueado" : "Premios exclusivos desbloqueados"}</p><ul class="lvl-list lvlup-list">${(lvUpNews = news.slice(-4)).map(g => lvGiftRow(g, L)).join("")}</ul>${news.length > 4 ? `<p class="small muted">y ${news.length - 4} más en tu nivel</p>` : ""}` : ""}
     <div class="btn-row"><button class="btn" data-act="level">Ver niveles</button><button class="btn primary" data-act="close-sheet">¡Genial!</button></div></div>`, { center:true });
   celebrate(2); confetti(); renderHeader();
 }
@@ -6794,7 +6839,7 @@ function weekHTML(){
   const prizeIcon = { 3:"trivia", 5:"cup", 7:"gift" };
   return `<div class="week">${[1,2,3,4,5,6,7].map(d => { const on = d <= filled && !(filled === 7 && !doneToday && false); const isNext = !doneToday && d === (filled % 7) + 1; return `<span class="day-dot ${d <= filled ? "on" : ""} ${isNext ? "today" : ""}" title="Día ${d}">${prizeIcon[d] && d > filled ? icon(prizeIcon[d]) : d}</span>`; }).join("")}</div>`;
 }
-function lvlChip(){ const L = level(), a0 = lvlNeed(L), a1 = lvlNeed(L + 1), pc = Math.round(100 * (S.earned - a0) / (a1 - a0)); return `<button class="lvl-chip press" data-act="level"><b>Nivel ${L}</b><span class="lvl-bar"><span style="width:${pc}%"></span></span><small>${NUM.format(a1 - S.earned)} para el ${L + 1}</small></button>`; }
+function lvlChip(){ const L = level(), max = L >= LV_MAX, a0 = lvlNeed(L), a1 = lvlNeed(L + 1), pc = max ? 100 : Math.round(100 * (S.earned - a0) / (a1 - a0)); return `<button class="lvl-chip press" data-act="level"><b>Nivel ${L}</b><span class="lvl-bar"><span style="width:${pc}%"></span></span><small>${max ? "¡Nivel máximo!" : NUM.format(a1 - S.earned)+" para el "+(L + 1)}</small></button>`; }
 function renderHome(){
   const p = play(makeCtx("d", null, today())), doneN = [p.w.done, p.s.done, p.t.done].filter(Boolean).length;
   const c = S.streak.count && S.streak.last >= addDays(today(),-1) ? S.streak.count : 0;
@@ -7476,7 +7521,7 @@ function renderTito(){
   const meter = (label, v, col) => `<div class="meter"><span>${label} <span class="muted num">${Math.round(v)}%</span></span><div class="bar"><span style="width:${v}%;background:${v < 30 ? "var(--r)" : col}"></span></div></div>`;
   h += `<section class="card"><div class="meters">${meter("Panza de saber", S.care.food, "var(--g)")}${meter("Ánimo", S.care.mood, "var(--b)")}</div>
     <div class="btn-row" style="margin-top:12px"><button class="btn green" data-act="snack">${icon("croissant").replace("<svg","<svg width='24' height='24'")}Merienda${snacksUsed >= LIMITS.freeSnacks ? " · "+videoWord() : ""}</button><button class="btn reward" data-act="bonus" ${bonusLeft <= 0 ? "disabled" : ""}>+30 pts · ${videoWord()} (${Math.max(0,bonusLeft)})</button></div>
-    <p class="small muted" style="margin-top:10px">La panza se llena respondiendo bien y el ánimo jugando. Si no juegas, bajan un poco cada día. ${lv < 20 ? "En el nivel "+(lv < 5 ? 5 : lv < 10 ? 10 : lv < 15 ? 15 : 20)+" Tito cambia." : ""}</p></section>`;
+    <p class="small muted" style="margin-top:10px">La panza se llena respondiendo bien y el ánimo jugando. Si no juegas, bajan un poco cada día. ${lv < LV_MAX ? "En el nivel "+(Math.floor(lv / 5) + 1) * 5+" ganas un premio exclusivo." : ""}</p></section>`;
   h += charsSection();
   const cats = shopCatsOf(shopGroup); if (!cats.includes(shopCat)) shopCat = cats[0];
   const items = SHOP[shopCat].items.map(([key, name, base, sec]) => {
@@ -7673,6 +7718,9 @@ document.addEventListener("click", e => {
   else if (k === "report") { const q = qsOf(ctx)[tQ]; (S.reports = S.reports || []).push({ id:v, q:q ? q.q : "", right:q ? q.right : "", day:today() }); save(); SND.pop(); toast("¡Gracias! La vamos a revisar."); render(); }
   else if (k === "streak-toggle") { streakOpen = !streakOpen; render(false); }
   else if (k === "level") { closeSheet(); openLevel(); }
+  else if (k === "lvwear") { const [cat, key] = v.split(":"); S.tito[cat] = key === "off" ? DEF[cat] : key; save();
+    const ls = $("#sheetRoot .lvl-sheet"), lu = $("#sheetRoot .lvlup-list"); if (ls) ls.outerHTML = levelHTML(); else if (lu) lu.innerHTML = lvUpNews.map(g => lvGiftRow(g, level())).join("");
+    render(false); toast(key === "off" ? "Listo, te lo sacaste" : "¡Te queda genial!", key === "off" ? "info" : "ok"); }
   else if (k === "premium") openPremium();
   else if (k === "premium-from-ad") { showInterstitial.cancel && showInterstitial.cancel(); openPremium(); }
   else if (k === "go-premium") { S.settings.premium = true; save(); closeSheet(); render(false); toast("¡PREMIUM activado!"); confetti(); }
