@@ -615,6 +615,82 @@ p.report-line{text-decoration:none}
 .arc-ov.full{position:fixed;inset:0;z-index:60;background:rgba(11,15,36,.62);padding:18px;align-items:center}
 .arc-ov.full .arc-box{max-width:340px}
 
+/* Inicio: juego diario + racha compacta */
+.daily-row{display:flex;gap:10px;align-items:stretch}
+.daily-card{flex:1;display:flex;align-items:center;gap:10px;text-align:left;background:var(--y);color:var(--K);border:var(--bw) solid var(--K);border-radius:22px;box-shadow:0 6px 0 var(--K);padding:12px 12px 12px 16px;cursor:pointer;animation:breathe 2.4s ease-in-out infinite;font:inherit}
+.daily-card:active{animation:none;transform:translateY(3px);box-shadow:0 3px 0 var(--K)}
+.dc-txt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.dc-txt b{font-family:var(--cartoon);font-weight:400;font-size:1.45em;letter-spacing:.04em;line-height:1}
+.dc-txt small{font-weight:800;font-size:.82em;opacity:.8}
+.dc-games{display:flex;align-items:center;gap:6px;margin-top:6px}
+.dc-g{position:relative;width:30px;height:30px;border-radius:10px;background:rgba(255,255,255,.65);border:2px solid var(--K);display:grid;place-items:center}
+.dc-g svg{width:78%;height:78%}
+.dc-g.done{background:#fff}
+.dc-g i{position:absolute;right:-6px;top:-6px;width:17px;height:17px;border-radius:50%;background:var(--g);color:#fff;font-style:normal;font-weight:900;font-size:11px;display:grid;place-items:center;border:2px solid var(--K)}
+.dc-games em{font-style:normal;font-weight:900;font-size:.85em;margin-left:2px}
+.dc-go{font-family:var(--cartoon);font-size:1.05em;letter-spacing:.04em;background:var(--K);color:#fff;border-radius:14px;padding:10px 12px;white-space:nowrap}
+.streak-mini{flex:none;width:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:var(--surface);color:var(--ink);border:var(--bw) solid var(--K);border-radius:20px;box-shadow:0 6px 0 var(--K);cursor:pointer;font:inherit;padding:6px 4px}
+.streak-mini .flame{width:30px;height:30px}
+.streak-mini .cartoon-num{font-size:1.35em;line-height:1}
+.streak-mini.off .flame{filter:grayscale(1);opacity:.55}
+.streak-mini.open{transform:translateY(3px);box-shadow:0 3px 0 var(--K)}
+.streak-drop{padding:10px 12px;display:flex;flex-direction:column;gap:8px;font-size:.86em;animation:pop .25s both}
+.streak-drop .sd-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.streak-drop .sd-head span{color:var(--muted);font-weight:800}
+.streak-drop .week{gap:4px}
+.streak-drop .day-dot{border-radius:9px}
+.streak-drop .perk{font-size:.92em;color:var(--muted)}
+
+.arc-meta .x2,.x2{color:var(--g);font-weight:900}
+
+.redeem-win{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:6px 0 4px}
+.rw-big{font-family:var(--cartoon);font-weight:400;font-size:3em;color:var(--y);-webkit-text-stroke:3px var(--K);paint-order:stroke fill;text-shadow:0 4px 0 var(--K);line-height:1;animation:pop .5s cubic-bezier(.2,.9,.3,1.5) both}
+.rw-sub{font-weight:800}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* Personajes y caja misteriosa */
+.chars-card .ch-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ch-card{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px 6px;border:var(--bw) solid var(--K);border-radius:16px;background:var(--surface-2);color:var(--ink);font:inherit;cursor:pointer;position:relative;box-shadow:0 3px 0 var(--K)}
+.ch-card b{font-family:var(--display);font-size:.88em}
+.ch-card i{position:absolute;top:-8px;right:-4px;font-style:normal;font-size:.68em;font-weight:900;background:var(--g);color:#fff;border:2px solid var(--K);border-radius:999px;padding:1px 7px}
+.ch-card.on{background:var(--y-soft, #FFF3C4);outline:3px solid var(--y)}
+.ch-card.locked{cursor:default;box-shadow:none;border-style:dashed;opacity:.9}
+.ch-card.locked .ch-fig svg{filter:brightness(0) opacity(.28)}
+.ch-fig svg{display:block}
+.mbox-btn{display:flex;align-items:center;gap:10px;width:100%;margin-top:12px;padding:10px 12px;border:var(--bw) solid var(--K);border-radius:18px;background:linear-gradient(135deg,#7A4FD9,#B48BFF);color:#fff;box-shadow:0 5px 0 var(--K);font:inherit;cursor:pointer;text-align:left}
+.mbox-btn.poor{filter:saturate(.55)}
+.mbox-btn .mb-ico{width:52px;height:52px;flex:none;animation:mbwob 2.4s ease-in-out infinite}
+.mbox-btn .mb-txt{flex:1;display:flex;flex-direction:column;line-height:1.15}
+.mbox-btn .mb-txt b{font-family:var(--cartoon);font-weight:400;font-size:1.2em;letter-spacing:.03em}
+.mbox-btn .mb-txt small{font-weight:700;opacity:.9}
+.mbox-btn .mb-price{display:flex;align-items:center;gap:4px;font-weight:900;background:rgba(11,15,36,.35);border-radius:999px;padding:5px 10px 5px 5px;white-space:nowrap}
+.mbox-btn .mb-price svg{width:20px;height:20px}
+@keyframes mbwob{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-8deg)}90%{transform:rotate(8deg)}95%{transform:rotate(-4deg)}}
+.mbox{position:relative;display:flex;flex-direction:column;align-items:center;min-height:330px;padding-top:6px;text-align:center}
+.mbox .mb-box{width:170px;height:170px;margin-top:40px;animation:mbshake 1.5s ease-in both, mbgone .35s ease-in 1.55s forwards;transform-origin:50% 90%}
+.mbox .mb-box svg{width:100%;height:100%}
+.mbox .mb-lid{animation:mblid .45s cubic-bezier(.3,1.4,.6,1) 1.5s forwards;transform-origin:60px 46px}
+.mbox .mb-rays{position:absolute;top:10px;left:50%;width:300px;height:300px;margin-left:-150px;border-radius:50%;background:repeating-conic-gradient(rgba(255,196,37,.55) 0 12deg,rgba(255,196,37,0) 12deg 30deg);opacity:0;animation:mbrays 6s linear 1.6s infinite, mbin .4s ease 1.6s forwards;-webkit-mask:radial-gradient(circle,#000 30%,transparent 70%);mask:radial-gradient(circle,#000 30%,transparent 70%)}
+.mbox .mb-char{position:absolute;top:30px;opacity:0;animation:mbchar .7s cubic-bezier(.2,1.6,.4,1) 1.7s forwards}
+.mbox .mb-reveal{opacity:0;animation:mbin .4s ease 2.3s forwards;margin-top:-6px;display:flex;flex-direction:column;align-items:center;gap:4px;width:100%}
+.mb-name{font-family:var(--cartoon);font-weight:400;font-size:2em;letter-spacing:.03em;color:var(--y);-webkit-text-stroke:2.5px var(--K);paint-order:stroke fill;text-shadow:0 3px 0 var(--K)}
+@keyframes mbshake{0%{transform:scale(.4) rotate(0)}15%{transform:scale(1) rotate(0)}30%{transform:rotate(-6deg)}38%{transform:rotate(6deg)}46%{transform:rotate(-9deg)}54%{transform:rotate(9deg)}62%{transform:rotate(-12deg) scale(1.04)}70%{transform:rotate(12deg) scale(1.06)}78%{transform:rotate(-14deg) scale(1.08)}86%{transform:rotate(14deg) scale(1.1)}100%{transform:rotate(0) scale(1.12)}}
+@keyframes mblid{to{transform:translate(30px,-90px) rotate(40deg);opacity:0}}
+@keyframes mbgone{to{transform:scale(.2) translateY(60px);opacity:0}}
+@keyframes mbchar{0%{opacity:0;transform:scale(.2) translateY(60px)}100%{opacity:1;transform:none}}
+@keyframes mbin{to{opacity:1}}
+@keyframes mbrays{to{transform:rotate(360deg)}}
+.daily-row{align-items:center}
+.daily-card{padding:12px 10px 12px 14px;gap:8px}
+.dc-txt b{font-size:1.28em;white-space:nowrap}
+.dc-txt small{font-size:.76em}
+.dc-games{flex-wrap:nowrap}
+.dc-games em{white-space:nowrap}
+.dc-go{font-size:.95em;padding:9px 10px}
+.streak-mini{height:78px;align-self:center}
+
 </style>
 </head>
 <body>
@@ -855,6 +931,67 @@ const SHOP = {
 };
 const RAR = { c:["Común","var(--g)"], r:["Rara","var(--b)"], e:["Épica","var(--r)"], l:["Legendaria","#0B0F24"], p:["PREMIUM","linear-gradient(180deg,#FFD34D,#C98F00)"], n:["Por nivel","#7A4FD9"] };
 const rarityOf = price => typeof price === "string" && price[0] === "L" ? "n" : price === "P" ? "p" : price < 600 ? "c" : price < 1500 ? "r" : price < 5000 ? "e" : "l";
+
+/* ---------- Personajes: cambian el cuerpo, comparten ropa, gorros, lentes, calzado, flotantes y bailes ---------- */
+const MBOX_PRICE = 12000;
+const CHAR_ORDER = ["tito", "matecito", "palti", "carpi", "pingui", "pelotita", "fantasmin", "robotin", "dinito"];
+const CHARS = {
+  matecito:{ n:"Matecito", d:"Un mate con su bombilla, siempre listo para la ronda.",
+    path:"M36 20 C36 13 84 13 84 20 C98 38 106 62 104 90 C102 118 84 128 60 128 C36 128 18 118 16 90 C14 62 22 38 36 20 Z",
+    defs:id => `<linearGradient id="${id}ch" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E9B47A"/><stop offset=".5" stop-color="#D49455"/><stop offset="1" stop-color="#A86C34"/></linearGradient>`,
+    fill:id => `url(#${id}ch)`,
+    decor:() => `<path d="M38 34 Q26 80 40 126 M82 34 Q94 80 80 126 M60 30 V128" stroke="#8A5228" stroke-width="2" fill="none" opacity=".28"/><path d="M28 60 q6 2 4 8 M92 60 q-6 2 -4 8 M26 100 q6 2 4 8 M94 100 q-6 2 -4 8" stroke="#8A5228" stroke-width="1.6" fill="none" opacity=".35"/>
+      <rect x="10" y="10" width="104" height="18" fill="#D5DAE6"/><rect x="10" y="10" width="104" height="5" fill="#FFFFFF" opacity=".7"/><path d="M10 28 H114" stroke="${IK}" stroke-width="3"/>${[24,36,48,60,72,84,96].map(x => `<circle cx="${x}" cy="21" r="1.6" fill="#8A93A6"/>`).join("")}`,
+    over:() => `<path d="M68 18 L90 -8" stroke="${IK}" stroke-width="7.5" stroke-linecap="round"/><path d="M68 18 L90 -8" stroke="#D5DAE6" stroke-width="4" stroke-linecap="round"/><path d="M71 13 L86 -4" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".8"/><rect x="85" y="-13" width="11" height="6" rx="2.5" transform="rotate(-50 90 -10)" fill="#C9AE5A" stroke="${IK}" stroke-width="2"/>
+      <ellipse cx="60" cy="17" rx="22" ry="5.5" fill="#6F8F2E" stroke="${IK}" stroke-width="2.8"/><path d="M46 17 l2 -1 M52 15 l2 1 M58 18 l2 -1 M66 16 l2 1 M72 18 l2 -1" stroke="#A9C45A" stroke-width="1.6" stroke-linecap="round"/>` },
+  palti:{ n:"Palti", d:"Una palta cremosa con un carozo de oro.",
+    path:"M60 12 C78 12 86 34 92 52 C102 76 106 98 100 112 C94 124 80 128 60 128 C40 128 26 124 20 112 C14 98 18 76 28 52 C34 34 42 12 60 12 Z",
+    defs:id => `<radialGradient id="${id}ch" cx=".5" cy=".55" r=".55"><stop offset="0" stop-color="#F3F7B8"/><stop offset=".75" stop-color="#C9E07A"/><stop offset="1" stop-color="#A9CC5A"/></radialGradient>`,
+    fill:() => "#3E7A2E",
+    decor:id => `<path d="M60 12 C78 12 86 34 92 52 C102 76 106 98 100 112 C94 124 80 128 60 128 C40 128 26 124 20 112 C14 98 18 76 28 52 C34 34 42 12 60 12 Z" transform="translate(60 74) scale(.86) translate(-60 -74)" fill="url(#${id}ch)"/>
+      <circle cx="60" cy="111" r="13" fill="#9A6234" stroke="${IK}" stroke-width="2.6"/><ellipse cx="55" cy="106" rx="4" ry="2.6" fill="#C98B55"/>`,
+    over:() => `<path d="M60 12 q2 -8 8 -10" stroke="#5A3A1E" stroke-width="3.5" fill="none" stroke-linecap="round"/>` },
+  carpi:{ n:"Carpi", d:"Un carpincho tranqui que no se estresa por nada.",
+    path:"M60 18 C92 18 106 46 106 80 C106 114 88 128 60 128 C32 128 14 114 14 80 C14 46 28 18 60 18 Z",
+    fill:() => "#B07A4A",
+    behind:() => `<circle cx="31" cy="27" r="9.5" fill="#8A5A35" stroke="${IK}" stroke-width="3"/><circle cx="89" cy="27" r="9.5" fill="#8A5A35" stroke="${IK}" stroke-width="3"/><circle cx="31" cy="28" r="4.5" fill="#C08A5E"/><circle cx="89" cy="28" r="4.5" fill="#C08A5E"/>`,
+    decor:() => `<path d="M30 40 q3 -3 6 0 M84 40 q3 -3 6 0 M24 70 q3 -3 6 0 M90 70 q3 -3 6 0 M60 30 q3 -3 6 0 M42 28 q3 -3 6 0 M72 28 q3 -3 6 0" stroke="#86593A" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="60" cy="112" rx="28" ry="18" fill="#B98A5E" opacity=".6"/>`,
+    over:() => `<rect x="36" y="73" width="48" height="27" rx="13" fill="#C9A07A" stroke="${IK}" stroke-width="2.6"/><path d="M42 78 q18 -5 36 0" stroke="#E2BE98" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="52" cy="80" rx="3.6" ry="2.4" fill="#4A2E1A"/><ellipse cx="68" cy="80" rx="3.6" ry="2.4" fill="#4A2E1A"/>` },
+  pingui:{ n:"Pingüi", d:"Un pingüino panzón que viene del sur.",
+    path:"M60 10 C88 10 102 54 102 84 C102 112 84 128 60 128 C36 128 18 112 18 84 C18 54 32 10 60 10 Z",
+    fill:() => "#2A2F45",
+    behind:() => `<ellipse cx="19" cy="94" rx="8" ry="20" transform="rotate(22 19 94)" fill="#2A2F45" stroke="${IK}" stroke-width="3"/><ellipse cx="101" cy="94" rx="8" ry="20" transform="rotate(-22 101 94)" fill="#2A2F45" stroke="${IK}" stroke-width="3"/>`,
+    decor:() => `<path d="M60 52 C64 36 94 38 92 62 C98 88 92 124 60 126 C28 124 22 88 28 62 C26 38 56 36 60 52 Z" fill="#F6F6F2"/><path d="M30 22 q10 -6 20 -4" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".25"/>`,
+    over:() => `<path d="M53 77 L67 77 L60 86 Z" fill="#F4A300" stroke="${IK}" stroke-width="2.2" stroke-linejoin="round"/>` },
+  pelotita:{ n:"Pelotita", d:"La pelota del potrero, siempre con ganas de jugar.",
+    path:"M60 18 A54 54 0 1 1 59.99 18 Z",
+    fill:() => "#FFFFFF",
+    decor:() => `<path d="M60 18 l10 7 -4 11 h-12 l-4 -11 z M12 60 l9 -3 6 9 -6 9 -9 -2 z M108 60 l-9 -3 -6 9 6 9 9 -2 z M30 112 l9 -8 11 4 -1 12 -12 4 z M90 112 l-9 -8 -11 4 1 12 12 4 z" fill="#1B1D2A"/>
+      <path d="M54 36 L36 50 M66 36 L84 50 M27 66 L36 50 L28 30 M93 66 L84 50 L92 30 M27 75 L36 98 L41 108 M93 75 L84 98 L79 108 M50 116 L70 116" stroke="#C3C9D6" stroke-width="2" fill="none"/>` },
+  fantasmin:{ n:"Fantasmín", d:"Un fantasmita que no asusta a nadie.",
+    path:"M60 10 C90 10 104 40 104 72 L104 118 Q97 132 89 121 Q82 132 74.5 121 Q67 132 60 121 Q53 132 45.5 121 Q38 132 31 121 Q23 132 16 118 L16 72 C16 40 30 10 60 10 Z",
+    defs:id => `<linearGradient id="${id}ch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#EEEAFF"/><stop offset="1" stop-color="#D6CCFF"/></linearGradient>`,
+    fill:id => `url(#${id}ch)`,
+    behind:() => `<ellipse cx="14" cy="86" rx="7" ry="11" transform="rotate(-30 14 86)" fill="#F1EEFF" stroke="${IK}" stroke-width="3"/><ellipse cx="106" cy="86" rx="7" ry="11" transform="rotate(30 106 86)" fill="#F1EEFF" stroke="${IK}" stroke-width="3"/>`,
+    decor:() => `<path d="M30 30 q10 -8 22 -8" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"/>` },
+  robotin:{ n:"Robotín", d:"Un robot con pantalla en la cara y mucha batería.", dark:true,
+    path:"M36 14 H84 Q104 14 104 34 V110 Q104 128 84 128 H36 Q16 128 16 110 V34 Q16 14 36 14 Z",
+    defs:id => `<linearGradient id="${id}ch" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F4F8"/><stop offset=".55" stop-color="#C3CAD8"/><stop offset="1" stop-color="#8E97AB"/></linearGradient>`,
+    fill:id => `url(#${id}ch)`,
+    behind:() => `<rect x="7" y="58" width="12" height="26" rx="4" fill="#7D8597" stroke="${IK}" stroke-width="3"/><rect x="101" y="58" width="12" height="26" rx="4" fill="#7D8597" stroke="${IK}" stroke-width="3"/>`,
+    decor:() => `<rect x="28" y="50" width="64" height="48" rx="14" fill="#1E2A4A" stroke="${IK}" stroke-width="3"/><rect x="34" y="55" width="22" height="4" rx="2" fill="#5CE1E6" opacity=".35"/>${[[26,24],[94,24],[26,120],[94,120]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#7D8597" stroke="${IK}" stroke-width="1.2"/>`).join("")}
+      <rect x="40" y="106" width="40" height="14" rx="4" fill="#5B6378" stroke="${IK}" stroke-width="2"/><circle cx="50" cy="113" r="3" fill="#EE3B2B"/><circle cx="60" cy="113" r="3" fill="#FFC425"/><circle cx="70" cy="113" r="3" fill="#22A447"/>`,
+    over:() => `<path d="M60 14 V0" stroke="${IK}" stroke-width="3.5"/><circle cx="60" cy="-3" r="7" fill="rgba(238,59,43,.25)"/><circle cx="60" cy="-3" r="4.6" fill="#EE3B2B" stroke="${IK}" stroke-width="2.4"/>` },
+  dinito:{ n:"Dinito", d:"Un dinosaurio bebé que todavía tiene la cáscara puesta.",
+    path:"M60 10 C88 10 102 54 102 84 C102 112 84 128 60 128 C36 128 18 112 18 84 C18 54 32 10 60 10 Z",
+    fill:() => "#5CC46A",
+    behind:() => `<path d="M40 22 L46 4 L54 16 L60 -3 L66 16 L74 4 L80 22 Z" fill="#FFB23E" stroke="${IK}" stroke-width="3" stroke-linejoin="round"/>`,
+    decor:() => `<circle cx="28" cy="50" r="5" fill="#46A956"/><circle cx="92" cy="46" r="4" fill="#46A956"/><circle cx="88" cy="58" r="2.6" fill="#46A956"/><circle cx="34" cy="38" r="2.6" fill="#46A956"/>
+      <path d="M10 100 L22 92 L32 101 L44 90 L56 101 L68 90 L80 101 L92 92 L104 100 L114 96 V140 H10 Z" fill="#F7F1E3" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="34" cy="116" r="3" fill="#E8DCC2"/><circle cx="82" cy="112" r="2.4" fill="#E8DCC2"/>`,
+    over:() => `<circle cx="55" cy="80" r="1.8" fill="#2E7A3A"/><circle cx="65" cy="80" r="1.8" fill="#2E7A3A"/>` }
+};
+const charOf = id => CHARS[id] || null;
+function charName(id){ return id && CHARS[id] ? CHARS[id].n : "Tito"; }
 
 /* ---------- Banco de preguntas: [categoría, pregunta, correcta, incorrecta, incorrecta, incorrecta] ---------- */
 const GEN_CATS = { geo:"Geografía", his:"Historia", cie:"Ciencia", art:"Arte y letras", mus:"Música", cin:"Cine y TV", dep:"Deportes", nat:"Naturaleza", tec:"Tecnología", gas:"Comidas", var:"Cultura general" };
@@ -3810,6 +3947,7 @@ const SND = (() => {
         fall:() => { tone(620, 0, .55, "sine", .1, 110); noise(.45, .2, .12, 500, null, "lowpass"); },
         moto:() => { tone(95, 0, .5, "sawtooth", .05, 160); tone(190, .05, .45, "square", .02, 320); noise(0, .4, .05, 600, null, "lowpass"); },
         ring:() => { [0, .13].forEach(t => { tone(2350, t, .12, "triangle", .06); tone(2960, t, .08, "sine", .03); }); },
+        bad:() => { tone(330, 0, .14, "square", .06, 250); tone(220, .12, .28, "square", .06, 140); },
         over:() => { [67,64,60].forEach((m,i) => tone(N(m), i*.16, .18, "triangle", .09)); },
         record:() => { [72,76,79,84].forEach((m,i) => tone(N(m), i*.1, .14, "square", .06)); noise(.4, 1.2, .12, 900, null, "bandpass", .3); }
       };
@@ -3849,7 +3987,7 @@ const SND = (() => {
 /* ---------- Arcade: base común (récords, puntos, revivir, pausa) + juegos ---------- */
 ICON.arcade = () => svgWrap(`<rect x="6" y="20" width="36" height="20" rx="9" fill="#7A4FD9" stroke="${IK}" stroke-width="2.6"/><path d="M17 20 V10" stroke="${IK}" stroke-width="3"/><circle cx="17" cy="9" r="5" fill="#EE3B2B" stroke="${IK}" stroke-width="2.4"/><circle cx="31" cy="28" r="3" fill="#FFC425" stroke="${IK}" stroke-width="1.8"/><circle cx="36" cy="33" r="3" fill="#22A447" stroke="${IK}" stroke-width="1.8"/><path d="M12 30 h8 M16 26 v8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>`);
 
-const ARC_RUNS = 3, ARC_CAP = 60, ARC_RECBONUS = 20;
+const ARC_RECBONUS = 20; /* sin tope: la primera partida del día de cada juego vale x2; los juegos cortos tienen límite diario (limit) */
 const ARC = {};          // juegos registrados: ARC[id] = { t, d, col, revive, help, points(score), make(api), thumb() }
 const ARC_ORDER = [];
 function arcRegister(id, g){ ARC[id] = g; ARC_ORDER.push(id); }
@@ -3880,10 +4018,10 @@ function sprite(img, w, h){
 }
 function renderArcade(){
   const st = arcState();
-  return `<div class="page-head"><span class="eyebrow">Para jugar un ratito más</span><h1>Arcade</h1><p>Las primeras ${ARC_RUNS} partidas del día de cada juego suman puntos. Si bates tu récord, ganas un extra.</p></div>
-    <div class="arc-grid">${ARC_ORDER.map(id => { const g = ARC[id], r = st.runs[id] || 0, rec = st.rec[id];
+  return `<div class="page-head"><span class="eyebrow">Para jugar un ratito más</span><h1>Arcade</h1><p>Todas las partidas suman puntos y la primera del día de cada juego vale doble. Si bates tu récord, ganas un extra.</p></div>
+    <div class="arc-grid">${ARC_ORDER.map(id => { const g = ARC[id], r = st.runs[id] || 0, rec = st.rec[id], meta = g.limit ? (r >= g.limit ? "Práctica" : r === 0 ? "×2 hoy" : (g.limit - r) + " con puntos") : (r === 0 ? "×2 hoy" : "Suma puntos");
       return `<button class="card arc-card press" data-act="arc-open:${id}" style="--c:${COL[g.col]}"><span class="arc-thumb">${g.thumb()}</span><h2>${esc(g.t)}</h2><p>${esc(g.d)}</p>
-        <span class="arc-meta"><span>${rec != null ? "Récord: <b>"+NUM.format(rec)+"</b>" : "Sin récord"}</span><span>${r >= ARC_RUNS ? "Práctica" : (ARC_RUNS - r)+" con puntos"}</span></span></button>`; }).join("")}</div>`;
+        <span class="arc-meta"><span>${rec != null ? "Récord: <b>"+NUM.format(rec)+"</b>" : "Sin récord"}</span><span class="${r === 0 ? "x2" : ""}">${meta}</span></span></button>`; }).join("")}</div>`;
 }
 function renderArcPlay(){
   const g = ARC[arcCur], rec = arcState().rec[arcCur];
@@ -3934,7 +4072,7 @@ function arcMount(){
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact");
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full"); };
   const startNew = () => {
-    const st = arcState(); st.runs[run.id] = (st.runs[run.id] || 0) + 1; run.practice = st.runs[run.id] > ARC_RUNS; save();
+    const st = arcState(); st.runs[run.id] = (st.runs[run.id] || 0) + 1; run.practice = !!g.limit && st.runs[run.id] > g.limit; run.first = st.runs[run.id] === 1; save();
     run.score = 0; run.revived = false; run.done = false; run.won = false; run.drawn = false; api.score(0); game.reset(); g.noCount ? (show(""), run.state = "play", run.last = 0) : countdown();
   };
   const countdown = () => {
@@ -3942,7 +4080,7 @@ function arcMount(){
     const tickC = () => { if (arcRun !== run) return; if (paused()) { setTimeout(tickC, 300); return; } if (n === 0) { show(""); run.state = "play"; run.last = 0; return; } show(`<div class="arc-count">${n}</div>`); SND.count(n); n--; setTimeout(tickC, 650); };
     tickC();
   };
-  const ptsFor = () => { if (run.practice) return 0; const st = arcState(), prev = st.rec[run.id]; let p = Math.min(ARC_CAP, Math.max(0, Math.round(g.points(run.score)))); if (prev != null && run.score > prev && prev > 0) p += ARC_RECBONUS; return p; };
+  const ptsFor = () => { if (run.practice) return 0; const st = arcState(), prev = st.rec[run.id]; let p = Math.max(0, Math.round(g.points(run.score))) * (run.first ? 2 : 1); if (prev != null && run.score > prev && prev > 0 && p > 0) p += ARC_RECBONUS; return p; };
   const overScreen = () => {
     const st = arcState(), prev = st.rec[run.id], isRec = prev == null ? run.score > 0 : run.score > prev;
     if (isRec) { st.rec[run.id] = run.score; save(); const r = $("#arcRec"); if (r) r.textContent = NUM.format(run.score); }
@@ -3950,7 +4088,7 @@ function arcMount(){
     const canRevive = g.revive && !run.revived && !run.won && run.score > 0;
     const pts = ptsFor();
     show(`<div class="arc-box">${run.score ? `<span class="arc-big">${NUM.format(run.score)}</span>` : ""}<b>${isRec && prev != null ? "¡Nuevo récord!" : run.won ? "¡Ganaste!" : run.drawn ? "¡Empate!" : g.overText || "¡Uh, se terminó!"}</b>
-      <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+ARC_RUNS+" veces hoy" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${g.overExtra ? g.overExtra() : ""}
+      <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${g.overExtra ? g.overExtra() : ""}
       ${canRevive ? `<button class="btn reward block" data-act="arc-revive">${isPrem() ? "Seguir jugando (PREMIUM)" : "Revivir · ver video"}</button>` : ""}
       <div class="btn-row"><button class="btn" data-act="arc-exit">Salir</button><button class="btn primary" data-act="arc-again">Otra vez</button></div></div>`);
   };
@@ -4071,7 +4209,7 @@ arcRegister("runner", {
   t:"Tito corre", d:"Salta barridas, conos y al árbitro. Agáchate con la cámara de TV.", col:"g", revive:true, fill:[.9, 1.3], ctlH:76,
   intro:"Un toque corto es un saltito y si mantienes apretado salta más alto. La cámara de TV que cuelga de los cables solo se esquiva agachándote (desliza hacia abajo o usa el botón).",
   help:"Toca la cancha o el botón para saltar · Agacharse: desliza para abajo",
-  points: s => s / 12,
+  points: s => s / 80,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thc1"><rect width="64" height="48" rx="8"/></clipPath></defs><g clip-path="url(#thc1)"><rect width="64" height="48" fill="#26306A"/>${[3,7,11].map((y,r) => [...Array(16)].map((_,i) => `<circle cx="${2 + i*4 + (r%2)*2}" cy="${y}" r="1.3" fill="${["#EE3B2B","#FFC425","#fff","#74ACDF","#22A447"][(i+r)%5]}"/>`).join("")).join("")}<rect y="14" width="22" height="5" fill="#EE3B2B"/><rect x="22" y="14" width="21" height="5" fill="#2F7FE8"/><rect x="43" y="14" width="21" height="5" fill="#FFC425"/><rect y="19" width="64" height="29" fill="#3FA34D"/>${[6,22,38,54].map(x => `<rect x="${x}" y="19" width="8" height="29" fill="#37944A"/>`).join("")}<path d="M0 41.5 H64" stroke="#fff" stroke-width="1.6"/><path d="M50 0 L46 22 M60 0 L48 22" stroke="#151820" stroke-width=".8"/><rect x="42" y="22" width="11" height="6" rx="2" fill="#3A3F57" stroke="${IK}" stroke-width="1"/><circle cx="45" cy="25" r="1.6" fill="#5CE1E6"/><rect x="34" y="38" width="9" height="3" rx="1.5" fill="#1B1D2A"/><rect x="41" y="35" width="8" height="5" rx="2" fill="#EE3B2B" stroke="${IK}" stroke-width=".9"/><circle cx="51" cy="36" r="2.4" fill="#F2C9A0" stroke="${IK}" stroke-width=".9"/><path d="M4 27 h6 M3 31 h5" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".8"/><g transform="translate(9 11) scale(.18)">${titoSVG({}, 120, { still:true, noFloat:true, mood:"happy" }).replace(/<\/?svg[^>]*>/g,"")}</g></g><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, H, c } = api, G = Math.round(H - Math.max(30, H * .13)), TW = Math.round(Math.max(56, W * .165)), TH = Math.round(TW * 1.22);
@@ -4203,7 +4341,7 @@ arcRegister("snake", {
   t:"La viborita", d:"Come frutas, crece y no te choques.", col:"r", revive:true, fill:[1, 1.45], ctlH:136,
   intro:"Desliza el dedo (o usa las flechas) para doblar. Cada fruta suma y la estrellita vale triple.",
   help:"Desliza sobre el tablero o usa las flechas de abajo",
-  points: s => s * 3,
+  points: s => s * 1.7,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thc3"><rect width="64" height="48" rx="8"/></clipPath></defs><g clip-path="url(#thc3)">${[...Array(48)].map((_,i) => `<rect x="${(i%8)*8}" y="${Math.floor(i/8)*8}" width="8" height="8" fill="${(i%8 + Math.floor(i/8))%2 ? "#A8DF73" : "#9BD86A"}"/>`).join("")}<path d="M8 36 H28 V20 H44" fill="none" stroke="${IK}" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 36 H28 V20 H44" fill="none" stroke="#2F7FE8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 36 H28 V20 H44" fill="none" stroke="#FFC425" stroke-width="1.6" stroke-dasharray="2 3.4"/><circle cx="45" cy="20" r="4.6" fill="#2F7FE8" stroke="${IK}" stroke-width="1.3"/><circle cx="46.5" cy="18.4" r="1.4" fill="#fff"/><circle cx="46.5" cy="21.6" r="1.4" fill="#fff"/><circle cx="47" cy="18.4" r=".7" fill="${IK}"/><circle cx="47" cy="21.6" r=".7" fill="${IK}"/><path d="M49.5 20 h3" stroke="#EE3B2B" stroke-width="1.2"/><circle cx="56" cy="36" r="4" fill="#EE3B2B" stroke="${IK}" stroke-width="1.2"/><path d="M56 32 q1.5 -3 3.5 -3" stroke="#22A447" stroke-width="1.4" fill="none"/><circle cx="54.6" cy="34.6" r="1" fill="#fff" opacity=".6"/><path d="M20 12 l1.5 3 3.2 .4 -2.4 2.2 .6 3.2 -2.9 -1.6 -2.9 1.6 .6 -3.2 -2.4 -2.2 3.2 -.4z" fill="#FFD84D" stroke="${IK}" stroke-width=".9"/></g><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, H, c } = api, N = 15, cs = W / N, RR = Math.max(15, Math.floor(H / cs)), oy = (H - RR * cs) / 2;
@@ -4265,86 +4403,213 @@ arcRegister("snake", {
 
 /* =================== ROMPE LADRILLOS =================== */
 arcRegister("bricks", {
-  t:"Rompe ladrillos", d:"Haz rebotar la pelota y rompe todos los ladrillos.", col:"b", revive:true, fill:[1.15, 1.75], ctlH:0,
-  intro:"Arrastra el dedo para mover la barra. Algunos ladrillos sueltan premios: barra larga, tres pelotas o pelota lenta.",
-  help:"Arrastra el dedo sobre el juego para mover la barra",
-  points: s => s / 15,
+  t:"Rompe ladrillos", d:"Rompe ladrillos nivel tras nivel con premios, bombas y ladrillos de metal.", col:"b", revive:true, fill:[1.15, 1.75], ctlH:0,
+  intro:"Arrastra el dedo para mover la barra. Cada nivel es distinto y más rápido. Atrapa los premios que caen (barra larga, triple pelota, fuego, imán, escudo, vida) y esquiva los malos (barra chica y pelota rápida).",
+  help:"Arrastra el dedo sobre el juego para mover la barra · toca para lanzar",
+  points: s => s / 20,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><linearGradient id="thg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F2A6B"/><stop offset="1" stop-color="#2E1F6B"/></linearGradient></defs><rect width="64" height="48" rx="8" fill="url(#thg4)"/>${[["#EE3B2B",5],["#FF8A2B",11],["#FFC425",17]].map(([c,y]) => [4,16,28,40,52].map((x,i) => (y === 17 && i === 2) ? "" : `<rect x="${x}" y="${y}" width="10.5" height="5" rx="1.5" fill="${c}" stroke="${IK}" stroke-width=".9"/><rect x="${x+1.5}" y="${y+.8}" width="7.5" height="1.2" rx=".6" fill="#fff" opacity=".4"/>`).join("")).join("")}<path d="M33 38 L26 29 L34 22" stroke="#fff" stroke-width="1" stroke-dasharray="1.5 2" fill="none" opacity=".6"/><circle cx="34" cy="22" r="2.6" fill="#fff" stroke="${IK}" stroke-width="1"/><rect x="22" y="40" width="22" height="4" rx="2" fill="#5CE1E6" stroke="${IK}" stroke-width="1"/><rect x="48" y="30" width="12" height="5" rx="2.5" fill="#22A447" stroke="${IK}" stroke-width=".9"/><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
-    const { W, H, c } = api, COLS = 8, top = 34, bw = (W - 16) / COLS, bh = Math.round(W * .055);
-    const ROWC = ["#EE3B2B","#FF8A2B","#FFC425","#22A447","#2F7FE8","#7A4FD9","#D9468F"];
-    let px, pw, balls, bricks, caps, lives, level, sc, slow, wide, t, held, keyDir, ready;
-    const PY = H - 34, BR = Math.max(6, W * .02);
-    const layout = lv => {
-      const rows = Math.min(7, 4 + lv), out = [];
-      for (let r = 0; r < rows; r++) for (let q = 0; q < COLS; q++) {
-        if (lv % 3 === 1 && (r + q) % 4 === 3) continue;
-        if (lv % 3 === 2 && q > 1 && q < COLS - 2 && r === rows - 1) continue;
-        const hard = lv > 0 && r < Math.min(2, lv);
-        out.push({ x:8 + q * bw, y:top + r * (bh + 4), w:bw - 4, h:bh, c:ROWC[r % ROWC.length], hp:hard ? 2 : 1 });
-      }
-      return out;
+    const { W, H, c } = api, COLS = 9, top = 44, gap = 3, bw = (W - 12) / COLS, bh = Math.round(Math.max(15, W * .05));
+    const PAL = ["#EE3B2B","#FF8A2B","#FFC425","#22A447","#14B8A6","#2F7FE8","#7A4FD9","#D9468F"];
+    /* Niveles dibujados a mano: . vacío · 1 2 3 golpes · M metal · G dorado (siempre suelta premio) · B bomba · las filas con > al final se mueven */
+    const LV = [
+      ["Calentando", ["111111111","111111111","111111111","111111111"]],
+      ["Corazón", [".11...11.","1111.1111","111121111","112222211",".1122211.","..11211..","...111...","....1...."]],
+      ["Escalera", ["2........","22.......","222......","2222.....","22222....","222222...","2222222..","22222222.","111111111"]],
+      ["Pirámide", ["....G....","...121...","..12221..",".1223221.","122333221","111111111"]],
+      ["Ajedrez", ["3.2.3.2.3",".1.1.1.1.","2.B.2.B.2",".1.1.1.1.","3.2.G.2.3",".1.1.1.1."]],
+      ["Fortaleza", ["222222222","M2.....2M","M2.111.2M","M2.1G1.2M","M2.111.2M","M.22B22.M"]],
+      ["Invasores", ["..2...2..","...2.2...","..22222..",".22.2.22.","222222222","2.22222.2","2.2...2.2","...2.2..."]],
+      ["En movimiento", ["333333333>",".........","2B22G22B2>",".........","111111111>"]],
+      ["Diamante", ["....3....","...323...","..32B23..",".32B2B23.","32B2G2B23",".32B2B23.","..32B23..","...323...","....3...."]],
+      ["El muro", ["MMM333MMM","3B33G33B3>","333333333","M2M2M2M2M","222222222>","1B11111B1"]]
+    ];
+    const gen = lv => { /* niveles infinitos: simétricos y cada vez más duros */
+      const r = rng(lv * 9973 + 17), rows = Math.min(10, 6 + Math.floor(lv / 4)), out = [], d = Math.min(1, (lv - 10) / 20);
+      for (let y = 0; y < rows; y++) { let row = ""; for (let x = 0; x < 5; x++) { const v = r(); row += v < .14 - d * .04 ? "." : v < .2 ? (r() < .5 ? "B" : "G") : v < .22 + d * .1 ? "M" : String(1 + Math.min(2, Math.floor(r() * (1.6 + d * 2)))); }
+        row = row + row.slice(0, 4).split("").reverse().join(""); if (y % 3 === 1 && r() < .35 + d * .4) row += ">"; out.push(row); }
+      if (!out.some(rw => /[123BG]/.test(rw))) out[0] = "111111111"; return ["Nivel sorpresa", out];
     };
-    const newBall = () => ({ x:px, y:PY - BR - 2, vx:0, vy:0, stuck:true });
-    const reset = () => { pw = W * .24; px = W / 2; level = 0; sc = 0; lives = 3; caps = []; slow = 0; wide = 0; t = 0; keyDir = 0; bricks = layout(0); balls = [newBall()]; ready = .8; info(); };
-    const info = () => api.info(`Vidas ${"<svg viewBox='0 0 24 24'><path d='M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.6A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z' fill='#EE3B2B' stroke='#0B0F24' stroke-width='2'/></svg>".repeat(Math.max(0, lives))} · Nivel ${level + 1}`);
+    let px, pw, balls, bricks, caps, lives, level, sc, fx, t, held, keyDir, ready, combo, parts, pops, banner, shake, shield, lvName, levelT, effects;
+    const PY = H - 40, BR = Math.max(6, W * .019);
+    const PW = () => W * (effects.wide > 0 ? .36 : effects.shrink > 0 ? .15 : .24);
+    function build(lv){
+      const [name, rows] = lv < LV.length ? LV[lv] : gen(lv); lvName = name; const out = [];
+      rows.forEach((row, y) => { const moving = row.endsWith(">"), cells = row.replace(">", "");
+        for (let q = 0; q < COLS; q++) { const ch = cells[q] || "."; if (ch === ".") continue;
+          const hp = ch === "M" ? 99 : ch === "G" ? 1 : ch === "B" ? 1 : +ch;
+          out.push({ q, y, x0:6 + q * bw, x:6 + q * bw, yy:top + y * (bh + gap), w:bw - gap, h:bh, hp, max:hp, kind:ch === "M" ? "metal" : ch === "G" ? "gold" : ch === "B" ? "bomb" : "n", col:PAL[(y + Math.floor(lv / 2)) % PAL.length], moving, ph:y * .9, hit:0 }); } });
+      return out;
+    }
+    const newBall = () => ({ x:px, y:PY - BR - 2, vx:0, vy:-1, stuck:true, trail:[] });
+    const info = () => api.info(`Nivel <b>${level + 1}</b> · ${"<svg viewBox='0 0 24 24'><path d='M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.6A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z' fill='#EE3B2B' stroke='#0B0F24' stroke-width='2'/></svg>".repeat(Math.max(0, lives))}`);
+    const startLevel = () => { bricks = build(level); balls = [newBall()]; caps = []; ready = 1.4; levelT = 0; combo = 0; banner = { txt:"Nivel " + (level + 1), sub:lvName, t:0, big:true }; info(); };
+    const reset = () => { px = W / 2; level = 0; sc = 0; lives = 3; t = 0; keyDir = 0; parts = []; pops = []; shake = 0; shield = 0; effects = { wide:0, shrink:0, slow:0, fast:0, fire:0, magnet:0 }; pw = PW(); startLevel(); };
     reset();
-    const speed = () => (W * .9 + level * W * .08) * (slow > 0 ? .62 : 1);
+    /* Premios: nombre, color, si es malo, duración (s) */
+    const PU = {
+      wide:{ t:"Barra larga", col:"#22A447", dur:14 }, multi:{ t:"Triple pelota", col:"#2F7FE8" }, slow:{ t:"Pelota lenta", col:"#14B8A6", dur:10 },
+      fire:{ t:"Pelota de fuego", col:"#F47B20", dur:8 }, magnet:{ t:"Imán", col:"#7A4FD9", dur:14 }, life:{ t:"Vida extra", col:"#EE3B2B" }, shield:{ t:"Escudo", col:"#5CE1E6" },
+      shrink:{ t:"Barra chica", col:"#7A1F1A", bad:true, dur:10 }, fast:{ t:"Pelota rápida", col:"#1B1D2A", bad:true, dur:8 }
+    };
+    const dropKind = gold => { const r = rnd(); if (!gold && level >= 2 && r < .24) return rnd() < .5 ? "shrink" : "fast"; const good = ["wide","wide","multi","multi","slow","fire","magnet","shield","life"]; return good[Math.floor(rnd() * good.length)]; };
+    const speed = () => { const base = W * .82 * Math.min(1.85, 1 + level * .07) * (1 + Math.min(.25, levelT / 120)); return base * (effects.slow > 0 ? .62 : 1) * (effects.fast > 0 ? 1.4 : 1); };
     const launch = b => { const a = (-Math.PI / 2) + (rnd() - .5) * .7; b.vx = Math.cos(a); b.vy = Math.sin(a); b.stuck = false; };
+    const release = () => balls.forEach(b => { if (b.stuck) launch(b); });
     const move = clientX => { const r = api.cv.getBoundingClientRect(); px = Math.max(pw / 2, Math.min(W - pw / 2, clientX - r.left)); };
     api.on(api.stage, "pointerdown", e => { if (!api.playing()) return; e.preventDefault(); held = true; move(e.clientX); });
     api.on(api.stage, "pointermove", e => { if (!api.playing()) return; if (held || e.pointerType === "mouse") move(e.clientX); });
-    api.on(api.stage, "pointerup", () => { held = false; balls.forEach(b => { if (b.stuck) launch(b); }); });
+    api.on(api.stage, "pointerup", () => { held = false; if (ready <= 0) release(); });
     api.ctl.innerHTML = "";
-    const hitRect = (b, r) => { const cx = Math.max(r.x, Math.min(b.x, r.x + r.w)), cy = Math.max(r.y, Math.min(b.y, r.y + r.h)); return (b.x - cx) ** 2 + (b.y - cy) ** 2 <= BR * BR; };
+    const hitRect = (b, r) => { const cx = Math.max(r.x, Math.min(b.x, r.x + r.w)), cy = Math.max(r.yy, Math.min(b.y, r.yy + r.h)); return (b.x - cx) ** 2 + (b.y - cy) ** 2 <= BR * BR; };
+    const burst = (x, y, col, n, sp) => { for (let i = 0; i < n; i++) { const a = rnd() * 6.28, v = (sp || 1) * (60 + rnd() * 160); parts.push({ x, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - 60, s:3 + rnd() * 4, a:1, col, rot:rnd() * 6, vr:(rnd() - .5) * 10 }); } };
+    function breakBrick(br, byBomb){
+      br.hp = 0; const val = br.kind === "gold" ? 50 : br.kind === "bomb" ? 15 : br.max * 10, mult = 1 + Math.min(2, combo * .25), pts = Math.round(val * mult);
+      sc += pts; api.score(sc); burst(br.x + br.w / 2, br.yy + br.h / 2, br.kind === "gold" ? "#FFE680" : br.col, br.kind === "gold" ? 16 : 9);
+      if (combo >= 3) pops.push({ x:br.x + br.w / 2, y:br.yy, t:0, txt:"×" + (1 + Math.min(2, combo * .25)).toFixed(2).replace(/\.?0+$/, ""), col:"#FFC425" });
+      if (br.kind === "gold" || rnd() < .13) caps.push({ x:br.x + br.w / 2, y:br.yy + br.h / 2, k:dropKind(br.kind === "gold"), ph:rnd() * 6 });
+      if (br.kind === "bomb") { SND.fx("boom"); shake = .35; burst(br.x + br.w / 2, br.yy + br.h / 2, "#FFC425", 22, 1.6);
+        bricks.forEach(o => { if (o.hp > 0 && o !== br && Math.abs(o.q - br.q) <= 1 && Math.abs(o.y - br.y) <= 1 && o.kind !== "metal") { o.hp--; o.hit = .3; if (o.hp <= 0) breakBrick(o, true); } }); }
+      else if (!byBomb) SND.fx("brick");
+    }
+    function getCap(k){
+      const p = PU[k]; SND.fx(p.bad ? "bad" : "bonus"); banner = { txt:p.t, t:0, col:p.col, bad:p.bad, k };
+      if (p.dur) { effects[k] = p.dur; if (k === "wide") effects.shrink = 0; if (k === "shrink") effects.wide = 0; if (k === "slow") effects.fast = 0; if (k === "fast") effects.slow = 0; }
+      if (k === "multi") { const src = balls.filter(b => !b.stuck); const b0 = src[0] || balls[0]; if (b0) { if (b0.stuck) launch(b0); for (let i = 0; i < 2; i++) { const a = Math.atan2(b0.vy, b0.vx) + (i ? .45 : -.45); balls.push({ x:b0.x, y:b0.y, vx:Math.cos(a), vy:Math.sin(a), stuck:false, trail:[] }); } } }
+      if (k === "life") { lives = Math.min(5, lives + 1); info(); }
+      if (k === "shield") shield = 1;
+    }
+    /* ----- íconos de premios: dibujados, se entienden de un vistazo ----- */
+    function puIcon(k, x, y, s){
+      c.save(); c.translate(x, y); c.scale(s / 20, s / 20); c.strokeStyle = "#fff"; c.fillStyle = "#fff"; c.lineWidth = 2.6; c.lineCap = "round"; c.lineJoin = "round";
+      if (k === "wide") { c.beginPath(); c.moveTo(-8, 0); c.lineTo(8, 0); c.moveTo(-4, -4); c.lineTo(-8, 0); c.lineTo(-4, 4); c.moveTo(4, -4); c.lineTo(8, 0); c.lineTo(4, 4); c.stroke(); }
+      else if (k === "shrink") { c.beginPath(); c.moveTo(-9, 0); c.lineTo(-2, 0); c.moveTo(-5, -4); c.lineTo(-1.5, 0); c.lineTo(-5, 4); c.moveTo(9, 0); c.lineTo(2, 0); c.moveTo(5, -4); c.lineTo(1.5, 0); c.lineTo(5, 4); c.stroke(); }
+      else if (k === "multi") { [[-5.5, 3], [5.5, 3], [0, -4]].forEach(([a, b]) => { c.beginPath(); c.arc(a, b, 3.6, 0, 7); c.fill(); }); }
+      else if (k === "slow") { c.beginPath(); c.arc(0, 0, 7, 0, 7); c.stroke(); c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -4.5); c.moveTo(0, 0); c.lineTo(3, 2); c.stroke(); }
+      else if (k === "fast") { c.beginPath(); c.moveTo(2, -9); c.lineTo(-5, 1); c.lineTo(0, 1); c.lineTo(-2, 9); c.lineTo(5, -1); c.lineTo(0, -1); c.closePath(); c.fillStyle = "#FFC425"; c.fill(); }
+      else if (k === "fire") { c.fillStyle = "#FFE680"; c.beginPath(); c.moveTo(0, -9); c.bezierCurveTo(7, -3, 7, 3, 4, 7); c.quadraticCurveTo(0, 10, -4, 7); c.bezierCurveTo(-7, 3, -5, -2, -2, -3); c.quadraticCurveTo(-1, -6, 0, -9); c.fill(); c.fillStyle = "#EE3B2B"; c.beginPath(); c.arc(0, 4, 2.6, 0, 7); c.fill(); }
+      else if (k === "magnet") { c.lineWidth = 4; c.lineCap = "butt"; c.beginPath(); c.arc(0, -1, 5.5, Math.PI, 0); c.lineTo(5.5, 6); c.moveTo(-5.5, -1); c.lineTo(-5.5, 6); c.stroke(); c.fillStyle = "#C9D2E3"; c.fillRect(-7.5, 4, 4, 3.5); c.fillRect(3.5, 4, 4, 3.5); }
+      else if (k === "life") { c.beginPath(); c.moveTo(0, 7); c.bezierCurveTo(-10, 0, -6, -9, 0, -4); c.bezierCurveTo(6, -9, 10, 0, 0, 7); c.fill(); }
+      else if (k === "shield") { c.beginPath(); c.moveTo(0, -8); c.lineTo(7, -5); c.quadraticCurveTo(7, 4, 0, 8); c.quadraticCurveTo(-7, 4, -7, -5); c.closePath(); c.fill(); c.strokeStyle = "#0E8A92"; c.lineWidth = 2; c.beginPath(); c.moveTo(-3, 0); c.lineTo(-.5, 3); c.lineTo(4, -3); c.stroke(); }
+      c.restore();
+    }
+    function capsule(cp){
+      const p = PU[cp.k], w = 52, h = 26, x = cp.x - w / 2, y = cp.y - h / 2, wob = Math.sin(t * 6 + cp.ph) * .08;
+      c.save(); c.translate(cp.x, cp.y); c.rotate(wob); c.translate(-cp.x, -cp.y);
+      c.fillStyle = `rgba(255,255,255,${.18 + .12 * Math.sin(t * 8 + cp.ph)})`; rr(c, x - 4, y - 4, w + 8, h + 8, 17); c.fill();
+      const g = c.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, p.col); g.addColorStop(1, p.bad ? "#0B0F24" : "rgba(11,15,36,.55)"); c.fillStyle = p.col; rr(c, x, y, w, h, 13); c.fill(); c.fillStyle = g; c.globalAlpha = .55; rr(c, x, y, w, h, 13); c.fill(); c.globalAlpha = 1;
+      if (p.bad) { c.save(); rr(c, x, y, w, h, 13); c.clip(); c.fillStyle = "rgba(255,196,37,.9)"; for (let i = -2; i < 8; i++) { c.beginPath(); c.moveTo(x + i * 10, y + h); c.lineTo(x + i * 10 + 5, y + h); c.lineTo(x + i * 10 + 13, y); c.lineTo(x + i * 10 + 8, y); c.closePath(); c.fill(); } c.fillStyle = p.col; rr(c, x + 7, y + 3, w - 14, h - 6, 9); c.fill(); c.restore(); }
+      c.fillStyle = "rgba(255,255,255,.35)"; rr(c, x + 6, y + 3, w - 12, 5, 3); c.fill();
+      c.strokeStyle = IK; c.lineWidth = 2.4; rr(c, x, y, w, h, 13); c.stroke();
+      puIcon(cp.k, cp.x, cp.y + 1, 19);
+      c.restore();
+    }
+    function brick(b){
+      const x = b.x, y = b.yy, w = b.w, h = b.h, flash = b.hit > 0 ? b.hit / .3 : 0;
+      c.fillStyle = "rgba(0,0,0,.25)"; rr(c, x + 2, y + 3, w, h, 4); c.fill();
+      if (b.kind === "metal") { const g = c.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, "#E4E8F0"); g.addColorStop(.5, "#9AA3B5"); g.addColorStop(1, "#6E7891"); c.fillStyle = g; rr(c, x, y, w, h, 4); c.fill();
+        c.fillStyle = "#4A5168"; [[x + 4, y + 4], [x + w - 4, y + 4], [x + 4, y + h - 4], [x + w - 4, y + h - 4]].forEach(([a, bb]) => { c.beginPath(); c.arc(a, bb, 1.6, 0, 7); c.fill(); }); }
+      else if (b.kind === "gold") { const g = c.createLinearGradient(x, y, x + w, y + h); g.addColorStop(0, "#FFF1A8"); g.addColorStop(.5, "#FFC425"); g.addColorStop(1, "#E59A00"); c.fillStyle = g; rr(c, x, y, w, h, 4); c.fill();
+        c.fillStyle = "#fff"; c.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? h * .16 : h * .36; c.lineTo(x + w / 2 + Math.cos(a) * r, y + h / 2 + Math.sin(a) * r); } c.closePath(); c.fill();
+        const sx = x + ((t * 60) % (w + 30)) - 15; c.save(); rr(c, x, y, w, h, 4); c.clip(); c.fillStyle = "rgba(255,255,255,.5)"; c.beginPath(); c.moveTo(sx, y); c.lineTo(sx + 8, y); c.lineTo(sx - 2, y + h); c.lineTo(sx - 10, y + h); c.fill(); c.restore(); }
+      else if (b.kind === "bomb") { c.fillStyle = "#3A1F2B"; rr(c, x, y, w, h, 4); c.fill(); c.fillStyle = "#1B1D2A"; c.beginPath(); c.arc(x + w / 2, y + h * .58, h * .3, 0, 7); c.fill(); c.strokeStyle = "#FFC425"; c.lineWidth = 1.6; c.beginPath(); c.moveTo(x + w / 2 + h * .2, y + h * .32); c.quadraticCurveTo(x + w / 2 + h * .4, y + h * .1, x + w / 2 + h * .55, y + h * .2); c.stroke();
+        c.fillStyle = Math.floor(t * 8) % 2 ? "#FF7A1A" : "#FFE680"; c.beginPath(); c.arc(x + w / 2 + h * .55, y + h * .2, 2, 0, 7); c.fill(); c.strokeStyle = "rgba(238,59,43,.8)"; c.lineWidth = 2; rr(c, x + 1.5, y + 1.5, w - 3, h - 3, 3); c.stroke(); }
+      else { const base = b.max >= 3 ? "#5B6B8C" : b.max === 2 ? b.col : b.col, g = c.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, b.max >= 3 ? "#8EA0C4" : b.col); g.addColorStop(1, base); c.fillStyle = g; rr(c, x, y, w, h, 4); c.fill();
+        if (b.max >= 2) { c.fillStyle = b.max >= 3 ? "rgba(11,15,36,.25)" : "rgba(11,15,36,.22)"; rr(c, x + 2, y + h - 4, w - 4, 3, 1.5); c.fill(); }
+        c.fillStyle = "rgba(255,255,255,.4)"; rr(c, x + 3, y + 2, w - 6, h * .26, 2); c.fill();
+        for (let i = 0; i < b.hp && b.max > 1; i++) { c.fillStyle = "#fff"; c.strokeStyle = IK; c.lineWidth = 1; c.beginPath(); c.arc(x + w - 6 - i * 6, y + h - 6.5, 2.2, 0, 7); c.fill(); c.stroke(); }
+        if (b.hp < b.max) { c.strokeStyle = "rgba(11,15,36,.75)"; c.lineWidth = 1.5; c.beginPath(); c.moveTo(x + w * .25, y + 1); c.lineTo(x + w * .4, y + h * .45); c.lineTo(x + w * .32, y + h - 1); c.moveTo(x + w * .4, y + h * .45); c.lineTo(x + w * .58, y + h * .55); if (b.max - b.hp > 1) { c.moveTo(x + w * .7, y + 1); c.lineTo(x + w * .62, y + h * .5); c.lineTo(x + w * .75, y + h - 1); } c.stroke(); } }
+      if (flash) { c.fillStyle = `rgba(255,255,255,${flash * .6})`; rr(c, x, y, w, h, 4); c.fill(); }
+      c.strokeStyle = IK; c.lineWidth = 2; rr(c, x, y, w, h, 4); c.stroke();
+    }
     return {
       reset,
-      revive(){ lives = 1; balls = [newBall()]; caps = []; info(); ready = .8; },
-      key(k, down){ if (k === "ArrowLeft" || k === "a") keyDir = down ? -1 : (keyDir === -1 ? 0 : keyDir); else if (k === "ArrowRight" || k === "d") keyDir = down ? 1 : (keyDir === 1 ? 0 : keyDir); else if (k === " " && down) balls.forEach(b => { if (b.stuck) launch(b); }); else return false; },
+      dbg(){ return { bricks, balls, effects, setLevel(n){ level = n; startLevel(); }, give:getCap, caps }; },
+      revive(){ lives = 1; balls = [newBall()]; caps = []; info(); ready = 1; },
+      key(k, down){ if (k === "ArrowLeft" || k === "a") keyDir = down ? -1 : (keyDir === -1 ? 0 : keyDir); else if (k === "ArrowRight" || k === "d") keyDir = down ? 1 : (keyDir === 1 ? 0 : keyDir); else if (k === " " && down) { if (ready <= 0) release(); } else return false; },
       step(dt){
-        t += dt; slow = Math.max(0, slow - dt); wide = Math.max(0, wide - dt); pw = W * (wide > 0 ? .36 : .24);
-        if (keyDir) px = Math.max(pw / 2, Math.min(W - pw / 2, px + keyDir * W * 1.1 * dt));
-        if (ready > 0) { ready -= dt; if (ready <= 0) balls.forEach(b => { if (b.stuck) launch(b); }); }
+        t += dt; levelT += dt; shake = Math.max(0, shake - dt);
+        for (const k in effects) effects[k] = Math.max(0, effects[k] - dt);
+        const tw = PW(); pw += (tw - pw) * Math.min(1, dt * 10);
+        if (keyDir) px = Math.max(pw / 2, Math.min(W - pw / 2, px + keyDir * W * 1.1 * dt)); px = Math.max(pw / 2, Math.min(W - pw / 2, px));
+        if (ready > 0) { ready -= dt; if (ready <= 0) release(); }
+        if (banner) { banner.t += dt; if (banner.t > (banner.big ? 1.6 : 1.3)) banner = null; }
+        bricks.forEach(b => { b.hit = Math.max(0, b.hit - dt); if (b.moving) b.x = b.x0 + Math.sin(t * (1.2 + level * .05) + b.ph) * bw * .9; b.x = Math.max(2, Math.min(W - b.w - 2, b.x)); });
         const sp = speed();
         balls.forEach(b => {
-          if (b.stuck) { b.x = px; b.y = PY - BR - 2; return; }
-          const steps = 3;
+          if (b.stuck) { b.x = px + (b.off || 0); b.y = PY - BR - 2; if (b.off != null) { b.st = (b.st || 0) + dt; if (b.st > 2.5) { b.off = null; b.st = 0; launch(b); } } return; }
+          b.trail.push([b.x, b.y]); if (b.trail.length > 7) b.trail.shift();
+          const steps = 4;
           for (let s = 0; s < steps; s++) {
             b.x += b.vx * sp * dt / steps; b.y += b.vy * sp * dt / steps;
             if (b.x < BR) { b.x = BR; b.vx = Math.abs(b.vx); SND.fx("bounce"); }
             if (b.x > W - BR) { b.x = W - BR; b.vx = -Math.abs(b.vx); SND.fx("bounce"); }
             if (b.y < BR) { b.y = BR; b.vy = Math.abs(b.vy); SND.fx("bounce"); }
-            if (b.vy > 0 && b.y + BR >= PY && b.y + BR <= PY + 12 && b.x > px - pw / 2 - BR && b.x < px + pw / 2 + BR) {
-              const off = (b.x - px) / (pw / 2), a = -Math.PI / 2 + off * 1.05; b.vx = Math.cos(a); b.vy = Math.sin(a); b.y = PY - BR; SND.fx("bounce");
+            if (b.vy > 0 && b.y + BR >= PY && b.y + BR <= PY + 14 && b.x > px - pw / 2 - BR && b.x < px + pw / 2 + BR) {
+              const off = (b.x - px) / (pw / 2), a = -Math.PI / 2 + off * 1.05; b.vx = Math.cos(a); b.vy = Math.sin(a); b.y = PY - BR; combo = 0; SND.fx("bounce");
+              if (effects.magnet > 0) { b.stuck = true; b.off = b.x - px; }
             }
+            if (shield && b.vy > 0 && b.y + BR >= H - 10) { b.vy = -Math.abs(b.vy); shield = 0; SND.fx("bonus"); burst(b.x, H - 8, "#5CE1E6", 14); }
             for (const br of bricks) {
               if (br.hp > 0 && hitRect(b, br)) {
-                const ox = Math.min(b.x + BR - br.x, br.x + br.w - (b.x - BR)), oy = Math.min(b.y + BR - br.y, br.y + br.h - (b.y - BR));
-                if (ox < oy) b.vx = -b.vx; else b.vy = -b.vy;
-                br.hp--; SND.fx("brick");
-                if (br.hp <= 0) { sc += 10 * (level + 1); api.score(sc); if (rnd() < .12) caps.push({ x:br.x + br.w / 2, y:br.y, k:["wide","multi","slow"][Math.floor(rnd() * 3)] }); }
+                if (effects.fire > 0 && br.kind !== "metal") { combo++; breakBrick(br); continue; }
+                const ox = Math.min(b.x + BR - br.x, br.x + br.w - (b.x - BR)), oy = Math.min(b.y + BR - br.yy, br.yy + br.h - (b.y - BR));
+                if (ox < oy) { b.vx = b.x < br.x + br.w / 2 ? -Math.abs(b.vx) : Math.abs(b.vx); } else { b.vy = b.y < br.yy + br.h / 2 ? -Math.abs(b.vy) : Math.abs(b.vy); }
+                br.hit = .3;
+                if (br.kind === "metal") { SND.fx("capture"); burst(b.x, b.y, "#E4E8F0", 3, .5); }
+                else { br.hp--; combo++; if (br.hp <= 0) breakBrick(br); else { SND.fx("brick"); sc += 5; api.score(sc); } }
                 break;
               }
             }
           }
+          if (Math.abs(b.vy) < .18) { b.vy = b.vy < 0 ? -.25 : .25; const n = Math.hypot(b.vx, b.vy); b.vx /= n; b.vy /= n; }
           if (b.y > H + BR) b.dead = true;
         });
         balls = balls.filter(b => !b.dead);
-        caps.forEach(cp => { cp.y += H * .35 * dt; if (cp.y > PY - 6 && cp.y < PY + 10 && Math.abs(cp.x - px) < pw / 2 + 10) { cp.got = true; SND.fx("bonus");
-          if (cp.k === "wide") wide = 12; if (cp.k === "slow") slow = 10;
-          if (cp.k === "multi" && balls.length) { const b0 = balls[0]; for (let i = 0; i < 2; i++) { const a = -Math.PI / 2 + (i ? .5 : -.5); balls.push({ x:b0.x, y:b0.y, vx:Math.cos(a), vy:Math.sin(a), stuck:false }); } } } });
+        caps.forEach(cp => { cp.y += H * .3 * dt; if (cp.y > PY - 12 && cp.y < PY + 14 && Math.abs(cp.x - px) < pw / 2 + 24) { cp.got = true; getCap(cp.k); } });
         caps = caps.filter(cp => !cp.got && cp.y < H + 20);
-        if (!balls.length) { lives--; info(); if (lives <= 0) { SND.fx("crash"); api.over(); return; } SND.fx("over"); balls = [newBall()]; ready = .8; }
-        if (bricks.every(b => b.hp <= 0)) { level++; sc += 100; api.score(sc); SND.fx("record"); bricks = layout(level); balls = [newBall()]; caps = []; ready = 1; info(); }
+        parts.forEach(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 500 * dt; p.a -= dt * 1.6; p.rot += p.vr * dt; }); parts = parts.filter(p => p.a > 0);
+        pops.forEach(p => p.t += dt); pops = pops.filter(p => p.t < .8);
+        if (!balls.length) { lives--; info(); combo = 0; for (const k in effects) effects[k] = 0; if (lives <= 0) { SND.fx("crash"); api.over(); return; } SND.fx("over"); balls = [newBall()]; ready = 1; banner = { txt:"¡Ups! Te quedan " + lives, t:0, col:"#EE3B2B", bad:true }; }
+        if (!bricks.some(b => b.hp > 0 && b.kind !== "metal")) { const bonus = 100 + level * 50; sc += bonus; api.score(sc); SND.fx("record"); confetti(30); level++; startLevel(); }
       },
       draw(){
-        const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#1F2A6B"); g.addColorStop(1, "#2E1F6B"); c.fillStyle = g; c.fillRect(0, 0, W, H);
-        c.fillStyle = "rgba(255,255,255,.06)"; for (let i = 0; i < 18; i++) { c.beginPath(); c.arc((i * 97) % W, (i * 53) % H, 1.5, 0, 7); c.fill(); }
-        bricks.forEach(b => { if (b.hp <= 0) return; c.fillStyle = b.c; rr(c, b.x, b.y, b.w, b.h, 4); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke(); c.fillStyle = "rgba(255,255,255,.35)"; rr(c, b.x + 3, b.y + 2, b.w - 6, b.h * .3, 2); c.fill();
-          if (b.hp > 1) { c.strokeStyle = "rgba(11,15,36,.6)"; c.lineWidth = 1.6; c.beginPath(); c.moveTo(b.x + b.w * .3, b.y + 2); c.lineTo(b.x + b.w * .45, b.y + b.h * .6); c.lineTo(b.x + b.w * .38, b.y + b.h - 2); c.stroke(); c.fillStyle = "rgba(0,0,0,.18)"; rr(c, b.x, b.y, b.w, b.h, 4); c.fill(); } });
-        caps.forEach(cp => { const col = { wide:"#22A447", multi:"#2F7FE8", slow:"#FFC425" }[cp.k], lab = { wide:"↔", multi:"×3", slow:"Lento" }[cp.k]; c.fillStyle = col; rr(c, cp.x - 20, cp.y - 9, 40, 18, 9); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke(); c.fillStyle = "#fff"; c.font = "bold 11px Fredoka, sans-serif"; c.textAlign = "center"; c.fillText(lab, cp.x, cp.y + 4); c.textAlign = "left"; });
-        c.fillStyle = wide > 0 ? "#22A447" : "#5CE1E6"; rr(c, px - pw / 2, PY, pw, 12, 6); c.fill(); c.strokeStyle = IK; c.lineWidth = 2.4; c.stroke(); c.fillStyle = "rgba(255,255,255,.5)"; rr(c, px - pw / 2 + 6, PY + 2, pw - 12, 3, 2); c.fill();
-        balls.forEach(b => { c.fillStyle = "rgba(0,0,0,.25)"; c.beginPath(); c.arc(b.x + 2, b.y + 3, BR, 0, 7); c.fill(); c.fillStyle = "#fff"; c.beginPath(); c.arc(b.x, b.y, BR, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke(); c.fillStyle = "rgba(11,15,36,.08)"; c.beginPath(); c.arc(b.x + BR * .25, b.y + BR * .25, BR * .7, 0, 7); c.fill(); c.fillStyle = "#fff"; c.beginPath(); c.arc(b.x - BR * .3, b.y - BR * .35, BR * .28, 0, 7); c.fill(); });
+        c.save(); if (shake > 0) c.translate((rnd() - .5) * 8 * shake / .35, (rnd() - .5) * 8 * shake / .35);
+        const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, ["#1F2A6B","#2A1F6B","#1F4A6B","#3A1F5B"][level % 4]); g.addColorStop(1, "#140F3A"); c.fillStyle = g; c.fillRect(-10, -10, W + 20, H + 20);
+        c.strokeStyle = "rgba(255,255,255,.04)"; c.lineWidth = 1; c.beginPath(); for (let x = 0; x < W; x += 24) { c.moveTo(x, 0); c.lineTo(x, H); } for (let y = 0; y < H; y += 24) { c.moveTo(0, y); c.lineTo(W, y); } c.stroke();
+        bricks.forEach(b => { if (b.hp > 0) brick(b); });
+        parts.forEach(p => { c.save(); c.globalAlpha = Math.max(0, p.a); c.translate(p.x, p.y); c.rotate(p.rot); c.fillStyle = p.col; c.fillRect(-p.s / 2, -p.s / 2, p.s, p.s); c.restore(); });
+        caps.forEach(capsule);
+        if (shield) { c.fillStyle = `rgba(92,225,230,${.5 + .3 * Math.sin(t * 6)})`; rr(c, 4, H - 9, W - 8, 5, 3); c.fill(); }
+        /* barra */
+        const col = effects.magnet > 0 ? "#7A4FD9" : effects.wide > 0 ? "#22A447" : effects.shrink > 0 ? "#EE3B2B" : "#5CE1E6";
+        const pg = c.createLinearGradient(0, PY, 0, PY + 14); pg.addColorStop(0, "#fff"); pg.addColorStop(.35, col); pg.addColorStop(1, col);
+        c.fillStyle = pg; rr(c, px - pw / 2, PY, pw, 14, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 2.4; c.stroke();
+        c.fillStyle = "#1B1D2A"; rr(c, px - pw / 2 + 3, PY + 3, 10, 8, 4); c.fill(); rr(c, px + pw / 2 - 13, PY + 3, 10, 8, 4); c.fill();
+        c.fillStyle = Math.floor(t * 4) % 2 ? "#FFC425" : "#FF7A1A"; c.fillRect(px - pw / 2 + 5, PY + 5, 6, 4); c.fillRect(px + pw / 2 - 11, PY + 5, 6, 4);
+        if (effects.magnet > 0) { c.strokeStyle = `rgba(185,164,255,${.4 + .3 * Math.sin(t * 10)})`; c.lineWidth = 2; for (let i = 1; i <= 2; i++) { c.beginPath(); c.ellipse(px, PY - 2, pw / 2 - 6, 6 * i, 0, Math.PI, 0); c.stroke(); } }
+        /* pelotas */
+        balls.forEach(b => { const fire = effects.fire > 0;
+          b.trail.forEach(([x, y], i) => { c.fillStyle = fire ? `rgba(255,${120 + i * 15},40,${i / 14})` : `rgba(255,255,255,${i / 30})`; c.beginPath(); c.arc(x, y, BR * (fire ? .5 + i / 10 : .4 + i / 16), 0, 7); c.fill(); });
+          c.fillStyle = "rgba(0,0,0,.25)"; c.beginPath(); c.arc(b.x + 2, b.y + 3, BR, 0, 7); c.fill();
+          const bg = c.createRadialGradient(b.x - BR * .3, b.y - BR * .35, 1, b.x, b.y, BR); if (fire) { bg.addColorStop(0, "#FFF1A8"); bg.addColorStop(.6, "#FF8A2B"); bg.addColorStop(1, "#E04A1A"); } else if (effects.fast > 0) { bg.addColorStop(0, "#fff"); bg.addColorStop(1, "#FFC425"); } else { bg.addColorStop(0, "#fff"); bg.addColorStop(1, "#C9D2E3"); }
+          c.fillStyle = bg; c.beginPath(); c.arc(b.x, b.y, BR, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke(); });
+        /* premios activos con su reloj */
+        let hx = 8; ["wide","shrink","slow","fast","fire","magnet"].forEach(k => { const v = effects[k]; if (!(v > 0)) return; const p = PU[k], r = 14;
+          c.fillStyle = p.col; c.beginPath(); c.arc(hx + r, 22, r, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke();
+          c.strokeStyle = "rgba(255,255,255,.9)"; c.lineWidth = 3; c.beginPath(); c.arc(hx + r, 22, r - 3.5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (v / p.dur)); c.stroke();
+          puIcon(k, hx + r, 22, 15); hx += r * 2 + 6; });
+        if (shield) { c.fillStyle = PU.shield.col; c.beginPath(); c.arc(hx + 14, 22, 14, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke(); puIcon("shield", hx + 14, 22, 15); }
+        pops.forEach(p => { c.globalAlpha = 1 - p.t / .8; c.font = `18px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "center"; c.lineWidth = 4; c.strokeStyle = IK; c.strokeText(p.txt, p.x, p.y - p.t * 30); c.fillStyle = p.col; c.fillText(p.txt, p.x, p.y - p.t * 30); c.globalAlpha = 1; });
+        /* cartel grande al agarrar premio o empezar nivel */
+        if (banner) { const bt = banner.t, s = Math.min(1, bt * 6), a = Math.max(0, Math.min(1, ((banner.big ? 1.6 : 1.3) - bt) * 4)), y = H * (banner.big ? .5 : .62);
+          c.save(); c.globalAlpha = a; c.translate(W / 2, y); c.scale(.6 + s * .4, .6 + s * .4);
+          if (banner.k) { c.fillStyle = banner.col; c.beginPath(); c.arc(0, -34, 22, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 3; c.stroke(); puIcon(banner.k, 0, -34, 26); }
+          c.font = `${banner.big ? 40 : 28}px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "center"; c.lineWidth = 7; c.strokeStyle = IK; c.strokeText(banner.txt.toUpperCase(), 0, 10); c.fillStyle = banner.bad ? "#FF8A7A" : banner.big ? "#FFC425" : "#fff"; c.fillText(banner.txt.toUpperCase(), 0, 10);
+          if (banner.sub) { c.font = "bold 18px Fredoka, sans-serif"; c.lineWidth = 5; c.strokeText(banner.sub, 0, 38); c.fillStyle = "#fff"; c.fillText(banner.sub, 0, 38); }
+          c.restore(); c.textAlign = "left"; }
+        if (balls.some(b => b.stuck) && ready <= 0) { c.fillStyle = `rgba(255,255,255,${.6 + .4 * Math.sin(t * 6)})`; c.font = "bold 14px Fredoka, sans-serif"; c.textAlign = "center"; c.fillText("Suelta para lanzar", W / 2, PY - 26); c.textAlign = "left"; }
+        c.restore();
       },
       destroy(){}
     };
@@ -4360,7 +4625,7 @@ arcRegister("mines", {
   intro:"Toca una casilla para abrirla y mantén apretado para poner banderita. Los números te dicen cuántos huevos podridos hay alrededor.",
   help:"Toca para abrir · mantén apretado (o activa la banderita) para marcar",
   overText:"¡Pisaste un huevo podrido!",
-  points: s => s / 12,
+  points: s => s / 12, limit:5,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#C9D2E3"/>${[...Array(15)].map((_,i) => { const x = 5 + (i%5)*11, y = 4 + Math.floor(i/5)*14, open = [1,2,6,7,8,12].includes(i); return `<rect x="${x}" y="${y}" width="10" height="13" rx="2" fill="${open ? "#EEF1F7" : "#8FA3C9"}" stroke="${IK}" stroke-width=".8"/>`; }).join("")}<text x="21" y="14" font-size="8" font-weight="bold" fill="#2F7FE8" text-anchor="middle">1</text><text x="32" y="28" font-size="8" font-weight="bold" fill="#22A447" text-anchor="middle">2</text><text x="43" y="28" font-size="8" font-weight="bold" fill="#EE3B2B" text-anchor="middle">3</text><path d="M8 40 v-8 l6 2.6 -6 2.6" fill="#EE3B2B" stroke="${IK}" stroke-width="1"/><ellipse cx="54" cy="38" rx="4" ry="5" fill="#B5C94A" stroke="${IK}" stroke-width="1.1"/><circle cx="53" cy="36.5" r="1" fill="#7E9A2E"/><path d="M52 31 q-1 -2 .5 -3.5 M55.5 31 q-1 -2 .5 -3.5" stroke="#7E9A2E" stroke-width="1" fill="none"/><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, H, c } = api, [R, C, M, BASE] = MS_SIZES[api.opt()] || MS_SIZES.chico, cs = W / C;
@@ -4555,7 +4820,7 @@ arcRegister("chess", {
   intro:"Juegas con las blancas. Toca una pieza para ver a dónde puede ir. Tiene todas las reglas: enroque, captura al paso y coronación.",
   help:"Toca una pieza y después la casilla a la que la quieres mover",
   overText:"Ganó Tito esta vez",
-  points: s => s / 10,
+  points: s => s / 6,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#EEF1F7"/>${[...Array(24)].map((_, i) => (i + Math.floor(i / 6)) % 2 ? `<rect x="${2 + (i % 6) * 10}" y="${Math.floor(i / 6) * 12}" width="10" height="12" fill="#7E8FC4"/>` : "").join("")}<rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/><path d="M14 42 C14 33 17 29 22 26 C19 26 14 28 11 25 C9 23 10 20 13 18 L21 11 C22 8 24 6 25 8 C27 7 29 8 30 10 C36 16 37 29 34 42 Z" fill="#FFF7E8" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/><circle cx="21" cy="15" r="1.4" fill="${IK}"/><path d="M40 42 C37 32 39 25 47 25 C55 25 57 32 54 42 Z" fill="#2A2D3E" stroke="${IK}" stroke-width="2"/><path d="M45.5 13 h3 v4 h4 v3 h-4 v6 h-3 v-6 h-4 v-3 h4 z" fill="#FFC425" stroke="${IK}" stroke-width="1.4"/><rect x="36" y="41" width="22" height="4" rx="2" fill="#2A2D3E" stroke="${IK}" stroke-width="1.6"/><rect x="10" y="41" width="27" height="4" rx="2" fill="#FFF7E8" stroke="${IK}" stroke-width="1.6"/></svg>`,
   make(api){
     const { W, c } = api, cs = W / 8; let lvl = api.opt();
@@ -4667,7 +4932,7 @@ arcRegister("t2048", {
   t:"2048", d:"Desliza y junta números iguales hasta llegar a 2048.", col:"y", revive:true, noCount:true, ratio:1, ctlH:0,
   intro:"Desliza hacia cualquier lado: todas las fichas se mueven y las iguales se suman. Si se llena el tablero, pierdes.",
   help:"Desliza sobre el tablero o usa las flechas del teclado",
-  points: s => s / 60,
+  points: s => s / 30,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#B9AFA0"/>${[["2","#EEE4DA",4,4],["4","#EDE0C8",24,4],["8","#F2B179",44,4],["16","#F59563",4,26],["128","#EDCF72",24,26],["2048","#22A447",44,26]].map(([n,c,x,y]) => `<rect x="${x}" y="${y}" width="16" height="18" rx="3" fill="${c}"/><text x="${x+8}" y="${y+12.5}" font-size="${n.length > 3 ? 5.2 : n.length > 2 ? 6.5 : 9}" font-weight="bold" text-anchor="middle" fill="${+n > 4 ? "#fff" : "#776E65"}">${n}</text>`).join("")}<rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, c } = api, N = 4, pad = W * .03, cs = (W - pad * (N + 1)) / N;
@@ -4730,7 +4995,7 @@ arcRegister("memo", {
   options:[{ k:"normal", l:"8 pares" }, { k:"dificil", l:"12 pares" }], onOpt:true,
   intro:"Da vuelta dos cartas por vez. Si son iguales, quedan. Menos movimientos y menos tiempo, más puntos.",
   help:"Toca las cartas para darlas vuelta",
-  points: s => s / 8,
+  points: s => s / 10, limit:5,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#FFE3EA"/>${[[6,"b"],[20,"f"],[34,"s"],[48,"b"]].map(([x,k]) => `<rect x="${x}" y="8" width="11" height="15" rx="2.5" fill="${k === "b" ? "#EE3B2B" : "#fff"}" stroke="${IK}" stroke-width="1.1"/>${k === "b" ? `<ellipse cx="${x+5.5}" cy="15.5" rx="2.6" ry="3.4" fill="#fff" opacity=".25"/>` : ""}`).join("")}${[[6,"s"],[20,"b"],[34,"b"],[48,"f"]].map(([x,k]) => `<rect x="${x}" y="26" width="11" height="15" rx="2.5" fill="${k === "b" ? "#EE3B2B" : "#fff"}" stroke="${IK}" stroke-width="1.1"/>${k === "b" ? `<ellipse cx="${x+5.5}" cy="33.5" rx="2.6" ry="3.4" fill="#fff" opacity=".25"/>` : ""}`).join("")}<circle cx="25.5" cy="15.5" r="3.6" fill="#fff" stroke="${IK}" stroke-width="1"/><path d="M25.5 13.4 l1.4 1 -.5 1.6 h-1.8 l-.5 -1.6z" fill="${IK}"/><circle cx="53.5" cy="33.5" r="3.6" fill="#fff" stroke="${IK}" stroke-width="1"/><path d="M53.5 31.4 l1.4 1 -.5 1.6 h-1.8 l-.5 -1.6z" fill="${IK}"/><path d="M39.5 12 l1.1 2.3 2.5 .3 -1.8 1.7 .5 2.5 -2.3 -1.3 -2.3 1.3 .5 -2.5 -1.8 -1.7 2.5 -.3z" fill="#FFC425" stroke="${IK}" stroke-width=".8"/><path d="M11.5 30 l1.1 2.3 2.5 .3 -1.8 1.7 .5 2.5 -2.3 -1.3 -2.3 1.3 .5 -2.5 -1.8 -1.7 2.5 -.3z" fill="#FFC425" stroke="${IK}" stroke-width=".8"/><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, H, c } = api, hard = api.opt() === "dificil", C = 4, R = hard ? 6 : 4, pairs = R * C / 2, pad = W * .025;
@@ -4774,7 +5039,7 @@ arcRegister("flappy", {
   t:"Tito vuela", d:"Toca para que Tito suba y pasa entre las columnas griegas.", col:"b", revive:true, fill:[1.2, 1.7], ctlH:0,
   intro:"Cada toque hace subir a Tito. Pasa por el hueco entre las columnas sin tocarlas.",
   help:"Toca en cualquier parte del juego",
-  points: s => s * 3,
+  points: s => s * .7,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thc2"><rect width="64" height="48" rx="8"/></clipPath><linearGradient id="thg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6EC6F0"/><stop offset="1" stop-color="#FFF3D6"/></linearGradient></defs><g clip-path="url(#thc2)"><rect width="64" height="48" fill="url(#thg2)"/><circle cx="54" cy="8" r="4" fill="#FFF6C2"/><path d="M0 40 Q14 33 28 38 Q44 31 64 37 V48 H0Z" fill="#E2CF98"/><rect x="38" y="0" width="9" height="13" fill="#F4EEDF" stroke="${IK}" stroke-width="1"/><path d="M40 0 V13 M42.5 0 V13 M45 0 V13" stroke="#C9BC98" stroke-width=".6"/><rect x="35.5" y="12.5" width="14" height="2.6" rx="1" fill="#EFE6CF" stroke="${IK}" stroke-width="1"/><circle cx="36.5" cy="16" r="1.6" fill="#EFE6CF" stroke="${IK}" stroke-width=".8"/><circle cx="48.5" cy="16" r="1.6" fill="#EFE6CF" stroke="${IK}" stroke-width=".8"/><rect x="38" y="30" width="9" height="14" fill="#F4EEDF" stroke="${IK}" stroke-width="1"/><path d="M40 30 V44 M42.5 30 V44 M45 30 V44" stroke="#C9BC98" stroke-width=".6"/><rect x="35.5" y="27.4" width="14" height="2.6" rx="1" fill="#EFE6CF" stroke="${IK}" stroke-width="1"/><circle cx="36.5" cy="27" r="1.6" fill="#EFE6CF" stroke="${IK}" stroke-width=".8"/><circle cx="48.5" cy="27" r="1.6" fill="#EFE6CF" stroke="${IK}" stroke-width=".8"/><rect y="43" width="64" height="5" fill="#F2D49B"/><circle cx="12" cy="30" r="2" fill="#fff" opacity=".9"/><circle cx="9" cy="33" r="1.5" fill="#fff" opacity=".7"/><g transform="translate(12 10) scale(.16) rotate(-12 60 70)">${titoSVG({}, 120, { still:true, noFloat:true, mood:"happy" }).replace(/<\/?svg[^>]*>/g,"")}</g></g><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, H, c } = api, img = titoImg(api.tito, "happy", 90), imgD = titoImg(api.tito, "dizzy", 90), TW = 46, TH = 56, X = W * .28, GND = H - Math.round(H * .1), CW = 50;
@@ -4879,7 +5144,7 @@ arcRegister("connect", {
   intro:"Toca una columna para soltar tu ficha roja. Gana el primero que junta cuatro seguidas: en fila, en columna o en diagonal.",
   help:"Toca una columna para soltar la ficha",
   overText:"Ganó Tito",
-  points: s => s / 4,
+  points: s => s / 4, limit:5,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#DCEBFF"/><rect x="4" y="13" width="56" height="32" rx="4" fill="#2F7FE8" stroke="${IK}" stroke-width="1.4"/>${[...Array(24)].map((_,i) => { const q = i%6, r = Math.floor(i/6), x = 9.5 + q*9, y = 18 + r*7.5, k = {"3,2":"y","3,3":"r","2,3":"y","4,3":"r","4,2":"r","1,3":"y","4,1":"y"}[q+","+r]; return `<circle cx="${x}" cy="${y}" r="3.2" fill="${k === "r" ? "#EE3B2B" : k === "y" ? "#FFC425" : "#DCEBFF"}" stroke="${IK}" stroke-width=".8"/>`; }).join("")}<circle cx="27.5" cy="6" r="3.6" fill="#EE3B2B" stroke="${IK}" stroke-width=".9"/><path d="M27.5 3.6 l.8 1.6 1.7 .2 -1.2 1.2 .3 1.7 -1.6 -.9 -1.6 .9 .3 -1.7 -1.2 -1.2 1.7 -.2z" fill="#fff"/><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, c } = api, C = 7, R = 6, cs = W / C, top = cs;
@@ -5361,7 +5626,7 @@ arcRegister("penal", {
   t:"Penales al ángulo", d:"Elige dirección, altura y potencia. El arquero mejora con cada gol.", col:"b", revive:true, fill:[1.12, 1.45], ctlH:76,
   intro:"Toca tres veces: la primera fija la dirección, la segunda la altura y la tercera la potencia. Un gol vale 1 y al ángulo vale 3. Con 3 fallos se termina.",
   help:"Toca la cancha o el botón para fijar cada paso",
-  points: s => s * 2,
+  points: s => s * 3,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thc10"><rect width="64" height="48" rx="8"/></clipPath></defs><g clip-path="url(#thc10)">
     <rect width="64" height="48" fill="#3FA34D"/><rect width="64" height="12" fill="#26306A"/>${[3,7].map((y,r) => [...Array(16)].map((_,i) => `<circle cx="${2 + i*4 + (r%2)*2}" cy="${y}" r="1.3" fill="${["#EE3B2B","#FFC425","#fff","#74ACDF","#22A447"][(i+r)%5]}"/>`).join("")).join("")}
     <rect y="12" width="64" height="3" fill="#2F7FE8"/>${[0,16,32,48].map(x => `<rect x="${x}" y="15" width="8" height="33" fill="#37944A"/>`).join("")}
@@ -5566,7 +5831,7 @@ arcRegister("tower", {
   t:"Torre de tapitas", d:"Apila tapitas de colores lo más alto que puedas.", col:"r", revive:true, fill:[1.25, 1.65], ctlH:0, noCount:true,
   intro:"Toca para soltar la tapita que se mueve. Lo que sobresale se cae. Si la dejas justo encima, es «¡Perfecto!» y con tres seguidas la tapita vuelve a crecer.",
   help:"Toca en cualquier parte para soltar",
-  points: s => s * .8,
+  points: s => s * .5,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thc11"><rect width="64" height="48" rx="8"/></clipPath><linearGradient id="thg11" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB46B"/><stop offset="1" stop-color="#FFE4A8"/></linearGradient></defs><g clip-path="url(#thc11)"><rect width="64" height="48" fill="url(#thg11)"/>
     <path d="M0 48 V40 H6 V36 H10 V41 H16 V34 H19 V30 L20.5 18 L22 30 V34 H25 V39 H31 V35 H36 V41 H44 V37 H50 V42 H64 V48Z" fill="#E59A6A" opacity=".7"/>
     ${[["#22A447",14,36],["#2F7FE8",16,30],["#FFC425",15,24],["#EE3B2B",17,18],["#7A4FD9",17,12]].map(([col,x,y]) => `<rect x="${x + 6}" y="${y}" width="${30 - (x - 14) * 2}" height="6" rx="2" fill="${col}" stroke="${IK}" stroke-width="1.1"/><path d="${[...Array(6)].map((_,i) => `M${x + 9 + i * 4} ${y + 1.5} v3`).join(" ")}" stroke="rgba(0,0,0,.25)" stroke-width="1"/>`).join("")}
@@ -5675,6 +5940,69 @@ arcRegister("tower", {
 
 /* Orden en la pantalla de Arcade */
 ARC_ORDER.splice(0, ARC_ORDER.length, "runner", "flappy", "cross", "penal", "tower", "bricks", "mines", "chess", "t2048", "memo", "connect", "snake");
+
+/* =================== Miniaturas detalladas del arcade =================== */
+(() => {
+  const crowd = (y0, rows, seed, w) => { let s = "", r = rng(seed); const cols = ["#EE3B2B","#FFC425","#2F7FE8","#FFFFFF","#22A447","#74ACDF","#F47B20","#FF7DB0","#7A4FD9"], sk = ["#F2C9A0","#C68A5A","#E0AC7E"];
+    for (let row = 0; row < rows; row++) for (let x = 1 + (row % 2) * 1.5; x < (w || 64); x += 3) { const y = y0 + row * 3.2; s += `<rect x="${(x - .9).toFixed(1)}" y="${(y + .7).toFixed(1)}" width="1.8" height="2" rx=".6" fill="${cols[Math.floor(r() * cols.length)]}"/><circle cx="${x.toFixed(1)}" cy="${(y + .2).toFixed(1)}" r=".75" fill="${sk[Math.floor(r() * 3)]}"/>`; }
+    return s; };
+  const logo = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})" font-family="'Luckiest Guy', 'Arial Black', sans-serif"><text x="0" y="0" font-family="Fredoka, sans-serif" font-weight="700" font-size="6.4" fill="#fff">unra</text>${[["T","#22A447",0,-6],["I","#EE3B2B",4.2,5],["T","#FFC425",7,-3],["O","#2F7FE8",11.2,7]].map(([ch, col, dx, rt]) => `<text x="${14.4 + dx}" y="0" font-size="8" fill="${col}" stroke="${IK}" stroke-width=".9" paint-order="stroke" transform="rotate(${rt} ${16 + dx} -3)">${ch}</text>`).join("")}</g>`;
+  const frame = id => `<rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/>`;
+  const clip = id => `<defs><clipPath id="${id}"><rect width="64" height="48" rx="8"/></clipPath></defs>`;
+  const ball = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${IK}" stroke-width="${r * .22}"/><path d="M${x} ${y - r * .38} l${r * .36} ${r * .26} -${r * .14} ${r * .42} h-${r * .44} l-${r * .14} -${r * .42}z" fill="${IK}"/>`;
+  const TH = {
+    runner: () => `<svg viewBox="0 0 64 48" aria-hidden="true">${clip("tn1")}<g clip-path="url(#tn1)">
+      <rect width="64" height="48" fill="#1E2758"/><rect width="64" height="2.6" fill="#2A3366"/><path d="M0 0 L4 2.6 L8 0 L12 2.6 L16 0 L20 2.6 L24 0 L28 2.6 L32 0 L36 2.6 L40 0 L44 2.6 L48 0 L52 2.6 L56 0 L60 2.6 L64 0" stroke="#5A6390" stroke-width=".4" fill="none"/>
+      ${crowd(3.2, 3, 7)}<rect x="8" y="5" width="7" height="4" fill="#74ACDF"/><rect x="10.3" y="5" width="2.4" height="4" fill="#fff"/><rect x="44" y="4.5" width="7" height="4" fill="#EE3B2B"/><rect x="46.3" y="4.5" width="2.4" height="4" fill="#fff"/>
+      <rect y="13" width="64" height="5.4" fill="#1B2250"/><rect x="32" y="13" width="32" height="5.4" fill="#5B2DB8"/>${logo(4, 17.2, .55)}${logo(36, 17.2, .55)}
+      <rect y="18.4" width="64" height="29.6" fill="#3FA34D"/>${[0, 16, 32, 48].map(x => `<rect x="${x}" y="18.4" width="8" height="29.6" fill="#37944A"/>`).join("")}<rect y="18.4" width="64" height="1.4" fill="rgba(0,0,0,.18)"/>
+      <path d="M0 41 H64" stroke="#fff" stroke-width="1.1"/>
+      <g transform="translate(28 34)"><ellipse cx="6" cy="7" rx="9" ry="1.2" fill="rgba(0,0,0,.18)"/><path d="M-2 6 L6 5.4" stroke="#F2C9A0" stroke-width="1.6" stroke-linecap="round"/><path d="M1 5.6 L4 5.4" stroke="#EE3B2B" stroke-width="1.8"/><rect x="5" y="2.4" width="6.5" height="4" rx="1.6" fill="#EE3B2B" stroke="${IK}" stroke-width=".6" transform="rotate(-18 8 4)"/><circle cx="13" cy="2.4" r="1.9" fill="#F2C9A0" stroke="${IK}" stroke-width=".6"/><ellipse cx="14" cy="6.4" rx="3" ry="1.2" fill="rgba(170,130,80,.5)"/></g>
+      <g transform="translate(52 26)"><path d="M0 14 V9 M2.4 14 V9" stroke="${IK}" stroke-width="1.4"/><rect x="-1" y="2.6" width="4.6" height="6.4" rx="1.4" fill="#2A2F45" stroke="${IK}" stroke-width=".6"/><rect x="-1" y="5" width="4.6" height=".8" fill="#FFC425"/><circle cx="1.2" cy="1" r="1.8" fill="#F2C9A0" stroke="${IK}" stroke-width=".6"/><path d="M3.4 3.6 L5.6 -1" stroke="#2A2F45" stroke-width="1.2" stroke-linecap="round"/><rect x="4.6" y="-4.6" width="2.6" height="3.4" rx=".5" fill="#FFD400" stroke="${IK}" stroke-width=".5" transform="rotate(10 6 -3)"/></g>
+      ${ball(20, 39.2, 1.8)}<path d="M23 39 h3 M23 37.6 h2" stroke="#fff" stroke-width=".7" stroke-linecap="round" opacity=".8"/>
+      ${thumbTito(24, 12.5, .135, "happy")}<path d="M27 37 q4 -2 8 0" stroke="#fff" stroke-width=".6" fill="none" opacity=".6"/></g>${frame()}</svg>`,
+    cross: () => `<svg viewBox="0 0 64 48" aria-hidden="true">${clip("tn2")}<g clip-path="url(#tn2)">
+      <rect width="64" height="8" fill="#8ED36B"/><path d="M5 4 l1 -2 l1 2 M20 6 l1 -2 l1 2 M40 3 l1 -2 l1 2" stroke="#4E9E36" stroke-width=".6" fill="none"/>
+      <g transform="translate(10 0)"><ellipse cx="0" cy="7.4" rx="3.6" ry=".8" fill="rgba(0,0,0,.2)"/><rect x="-.7" y="4" width="1.4" height="3.4" fill="#7A4E2D"/><rect x="-3.4" y="-1.5" width="6.8" height="6" rx="1.6" fill="#2B8441" stroke="${IK}" stroke-width=".6"/><rect x="-3.4" y="-1.5" width="6.8" height="3.4" rx="1.6" fill="#3DBA5C"/></g>
+      <circle cx="54" cy="4" r="2.4" fill="#E9EDF5" stroke="${IK}" stroke-width=".6"/><circle cx="54" cy="4" r="1.3" fill="#EE3B2B"/>
+      <rect y="8" width="64" height="1" fill="#6B4A2B"/><rect y="9" width="64" height="10" fill="#3FA9F0"/><path d="M3 13 q2 -1 4 0 M30 16 q2 -1 4 0 M50 12 q2 -1 4 0" stroke="#fff" stroke-width=".6" fill="none" opacity=".6"/>
+      <rect x="22" y="10.5" width="22" height="6" rx="3" fill="#9A6234" stroke="${IK}" stroke-width=".7"/><path d="M26 13.4 h6 M34 13.6 h6" stroke="rgba(60,30,10,.5)" stroke-width=".5"/><ellipse cx="42" cy="13.5" rx="1.4" ry="2.4" fill="#C98B55" stroke="${IK}" stroke-width=".5"/>
+      <path d="M50 14 a3.4 2 0 1 0 6 0 l-3 0 z" fill="#3DBA5C" stroke="${IK}" stroke-width=".5"/><circle cx="8" cy="14" r="1.1" fill="#fff" opacity=".7"/>
+      <rect y="19" width="64" height="1.6" fill="#C9CCD8"/><rect y="20.6" width="64" height="9" fill="#555A70"/><path d="M0 29.6 H64" stroke="#43475A" stroke-width=".8"/>
+      <g transform="translate(4 21.4)"><rect width="22" height="6.6" rx="1.6" fill="#EE3B2B" stroke="${IK}" stroke-width=".7"/>${[2, 7, 12, 17].map(x => `<rect x="${x}" y="1.2" width="3.6" height="2.4" rx=".6" fill="#BFE3FF"/>`).join("")}<rect x="1" y="4.4" width="20" height="1" fill="#fff"/><circle cx="5" cy="6.8" r="1.4" fill="${IK}"/><circle cx="17" cy="6.8" r="1.4" fill="${IK}"/><rect x="17" y="-1.4" width="4" height="1.6" fill="${IK}"/></g>
+      <g transform="translate(40 22.4)"><rect x="2.5" y="-1" width="8" height="3" rx="1" fill="#FFC425" stroke="${IK}" stroke-width=".6"/><rect width="13.5" height="4.6" rx="1.4" fill="#1B1D2A" stroke="${IK}" stroke-width=".6"/><rect x="1" y="1.8" width="11.5" height=".8" fill="#FFC425"/><circle cx="3" cy="4.8" r="1.2" fill="${IK}"/><circle cx="10.5" cy="4.8" r="1.2" fill="${IK}"/></g>
+      <rect y="30" width="64" height="7.4" fill="#4D5368"/><path d="M0 30.6 H64 M0 36.8 H64" stroke="#FFC425" stroke-width=".5"/>
+      <g transform="translate(46 30.4)"><circle cx="0" cy="5" r="1.9" fill="none" stroke="${IK}" stroke-width=".8"/><circle cx="6.4" cy="5" r="1.9" fill="none" stroke="${IK}" stroke-width=".8"/><path d="M0 5 L2.6 1.6 L5.2 1.6 L6.4 5 M2.6 1.6 L3 5 L5.2 1.6" stroke="#2F7FE8" stroke-width=".8" fill="none"/><path d="M2.4 1.4 L4 -2" stroke="#7A4FD9" stroke-width="1.6" stroke-linecap="round"/><circle cx="4.6" cy="-3" r="1" fill="#F2C9A0"/><path d="M3.5 -3.4 a1.2 1.2 0 0 1 2.4 0" fill="#FFC425"/></g>
+      <rect y="37.4" width="64" height="10.6" fill="#84CB60"/><path d="M8 42 l1 -2 l1 2 M52 45 l1 -2 l1 2" stroke="#4E9E36" stroke-width=".6" fill="none"/>
+      <g transform="translate(40 39)"><circle r="2.6" cy="2" fill="#FFD84A" stroke="${IK}" stroke-width=".6"/><circle r="1.4" cy="2" fill="#F4A300"/></g>
+      ${thumbTito(24, 30.5, .13, "happy")}</g>${frame()}</svg>`,
+    penal: () => `<svg viewBox="0 0 64 48" aria-hidden="true">${clip("tn3")}<g clip-path="url(#tn3)">
+      <rect width="64" height="11" fill="#1E2758"/>${crowd(1.6, 3, 31)}<rect y="11" width="64" height="4" fill="#1B2250"/><rect x="21" y="11" width="22" height="4" fill="#5B2DB8"/>${logo(1.5, 14.2, .42)}${logo(23, 14.2, .42)}${logo(45, 14.2, .42)}
+      <rect y="15" width="64" height="33" fill="#3FA34D"/>${[0, 16, 32, 48].map(x => `<rect x="${x}" y="15" width="8" height="33" fill="#37944A"/>`).join("")}
+      <path d="M11 34 V18 H53 V34" fill="rgba(255,255,255,.15)"/><path d="${[14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50].map(x => `M${x} 18 V34`).join(" ")} M11 21.2 H53 M11 24.4 H53 M11 27.6 H53 M11 30.8 H53" stroke="#fff" stroke-width=".35" opacity=".6"/>
+      <path d="M11 34 V18 H53 V34" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M0 34 H64" stroke="#fff" stroke-width=".8"/>
+      <g transform="translate(36 27) rotate(-62)"><path d="M-2 4 L-3 9 M2 4 L1 9.6" stroke="#22A447" stroke-width="1.6" stroke-linecap="round"/><rect x="-2.6" y="3" width="5.2" height="2.4" rx=".8" fill="#1B1D2A"/><rect x="-3.2" y="-3.4" width="6.4" height="7" rx="1.8" fill="#22A447" stroke="${IK}" stroke-width=".6"/><text x="0" y="1.8" font-size="3.4" text-anchor="middle" fill="#fff" font-family="'Luckiest Guy', sans-serif">1</text>
+        <path d="M-2.4 -2.6 L-3 -7 M2.4 -2.6 L3 -7" stroke="#22A447" stroke-width="1.4" stroke-linecap="round"/><rect x="-4.6" y="-9.4" width="3.2" height="3.4" rx="1.2" fill="#fff" stroke="${IK}" stroke-width=".5"/><rect x="1.4" y="-9.4" width="3.2" height="3.4" rx="1.2" fill="#fff" stroke="${IK}" stroke-width=".5"/><circle cx="0" cy="-5.4" r="2.1" fill="#E0AC7E" stroke="${IK}" stroke-width=".5"/><path d="M-2.1 -6 a2.1 2.1 0 0 1 4.2 0" fill="#2B1D14"/></g>
+      ${ball(49, 20.6, 2.4)}<path d="M45 24 l-3 2 M46 25.6 l-2.6 1.6" stroke="#fff" stroke-width=".7" stroke-linecap="round" opacity=".8"/><path d="M52 17 l1.6 -2 M54 20 l2.4 -.6 M50.6 16.4 l-.4 -2.4" stroke="#FFC425" stroke-width=".9" stroke-linecap="round"/>
+      <path d="M33 45 Q42 30 48 22" stroke="#fff" stroke-width=".6" stroke-dasharray="1.4 1.4" fill="none" opacity=".7"/>${thumbTito(16, 31, .13, "happy")}</g>${frame()}</svg>`,
+    tower: () => `<svg viewBox="0 0 64 48" aria-hidden="true">${clip("tn4")}<defs><linearGradient id="tg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9A5C"/><stop offset=".6" stop-color="#FFC98A"/><stop offset="1" stop-color="#FFE4A8"/></linearGradient></defs><g clip-path="url(#tn4)">
+      <rect width="64" height="48" fill="url(#tg4)"/><circle cx="52" cy="10" r="5" fill="#FFF1A8" opacity=".8"/><g fill="#fff" opacity=".85"><circle cx="9" cy="9" r="2.4"/><circle cx="12" cy="7.6" r="3"/><circle cx="15.4" cy="9" r="2.2"/></g>
+      <path d="M0 48 V40 H5 V36 H9 V42 H14 V37 H17 V48 Z M44 48 V38 H49 V35 H54 V40 H59 V36 H64 V48Z" fill="#C97A63" opacity=".55"/><path d="M8.6 48 L9.4 22 L10.2 19 L11 22 L11.8 48 Z" fill="#B0665A" opacity=".75"/>
+      <rect x="18" y="44" width="28" height="4" fill="#B9BED0" stroke="${IK}" stroke-width=".8"/>
+      ${[["#EE3B2B", 19, 37], ["#2F7FE8", 20, 30.6], ["#FFC425", 20.6, 24.2], ["#22A447", 21.6, 17.8]].map(([col, x, y]) => { const w = 64 - x * 2 - 4; return `<g><rect x="${x}" y="${y}" width="${w}" height="6.2" rx="1.4" fill="${col}" stroke="${IK}" stroke-width=".8"/><rect x="${x + .6}" y="${y + .6}" width="${w - 1.2}" height="1.4" rx=".6" fill="#fff" opacity=".45"/><path d="${[...Array(Math.floor(w / 1.8))].map((_, i) => `M${(x + 1.4 + i * 1.8).toFixed(1)} ${y + 2.4} v3`).join(" ")}" stroke="rgba(0,0,0,.22)" stroke-width=".5"/><path d="M32 ${y + 2} l.7 1.4 1.5 .2 -1.1 1 .3 1.5 -1.4 -.7 -1.4 .7 .3 -1.5 -1.1 -1 1.5 -.2z" fill="#fff"/></g>`; }).join("")}
+      <g transform="translate(39 4)"><rect width="22" height="6.2" rx="1.4" fill="#7A4FD9" stroke="${IK}" stroke-width=".8"/><rect x=".6" y=".6" width="20.8" height="1.4" rx=".6" fill="#fff" opacity=".45"/><path d="M11 2 l.7 1.4 1.5 .2 -1.1 1 .3 1.5 -1.4 -.7 -1.4 .7 .3 -1.5 -1.1 -1 1.5 -.2z" fill="#fff"/></g><path d="M36 7 h-3 M64 7 h2.4" stroke="${IK}" stroke-width=".8" stroke-linecap="round"/>
+      ${thumbTito(26, 4, .11, "happy")}</g>${frame()}</svg>`,
+    flappy: () => `<svg viewBox="0 0 64 48" aria-hidden="true">${clip("tn5")}<defs><linearGradient id="tg5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5EB8EC"/><stop offset=".75" stop-color="#BFE7FB"/><stop offset="1" stop-color="#FFF1D0"/></linearGradient></defs><g clip-path="url(#tn5)">
+      <rect width="64" height="48" fill="url(#tg5)"/><circle cx="54" cy="8" r="4" fill="#FFF6C2"/><g fill="#fff" opacity=".9"><circle cx="10" cy="10" r="2.4"/><circle cx="13" cy="8.6" r="3"/><circle cx="16.6" cy="10" r="2.2"/></g>
+      <path d="M-2 40 L6 26 L10 30 L18 20 L26 30 L32 24 L40 32 L48 22 L56 30 L66 24 V40Z" fill="#A9C9E3"/><path d="M18 20 l-2.4 3 1.2 -.4 1.2 1 1.2 -1 1.2.4z M48 22 l-2.2 2.8 1.1 -.4 1.1.9 1.1 -.9 1.1.4z" fill="#F4F8FF"/>
+      <path d="M0 42 Q12 33 26 39 Q40 32 64 38 V48 H0Z" fill="#CDBF95"/><g><rect x="11.4" y="31" width=".9" height="4" fill="#6B4A2B"/><circle cx="12" cy="30" r="2.2" fill="#7E9C4E"/></g><g><rect x="49" y="31.6" width=".9" height="4" fill="#6B4A2B"/><circle cx="49.5" cy="30.6" r="2.4" fill="#7E9C4E"/></g>
+      <rect x="38" y="0" width="9" height="12" fill="#F4EEDF" stroke="${IK}" stroke-width=".9"/><path d="M40 0 V12 M42.5 0 V12 M45 0 V12" stroke="#C9BC98" stroke-width=".5"/><rect x="35.5" y="11.6" width="14" height="2.4" rx="1" fill="#EFE6CF" stroke="${IK}" stroke-width=".9"/><circle cx="36.4" cy="14.6" r="1.5" fill="#EFE6CF" stroke="${IK}" stroke-width=".7"/><circle cx="48.6" cy="14.6" r="1.5" fill="#EFE6CF" stroke="${IK}" stroke-width=".7"/>
+      <rect x="38" y="30" width="9" height="13" fill="#F4EEDF" stroke="${IK}" stroke-width=".9"/><path d="M40 30 V43 M42.5 30 V43 M45 30 V43" stroke="#C9BC98" stroke-width=".5"/><rect x="35.5" y="27.6" width="14" height="2.4" rx="1" fill="#EFE6CF" stroke="${IK}" stroke-width=".9"/><circle cx="36.4" cy="27" r="1.5" fill="#EFE6CF" stroke="${IK}" stroke-width=".7"/><circle cx="48.6" cy="27" r="1.5" fill="#EFE6CF" stroke="${IK}" stroke-width=".7"/>
+      <rect y="43" width="64" height="5" fill="#F2D49B"/><rect y="43" width="64" height=".8" fill="#FFF1CF"/>
+      <circle cx="11" cy="28" r="2" fill="#fff" opacity=".9"/><circle cx="8" cy="31" r="1.5" fill="#fff" opacity=".7"/>${thumbTito(12, 8, .15, "happy").replace("scale(0.15)", "scale(0.15) rotate(-12 60 70)")}</g>${frame()}</svg>`
+  };
+  Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
+})();
 
 /* ---------- Utilidades ---------- */
 const pad = n => String(n).padStart(2,"0");
@@ -5790,9 +6118,11 @@ const levelOf = earned => 1 + Math.floor(Math.sqrt(Math.max(0, earned || 0) / 10
 let svgN = 0;
 function titoSVG(t, px, o){
   o = o || {}; t = Object.assign({ skin:"hueso", hat:"none", clothes:"none", glasses:"none", float:"none", feet:"none" }, t || {});
+  const CH = typeof charOf === "function" ? charOf(t.char) : null; if (CH) t.skin = "hueso";
+  const BODY = CH ? CH.path : EGG;
   const id = "e"+(svgN++), K = IK, mood = o.mood || "normal", lvl = o.level || 1;
-  const dark = DARK_SKINS.includes(t.skin);
-  let s = `<svg class="tito ${o.dance && !o.still ? "dance-"+o.dance : ""}" viewBox="0 -8 124 150" width="${px}" height="${Math.round(px*150/124)}" aria-hidden="true" focusable="false"><defs><clipPath id="${id}c"><path d="${EGG}"/></clipPath>`;
+  const dark = CH ? !!CH.dark : DARK_SKINS.includes(t.skin);
+  let s = `<svg class="tito ${o.dance && !o.still ? "dance-"+o.dance : ""}" viewBox="0 -8 124 150" width="${px}" height="${Math.round(px*150/124)}" aria-hidden="true" focusable="false"><defs><clipPath id="${id}c"><path d="${BODY}"/></clipPath>${CH && CH.defs ? CH.defs(id) : ""}`;
   if (t.skin === "dorado") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".5" stop-color="#F4C440"/><stop offset="1" stop-color="#C98F00"/></linearGradient>`;
   if (t.skin === "galaxia") s += `<radialGradient id="${id}g" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#6B4FD8"/><stop offset=".6" stop-color="#2B1D5C"/><stop offset="1" stop-color="#120B2E"/></radialGradient>`;
   if (t.skin === "arcoiris") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1">${["#FF9A9A","#FFC48A","#FFF08A","#A8EBA0","#9CC8FF","#C9A8FF"].map((c,i) => `<stop offset="${i/5}" stop-color="${c}"/>`).join("")}</linearGradient>`;
@@ -5836,8 +6166,10 @@ function titoSVG(t, px, o){
   if (t.clothes === "dragon") s += `<path d="M26 66 Q2 52 2 26 Q10 38 17 36 Q14 48 22 52 Q16 58 28 60 Z M94 66 Q118 52 118 26 Q110 38 103 36 Q106 48 98 52 Q104 58 92 60 Z" fill="#2E8A3D" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M6 32 L22 58 M114 32 L98 58" stroke="#1E6A2C" stroke-width="2"/><path d="M96 116 q20 4 24 -12 q-2 -6 -8 -4 q0 10 -16 8z" fill="#4CB85C" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M112 98 l6 -6 l1 8 z" fill="#F3E08A" stroke="${K}" stroke-width="2" stroke-linejoin="round"/>`;
   if (t.clothes === "heroe") s += `<path d="M26 92 Q6 112 10 136 L26 126 Z M94 92 Q114 112 110 136 L94 126 Z" fill="#D8232A" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`;
   if (t.hat === "faraon") s += `<path d="M24 36 L14 96 L32 96 L36 50 Z M96 36 L106 96 L88 96 L84 50 Z" fill="#F4C440" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M18 60 h14 M16 74 h15 M88 60 h14 M89 74 h15" stroke="#1F4FA8" stroke-width="5"/>`;
-  const fill = GRAD_SKINS.includes(t.skin) ? `url(#${id}g)` : (SKIN[t.skin] || SKIN.hueso);
-  s += `<path d="${EGG}" fill="${fill}"/><g clip-path="url(#${id}c)">`;
+  const fill = CH ? CH.fill(id) : GRAD_SKINS.includes(t.skin) ? `url(#${id}g)` : (SKIN[t.skin] || SKIN.hueso);
+  if (CH && CH.behind) s += CH.behind(id);
+  s += `<path d="${BODY}" fill="${fill}"/><g clip-path="url(#${id}c)">`;
+  if (CH && CH.decor) s += CH.decor(id);
   if (t.skin === "camuflaje") s += `<path d="M20 40 q14 -10 26 0 q-6 14 -26 8z M70 30 q18 -6 28 8 q-14 8 -28 -8z M30 92 q16 -12 30 2 q-12 14 -30 -2z M74 80 q14 -4 26 10 q-12 10 -26 -10z" fill="#566634"/><path d="M50 58 q12 -6 22 4 q-10 8 -22 -4z M24 70 q8 -4 12 6 q-8 4 -12 -6z M80 112 q10 -6 18 2 q-8 6 -18 -2z" fill="#B3B77A"/>`;
   if (t.skin === "papiro") s += `<path d="M30 40h14M28 50h10M80 36h12M78 46h16M32 100h12M76 104h14" stroke="#8A6A2E" stroke-width="2.5" stroke-linecap="round"/><path d="M36 60 l4 -6 l4 6 M34 112 l6 0 l-3 -6z" stroke="#8A6A2E" stroke-width="2" fill="none"/><circle cx="86" cy="60" r="4" fill="none" stroke="#8A6A2E" stroke-width="2"/>`;
   if (t.skin === "pelota") s += `<path d="M60 40 l12 9 -5 14 h-14 l-5 -14z M22 70 l10 -4 6 10 -6 10 -10 -2z M98 70 l-10 -4 -6 10 6 10 10 -2z M48 112 l12 -6 12 6 -3 12 h-18z" fill="#151A35"/>`;
@@ -5875,9 +6207,10 @@ function titoSVG(t, px, o){
   if (t.clothes === "armadura") s += `<rect x="10" y="88" width="104" height="46" fill="#A7B0C0"/>` + [98,108,118].map(y => `<path d="M10 ${y} H114" stroke="#6E788C" stroke-width="2.5"/>`).join("") + [30,60,90].map(x => `<circle cx="${x}" cy="93" r="2" fill="#6E788C"/>`).join("") + `<path d="M10 88 H114" stroke="${K}" stroke-width="3"/>`;
   if (t.hat === "vincharoja") s += `<rect x="10" y="36" width="104" height="9" fill="#D8232A"/><path d="M10 36 H114 M10 45 H114" stroke="${K}" stroke-width="2.4"/>`;
   if (t.hat === "vincha") s += `<rect x="10" y="36" width="104" height="10" fill="#fff"/><rect x="10" y="39.5" width="104" height="3" fill="#EE3B2B"/><path d="M10 36 H114 M10 46 H114" stroke="${K}" stroke-width="2.5"/>`;
-  s += `</g><path d="${EGG}" fill="none" stroke="${K}" stroke-width="4"/>`;
+  s += `</g><path d="${BODY}" fill="none" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`;
+  if (CH && CH.over) s += CH.over(id);
   const cracks = ["M76 26 l-5 7 l6 4 l-4 8","M34 50 l6 4 l-3 7 l6 4","M88 98 l-6 3 l3 6 l-5 5"];
-  const nC = lvl >= 15 ? 3 : lvl >= 10 ? 2 : lvl >= 5 ? 1 : 0;
+  const nC = CH ? 0 : lvl >= 15 ? 3 : lvl >= 10 ? 2 : lvl >= 5 ? 1 : 0;
   cracks.slice(0, nC).forEach(d => s += `<path d="${d}" stroke="#FFE27A" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="${d}" stroke="${K}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`);
   if (t.clothes === "bufanda") s += `<path d="M20 86 Q60 100 100 86 L101 97 Q60 111 19 97 Z" fill="#EE3B2B" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M36 92v10M52 95v10M68 95v10M84 92v10" stroke="#FFC425" stroke-width="3"/><rect x="74" y="98" width="12" height="24" rx="5" fill="#EE3B2B" stroke="${K}" stroke-width="3"/>`;
   if (t.clothes === "esmoquinb") s += `<path d="M50 90 l10 5 l-10 5z M70 90 l-10 5 l10 5z" fill="#1B1D2A" stroke="${K}" stroke-width="2.2" stroke-linejoin="round"/><circle cx="60" cy="95" r="3" fill="#1B1D2A" stroke="${K}" stroke-width="1.6"/>`;
@@ -6145,10 +6478,10 @@ function makeCtx(kind, a, day, n){
     return { key:"g:"+a+":"+day, kind, code:a, day, game, word:ANS_ORDER[mod(i + 37 + h % 211, ANS_ORDER.length)], soup:() => soupFor("g:"+a+":"+day, (h % 100000) + i*131, mod(h + i, THEMES.length)), fixed:pickFixed(g.theme === "arg" ? ARGQ : GENQ, 1000 + h % 9000, i, 7), tlabel: g.theme === "arg" ? "Trivia argentina" : "Trivia" };
   }
   if (kind === "m") return { key:"m:"+a+":"+day, kind, n:a, day, pick:() => pickFresh(GENQ.concat(ARGQ, FUTQ), 3), tlabel:"Merienda de Tito" };
-  if (kind === "a") { const c = ARGC.find(x => x.id === a); return { key:"a:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:n > LIMITS.pointRuns, pick:() => pickFresh(a === "mix" ? ARGQ : c.qs, 7), tlabel: a === "mix" ? "Mezcla argentina" : c.t }; }
-  if (kind === "c") { const c = GCATS.find(x => x.id === a) || GCATS[0]; return { key:"c:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:n > LIMITS.pointRuns, pick:() => c.math ? mathQs(7) : pickFresh(c.cats ? GENQ.filter(q => c.cats.includes(q.cat)) : GENQ, 7), tlabel:c.t }; }
+  if (kind === "a") { const c = ARGC.find(x => x.id === a); return { key:"a:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, pick:() => pickFresh(a === "mix" ? ARGQ : c.qs, 7), tlabel: a === "mix" ? "Mezcla argentina" : c.t }; }
+  if (kind === "c") { const c = GCATS.find(x => x.id === a) || GCATS[0]; return { key:"c:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, pick:() => c.math ? mathQs(7) : pickFresh(c.cats ? GENQ.filter(q => c.cats.includes(q.cat)) : GENQ, 7), tlabel:c.t }; }
   const f = FGAMES[a];
-  return { key:"f:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:n > LIMITS.pointRuns, style:f.style, pick:f.pick, tlabel:f.t };
+  return { key:"f:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, style:f.style, pick:f.pick, tlabel:f.t };
 }
 function parseCtx(key){ const p = key.split(":"); return p[0] === "d" ? makeCtx("d", null, p[1]) : p[0] === "g" ? makeCtx("g", p[1], p[2]) : p[0] === "m" ? makeCtx("m", Number(p[1]), p[2]) : makeCtx(p[0], p[1], p[2], Number(p[3])); }
 function runCtx(kind, id){
@@ -6402,13 +6735,17 @@ function renderHome(){
   const pendingGroup = S.groups.find(code => { const g = S.groupMeta[code]; if (!g) return false; const gc = makeCtx("g", code, today()); return !play(gc)[gc.game].done; });
   const wl = LIMITS.spins - dayCounter("wheel").n;
   const wheelBanner = `<button class="card wheel-banner press ${wl <= 0 ? "used" : ""}" data-act="tab:ruleta"><span class="wb-wheel">${wheelMini()}</span><span class="wb-txt"><b>Ruleta del día</b><small>${wl <= 0 ? "Mañana tienes otro giro" : dayCounter("wheel").n === 0 ? "Tienes 1 giro gratis" : "Otro giro con " + videoWord()}</small></span><span class="go ${wl <= 0 ? "done" : "y"}" style="--c:var(--y)">${wl <= 0 ? "Listo" : "Girar"}</span></button>`;
-  return wheelBanner + `<section class="hero"><div class="bubble" id="heroBubble">${esc(phrase())}</div>
+  const games = [["word", p.w.done, "Palabra"], ["soup", p.s.done, "Sopa"], ["trivia", p.t.done, "Trivia"]];
+  const daily = `<div class="daily-row"><button class="daily-card press" data-act="games"><span class="dc-txt"><b>JUEGO DIARIO</b><small>Un desafío distinto cada día</small>
+      <span class="dc-games">${games.map(([ic, done, l]) => `<span class="dc-g ${done ? "done" : ""}" title="${l}">${icon(ic)}${done ? `<i>✓</i>` : ""}</span>`).join("")}<em>${doneN === 3 ? "¡Completo!" : doneN + " de 3"}</em></span></span>
+      <span class="dc-go">${doneN === 3 ? "VER" : doneN ? "SEGUIR" : "JUGAR"}</span></button>
+    <button class="streak-mini press ${streakOpen ? "open" : ""} ${c ? "" : "off"}" data-act="streak-toggle" aria-expanded="${streakOpen}" aria-label="Racha: ${c} días seguidos"><span class="flame">${icon("flame")}</span><span class="cartoon-num">${c}</span></button></div>
+    ${streakOpen ? `<div class="card streak-drop"><div class="sd-head"><b>${c} ${c === 1 ? "día seguido" : "días seguidos"}</b><span>${c % 7 === 0 && c ? "¡Regalo ganado!" : "Regalo en " + toGift + (toGift === 1 ? " día" : " días")}</span></div>${weekHTML()}<div class="perk"><b>Día 3:</b> pista · <b>Día 5:</b> +50 · <b>Día 7:</b> regalo</div></div>` : ""}`;
+  return daily + `<section class="hero"><div class="bubble" id="heroBubble">${esc(phrase())}</div>
       <div class="stage"><button class="tap" data-act="tito-tap" aria-label="Tocar a Tito"><span class="anim-enter"><span id="heroTito" class="anim-idle">${titoSVG(S.tito, 150, { level:level(), mood: roomMood() === "normal" ? "normal" : roomMood() })}</span></span></button></div>
       <div class="who">${esc(S.profile.name || "Tu Tito")} <span>${flag(S.profile.country)}</span> </div>${lvlChip()}</section>
-    <section class="card streak ${streakOpen ? "open" : ""}"><button class="streak-row streak-toggle" data-act="streak-toggle" aria-expanded="${streakOpen}"><span class="flame">${icon("flame")}</span><span class="cartoon-num">${c}</span><b>${c === 1 ? "día seguido" : "días seguidos"}</b><span class="gift-note">${c % 7 === 0 && c ? "¡Regalo ganado!" : "Regalo en "+toGift+(toGift === 1 ? " día" : " días")}</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>${streakOpen ? `<div class="streak-more">
-      ${weekHTML()}<div class="perk"><b>Día 3:</b> pista extra · <b>Día 5:</b> +50 · <b>Día 7:</b> regalo sorpresa</div></div>` : ""}</section>
-    <button class="btn big-cta block" data-act="games">INICIAR JUEGO</button>
-    <p class="status-line">${doneN === 3 ? "¡Completaste los 3 juegos de hoy!" : doneN+" de 3 juegos de hoy"}${pendingGroup ? ` · <button data-act="open-group:${pendingGroup}" style="all:unset;cursor:pointer;text-decoration:underline">tu grupo te espera</button>` : ""}</p>`;
+    ${wheelBanner}
+    ${pendingGroup ? `<p class="status-line"><button data-act="open-group:${pendingGroup}" style="all:unset;cursor:pointer;text-decoration:underline">Tu grupo te espera</button></p>` : ""}`;
 }
 function gameCard(kind, c, opts){
   opts = opts || {}; const p = play(c);
@@ -6530,7 +6867,7 @@ function setReact(m, ms){ react = { mood:m, until:Date.now() + ms }; miniShown =
 function startCard(kind){
   const n = kind === "t" ? qsOf(ctx).length : 0, quien = kind === "t" && qsOf(ctx)[0] && qsOf(ctx)[0].clues;
   const txt = { w:["2:00","Adivina la palabra de 5 letras antes de que se termine el tiempo."], s:["2:00","Encuentra las 8 palabras. Hay en diagonal, en vertical y una al revés."], t: quien ? [n+"×20 s","Te damos pistas de a una. Cuanto antes adivines, más puntos."] : [n+"×15 s", ctx.style === "pen" ? "Cada respuesta correcta es un gol. ¡Que no te ataje el arquero!" : "Tienes 15 segundos por pregunta. Cuanto más rápido, más puntos."] }[kind];
-  return `<section class="card start-card"><span class="anim-enter"><span class="anim-idle">${titoSVG(S.tito, 120, { mood:"happy", level:level() })}</span></span><span class="big">${txt[0]}</span><p>${txt[1]}</p>${ctx.practice ? `<p class="small muted">Modo práctica: ya sumaste puntos ${LIMITS.pointRuns} veces hoy en este juego.</p>` : ""}<button class="btn ${kind==="w"?"green":kind==="s"?"red":"primary"} block" data-act="start:${kind}">¡EMPEZAR!</button></section>`;
+  return `<section class="card start-card"><span class="anim-enter"><span class="anim-idle">${titoSVG(S.tito, 120, { mood:"happy", level:level() })}</span></span><span class="big">${txt[0]}</span><p>${txt[1]}</p>${ctx.kind !== "m" && ctx.n === 1 ? `<p class="small" style="font-weight:800">Primera partida del día: puntos ×2</p>` : ""}<button class="btn ${kind==="w"?"green":kind==="s"?"red":"primary"} block" data-act="start:${kind}">¡EMPEZAR!</button></section>`;
 }
 let lastTickSec = -1;
 function tick(){
@@ -6741,15 +7078,75 @@ function renderTrivia(){
   const cat = catLabel(q);
   return head + `${hint}</div>${ctx.style === "pen" ? penScene(d, Q) : ""}${timerRow()}${dots}<section class="card q-card"><span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="eyebrow">Pregunta ${i+1} de ${n}</span>${cat ? `<span class="qcat">${esc(cat)}</span>` : ""}</span>${visual}<h2>${esc(q.q)}</h2>${clues}<div class="opts">${opts}</div></section>${after}`;
 }
-function ansPoints(q, a){ if (!a || !a.ok) return 0; const t = q.time || TIME.q, base = q.clues ? [18,12,6][(a.clues || 1) - 1] : 7; return base + Math.round(7 * (a.left || 0) / t) + (q.d === 3 ? 2 : 0); }
+function ansPoints(q, a){ if (!a || !a.ok) return 0; const t = q.time || TIME.q, base = q.clues ? [5,3,2][(a.clues || 1) - 1] : 2; return base + Math.round((a.left || 0) / t) + (q.d === 3 ? 1 : 0); }
+
+
+/* ---------- Códigos de regalo (se guardan como hash; más adelante se validan en el servidor) ---------- */
+const DEV = (() => { try { return !!window.claude || /[?#&]dev\b/.test(location.href) || localStorage.getItem("unratito.dev") === "1"; } catch(e){ return false; } })();
+const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" } };
+function openRedeem(){
+  openSheet("Canjear código", `<form id="redeemForm"><div class="field"><label for="rCode">Escribe tu código</label><input id="rCode" maxlength="24" required placeholder="Ej.: TITO2026" style="text-transform:uppercase;letter-spacing:.08em;font-weight:800" autocomplete="off" autocapitalize="characters"></div><button class="btn yellow block" type="submit">Canjear</button><p class="small muted">Los códigos se consiguen en eventos, sorteos y en la comunidad de unraTITO.</p></form>`);
+  setTimeout(() => { const i = $("#rCode"); if (i) i.focus(); }, 250);
+}
+function redeemCode(raw){
+  const code = String(raw || "").toUpperCase().replace(/[^A-Z0-9]/g, ""), h = hashStr("unratito:" + code), r = CODES[h];
+  S.codes = S.codes || [];
+  const bad = msg => { SND.bad(); const i = $("#rCode"); if (i) { i.classList.remove("shake"); void i.offsetWidth; i.classList.add("shake"); } toast(msg); };
+  if (!code) return bad("Escribe un código");
+  if (!r) return bad("Ese código no existe o ya venció");
+  if (S.codes.includes(h)) return bad("Ya canjeaste ese código");
+  S.codes.push(h);
+  if (r.pts) addCoins(r.pts);
+  if (r.item) (S.owned[r.item[0]] = S.owned[r.item[0]] || []).push(r.item[1]);
+  if (r.char) { S.chars = S.chars || ["tito"]; if (!S.chars.includes(r.char)) S.chars.push(r.char); }
+  save(); pushMember(); renderHeader(); closeSheet();
+  setTimeout(() => {
+    openSheet("¡Código canjeado!", `<div class="redeem-win"><span class="anim-enter"><span class="anim-idle">${titoSVG(S.tito, 130, { mood:"star", level:level() })}</span></span>${r.pts ? `<b class="rw-big">+${NUM.format(r.pts)}</b><span class="rw-sub">puntos para la tienda</span>` : ""}<p class="small muted">${esc(r.t)}</p><button class="btn yellow block" data-act="close-sheet">¡Genial!</button></div>`);
+    SND.prize(); confetti(90);
+  }, 280);
+}
+
+
+/* ---------- Personajes y caja misteriosa ---------- */
+const BOX_SVG = `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="mbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9B6BFF"/><stop offset="1" stop-color="#5B2DB8"/></linearGradient></defs>
+  <g class="mb-base"><rect x="18" y="52" width="84" height="58" rx="8" fill="url(#mbg)" stroke="${IK}" stroke-width="4"/><rect x="52" y="52" width="16" height="58" fill="#FFC425" stroke="${IK}" stroke-width="3"/><text x="38" y="92" font-family="'Luckiest Guy', sans-serif" font-size="24" fill="#fff" stroke="${IK}" stroke-width="1.5" paint-order="stroke">?</text><text x="74" y="92" font-family="'Luckiest Guy', sans-serif" font-size="24" fill="#fff" stroke="${IK}" stroke-width="1.5" paint-order="stroke">?</text></g>
+  <g class="mb-lid"><rect x="12" y="36" width="96" height="20" rx="6" fill="#B48BFF" stroke="${IK}" stroke-width="4"/><rect x="50" y="36" width="20" height="20" fill="#FFC425" stroke="${IK}" stroke-width="3"/><path d="M60 36 C44 16 30 24 40 34 Z M60 36 C76 16 90 24 80 34 Z" fill="#FFC425" stroke="${IK}" stroke-width="3" stroke-linejoin="round"/></g></svg>`;
+function ownedChars(){ S.chars = S.chars && S.chars.length ? S.chars : ["tito"]; return S.chars; }
+function charsSection(){
+  const own = ownedChars(), cur = S.tito.char || "tito", left = CHAR_ORDER.filter(c => !own.includes(c));
+  const card = id => { const has = own.includes(id), t = Object.assign({}, has ? S.tito : {}, { char:id === "tito" ? undefined : id });
+    const svg = titoSVG(has ? t : { char:t.char }, 62, { still:true, noFloat:true, mood:"happy" });
+    return has ? `<button class="ch-card press ${cur === id ? "on" : ""}" data-act="char-use:${id}" aria-pressed="${cur === id}"><span class="ch-fig">${svg}</span><b>${esc(charName(id === "tito" ? null : id))}</b>${cur === id ? `<i>En uso</i>` : ""}</button>`
+      : `<div class="ch-card locked" aria-label="Personaje bloqueado"><span class="ch-fig">${svg}</span><b>???</b></div>`; };
+  const can = S.coins >= MBOX_PRICE;
+  return `<section class="card chars-card"><div class="ch-head"><h2>Personajes</h2><span class="group-tag">${own.length}/${CHAR_ORDER.length}</span></div>
+    <div class="ch-grid">${CHAR_ORDER.map(card).join("")}</div>
+    ${left.length ? `<button class="mbox-btn press ${can ? "" : "poor"}" data-act="mbox"><span class="mb-ico">${BOX_SVG}</span><span class="mb-txt"><b>Caja misteriosa</b><small>Te sale un personaje nuevo al azar</small></span><span class="mb-price">${coin}${NUM.format(MBOX_PRICE)}</span></button>`
+      : `<p class="small" style="font-weight:800;text-align:center">¡Tienes todos los personajes!</p>`}
+    <p class="small muted">Todos usan la misma ropa, gorros, lentes, calzado y bailes que Tito.</p></section>`;
+}
+function openMBox(){
+  const own = ownedChars(), left = CHAR_ORDER.filter(c => !own.includes(c));
+  if (!left.length) { toast("Ya tienes todos los personajes"); return; }
+  if (S.coins < MBOX_PRICE) { SND.bad(); toast(`Te faltan ${NUM.format(MBOX_PRICE - S.coins)} puntos`); return; }
+  const id = left[Math.floor(rnd() * left.length)];
+  S.coins -= MBOX_PRICE; own.push(id); save(); pushMember(); renderHeader(); SND.buy();
+  const fig = titoSVG(Object.assign({}, S.tito, { char:id }), 150, { mood:"star", level:level(), noFloat:true });
+  openSheet("Caja misteriosa", `<div class="mbox"><div class="mb-rays"></div><div class="mb-box">${BOX_SVG}</div><div class="mb-char">${fig}</div>
+    <div class="mb-reveal"><span class="eyebrow">¡Nuevo personaje!</span><b class="mb-name">${esc(CHARS[id].n)}</b><p class="small muted">${esc(CHARS[id].d)}</p>
+    <div class="btn-row"><button class="btn" data-act="close-sheet">Seguir</button><button class="btn yellow" data-act="char-use:${id}">¡Usarlo ahora!</button></div></div></div>`, { center:true, sticky:true });
+  SND.spin(1500);
+  setTimeout(() => { SND.fx("boom"); }, 1500);
+  setTimeout(() => { SND.prize(); confetti(110); }, 1700);
+}
 
 /* ---------- Puntos, racha y resultados ---------- */
 function basePoints(kind, p){
   if (ctx.practice) return 0;
-  if (kind === "w") return p.w.won ? 50 + ((p.w.extra ? 7 : 6) - p.w.g.length) * 10 + Math.floor((p.w.left||0) / 4) : 5;
-  if (kind === "s") return p.s.found.length * 10 + (p.s.found.length === 8 ? Math.floor((p.s.left||0) / 2) : 0);
+  if (kind === "w") return p.w.won ? 12 + ((p.w.extra ? 7 : 6) - p.w.g.length) * 2 + Math.floor((p.w.left||0) / 15) : 2;
+  if (kind === "s") return p.s.found.length * 2 + (p.s.found.length === 8 ? 4 + Math.floor((p.s.left||0) / 12) : 0);
   const Q = qsOf(ctx);
-  if (ctx.kind === "m") return p.t.ans.filter(a => a && a.ok).length * 5;
+  if (ctx.kind === "m") return p.t.ans.filter(a => a && a.ok).length * 3;
   return p.t.ans.reduce((s,a,i) => s + ansPoints(Q[i], a), 0);
 }
 function finishGame(kind){
@@ -6757,22 +7154,22 @@ function finishGame(kind){
   if (kind === "w") { st.wPlayed++; if (p.w.won) { st.wWon++; st.dist[Math.min(6, p.w.g.length-1)]++; } }
   if (kind === "s") { st.sPlayed++; if (p.s.found.length === 8 && (st.sBest == null || p.s.time < st.sBest)) st.sBest = p.s.time; }
   if (kind === "t" && ctx.kind !== "m") { st.tPlayed++; st.tRight += p.t.ans.filter(a => a && a.ok).length; }
-  const base = basePoints(kind, p), mult = isGroup() ? 2 : 1, rr = rating(kind);
+  const first = ctx.kind !== "m" && (ctx.n == null || ctx.n === 1), base = basePoints(kind, p), mult = isGroup() || first ? 2 : 1, rr = rating(kind);
   const v0 = view; setTimeout(() => { if (view === v0) SND.react(rr); }, 380);
   p.pts[kind] = base; addCoins(base * mult); cheer(isGroup() ? 18 : 6);
   if (ctx.kind === "m") dayCounter("snacks").n++;
   if (isGroup()) { const gs = S.gscore[ctx.code] = S.gscore[ctx.code] || { total:0, days:{} }; if (gs.days[ctx.day] == null) { gs.days[ctx.day] = base; gs.total += base; } delete groupCache[ctx.code]; }
-  let msg = ctx.practice ? "Modo práctica: esta vez no suma puntos" : "+"+(base*mult)+" puntos"+(mult > 1 ? " (x2 por jugar en grupo)" : "");
+  let msg = "+"+(base*mult)+" puntos"+(mult > 1 ? (isGroup() ? " (×2 por jugar en grupo)" : " (×2 primera del día)") : "");
   if (ctx.kind === "m") msg = "¡Tito comió! +"+base+" puntos";
   let gift = false;
   if (ctx.kind === "d" && ctx.day === today() && dailyDone(ctx.day) && S.streak.last !== ctx.day) {
     S.streak.count = S.streak.last === addDays(ctx.day,-1) ? S.streak.count + 1 : 1; S.streak.last = ctx.day;
-    S.streak.best = Math.max(S.streak.best, S.streak.count); addCoins(50); cheer(10);
+    S.streak.best = Math.max(S.streak.best, S.streak.count); addCoins(25); cheer(10);
     const w = ((S.streak.count - 1) % 7) + 1;
-    if (w === 3) { S.hints++; msg = "¡Día 3 de racha! +1 pista y +50 puntos"; }
-    else if (w === 5) { addCoins(50); msg = "¡Día 5 de racha! +100 puntos"; }
+    if (w === 3) { S.hints++; msg = "¡Día 3 de racha! +1 pista y +25 puntos"; }
+    else if (w === 5) { addCoins(25); msg = "¡Día 5 de racha! +50 puntos"; }
     else if (w === 7) { gift = true; msg = "¡7 días seguidos! Te ganaste el regalo de la semana"; }
-    else msg = "¡Día completo! Racha de "+S.streak.count+" y +50 puntos";
+    else msg = "¡Día completo! Racha de "+S.streak.count+" y +25 puntos";
   }
   if (msg && (base > 0 || ctx.practice)) setTimeout(() => toast(msg), 350);
   if (gift) setTimeout(openGift, 1600);
@@ -6832,7 +7229,7 @@ function resultBlock(kind){
 
 /* ---------- Argentina ---------- */
 const ARG_ICON = { musica:"music", famosos:"star", lunfardo:"chat", futbol:"ball", provincias:"pin", historia:"book" };
-function runState(kind, id){ const d = runsDone(kind, id); return d >= LIMITS.pointRuns ? "Práctica (ya sumaste hoy)" : d ? "Puedes sumar 1 vez más hoy" : "7 preguntas · 15 s"; }
+function runState(kind, id){ const d = runsDone(kind, id); return d ? "7 preguntas · 15 s" : "7 preguntas · <b class=\"x2\">×2 hoy</b>"; }
 function renderArg(){
   return trivSeg("arg") + `<div class="flag-ar" role="img" aria-label="Bandera argentina"></div>
     <div class="page-head"><span class="eyebrow">Todo lo nuestro</span><h1>Argentina</h1></div>
@@ -6971,7 +7368,7 @@ function openNewGroup(){
     <div class="field"><span class="eyebrow">Juego de cada día</span><div class="opt-chips"><label><input type="radio" name="gGame" value="t" checked> Trivia</label><label><input type="radio" name="gGame" value="w"> Palabra</label><label><input type="radio" name="gGame" value="s"> Sopa</label><label><input type="radio" name="gGame" value="random"> Aleatorio</label></div></div>
     <button class="btn red block" type="submit">Crear y obtener código</button></form>`);
 }
-function openJoinGroup(){ openSheet("Unirme a un grupo", `<form id="joinForm"><div class="field"><label for="jCode">Código del grupo</label><input id="jCode" maxlength="8" required placeholder="Ej.: K7MQ2P" style="text-transform:uppercase;letter-spacing:.1em;font-weight:800" autocomplete="off"></div><button class="btn yellow block" type="submit">Unirme</button><p class="small muted">Pedile el código a quien creó el grupo.</p></form>`); }
+function openJoinGroup(){ openSheet("Unirme a un grupo", `<form id="joinForm"><div class="field"><label for="jCode">Código del grupo</label><input id="jCode" maxlength="8" required placeholder="Ej.: K7MQ2P" style="text-transform:uppercase;letter-spacing:.1em;font-weight:800" autocomplete="off"></div><button class="btn yellow block" type="submit">Unirme</button><p class="small muted">Pídele el código a quien creó el grupo.</p></form>`); }
 function genCode(){ const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; for (let i = 0; i < 6; i++) s += A[Math.floor(rnd()*A.length)]; return s; }
 async function createGroup(name, theme, game){
   const code = genCode(), meta = { name, theme, game, owner:remote.uid || "me", created:Date.now() };
@@ -7008,6 +7405,7 @@ function renderTito(){
   h += `<section class="card"><div class="meters">${meter("Panza de saber", S.care.food, "var(--g)")}${meter("Ánimo", S.care.mood, "var(--b)")}</div>
     <div class="btn-row" style="margin-top:12px"><button class="btn green" data-act="snack">${icon("croissant").replace("<svg","<svg width='24' height='24'")}Merienda${snacksUsed >= LIMITS.freeSnacks ? " · "+videoWord() : ""}</button><button class="btn reward" data-act="bonus" ${bonusLeft <= 0 ? "disabled" : ""}>+30 pts · ${videoWord()} (${Math.max(0,bonusLeft)})</button></div>
     <p class="small muted" style="margin-top:10px">La panza se llena respondiendo bien y el ánimo jugando. Si no juegas, bajan un poco cada día. ${lv < 20 ? "En el nivel "+(lv < 5 ? 5 : lv < 10 ? 10 : lv < 15 ? 15 : 20)+" Tito cambia." : ""}</p></section>`;
+  h += charsSection();
   const cats = shopGroup === "tito" ? TITO_CATS : CASA_CATS; if (!cats.includes(shopCat)) shopCat = cats[0];
   const items = SHOP[shopCat].items.map(([key, name, base, sec]) => {
     const own = owns(shopCat, key), on = worn(shopCat) === key, trying = tryOn && tryOn.cat === shopCat && tryOn.key === key, rar = rarityOf(base), price = priceOf(shopCat, key);
@@ -7047,7 +7445,7 @@ function notifMsgs(){
   const p = play(makeCtx("d", null, today())), left = [!p.w.done && "la palabra", !p.s.done && "la sopa", !p.t.done && "la trivia"].filter(Boolean);
   return [
     { t:S.settings.times[0], title: dayCounter("wheel").n ? "Ya está la palabra de hoy" : "¡Tu ruleta gratis te espera!", body:"Tema de la sopa: "+makeCtx("d",null,today()).soup().theme+". Tienes 2 minutos." },
-    { t:S.settings.times[1], title: S.care.food < 30 ? "Tito tiene hambre de preguntas" : left.length ? "Te falta "+left.join(", ") : "¡Hoy completaste todo!", body: S.care.food < 30 ? "Dale una merienda rápida antes de dormir." : left.length ? (S.streak.count ? "No pierdas tu racha de "+S.streak.count+" días." : "Completa el día y arranca tu racha.") : "Mañana a las "+S.settings.times[0]+" hay juegos nuevos." }
+    { t:S.settings.times[1], title: S.care.food < 30 ? "Tito tiene hambre de preguntas" : left.length ? "Te falta "+left.join(", ") : "¡Hoy completaste todo!", body: S.care.food < 30 ? "Dale una merienda rápida a Tito antes de dormir." : left.length ? (S.streak.count ? "No pierdas tu racha de "+S.streak.count+" días." : "Completa el día y arranca tu racha.") : "Mañana a las "+S.settings.times[0]+" hay juegos nuevos." }
   ];
 }
 function renderSet(){
@@ -7064,12 +7462,13 @@ function renderSet(){
     ${s.times.map((t,i) => `<div class="set-row"><label for="nt${i}">${i ? "Aviso de la noche" : "Aviso de la mañana"}</label><input type="time" id="nt${i}" class="time-input" data-slot="${i}" value="${t}"></div>`).join("")}
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${notifMsgs().map(n => `<div style="padding:10px 12px;background:var(--surface-2);border-radius:12px"><div class="small muted">unraTITO · ${n.t}</div><div style="font-weight:800">${esc(n.title)}</div><div class="small muted">${esc(n.body)}</div></div>`).join("")}</div>
     <button class="btn block" style="margin-top:10px" data-act="test-notif">Probar un aviso ahora</button>
-    <div class="set-row"><span><b>Modo PREMIUM (demo)</b></span><label class="switch"><input type="checkbox" id="premiumOn" ${s.premium?"checked":""} aria-label="Modo PREMIUM"><span></span></label></div></section>
-  <section class="card"><h2 style="font-size:1.1em">Panel del negocio</h2>
+    ${DEV ? "" : "<!--"}<div class="set-row"><span><b>Modo PREMIUM (demo)</b></span><label class="switch"><input type="checkbox" id="premiumOn" ${s.premium?"checked":""} aria-label="Modo PREMIUM"><span></span></label></div>${DEV ? "" : "-->"}</section>
+  ${DEV ? "" : "<!--"}<section class="card"><h2 style="font-size:1.1em">Panel del negocio</h2>
     <p class="small muted" style="margin-top:4px">Anuncios vistos en el prototipo: <b>${a.banner}</b> banners, <b>${a.inter}</b> intersticiales, <b>${a.rewarded}</b> videos (${USD.format(rev)} con los eCPM de abajo).</p>
     <div class="owner-grid">${num("o_dau","Jugadores por día",o.dau,"1")}${num("o_prem","% que paga PREMIUM",o.prem)}${num("o_bpu","Banners por jugador/día",o.bpu)}${num("o_eb","eCPM banner (USD)",o.eb)}${num("o_ipu","Intersticiales por jugador/día",o.ipu)}${num("o_ei","eCPM intersticial (USD)",o.ei)}${num("o_rpu","Videos por jugador/día",o.rpu)}${num("o_er","eCPM video (USD)",o.er)}${num("o_price","PREMIUM neto por mes (USD)",o.price)}</div>
     <div class="money"><span class="small">Ingreso estimado por mes</span><br><b id="ownerTotal">${USD.format(ads+subs)}</b><div class="small muted" id="ownerSplit">Anuncios ${USD.format(ads)} · PREMIUM ${USD.format(subs)}</div></div>
-    <p class="small muted" style="margin-top:8px">Los eCPM son de ejemplo. Cambialos por los que te muestre AdMob cuando tengas tráfico real.</p></section>
+    <p class="small muted" style="margin-top:8px">Los eCPM son de ejemplo. Cámbialos por los que te muestre AdMob cuando tengas tráfico real.</p></section>${DEV ? "" : "-->"}
+  <section class="card"><div class="set-row"><span><b>Canjear código</b><br><span class="small muted">Puntos, ropa o personajes de regalo</span></span><button class="btn yellow" data-act="redeem">Canjear</button></div></section>
   <section class="card"><button class="btn block" data-act="reset" style="color:var(--r)">Borrar mi progreso</button></section>`;
 }
 
@@ -7141,6 +7540,9 @@ document.addEventListener("click", e => {
   else if (k === "home") setView("home", { day:today() });
   else if (k === "games") setView("games", { day:today() });
   else if (k === "settings") { moreTab = "set"; setView("more"); }
+  else if (k === "redeem") openRedeem();
+  else if (k === "mbox") openMBox();
+  else if (k === "char-use") { if (!ownedChars().includes(v)) return; S.tito.char = v === "tito" ? undefined : v; if (v === "tito") delete S.tito.char; save(); pushMember(); closeSheet(); render(false); SND.pop(); toast("¡Ahora juegas con " + charName(v === "tito" ? null : v) + "!"); }
   else if (k === "play") { const j = v.indexOf(":"); startGame(parseCtx(v.slice(j+1)), v.slice(0, j)); }
   else if (k === "run") { const [kind, id] = v.split(":"); startGame(runCtx(kind, id), "t"); }
   else if (k === "again") { const c = ctx; showInterstitial("Aparece entre partidas", () => startGame(runCtx(c.kind, c.cat), "t")); }
@@ -7209,6 +7611,7 @@ document.addEventListener("submit", e => {
   e.preventDefault(); const f = e.target;
   if (f.id === "groupForm") { const name = f.querySelector("#gName").value.trim(); if (!name) return; createGroup(name, f.querySelector('input[name="gTheme"]:checked').value, f.querySelector('input[name="gGame"]:checked').value); }
   if (f.id === "joinForm") joinGroup(f.querySelector("#jCode").value);
+  if (f.id === "redeemForm") redeemCode(f.querySelector("#rCode").value);
   if (f.id === "profileForm") {
     const name = f.querySelector("#pfName").value.trim(); if (!name) { toast("Pon un nombre o apodo"); return; }
     S.profile.name = name; S.profile.country = f.querySelector("#pfCountry").value;
