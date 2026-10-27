@@ -749,6 +749,43 @@ p.report-line{text-decoration:none}
 .btn.sm{padding:7px 12px;font-size:.85em;min-height:0;flex:none}
 .lvl-list li svg.tito{margin:0}
 .lvl-big small:last-child{display:block;opacity:.7}
+/* ---- Bailes nuevos ---- */
+.dance-tango .t-body{animation:tango 1.7s cubic-bezier(.7,0,.3,1) infinite}
+@keyframes tango{0%,14%{transform:translateX(-8px) rotate(-3deg)}22%,44%{transform:translateX(9px) rotate(10deg)}54%,74%{transform:translate(0,3px) rotate(-17deg)}84%{transform:translateX(-3px) rotate(3deg) scaleX(-1)}92%,100%{transform:translateX(-8px) rotate(-3deg)}}
+.dance-tango .t-foot-l{animation:tstep 1.7s ease-in-out infinite} .dance-tango .t-foot-r{animation:tstep 1.7s ease-in-out infinite;animation-delay:-.85s}
+@keyframes tstep{0%,100%{transform:none}18%{transform:translate(-7px,-3px) rotate(-14deg)}36%{transform:none}}
+.tito.dance-breakdance{animation:breakd 2.8s ease-in-out infinite;transform-origin:50% 55%}
+@keyframes breakd{0%,8%{transform:translateY(0) rotate(0) scaleX(1)}5%{transform:translateY(-5%) rotate(0) scaleX(1)}18%{transform:translateY(-11%) rotate(180deg) scaleX(1)}25%{transform:translateY(-11%) rotate(180deg) scaleX(.08)}31%{transform:translateY(-11%) rotate(180deg) scaleX(-1)}37%{transform:translateY(-11%) rotate(180deg) scaleX(.08)}43%{transform:translateY(-11%) rotate(180deg) scaleX(1)}49%{transform:translateY(-11%) rotate(180deg) scaleX(.08)}55%{transform:translateY(-11%) rotate(180deg) scaleX(-1)}61%{transform:translateY(-11%) rotate(180deg) scaleX(.08)}67%{transform:translateY(-11%) rotate(180deg) scaleX(1)}80%{transform:translateY(-12%) rotate(360deg) scaleX(1)}86%,94%{transform:translateY(0) rotate(372deg) scaleX(1)}100%{transform:translateY(0) rotate(360deg) scaleX(1)}}
+.dance-moonwalk .t-body,.dance-moonwalk .t-feet{animation:moonw 2.6s linear infinite}
+@keyframes moonw{0%{transform:translate(12px,0) scaleX(1)}40%{transform:translate(-12px,0) scaleX(1)}43%{transform:translate(-12px,0) scaleX(.06)}46%{transform:translate(-12px,0) scaleX(-1)}49%{transform:translate(-12px,0) scaleX(.06)}52%{transform:translate(-12px,0) scaleX(1)}88%{transform:translate(12px,0) scaleX(1)}93%{transform:translate(12px,-9px) scaleX(1)}100%{transform:translate(12px,0) scaleX(1)}}
+.dance-moonwalk .t-foot-l{animation:mws .65s ease-in-out infinite} .dance-moonwalk .t-foot-r{animation:mws .65s ease-in-out infinite;animation-delay:-.325s}
+@keyframes mws{0%,100%{transform:none}30%{transform:translateX(5px) rotate(16deg)}55%{transform:translateX(2px)}}
+.tito .mwsp{transform-box:fill-box;transform-origin:center;animation:mwsp 1.3s ease-in-out infinite}
+@keyframes mwsp{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+.dance-disco .t-body{animation:disco 1s ease-in-out infinite}
+@keyframes disco{0%,100%{transform:translate(-4px,0) rotate(-10deg)}50%{transform:translate(4px,-6px) rotate(10deg)}}
+.dance-disco .t-foot-l{animation:step 1s ease-in-out infinite} .dance-disco .t-foot-r{animation:step 1s ease-in-out infinite;animation-delay:-.5s}
+.tito .dl{animation:dblink .5s steps(1) infinite}
+@keyframes dblink{50%{opacity:.15}}
+.tito .dhand{transform-box:view-box;transform-origin:104px 34px;animation:dhand 1s ease-in-out infinite}
+@keyframes dhand{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-88px,66px) rotate(180deg)}}
+.dance-cuarteto .t-body{animation:cuart .47s ease-in-out infinite alternate}
+@keyframes cuart{0%{transform:skewX(10deg) rotate(-3deg)}50%{transform:skewX(0) rotate(0) translateY(-4px)}100%{transform:skewX(-10deg) rotate(3deg)}}
+.dance-cuarteto .t-foot-l{animation:step .94s ease-in-out infinite} .dance-cuarteto .t-foot-r{animation:step .94s ease-in-out infinite;animation-delay:-.47s}
+.dance-murga .t-body{animation:murga 1s ease-in-out infinite}
+@keyframes murga{0%,40%,80%,100%{transform:translateY(0) rotate(0)}20%{transform:translateY(-14px) rotate(-10deg)}60%{transform:translateY(-14px) rotate(10deg)}}
+.dance-murga .t-foot-l{animation:kickl 1s ease-in-out infinite} .dance-murga .t-foot-r{animation:kickr 1s ease-in-out infinite}
+@keyframes kickl{0%,40%,100%{transform:none}20%{transform:translate(-6px,-14px) rotate(45deg)}}
+@keyframes kickr{0%,40%,80%,100%{transform:none}60%{transform:translate(6px,-14px) rotate(-45deg)}}
+.tito .cfti{transform-box:fill-box;transform-origin:center;animation:cfti 1s linear infinite}
+@keyframes cfti{0%{transform:translateY(-6px) rotate(0);opacity:0}20%{opacity:1}100%{transform:translateY(40px) rotate(320deg);opacity:0}}
+.tito.dance-pogo{animation:pogo .34s cubic-bezier(.3,0,.6,1) infinite alternate;transform-origin:50% 100%}
+@keyframes pogo{0%{transform:translateY(0) scale(1.08,.92)}100%{transform:translateY(-16%) scale(.95,1.05)}}
+.dance-pogo .t-body{animation:bang .68s ease-in-out infinite}
+@keyframes bang{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}}
+.tito.dance-gusanito{animation:worm 3s ease-in-out infinite;transform-origin:50% 92%}
+@keyframes worm{0%,4%{transform:translate(0,0) rotate(0) scale(1,1)}12%{transform:translate(38%,0) rotate(-90deg) scale(.62,.62)}19%{transform:translate(36%,0) rotate(-90deg) scale(.74,.5)}26%{transform:translate(32%,0) rotate(-90deg) scale(.56,.66)}33%{transform:translate(29%,0) rotate(-90deg) scale(.74,.5)}40%{transform:translate(25%,0) rotate(-90deg) scale(.56,.66)}47%{transform:translate(22%,0) rotate(-90deg) scale(.74,.5)}54%{transform:translate(18%,0) rotate(-90deg) scale(.56,.66)}61%{transform:translate(15%,0) rotate(-90deg) scale(.74,.5)}68%{transform:translate(12%,0) rotate(-90deg) scale(.62,.62)}80%{transform:translate(0,-22%) rotate(-360deg) scale(1,1)}88%{transform:translate(0,0) rotate(-360deg) scale(1.12,.88)}94%,100%{transform:translate(0,0) rotate(-360deg) scale(1,1)}}
+@media (prefers-reduced-motion: reduce){.tito.dance-breakdance,.tito.dance-pogo,.tito.dance-gusanito{animation:none}}
 
 </style>
 </head>
@@ -977,7 +1014,7 @@ const SHOP = {
   clothes:{ l:"Camisetas y ropa", g:"tito", items:[["none","Nada",0,"Ropa"],["bufanda","Bufanda",350],["musculosa","Camiseta sin mangas celeste",300],["buzo","Sudadera",500],["esmoquin","Esmoquin",1500],["esmoquinb","Esmoquin blanco",1600]].concat(teamItems("shirt","", n => n), [
     ["toga","Toga romana",1400,"Disfraces"],["karate","Traje de artes marciales",1400],["ninja","Traje ninja",1500],["pirata","Camisa pirata",1500],["vikingo","Ropa vikinga",1800],["faraon","Ropa de faraón",1800],["gladiador","Coraza de gladiador",2000],["mago","Túnica de mago",2000],["heroe","Traje de superhéroe",2200],["trajegal","Traje galáctico",2200],["armadura","Armadura medieval",2800],["astro","Traje espacial",2800],["dino","Disfraz de dino",3000],["dragon","Disfraz de dragón",3200],["capareal","Capa real","L35","Premios de nivel"],["sacooro","Saco dorado","L60"],["capagal","Capa galáctica","L85"]]) },
   kit:    { l:"Disfraces", g:"tito", items:[["romano","Emperador romano",1900],["pirata","Pirata",2600],["marcial","Artista marcial",2600],["ninja","Ninja",2700],["heroe","Superhéroe",3000],["vikingo","Vikingo",3000],["faraon","Faraón",3500],["gladiador","Gladiador",3200],["mago","Mago",3400],["dragon","Dragón",3600],["galactico","Explorador galáctico",3800],["caballero","Caballero",4000],["astronauta","Astronauta",5000]] },
-  dance:  { l:"Bailes", g:"tito", items:[["funk","Funk brasilero",0],["cumbia","Cumbia",600],["robot","Robot",900],["malambo","Malambo",1200],["avioncito","Avioncito de gol",1500],["trompo","Trompo",2200],["campeon","Festejo de campeón","P"]] },
+  dance:  { l:"Bailes", g:"tito", items:[["funk","Funk brasilero",0],["cumbia","Cumbia",2500],["robot","Robot",3500],["malambo","Malambo",4500],["cuarteto","Cuarteto",5000],["murga","Murga",5500],["disco","Disco",6000],["avioncito","Avioncito de gol",6500],["pogo","Pogo",7000],["tango","Tango",7500],["trompo","Trompo",8000],["gusanito","Gusanito",9000],["moonwalk","Moonwalk",11000],["breakdance","Breakdance",15000],["campeon","Festejo de campeón","P"]] },
   glasses:{ l:"Lentes", g:"tito", items:[["none","Nada",0],["redondos","Redondos",300],["sol","De sol",700],["antifaz","Antifaz de héroe",800],["monoculo","Monóculo",1000],["vr","Realidad virtual",2200],["estrellas","Lentes de estrella","L10","Premios de nivel"],["diamante","Lentes de diamante","L45"]] },
   feet:   { l:"Calzado", g:"tito", items:[["none","Patitas",0,"Calzado"],["ojotas","Chanclas",250],["alpargatas","Alpargatas",350],["zapatillas","Zapatillas",400],["pantuflas","Pantuflas",500],["lluvia","Botas de lluvia",600],["charol","Zapatos de charol",700],["sandalias","Sandalias romanas",800],["aletas","Patas de rana",900],["potro","Botas de gaucho",1000],["botines","Botines",1200],["patines","Patines",1600],["dorados","Botines dorados","P"],
     ["vendas","Vendas de luchador",400,"De disfraces"],["tabi","Tabi ninja",500],["botaspirata","Botas de pirata",800],["botaspiel","Botas de piel",800],["curvos","Zapatos de mago",900],["heroe","Botas de héroe",900],["botasgal","Botas galácticas",1000],["garras","Garras de dragón",1100],["botasmetal","Botas de armadura",1200],["botasastro","Botas espaciales",1400],["alas","Zapatillas con alas","L40","Premios de nivel"],["cohete","Botas cohete","L70"]] },
@@ -3845,6 +3882,11 @@ const SND = (() => {
   function stopMusic(){ clearTimeout(musicTimer); musicNodes.forEach(n => { try { n.stop(); } catch(e){} }); musicNodes = []; }
 
   /* Cada baile tiene su tema propio (compuesto para la app) */
+  const snare = (t, d, v) => { noise(t, .16, v || .26, 1600, d); tone(200, t, .09, "triangle", .14, 140, d); };
+  const hat = (t, d, v, open) => noise(t, open ? .2 : .045, v || .07, 7600, d);
+  const clap = (t, d, v) => { [0, .012, .026].forEach(x => noise(t + x, .07, (v || .22) * (x ? .7 : 1), 1300, d, "bandpass")); };
+  const lead = (m, t, dur, d, v, type) => { tone(N(m), t, dur, type || "square", v || .045, null, d, .015); tone(N(m) * 1.006, t, dur, "sawtooth", (v || .045) * .5, null, d, .015); };
+  const seq = (notes, t0, beat, fn) => { let t = t0; notes.forEach(([m, l]) => { if (m) fn(m, t, l * beat); t += l * beat; }); return t; };
   const SONGS = {
     /* Funk brasilero (baile): tamborzão con toms, bajo 808 que se desliza, cencerro y un «hey» */
     funk(d, bars){ const st = 60/140/4;
@@ -3905,6 +3947,89 @@ const SND = (() => {
         mel[k].forEach((m,i) => tone(N(m), o + i*q, q*1.3, "sine", .08, null, d));
         tone(260, o, q*3, "sine", .05, 900, d);
       } return bars*6*q; },
+    /* Tango: bandoneón, piano marcato y bajo de habanera */
+    tango(d, bars){ const q = 60/118;
+      const A = [[76,.75],[77,.25],[76,.5],[74,.5],[72,.5],[71,.5],[69,1]], B = [[68,.5],[71,.5],[74,.5],[77,.5],[76,1.5],[0,.5]], C = [[77,.75],[76,.25],[74,.5],[69,.5],[74,1],[77,1]], D = [[76,.5],[74,.5],[72,.5],[71,.5],[68,.5],[71,.5],[69,1]];
+      const H = { Am:[[57,60,64],45,52], E7:[[56,59,62,64],40,47], Dm:[[57,62,65],38,45] };
+      const plan = [[A,"Am"],[B,"E7"],[C,"Dm"],[D,"E7"]];
+      for (let b = 0; b < bars*2; b++) { const o = b*4*q, [mel, h] = plan[b % 4], [ch, r, f] = H[h];
+        [[0,r],[1.5,f],[2,r],[3,f]].forEach(([i,m]) => tone(N(m), o + i*q, q*.45, "triangle", .2, null, d));
+        [0,1,2,3].forEach(i => { chord(ch, o + i*q, q*.18, "square", i ? .018 : .03, d); tone(90, o + i*q, .12, "sine", i ? .2 : .4, 55, d); });
+        noise(o + 3.5*q, .05, .08, 3000, d);
+        seq(mel, o, q, (m, t, l) => { tone(N(m), t, l*.92, "sawtooth", .05, null, d, .03); tone(N(m - 12), t, l*.92, "square", .025, null, d, .03); tone(N(m) * 1.008, t, l*.92, "sawtooth", .025, null, d, .03); });
+        if (b % 4 === 3 || b === bars*2 - 1) { chord([45,57,64], o + 3.5*q, q*.3, "sawtooth", .04, d); kick(o + 3.5*q, d, .5); }
+      } return bars*8*q; },
+    /* Breakdance: boom bap con scratch, bajo gordo y acordes de piano eléctrico */
+    breakdance(d, bars){ const s = 60/94/4;
+      const P = [[[60,63,67,70],36],[[65,68,72,75],41]];
+      for (let b = 0; b < bars*2; b++) { const o = b*16*s, [ch, r] = P[b % 2], sw = i => i % 2 ? s*.18 : 0;
+        [0,7,10].forEach(i => kick(o + i*s, d, .7)); [4,12].forEach(i => snare(o + i*s, d, .3));
+        for (let i = 0; i < 16; i += 2) hat(o + i*s + sw(i/2), d, i % 4 ? .05 : .08); hat(o + 14*s, d, .07, true);
+        [[0,r,3],[3,r,1],[6,r+3,2],[10,r+5,2],[13,r+7,3]].forEach(([i,m,l]) => tone(N(m), o + i*s, l*s, "sine", .38, null, d));
+        [6,14].forEach(i => chord(ch, o + i*s, s*1.6, "triangle", .04, d));
+        if (b % 2) [[12,320,950],[12.6,950,280],[13.2,320,1100],[13.8,1100,300]].forEach(([i,f1,f2]) => tone(f1, o + i*s, s*.6, "sawtooth", .05, f2, d));
+        else tone(N(79), o + 15*s, s*.9, "square", .03, N(84), d);
+      } return bars*32*s; },
+    /* Moonwalk: bajo funky en semicorcheas, chasquidos y sintes brillantes */
+    moonwalk(d, bars){ const s = 60/117/4;
+      const P = [[[54,57,61],[42,49,47,45,42,45,47,45]],[[52,56,59],[40,47,45,44,40,44,45,47]]];
+      for (let b = 0; b < bars*2; b++) { const o = b*16*s, [ch, bl] = P[b % 2];
+        [0,8].forEach(i => kick(o + i*s, d, .6)); kick(o + 10*s, d, .35); [4,12].forEach(i => { snare(o + i*s, d, .22); clap(o + i*s, d, .14); });
+        for (let i = 0; i < 16; i++) hat(o + i*s, d, i % 2 ? .035 : .06);
+        bl.forEach((m, i) => tone(N(m), o + i*2*s, s*1.7, "sawtooth", .07, null, d));
+        bl.forEach((m, i) => tone(N(m), o + i*2*s, s*1.7, "sine", .22, null, d));
+        [2,7,11].forEach(i => chord(ch.map(m => m + 12), o + i*s, s*.8, "square", .02, d));
+        if (b % 2) seq([[0,8],[73,1],[76,1],[78,2],[76,1],[73,3]], o, s, (m, t, l) => tone(N(m + 12), t, l*.9, "sine", .07, null, d, .02));
+      } return bars*32*s; },
+    /* Disco: bombo en negras, bajo en octavas, cuerdas y un gancho que se pega */
+    disco(d, bars){ const q = 60/124;
+      const P = [[[57,60,64,67],45,[[76,.5],[79,.5],[81,1],[79,.5],[76,.5],[74,1]]],[[57,62,66,72],50,[[74,.5],[76,.5],[78,1],[76,.5],[74,.5],[72,.5],[0,.5]]]];
+      for (let b = 0; b < bars*2; b++) { const o = b*4*q, [ch, r, mel] = P[b % 2];
+        for (let i = 0; i < 4; i++) { kick(o + i*q, d, .55); hat(o + i*q + q/2, d, .09, true); hat(o + i*q + q/4, d, .03); hat(o + i*q + 3*q/4, d, .03); }
+        [1,3].forEach(i => clap(o + i*q, d, .2));
+        for (let i = 0; i < 8; i++) tone(N(r + (i % 2 ? 12 : 0)), o + i*q/2, q*.42, "sawtooth", .06, null, d);
+        [1.5,3].forEach(i => chord(ch, o + i*q, q*.5, "sawtooth", .022, d));
+        seq(mel, o, q, (m, t, l) => lead(m, t, l*.9, d, .04));
+        if (b % 2) tone(N(72), o + 3.5*q, q*.5, "sawtooth", .04, N(84), d);
+      } return bars*8*q; },
+    /* Cuarteto: el tunga-tunga cordobés con piano, güiro y acordeón */
+    cuarteto(d, bars){ const q = 60/128;
+      const P = [[[60,64,67],36,43,[[72,.5],[74,.5],[76,.5],[77,.5],[79,1],[76,1]]],[[59,62,67],43,50,[[77,.5],[76,.5],[74,.5],[72,.5],[71,1],[67,1]]]];
+      for (let b = 0; b < bars*2; b++) { const o = b*4*q, [ch, r, f, mel] = P[b % 2];
+        [[0,r],[1,f],[2,r],[3,f]].forEach(([i,m]) => { tone(N(m), o + i*q, q*.5, "triangle", .22, null, d); tone(100, o + i*q, .15, "sine", .3, 60, d); });
+        for (let i = 0; i < 4; i++) { chord(ch, o + i*q + q/2, q*.22, "square", .02, d); chord(ch, o + i*q + q*.75, q*.15, "square", .014, d); }
+        for (let i = 0; i < 8; i++) noise(o + i*q/2, .06, .06, 3500, d);
+        seq(mel, o, q, (m, t, l) => { tone(N(m), t, l*.9, "sawtooth", .035, null, d, .02); tone(N(m + 12), t, l*.9, "square", .02, null, d, .02); });
+        if (b % 2) tone(420, o + 3.5*q, .22, "sawtooth", .05, 700, d);
+      } return bars*8*q; },
+    /* Murga: bombo con platillo, redoblante y silbato */
+    murga(d, bars){ const q = 60/104;
+      const mel = [[[74,.5],[74,.5],[78,.5],[81,.5],[79,1],[78,1]],[[76,.5],[76,.5],[79,.5],[78,.5],[76,1],[74,1]]];
+      for (let b = 0; b < bars*2; b++) { const o = b*4*q;
+        [0,1.5,3].forEach(i => tone(85, o + i*q, .32, "sine", .6, 48, d));
+        [.5,1,2,2.5,3.5].forEach(i => noise(o + i*q, .16, .12, 5200, d));
+        for (let i = 0; i < 16; i++) noise(o + i*q/4, .03, i % 4 ? .035 : .07, 2200, d);
+        seq(mel[b % 2], o, q, (m, t, l) => { tone(N(m), t, l*.85, "sawtooth", .045, null, d, .02); tone(N(m - 5), t, l*.85, "sawtooth", .025, null, d, .02); });
+        if (b % 2) [[3.5,2700],[3.62,3100],[3.74,2700]].forEach(([i,f]) => tone(f, o + i*q, .1, "sine", .06, null, d));
+      } return bars*8*q; },
+    /* Pogo: punk rápido con guitarras al palo, bajo y un «¡hey!» de la barra */
+    pogo(d, bars){ const e = 60/172/2;
+      const P = [[40,40,40,40,40,40,40,40],[36,36,36,36,38,38,38,38]];
+      for (let b = 0; b < bars*2; b++) { const o = b*8*e, R = P[b % 2];
+        if (b % 2 === 0) noise(o, .8, .1, 5000, d);
+        [0,3,4].forEach(i => kick(o + i*e, d, .6)); [2,6].forEach(i => snare(o + i*e, d, .3)); for (let i = 0; i < 8; i++) hat(o + i*e, d, .05);
+        R.forEach((r, i) => { [r, r + 7, r + 12].forEach(m => { tone(N(m), o + i*e, e*.8, "sawtooth", .035, null, d); tone(N(m) * 1.012, o + i*e, e*.8, "square", .02, null, d); }); tone(N(r - 12), o + i*e, e*.8, "sawtooth", .06, null, d); });
+        if (b % 2) [6.5,7].forEach(i => noise(o + i*e, .14, .22, 900, d, "bandpass"));
+      } return bars*16*e; },
+    /* Gusanito: electrónica saltarina con bajo que hace «buip» y un resorte */
+    gusanito(d, bars){ const s = 60/128/4;
+      const arp = [72,76,79,84,79,76,72,67];
+      for (let b = 0; b < bars*2; b++) { const o = b*16*s, k = b % 2 ? 5 : 0;
+        [0,4,8,12].forEach(i => kick(o + i*s, d, .6)); [4,12].forEach(i => clap(o + i*s, d, .2)); [2,6,10,14].forEach(i => hat(o + i*s, d, .07, true));
+        for (let i = 0; i < 16; i++) tone(N(arp[i % 8] + k), o + i*s, s*.7, "square", .028, null, d);
+        [0,3,6,10].forEach(i => tone(N(36 + k), o + i*s, s*1.8, "sine", .34, N(48 + k), d));
+        if (b % 2) { tone(180, o + 14*s, .12, "sine", .2, 620, d); tone(620, o + 14.8*s, .2, "sine", .18, 140, d); }
+      } return bars*32*s; },
     /* Festejo de campeón (baile): marcha de banda con redoblante, tuba y glockenspiel */
     campeon(d, bars){ const q = 60/120;
       const mel = [[79,79,81,79],[84,83,81,79],[77,79,81,84],[83,79,84,0]], bass = [[36,43],[41,48],[43,50],[36,43]], ch = [[64,67,72],[65,69,72],[67,71,74],[64,67,72]];
@@ -6391,7 +6516,14 @@ function titoSVG(t, px, o){
     };
     if (F[t.float]) s += `<g class="flt">${F[t.float]}</g>`;
   }
-  return s + `</g></svg>`;
+  // accesorios que aparecen solo mientras baila
+  const dk = o.dance && !o.still ? o.dance : "";
+  if (dk === "tango") s += `<g transform="translate(0 ${fy})"><path d="M40 93 Q58 88 78 90" stroke="#2E8A3D" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M50 90 q-4 -6 -10 -5 q4 6 10 5z M64 89 q3 -6 9 -6 q-3 6 -9 6z" fill="#4CB85C" stroke="${K}" stroke-width="1.4"/><circle cx="82" cy="89" r="7.5" fill="#E0213A" stroke="${K}" stroke-width="2.2"/><path d="M78 88 q4 -5 8 0 q-3 4 -6 1 q2 -2 3 0" stroke="#9C1226" stroke-width="1.6" fill="none"/></g>`;
+  let dp = "";
+  if (dk === "disco") dp = [[6,18,"#FF5FA2"],[116,26,"#5CE1E6"],[4,86,"#FFE27A"],[118,96,"#7A4FD9"],[26,-4,"#22A447"],[96,-4,"#EE3B2B"]].map(([x,y,c], i) => `<circle class="dl" style="animation-delay:${-i*.17}s" cx="${x}" cy="${y}" r="4" fill="${c}" stroke="${K}" stroke-width="1.6"/>`).join("") + `<g class="dhand"><path d="M100 46 q-2 -8 4 -10 l6 -14 q2 -4 5 -2 q2 2 0 5 l-4 10 q8 -2 9 4 q1 6 -6 10 q-8 4 -14 -3z" fill="#fff" stroke="${K}" stroke-width="2.4" stroke-linejoin="round"/></g>`;
+  if (dk === "moonwalk") dp = `<path class="mwsp" d="M94 128 l2 -5 2 5 5 2 -5 2 -2 5 -2 -5 -5 -2z" fill="#FFE27A" stroke="${K}" stroke-width="1.2"/>`;
+  if (dk === "murga") dp = [[14,30,"#FFC425"],[108,24,"#5CE1E6"],[20,6,"#FF7DB0"],[100,0,"#22A447"]].map(([x,y,c], i) => `<rect class="cfti" style="animation-delay:${-i*.25}s" x="${x}" y="${y}" width="6" height="9" rx="1.5" fill="${c}" stroke="${K}" stroke-width="1.2"/>`).join("");
+  return s + `</g>${dp}</svg>`;
 }
 
 /* ---------- Casa de Tito ---------- */
