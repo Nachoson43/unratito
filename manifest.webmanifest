@@ -1,0 +1,30 @@
+{
+  "name": "unraTITO",
+  "short_name": "unraTITO",
+  "description": "Trivias, sopa de letras y juegos arcade. ¡Juega un ratito con Tito!",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2E2A8F",
+  "theme_color": "#2E2A8F",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
