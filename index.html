@@ -457,9 +457,9 @@ nav.tabs button:not([aria-current]) .ti svg{filter:grayscale(.8);opacity:.6}
 .dance-funk .t-foot-l,.dance-cumbia .t-foot-l,.dance-robot .t-foot-l{animation:step .46s ease-in-out infinite}
 .dance-funk .t-foot-r,.dance-cumbia .t-foot-r,.dance-robot .t-foot-r{animation:step .46s ease-in-out infinite;animation-delay:-.23s}
 @keyframes step{0%,100%{transform:none}50%{transform:translateY(-6px) rotate(-12deg)}}
-.dance-cumbia .t-body{animation:cumbia .92s ease-in-out infinite}
-.dance-cumbia .t-foot-l,.dance-cumbia .t-foot-r{animation-duration:.92s}
-@keyframes cumbia{0%,100%{transform:translateX(-7px) rotate(-5deg)}50%{transform:translateX(7px) rotate(5deg)}}
+.dance-cumbia .t-body{animation:cumbia 1.15s ease-in-out infinite}
+.dance-cumbia .t-foot-l,.dance-cumbia .t-foot-r{animation-duration:1.15s}
+@keyframes cumbia{0%,100%{transform:translate(-7px,3px) rotate(-6deg) scale(1.02,.95)}25%{transform:translate(0,9px) rotate(0) scale(1.07,.86)}50%{transform:translate(7px,3px) rotate(6deg) scale(1.02,.95)}75%{transform:translate(0,9px) rotate(0) scale(1.07,.86)}}
 .dance-robot .t-body{animation:robot 1.2s steps(1) infinite}
 .dance-robot .t-foot-l,.dance-robot .t-foot-r{animation-timing-function:steps(1);animation-duration:.6s}
 @keyframes robot{0%{transform:rotate(-10deg)}25%{transform:translateY(-5px)}50%{transform:rotate(10deg)}75%{transform:translateY(-5px) scaleX(.94)}}
@@ -467,8 +467,10 @@ nav.tabs button:not([aria-current]) .ti svg{filter:grayscale(.8);opacity:.6}
 @keyframes bounce{50%{transform:translateY(-5px)}}
 .dance-malambo .t-foot-l{animation:tap .2s ease-in-out infinite} .dance-malambo .t-foot-r{animation:tap .2s ease-in-out infinite;animation-delay:-.1s}
 @keyframes tap{50%{transform:translateY(-8px)}}
-.dance-avioncito .t-body{animation:avion 1.3s ease-in-out infinite}
-@keyframes avion{0%,100%{transform:translateX(-5px) rotate(-13deg)}50%{transform:translateX(5px) rotate(13deg)}}
+.dance-avioncito .t-body{animation:avion 4s ease-in-out infinite}
+.tito.dance-avioncito{animation:palomita 4s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes palomita{0%,58%{transform:translate(0,0) rotate(0) scale(1,1)}64%{transform:translate(-4%,3%) rotate(-8deg) scale(1.06,.9)}72%{transform:translate(-8%,-20%) rotate(55deg) scale(.8,.8)}79%{transform:translate(-30%,-7%) rotate(90deg) scale(.64,.64)}88%{transform:translate(-22%,-7%) rotate(90deg) scale(.64,.64)}96%,100%{transform:translate(0,0) rotate(0) scale(1,1)}}
+@keyframes avion{0%,16%,32%{transform:translateX(-5px) rotate(-13deg)}8%,24%,40%{transform:translateX(5px) rotate(13deg)}48%{transform:translateX(-5px) rotate(-13deg)}56%,100%{transform:none}}
 .dance-trompo .t-body,.dance-trompo .t-feet,.dance-campeon .t-body,.dance-campeon .t-feet{animation:trompo .85s linear infinite}
 @keyframes trompo{0%{transform:scaleX(1)}25%{transform:scaleX(.08)}50%{transform:scaleX(-1)}75%{transform:scaleX(-.08)}100%{transform:scaleX(1)}}
 .tito.dance-campeon{animation:jump .85s ease-in-out infinite;filter:drop-shadow(0 0 8px #FFD34D)}
@@ -767,7 +769,6 @@ p.report-line{text-decoration:none}
 .dance-disco .t-foot-l{animation:step 1s ease-in-out infinite} .dance-disco .t-foot-r{animation:step 1s ease-in-out infinite;animation-delay:-.5s}
 .tito .dl{animation:dblink .5s steps(1) infinite}
 @keyframes dblink{50%{opacity:.15}}
-.tito .dhand{transform-box:view-box;transform-origin:104px 34px;animation:dhand 1s ease-in-out infinite}
 @keyframes dhand{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-88px,66px) rotate(180deg)}}
 .dance-cuarteto .t-body{animation:cuart .47s ease-in-out infinite alternate}
 @keyframes cuart{0%{transform:skewX(10deg) rotate(-3deg)}50%{transform:skewX(0) rotate(0) translateY(-4px)}100%{transform:skewX(-10deg) rotate(3deg)}}
@@ -3898,15 +3899,17 @@ const SND = (() => {
         tone(N(36), o, st*6, "sine", .32, N(31), d); tone(N(38), o + 8*st, st*6, "sine", .32, N(34), d);
         [[10,74],[11,77]].forEach(([i,m]) => tone(N(m), o + i*st, st*.9, "sawtooth", .05, null, d));
       } return bars*16*st; },
-    /* Cumbia: güiro, tambora y un acordeón que alterna menor y dominante */
-    cumbia(d, bars){ const e = 60/100/2;
-      const mel = [[76,72,69,72,76,74,72,71],[71,68,64,68,71,74,72,71]], bass = [[45,52],[40,47]];
-      for (let b = 0; b < bars; b++) { const o = b*8*e, k = b % 2;
-        for (let i = 0; i < 4; i++) { noise(o + i*2*e, .14, .12, 3200, d); noise(o + i*2*e + e, .04, .1, 3200, d); noise(o + i*2*e + e*1.5, .04, .1, 3200, d); }
-        [0,4].forEach((i,j) => { tone(N(bass[k][j]), o + i*e, e*1.8, "triangle", .2, null, d); tone(120, o + i*e, .2, "sine", .4, 70, d); });
-        [1,3,5,7].forEach(i => tone(330, o + i*e, .09, "sine", .16, 210, d));
-        mel[k].forEach((m,i) => { tone(N(m), o + i*e, e*.9, "square", .035, null, d); tone(N(m+12), o + i*e, e*.9, "triangle", .025, null, d); });
-      } return bars*8*e; },
+    /* Cumbia villera: güiro, timbales, platillos, bombo al frente, bajo de sinte y teclado con el «tiki-tiki» */
+    cumbia(d, bars){ const q = 60/104;
+      const P = [[[57,60,64],45,52,[[76,.5],[76,.5],[77,.5],[76,.5],[74,.5],[72,.5],[74,1]]],[[55,59,62],43,50,[[74,.5],[74,.5],[76,.5],[74,.5],[72,.5],[71,.5],[72,1]]],[[53,57,60],41,48,[[72,.5],[72,.5],[74,.5],[72,.5],[71,.5],[69,.5],[71,1]]],[[52,56,59],40,47,[[71,.5],[68,.5],[71,.5],[74,.5],[72,.5],[71,.5],[68,1]]]];
+      for (let b = 0; b < bars*2; b++) { const o = b*4*q, [ch, r, f, mel] = P[b % 4];
+        if (b % 2 === 0) noise(o, 1.1, .16, 5500, d);
+        for (let i = 0; i < 4; i++) { kick(o + i*q, d, i % 2 ? .45 : .7); noise(o + i*q + q/2, .14, .13, 5200, d); noise(o + i*q, .16, .09, 3000, d, "bandpass"); noise(o + i*q + q*.5, .05, .07, 3000, d, "bandpass"); noise(o + i*q + q*.75, .05, .07, 3000, d, "bandpass"); }
+        [[0,r],[1.5,f],[2,r],[3,r+12],[3.5,f]].forEach(([i,m]) => { tone(N(m), o + i*q, q*.45, "sawtooth", .06, null, d); tone(N(m), o + i*q, q*.45, "sine", .26, null, d); });
+        [.5,1.5,2.5,3.5].forEach(i => chord(ch.map(m => m + 12), o + i*q, q*.22, "square", .016, d));
+        seq(mel, o, q, (m, t, l) => { tone(N(m), t, l*.85, "sawtooth", .045, null, d, .01); tone(N(m) * 1.01, t, l*.85, "square", .025, null, d, .01); tone(N(m + 12), t, l*.5, "sine", .02, null, d, .01); });
+        if (b % 2) [[3,340],[3.25,300],[3.5,260],[3.75,220]].forEach(([i,f]) => { tone(f, o + i*q, .12, "triangle", .2, f*.8, d); noise(o + i*q, .05, .1, 2500, d); });
+      } return bars*8*q; },
     /* Robot: arpegio de 8 bits, bombo cuadrado y bips */
     robot(d, bars){ const s = 60/120/4;
       const arp = [[60,63,67,72],[58,62,65,70]];
@@ -3992,15 +3995,18 @@ const SND = (() => {
         seq(mel, o, q, (m, t, l) => lead(m, t, l*.9, d, .04));
         if (b % 2) tone(N(72), o + 3.5*q, q*.5, "sawtooth", .04, N(84), d);
       } return bars*8*q; },
-    /* Cuarteto: el tunga-tunga cordobés con piano, güiro y acordeón */
-    cuarteto(d, bars){ const q = 60/128;
-      const P = [[[60,64,67],36,43,[[72,.5],[74,.5],[76,.5],[77,.5],[79,1],[76,1]]],[[59,62,67],43,50,[[77,.5],[76,.5],[74,.5],[72,.5],[71,1],[67,1]]]];
-      for (let b = 0; b < bars*2; b++) { const o = b*4*q, [ch, r, f, mel] = P[b % 2];
-        [[0,r],[1,f],[2,r],[3,f]].forEach(([i,m]) => { tone(N(m), o + i*q, q*.5, "triangle", .22, null, d); tone(100, o + i*q, .15, "sine", .3, 60, d); });
-        for (let i = 0; i < 4; i++) { chord(ch, o + i*q + q/2, q*.22, "square", .02, d); chord(ch, o + i*q + q*.75, q*.15, "square", .014, d); }
-        for (let i = 0; i < 8; i++) noise(o + i*q/2, .06, .06, 3500, d);
-        seq(mel, o, q, (m, t, l) => { tone(N(m), t, l*.9, "sawtooth", .035, null, d, .02); tone(N(m + 12), t, l*.9, "square", .02, null, d, .02); });
-        if (b % 2) tone(420, o + 3.5*q, .22, "sawtooth", .05, 700, d);
+    /* Cuarteto tropical: piano tunga-tunga, bajo, güiro, congas, cencerro y trompetas pegadizas */
+    cuarteto(d, bars){ const q = 60/122;
+      const GS = [55,57,59,60,62,64,66,67,69,71,72,74,76,78,79,81,83,84], low3 = m => { const k = GS.indexOf(m); return k > 1 ? GS[k - 2] : m - 4; };
+      const P = [[[55,59,62],43,50,[[74,.5],[76,.5],[78,.5],[79,1],[78,.5],[76,1]]],[[55,60,64],36,43,[[76,.5],[76,.5],[79,.5],[76,.5],[74,1],[72,1]]],[[54,57,62],38,45,[[74,.5],[74,.5],[78,.5],[81,1],[79,.5],[78,1]]],[[55,59,62],43,50,[[79,.75],[78,.25],[76,.5],[74,.5],[71,1],[0,1]]]];
+      for (let b = 0; b < bars*2; b++) { const o = b*4*q, [ch, r, f, mel] = P[b % 4];
+        [[0,r],[1,f],[2,r],[2.5,r+2],[3,f]].forEach(([i,m]) => tone(N(m), o + i*q, q*.42, "triangle", .24, null, d));
+        [0,2].forEach(i => kick(o + i*q, d, .5));
+        for (let i = 0; i < 4; i++) { chord(ch.map(m => m + 12), o + i*q + q/2, q*.2, "square", .02, d); chord(ch.map(m => m + 12), o + i*q + q*.75, q*.14, "square", .013, d); tone(800, o + i*q, .06, "square", .025, null, d); }
+        for (let i = 0; i < 8; i++) noise(o + i*q/2, i % 2 ? .05 : .1, .06, 3400, d, "bandpass");
+        [[1.5,330],[2.5,220],[3,220],[3.5,330]].forEach(([i,f]) => tone(f, o + i*q, .09, "sine", .22, f*.85, d));
+        seq(mel, o, q, (m, t, l) => { const L = l*.88; tone(N(m), t, L, "sawtooth", .055, null, d, .035); tone(N(m) * 1.005, t, L, "square", .02, null, d, .035); tone(N(low3(m)), t, L, "sawtooth", .035, null, d, .035); tone(N(m - 12), t, L, "triangle", .03, null, d, .035); });
+        if (b % 4 === 3) [3,3.5].forEach(i => { chord([67,71,74,79], o + i*q, q*.3, "sawtooth", .03, d); noise(o + i*q, .1, .1, 4000, d); });
       } return bars*8*q; },
     /* Murga: bombo con platillo, redoblante y silbato */
     murga(d, bars){ const q = 60/104;
@@ -6520,7 +6526,7 @@ function titoSVG(t, px, o){
   const dk = o.dance && !o.still ? o.dance : "";
   if (dk === "tango") s += `<g transform="translate(0 ${fy})"><path d="M40 93 Q58 88 78 90" stroke="#2E8A3D" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M50 90 q-4 -6 -10 -5 q4 6 10 5z M64 89 q3 -6 9 -6 q-3 6 -9 6z" fill="#4CB85C" stroke="${K}" stroke-width="1.4"/><circle cx="82" cy="89" r="7.5" fill="#E0213A" stroke="${K}" stroke-width="2.2"/><path d="M78 88 q4 -5 8 0 q-3 4 -6 1 q2 -2 3 0" stroke="#9C1226" stroke-width="1.6" fill="none"/></g>`;
   let dp = "";
-  if (dk === "disco") dp = [[6,18,"#FF5FA2"],[116,26,"#5CE1E6"],[4,86,"#FFE27A"],[118,96,"#7A4FD9"],[26,-4,"#22A447"],[96,-4,"#EE3B2B"]].map(([x,y,c], i) => `<circle class="dl" style="animation-delay:${-i*.17}s" cx="${x}" cy="${y}" r="4" fill="${c}" stroke="${K}" stroke-width="1.6"/>`).join("") + `<g class="dhand"><path d="M100 46 q-2 -8 4 -10 l6 -14 q2 -4 5 -2 q2 2 0 5 l-4 10 q8 -2 9 4 q1 6 -6 10 q-8 4 -14 -3z" fill="#fff" stroke="${K}" stroke-width="2.4" stroke-linejoin="round"/></g>`;
+  if (dk === "disco") dp = [[6,18,"#FF5FA2"],[116,26,"#5CE1E6"],[4,86,"#FFE27A"],[118,96,"#7A4FD9"],[26,-4,"#22A447"],[96,-4,"#EE3B2B"]].map(([x,y,c], i) => `<circle class="dl" style="animation-delay:${-i*.17}s" cx="${x}" cy="${y}" r="4" fill="${c}" stroke="${K}" stroke-width="1.6"/>`).join("");
   if (dk === "moonwalk") dp = `<path class="mwsp" d="M94 128 l2 -5 2 5 5 2 -5 2 -2 5 -2 -5 -5 -2z" fill="#FFE27A" stroke="${K}" stroke-width="1.2"/>`;
   if (dk === "murga") dp = [[14,30,"#FFC425"],[108,24,"#5CE1E6"],[20,6,"#FF7DB0"],[100,0,"#22A447"]].map(([x,y,c], i) => `<rect class="cfti" style="animation-delay:${-i*.25}s" x="${x}" y="${y}" width="6" height="9" rx="1.5" fill="${c}" stroke="${K}" stroke-width="1.2"/>`).join("");
   return s + `</g>${dp}</svg>`;
