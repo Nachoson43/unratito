@@ -1,7 +1,7 @@
 {
   "name": "unraTITO",
   "short_name": "unraTITO",
-  "description": "Trivias, sopa de letras y juegos arcade. ¡Juega un ratito con Tito!",
+  "description": "Palabra del día, trivias, sopa de letras y juegos arcade. Gratis y sin descargar nada.",
   "lang": "es",
   "start_url": "./",
   "scope": "./",

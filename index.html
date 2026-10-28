@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#2E2A8F">
 <title>unraTITO</title>
-<meta name="description" content="Trivias, sopa de letras y juegos arcade. ¡Juega un ratito con Tito!">
+<meta name="description" content="Palabra del día, trivias, sopa de letras y juegos arcade. Gratis y sin descargar nada.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -14,9 +14,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="unraTITO">
 <meta property="og:type" content="website">
-<meta property="og:title" content="unraTITO">
-<meta property="og:description" content="Trivias, sopa de letras y juegos arcade. ¡Juega un ratito con Tito!">
-<meta property="og:image" content="https://nachoson43.github.io/unratito/og-image.jpg">
+<meta property="og:title" content="unraTITO · Un ratito de juegos">
+<meta property="og:description" content="Palabra del día, trivias, sopa de letras y juegos arcade. Gratis y sin descargar nada.">
+<meta property="og:image" content="https://nachoson43.github.io/unratito/og-image.jpg?v=2">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:url" content="https://nachoson43.github.io/unratito/">
 <meta name="twitter:card" content="summary_large_image">
@@ -5129,8 +5129,19 @@ const SND = (() => {
     [[1, "triangle", 1], [2, "sine", .35], [3, "sine", .14], [4.01, "sine", .06], [1.003, "sine", .5]].forEach(([k, type, amp]) => { const o = a.createOscillator(), og = a.createGain(); o.type = type; o.frequency.value = f * k; og.gain.value = amp; o.connect(og); og.connect(lp); o.start(T); o.stop(T + d + .6); track(o, T + d + .6); });
     noise(0, .03, .05 * v, 3000 + f, null, "bandpass");
   }
+  /* Bocina de auto con paneo: se escucha del lado del carril al que va */
+  function horn(pan){
+    const a = ctx(); if (!a) return; const P = a.createStereoPanner ? a.createStereoPanner() : null;
+    if (P) { P.pan.value = Math.max(-1, Math.min(1, pan || 0)); P.connect(master); }
+    const out = P || master, T0 = a.currentTime;
+    [[0, .13], [.2, .34]].forEach(([t0, d]) => [370, 466].forEach((f, i) => {
+      const o = a.createOscillator(), g = a.createGain(), lp = a.createBiquadFilter(); o.type = "sawtooth"; o.frequency.value = f; lp.type = "lowpass"; lp.frequency.value = 1800;
+      const T = T0 + t0; g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(i ? .05 : .065, T + .015); g.gain.setValueAtTime(i ? .05 : .065, T + d - .03); g.gain.exponentialRampToValueAtTime(.0001, T + d);
+      o.connect(lp); lp.connect(g); g.connect(out); o.start(T); o.stop(T + d + .03); track(o, T + d);
+    }));
+  }
   return {
-    engine, piano,
+    engine, piano, horn,
     /* Efectos de los juegos arcade */
     fx(name, v){
       if (!sfxOn()) return; v = v || 0;
@@ -5341,10 +5352,11 @@ function arcMount(){
     const party = run.won || (isRec && prev != null && run.score > 0);
     if (party) { confetti(run.won ? 90 : 60); if (typeof celebrate === "function") celebrate(2); else SND.fx("victory"); } else SND.fx(run.drawn ? "turn" : "over");
     const canRevive = g.revive && !run.revived && !run.won && run.score > 0;
-    const pts = ptsFor();
+    const pts = ptsFor(); run.res = { score:run.score, rec:isRec && prev != null && run.score > 0, won:!!run.won, drawn:!!run.drawn };
     show(`<div class="arc-box">${party && typeof danceHTML === "function" ? danceHTML(64, "in-box") : ""}${run.score ? `<span class="arc-big">${NUM.format(run.score)}</span>` : ""}<b>${isRec && prev != null ? "¡Nuevo récord!" : run.won ? "¡Ganaste!" : run.drawn ? "¡Empate!" : g.overText || "¡Uh, se terminó!"}</b>
       <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${g.overExtra ? g.overExtra() : ""}
       ${canRevive ? `<button class="btn reward block" data-act="arc-revive">${isPrem() ? "Seguir jugando (PREMIUM)" : "Revivir · ver video"}</button>` : ""}
+      ${run.score > 0 || run.won || run.drawn ? `<button class="btn yellow share-btn block" data-act="arc-share">${typeof SHARE_ICO !== "undefined" ? SHARE_ICO : ""}Compartir resultado</button>` : ""}
       <div class="btn-row"><button class="btn" data-act="arc-exit">Salir</button><button class="btn primary" data-act="arc-again">Otra vez</button></div></div>`);
   };
   const finalize = () => {
@@ -5374,6 +5386,7 @@ function arcAction(k, v){
   if (k === "arc-start") { run.startNew(); return true; }
   if (k === "arc-opt") { const st = arcState(); st.opt = st.opt || {}; st.opt[run.id] = v; save(); if (ARC[run.id].onOpt) { arcMount(); } else run.showReady(); return true; }
   if (k === "arc-again") { run.finalize(); const go = () => { run.state = "ready"; run.startNew(); }; if (arcState().games % 3 === 0) showInterstitial("Aparece cada 3 partidas de arcade", go); else go(); return true; }
+  if (k === "arc-share") { if (run.res && typeof shareOut === "function") shareOut(arcShareText(run.id, run.res)); return true; }
   if (k === "arc-revive") { showRewarded("seguir jugando", () => { run.revived = true; run.game.revive(); run.countdown(); }, () => toast("Saliste antes de terminar el video.")); return true; }
   return false;
 }
@@ -7332,7 +7345,7 @@ arcRegister("ruta", {
       /* luces */
       c.fillStyle = "#FFF6C2"; c.strokeStyle = IK; c.lineWidth = 1; [-1, 1].forEach(s => { rr(c, s * w * .32 - w * .1, -h / 2 + 1.5, w * .2, h * .05, 2); c.fill(); c.stroke(); });
       c.fillStyle = o.brake ? "#FF2D2D" : "#C4161C"; [-1, 1].forEach(s => { rr(c, s * w * .32 - w * .1, h / 2 - h * .055, w * .2, h * .045, 2); c.fill(); c.stroke(); });
-      if (o.blink != null && Math.floor(t * 6) % 2) { c.fillStyle = "#FFB000"; const bx = o.blink * w * .44; [-h / 2 + 3, h / 2 - 5].forEach(by => { c.beginPath(); c.arc(bx, by, 3.2, 0, 7); c.fill(); }); }
+      if (o.blink != null && Math.floor(t * 5) % 2) { const bx = o.blink * w * .47; c.save(); c.shadowColor = "#FFB000"; c.shadowBlur = 14; c.fillStyle = "#FFC21A"; c.strokeStyle = IK; c.lineWidth = 1.2; [-h / 2 + 4, h / 2 - 5].forEach(by => { c.beginPath(); c.arc(bx, by, Math.max(4.5, w * .14), 0, 7); c.fill(); c.stroke(); }); c.restore(); }
       c.restore();
     }
     function busDraw(o, y){
@@ -7386,6 +7399,14 @@ arcRegister("ruta", {
       const blink = o.change && !o.change.done && o.change.blink > 0 ? o.change.dir : null;
       carBody(o.x, y, o.w * (o.k === "pickup" ? 1.04 : 1), carH * o.len, o.k === "taxi" ? "#1B1D2A" : o.col, { taxi:o.k === "taxi", blink, roof:o.k === "pickup" ? "#3A3D4A" : null, brake:o.k === "tractor", rot:o.rot });
       if (o.k === "pickup") { c.fillStyle = "rgba(0,0,0,.25)"; rr(c, o.x - o.w * .36, y + carH * .12, o.w * .72, carH * .3, 3); c.fill(); }
+      /* aviso de cambio de carril: carril destino marcado y flechas que titilan hacia donde va */
+      if (blink != null && !o.change.moving) {
+        const tx = laneX(o.change.to), on = Math.floor(t * 5) % 2, L = carH * o.len;
+        c.save(); c.globalAlpha = on ? .32 : .16; c.fillStyle = "#FFB000"; rr(c, tx - laneW * .42, y - L * .6, laneW * .84, L * 1.2, 10); c.fill(); c.restore();
+        c.save(); c.translate((o.x + tx) / 2, y); c.scale(blink, 1); c.lineCap = "round"; c.lineJoin = "round";
+        for (let i = 0; i < 3; i++) { const a = ((t * 3 + i) % 3) / 3; c.globalAlpha = .35 + .65 * (1 - a); c.strokeStyle = IK; c.lineWidth = 7; const x0 = -laneW * .2 + i * laneW * .16; c.beginPath(); c.moveTo(x0, -9); c.lineTo(x0 + 9, 0); c.lineTo(x0, 9); c.stroke(); c.strokeStyle = "#FFC21A"; c.lineWidth = 4; c.stroke(); }
+        c.restore();
+      }
     }
     function playerDraw(){
       const y = PY, w = carW, h = carH; c.save(); c.translate(px, y + (dead ? 0 : Math.sin(t * 30) * .4)); c.rotate(tilt + spin);
@@ -7481,9 +7502,9 @@ arcRegister("ruta", {
           if (o.fly) { o.fly.t += dt; o.x += o.fly.vx * dt; o.rot = (o.rot || 0) + o.fly.vr * dt; o.d += (o.tv - 6) * dt; return; }
           o.d += o.tv * dt;
           if (o.change && !o.change.done) { const ys = sy(o.d) / H; if (!o.change.dir) { const opts = [o.lane - 1, o.lane + 1].filter(l => l >= 0 && l <= 2); o.change.to = opts[Math.floor(R() * opts.length)]; o.change.dir = o.change.to > o.lane ? 1 : -1; }
-            if (ys > o.change.at - .22) o.change.blink = 1;
-            if (ys > o.change.at && !o.change.moving) { const sim = traffic.map(q => q === o ? Object.assign({}, q, { lane:o.change.to, tv:laneV[o.change.to] }) : q), clear = !traffic.some(q => q !== o && !q.fly && q.lane === o.change.to && Math.abs(q.d - o.d) < 16) && !blocks(sim); if (clear) { o.change.moving = true; o.lane = o.change.to; o.tv = laneV[o.lane]; if (honkCD <= 0 && Math.abs(o.d - meters) < 40) { SND.fx("honk"); honkCD = 2; } } else o.change.done = true; } }
-          const tx2 = laneX(o.lane); o.x += (tx2 - o.x) * Math.min(1, dt * 2.6); o.rot = (tx2 - o.x) / laneW * .25;
+            if (ys > o.change.at - .36 && !o.change.blink) { o.change.blink = 1; if (ys > .02 && honkCD <= 0) { SND.horn ? SND.horn((laneX(o.change.to) - W / 2) / (laneW * 1.2)) : SND.fx("honk"); honkCD = 1.2; } }
+            if (ys > o.change.at && !o.change.moving) { const sim = traffic.map(q => q === o ? Object.assign({}, q, { lane:o.change.to, tv:laneV[o.change.to] }) : q), clear = !traffic.some(q => q !== o && !q.fly && q.lane === o.change.to && Math.abs(q.d - o.d) < 16) && !blocks(sim); if (clear) { o.change.moving = true; o.lane = o.change.to; o.tv = laneV[o.lane]; } else o.change.done = true; } }
+          const tx2 = laneX(o.lane); o.x += (tx2 - o.x) * Math.min(1, dt * (o.change && o.change.moving ? 1.6 : 2.6)); o.rot = (tx2 - o.x) / laneW * .25;
           const ahead3 = traffic.find(q => q !== o && !q.fly && q.lane === o.lane && q.d > o.d && q.d - o.d < (q.len + o.len) * CARL / 2 + 4); if (ahead3) o.d = Math.min(o.d, ahead3.d - (q => (q.len + o.len) * CARL / 2 + 4)(ahead3)); if (o.change && o.change.moving && Math.abs(tx2 - o.x) < 1) o.change.done = true;
         });
         /* choques y pasadas al ras */
@@ -7749,6 +7770,29 @@ arcRegister("piano", {
 /* Orden en la pantalla de Arcade: los nuevos primero */
 ARC_ORDER.splice(0, ARC_ORDER.length, "ruta", "piano", "runner", "flappy", "cross", "penal", "tower", "bricks", "mines", "chess", "t2048", "memo", "connect", "snake");
 
+/* ---------- Compartir resultados del arcade ---------- */
+const ARC_SHARE = {
+  ruta:   { e:"🚗", f:n => `Sumé ${n} puntos manejando por la ruta` },
+  piano:  { e:"🎹", f:n => { const p = pnoState(), s = PNO_SONGS.find(x => x.id === p.sel); return `Hice ${n} puntos tocando ${s ? "«" + s.n + "»" : "el piano"}`; } },
+  runner: { e:"🏃", f:n => `Hice ${n} puntos corriendo y esquivando árbitros` },
+  snake:  { e:"🐍", f:n => `Mi viborita llegó a ${n} puntos` },
+  bricks: { e:"🧱", f:n => `Hice ${n} puntos rompiendo ladrillos` },
+  mines:  { e:"🥚", f:(n, r, lv) => r.won ? `Encontré todos los huevos podridos${lv ? " (" + lv + ")" : ""}` : `Pisé un huevo podrido, pero sumé ${n} puntos` },
+  chess:  { e:"♟️", f:(n, r, lv) => (r.won ? "Le gané a Tito al ajedrez" : r.drawn ? "Empaté con Tito al ajedrez" : "Tito me ganó al ajedrez") + (lv ? ` (nivel ${lv})` : "") },
+  t2048:  { e:"🔢", f:n => `Hice ${n} puntos en 2048` },
+  memo:   { e:"🃏", f:(n, r, lv) => `Completé el memotest con ${n} puntos${lv ? " (" + lv + ")" : ""}` },
+  flappy: { e:"🏛️", f:n => `Pasé ${n} columnas volando con Tito` },
+  connect:{ e:"🔴", f:(n, r, lv) => (r.won ? "Le gané a Tito al 4 en línea" : r.drawn ? "Empaté con Tito al 4 en línea" : "Tito me ganó al 4 en línea") + (lv ? ` (${lv})` : "") },
+  cross:  { e:"🚦", f:n => `Avancé ${n} pasos sin que me pisen` },
+  penal:  { e:"⚽", f:n => `Hice ${n} puntos pateando penales` },
+  tower:  { e:"🥤", f:n => `Armé una torre de tapitas de ${n} puntos` }
+};
+function arcShareText(id, r){
+  const g = ARC[id], sh = ARC_SHARE[id] || { e:"🎮", f:n => `Hice ${n} puntos` }, st = arcState(), o = st.opt && st.opt[id], op = g.options && g.options.find(x => x.k === (o || g.options[0].k));
+  const lv = op ? op.l.toLowerCase() : "", n = NUM.format(r.score), brag = r.won || r.rec;
+  return `unraTITO · ${g.t} ${sh.e}\n${sh.f(n, r, lv)}.${r.rec ? " ¡Nuevo récord!" : ""}\n\n${brag ? "¿Me superas?" : "¿Te animas?"} Juega gratis:\n${SHARE_URL}`;
+}
+
 /* =================== Miniaturas detalladas del arcade =================== */
 (() => {
   const crowd = (y0, rows, seed, w) => { let s = "", r = rng(seed); const cols = ["#EE3B2B","#FFC425","#2F7FE8","#FFFFFF","#22A447","#74ACDF","#F47B20","#FF7DB0","#7A4FD9"], sk = ["#F2C9A0","#C68A5A","#E0AC7E"];
@@ -7812,7 +7856,7 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "ruta", "piano", "runner", "flappy", "cros
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "28/10 14:06";
+const APP_VER = "28/10 14:40";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -9203,11 +9247,13 @@ function shareText(c){
   const p = play(c), E = { correct:"🟩", present:"🟨", absent:"⬛" }, sc = dayScore(c), [md, mt] = scoreMedal(sc);
   const streak = S.streak.count && S.streak.last >= addDays(today(), -1) ? S.streak.count : 0;
   const label = c.kind === "g" ? S.groupMeta[c.code].name : c.kind === "d" ? "" : c.tlabel;
-  let s = `🥚 unraTITO · ${dayName(c.day)}${label ? " · " + label : ""}\n${md} ${sc}/100 · ${mt}${c.kind === "d" && streak > 1 ? " · 🔥 " + streak + " días" : ""}\n`;
-  if (p.w.done) s += `\n🔤 Palabra ${p.w.won ? p.w.g.length : "X"}/${p.w.extra ? 7 : 6}\n` + p.w.g.map(g => evalGuess(g, c.word).map(r => E[r]).join("")).join("\n") + "\n";
-  if (p.s.done) s += `\n🔎 Sopa ${p.s.found.length}/8${p.s.found.length === 8 ? " en " + mmss(p.s.time) : ""}\n`;
-  if (p.t.done) { const ok = p.t.ans.filter(a => a && a.ok).length; s += `${p.s.done ? "" : "\n"}${c.style === "pen" ? "⚽ Penales" : "💡 Trivia"} ${ok}/${triviaTotal(c)}  ` + p.t.ans.map(a => a && a.ok ? (c.style === "pen" ? "⚽" : "✅") : a && a.to ? "⏰" : "❌").join("") + "\n"; }
-  s += `\n${sc >= 75 ? "¿Te animas a superarme? 😏" : "¿A ti cómo te va? 👀"} Juega gratis, es un ratito:\n${SHARE_URL}`;
+  const only = !p.w.done && !p.s.done; // partida suelta de trivia o penales
+  const kindT = c.style === "pen" ? "Penales" : "Trivia";
+  let s = only ? `unraTITO · ${kindT}${label && label !== kindT ? " · " + label : ""}\n` : `unraTITO · ${dayName(c.day)}${label ? " · " + label : ""}\n${sc}/100 · ${mt} ${md}${c.kind === "d" && streak > 1 ? " · " + streak + " días seguidos 🔥" : ""}\n`;
+  if (p.w.done) s += `\nPalabra ${p.w.won ? p.w.g.length : "X"}/${p.w.extra ? 7 : 6}\n` + p.w.g.map(g => evalGuess(g, c.word).map(r => E[r]).join("")).join("\n") + "\n";
+  if (p.s.done) s += `\nSopa ${p.s.found.length}/8${p.s.found.length === 8 ? " en " + mmss(p.s.time) : ""}`;
+  if (p.t.done) { const ok = p.t.ans.filter(a => a && a.ok).length; s += `${only ? "" : "\n"}${p.s.done ? "" : only ? "" : "\n"}${c.style === "pen" ? (only ? "Hice " : "Penales ") + ok + " goles de " + triviaTotal(c) : only ? "Acerté " + ok + " de " + triviaTotal(c) : "Trivia " + ok + "/" + triviaTotal(c)} ` + p.t.ans.map(a => a && a.ok ? "🟩" : a && a.to ? "⬜" : "🟥").join(""); }
+  s += `\n\n${(only ? p.t.ans.filter(a => a && a.ok).length / triviaTotal(c) >= .7 : sc >= 75) ? "¿Me superas?" : "¿Te animas?"} Juega gratis:\n${SHARE_URL}`;
   return s;
 }
 async function shareOut(text){
