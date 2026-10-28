@@ -4365,12 +4365,19 @@ const SND = (() => {
   /* Motor del auto: un zumbido continuo que sube con la velocidad (se apaga solo si nadie lo actualiza) */
   let eng = null, engLast = 0, engTimer = 0;
   function engine(rate){
-    if (rate < 0 || !sfxOn()) { if (eng) { try { eng.g.gain.setTargetAtTime(.0001, ac.currentTime, .05); const e = eng; setTimeout(() => { try { e.o1.stop(); e.o2.stop(); } catch(x){} }, 300); } catch(x){} eng = null; } return; }
+    /* Ruido de ruta suave (viento y gomas sobre el asfalto); se apaga solo si nadie lo actualiza */
+    if (rate < 0 || !sfxOn()) { if (eng) { try { eng.g.gain.setTargetAtTime(.0001, ac.currentTime, .08); const e = eng; setTimeout(() => { try { e.src.stop(); } catch(x){} }, 400); } catch(x){} eng = null; } return; }
     const a = ctx(); if (!a) return;
-    if (!eng) { const o1 = a.createOscillator(), o2 = a.createOscillator(), f = a.createBiquadFilter(), g = a.createGain(); o1.type = "sawtooth"; o2.type = "square"; f.type = "lowpass"; f.frequency.value = 420; g.gain.value = .0001;
-      o1.connect(f); o2.connect(f); f.connect(g); g.connect(master); o1.start(); o2.start(); eng = { o1, o2, f, g }; clearInterval(engTimer); engTimer = setInterval(() => { if (eng && performance.now() - engLast > 250) eng.g.gain.setTargetAtTime(.0001, ac.currentTime, .08); if (!eng) clearInterval(engTimer); }, 200); }
-    engLast = performance.now(); const T = a.currentTime, base = 48 + rate * 95;
-    eng.o1.frequency.setTargetAtTime(base, T, .08); eng.o2.frequency.setTargetAtTime(base * .5 + 3, T, .08); eng.f.frequency.setTargetAtTime(300 + rate * 900, T, .1); eng.g.gain.setTargetAtTime(rate > 0 ? .045 + rate * .03 : .0001, T, .06);
+    if (!eng) {
+      const len = a.sampleRate * 3, buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0); let last = 0;
+      for (let i = 0; i < len; i++) { last = (last + .02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.2; }
+      const src = a.createBufferSource(); src.buffer = buf; src.loop = true;
+      const lp = a.createBiquadFilter(), bp = a.createBiquadFilter(), g = a.createGain(); lp.type = "lowpass"; lp.frequency.value = 520; bp.type = "peaking"; bp.frequency.value = 180; bp.gain.value = 4; g.gain.value = .0001;
+      src.connect(lp); lp.connect(bp); bp.connect(g); g.connect(master); src.start(); eng = { src, lp, g };
+      clearInterval(engTimer); engTimer = setInterval(() => { if (eng && performance.now() - engLast > 250) eng.g.gain.setTargetAtTime(.0001, ac.currentTime, .1); if (!eng) clearInterval(engTimer); }, 200);
+    }
+    engLast = performance.now(); const T = a.currentTime;
+    eng.lp.frequency.setTargetAtTime(380 + rate * 520, T, .2); eng.g.gain.setTargetAtTime(rate > 0 ? .05 + rate * .05 : .0001, T, .15);
   }
   /* Piano: martillo + cuerda con armónicos que se apagan como un piano de verdad */
   function piano(m, dur, vel){
@@ -4387,6 +4394,8 @@ const SND = (() => {
       if (!sfxOn()) return; v = v || 0;
       const F = {
         jump:() => tone(380, 0, .16, "square", .05, 820),
+        vroom:() => { noise(0, .32, .1, 380, null, "lowpass", .03); tone(65, 0, .3, "triangle", .12, 115); tone(130, .02, .25, "sine", .05, 200); },
+        launch:() => { noise(0, .5, .14, 1800, null, "bandpass", .02); tone(180, 0, .45, "triangle", .08, 620); },
         fuel:() => [0,.07,.14,.21].forEach((t,i) => tone(260 + i * 70, t, .08, "sine", .12, 380 + i * 70)),
         swish:() => noise(0, .16, .07, 1600, null, "bandpass", .04),
         skid:() => { noise(0, .55, .1, 2400, null, "bandpass", .02); tone(900, 0, .4, "sawtooth", .015, 700); },
@@ -6450,7 +6459,7 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "runner", "flappy", "cross", "penal", "tow
 /* =================== TITO RUTA (vista desde arriba, esquivando el tráfico) =================== */
 arcRegister("ruta", {
   t:"Tito Ruta", d:"Maneja por la ruta, esquiva el tráfico y llega lo más lejos posible.", col:"b", revive:true, fill:[1.35, 1.78], ctlH:0,
-  intro:"Toca a la izquierda o a la derecha (o desliza) para cambiar de carril. Pasa al ras de los autos para ganar «¡Por un pelo!». Junta nafta para no quedarte seco, monedas y el rayo de turbo. En los peajes pasa por la cabina con luz verde.",
+  intro:"Toca a la izquierda o a la derecha (o desliza) para cambiar de carril. Pasa al ras de los autos para ganar «¡Por un pelo!». Junta nafta, monedas, turbo y misiles: el botón 🚀 rompe el auto de adelante. En los peajes pasa por la cabina con luz verde.",
   help:"Toca o desliza: izquierda / derecha",
   points: s => s / 80,
   overExtra(){ const r = ARC.ruta._r; return r ? `<span class="small">Recorriste <b>${(r.m / 1000).toFixed(1).replace(".", ",")} km</b> · ${r.nm} ${r.nm === 1 ? "pasada" : "pasadas"} al ras · tramo ${r.tramo}</span>` : ""; },
@@ -6473,7 +6482,7 @@ arcRegister("ruta", {
     const PAL = ["#2F7FE8", "#22A447", "#7A4FD9", "#F47B20", "#FF7DB0", "#14B8A6", "#E9EDF5", "#8A93A6", "#B3122E", "#3A3D4A"];
     const BUS = [["#F4C430", "#2F7FE8"], ["#EE3B2B", "#FFFFFF"], ["#22A447", "#FFC425"], ["#2F7FE8", "#FFFFFF"], ["#7A4FD9", "#FFC425"]];
     const CITIES = [["Mar del Plata", 404], ["Chascomús", 120], ["Pinamar", 340], ["Rosario", 300], ["Córdoba", 700], ["Mendoza", 1050], ["Bariloche", 1590], ["Salta", 1500], ["Tandil", 360], ["Villa Gesell", 365]];
-    let lane, px, tilt, dist, meters, v, fuel, turbo, inv, traffic, items, decor, parts, pops, shake, dead, deadT, deadKind, spin, overCalled, tramo, nextToll, toll, nextSpawn, nextDecorL, nextDecorR, bonus, nm, combo, comboT, coins, t, lowBeep, honkCD, fuelNext, turboNext, signN, started;
+    let ammo, missiles, laneV, lane, px, tilt, dist, meters, v, fuel, turbo, inv, traffic, items, decor, parts, pops, shake, dead, deadT, deadKind, spin, overCalled, tramo, nextToll, toll, nextSpawn, nextDecorL, nextDecorR, bonus, nm, combo, comboT, coins, t, lowBeep, honkCD, fuelNext, turboNext, signN, started;
     const R = Math.random;
     /* ---------- texturas que se repiten (asfalto y pasto) ---------- */
     const TILE = Math.round(H * .6);
@@ -6496,7 +6505,8 @@ arcRegister("ruta", {
     const sy = d => PY - (d - meters) * PPM; /* posición en pantalla de algo que está a d metros */
     const reset = () => {
       lane = 1; px = laneX(1); tilt = 0; dist = 0; meters = 0; v = 22; fuel = 1; turbo = 0; inv = 0; traffic = []; items = []; decor = []; parts = []; pops = []; shake = 0; dead = false; deadT = 0; deadKind = ""; spin = 0; overCalled = false;
-      tramo = 1; nextToll = 1100; toll = null; nextSpawn = 70; nextDecorL = 0; nextDecorR = 6; bonus = 0; nm = 0; combo = 0; comboT = 0; coins = 0; t = 0; lowBeep = 0; honkCD = 0; fuelNext = 380; turboNext = 650; signN = 0; started = false;
+      ammo = 1; missiles = []; laneV = [17.5, 14.5, 11.5];
+      tramo = 1; nextToll = 1100; toll = null; nextSpawn = 70; nextDecorL = 0; nextDecorR = 6; bonus = 0; nm = 0; combo = 0; comboT = 0; coins = 0; t = 0; lowBeep = 0; honkCD = 0; fuelNext = 220; turboNext = 650; ARC.ruta._missNext = 420; signN = 0; started = false;
       ARC.ruta._r = null; ARC.ruta.overText = "¡Uh, chocaste!";
       for (let d = -30; d < H / PPM + 40; d += 7) addDecor(d);
       info();
@@ -6516,32 +6526,48 @@ arcRegister("ruta", {
       if (d > signN * 520 + 260 && d > 200) { signN++; const ct = CITIES[Math.floor(R() * CITIES.length)]; decor.push({ k:"sign", d, side:1, x:roadX + roadW + laneW * .25 + 6, city:ct[0], km:Math.max(5, ct[1] - Math.floor(meters / 1000)) }); }
     }
     /* ---------- tráfico ---------- */
-    const KIND = { car:[1, 13, 19], taxi:[1, 14, 19], bus:[2.4, 11, 14], truck:[3, 10, 13], moto:[.58, 15, 21], tractor:[1.05, 5.5, 7], pickup:[1.15, 12, 17] };
+    const KIND = { car:1, taxi:1, bus:2.4, truck:3, moto:.58, pickup:1.15 };
+    const CARL = 4.4, GAP = 5.5;
+    /* ¿Quedarían los 3 carriles tapados en algún momento? Se simula hacia adelante antes de sumar un auto */
+    function blocks(list){
+      const vp = v * (turbo > 0 ? 1.45 : 1), act = list.filter(o => !o.fly && o.lane >= 0 && o.lane <= 2);
+      for (let tt = 0; tt <= 9; tt += .15) {
+        const pm = meters + vp * tt, iv = [[], [], []];
+        act.forEach(o => { const d = o.d + o.tv * tt; if (d < pm - 6 || d > pm + 260) return; const h = o.len * CARL / 2 + GAP; iv[o.lane].push([d - h, d + h]); });
+        if (!iv[0].length || !iv[1].length || !iv[2].length) continue;
+        for (const a of iv[0]) for (const b of iv[1]) { const lo = Math.max(a[0], b[0]), hi = Math.min(a[1], b[1]); if (lo >= hi) continue; for (const c2 of iv[2]) if (Math.max(lo, c2[0]) < Math.min(hi, c2[1])) return true; }
+      }
+      return false;
+    }
+    /* Lugar seguro para dejar algo: que ningún auto pase por ahí justo cuando llega Tito */
+    function safeAt(l, d){ const vp = v * (turbo > 0 ? 1.45 : 1), tt = Math.max(0, (d - meters) / Math.max(5, vp - laneV[l])); return !traffic.some(o => !o.fly && o.lane === l && Math.abs(o.d + o.tv * Math.max(0, (d - meters) / Math.max(5, vp)) - d) < (o.len * CARL / 2 + 7)) && tt >= 0; }
     function spawnRow(d){
       if (toll && Math.abs(d - toll.d) < 40) return; if (Math.abs(d - nextToll) < 40) return;
-      const busy = [0, 1, 2].map(l => traffic.some(o => o.lane === l && Math.abs(o.d - d) < 12 + o.len * 4.4));
-      const free = [0, 1, 2].filter(l => !busy[l]); if (free.length < 2) return;
-      const two = R() < Math.min(.55, .12 + tramo * .07) && free.length === 3;
-      const pickL = () => free.splice(Math.floor(R() * free.length), 1)[0];
-      const n = two ? 2 : 1;
-      for (let i = 0; i < n; i++) {
-        const l = pickL(), r = R(), k = tramo < 2 ? (r < .55 ? "car" : r < .7 ? "taxi" : r < .82 ? "pickup" : r < .92 ? "bus" : "moto") : (r < .38 ? "car" : r < .5 ? "taxi" : r < .6 ? "pickup" : r < .72 ? "bus" : r < .82 ? "truck" : r < .93 ? "moto" : "tractor");
-        const [len, a, b] = KIND[k], tv = a + R() * (b - a);
-        const o = { k, lane:l, x:laneX(l), d:d + (i ? R() * 6 : 0), tv, len, w:carW * (k === "moto" ? .5 : k === "bus" || k === "truck" ? 1.12 : k === "tractor" ? 1.05 : 1), col:PAL[Math.floor(R() * PAL.length)], bus:BUS[Math.floor(R() * BUS.length)], num:10 + Math.floor(R() * 180), ph:R() * 6, passed:false };
-        if (tramo >= 2 && (k === "car" || k === "taxi" || k === "pickup") && R() < .22 + tramo * .02) o.change = { at:.2 + R() * .3, done:false, blink:0 };
-        traffic.push(o);
+      const order = [0, 1, 2].sort(() => R() - .5), want = R() < Math.min(.5, .12 + tramo * .06) ? 2 : 1; let placed = 0;
+      for (const l of order) {
+        if (placed >= want) break;
+        if (traffic.some(o => !o.fly && o.lane === l && Math.abs(o.d - d) < 16)) continue;
+        const r = R(), k = tramo < 2 ? (r < .55 ? "car" : r < .7 ? "taxi" : r < .84 ? "pickup" : r < .94 ? "bus" : "moto") : (r < .4 ? "car" : r < .52 ? "taxi" : r < .64 ? "pickup" : r < .76 ? "bus" : r < .88 ? "truck" : "moto");
+        const len = KIND[k], o = { k, lane:l, x:laneX(l), d:d + (placed ? R() * 6 : 0), tv:laneV[l], len, w:carW * (k === "moto" ? .5 : k === "bus" || k === "truck" ? 1.12 : 1), col:PAL[Math.floor(R() * PAL.length)], bus:BUS[Math.floor(R() * BUS.length)], num:10 + Math.floor(R() * 180), ph:R() * 6, passed:false };
+        if (tramo >= 2 && (k === "car" || k === "taxi" || k === "pickup") && R() < .2 + tramo * .02) o.change = { at:.2 + R() * .3, done:false, blink:0 };
+        if (blocks(traffic.concat([o]))) continue;
+        traffic.push(o); placed++;
       }
-      /* algo para juntar en un carril libre */
-      if (free.length) { const l = free[Math.floor(R() * free.length)];
-        if (meters > fuelNext && fuel < .8) { items.push({ k:"fuel", lane:l, x:laneX(l), d:d + 2 }); fuelNext = meters + 300 + R() * 200; }
-        else if (meters > turboNext) { items.push({ k:"turbo", lane:l, x:laneX(l), d:d + 2 }); turboNext = meters + 700 + R() * 500; }
-        else if (R() < .5) { const nC = 3 + Math.floor(R() * 3); for (let i = 0; i < nC; i++) items.push({ k:"coin", lane:l, x:laneX(l), d:d - 8 + i * 5.5 }); } }
+      /* cosas para juntar, siempre en un lugar alcanzable */
+      const lanes = [0, 1, 2].sort(() => R() - .5), dd = d + 3, l = lanes.find(q => safeAt(q, dd) && !traffic.some(o => o.lane === q && Math.abs(o.d - dd) < 10)); if (l == null) return;
+      if (meters > fuelNext && fuel < .6) { items.push({ k:"fuel", lane:l, x:laneX(l), d:dd }); fuelNext = meters + 200 + R() * 100; }
+      else if (meters > ARC.ruta._missNext && ammo < 3) { items.push({ k:"missile", lane:l, x:laneX(l), d:dd }); ARC.ruta._missNext = meters + 420 + R() * 200; }
+      else if (meters > turboNext) { items.push({ k:"turbo", lane:l, x:laneX(l), d:dd }); turboNext = meters + 700 + R() * 500; }
+      else if (R() < .5) { const nC = 3 + Math.floor(R() * 3); for (let i = 0; i < nC; i++) { const cd = dd - 8 + i * 5.5; if (safeAt(l, cd)) items.push({ k:"coin", lane:l, x:laneX(l), d:cd }); } }
     }
     function makeToll(d){ const shut = tramo >= 1 ? Math.floor(R() * 3) : -1; toll = { d, shut, passed:false, open:[0, 1, 2].map(l => l !== shut) }; }
     /* ---------- control ---------- */
-    function steer(dir){ if (!api.playing() || dead) return; const nl = Math.max(0, Math.min(2, lane + dir)); if (nl === lane) { shake = Math.max(shake, .08); return; } lane = nl; SND.fx("swish"); started = true; }
+    const BTN = () => ({ x:W - 40, y:H - 50, r:30 });
+    function fire(){ if (!api.playing() || dead) return; if (ammo <= 0) { SND.fx("turn"); return; } ammo--; missiles.push({ x:px, lane, d:meters + 2, t:0 }); SND.fx("launch"); started = true; }
+    function steer(dir){ if (!api.playing() || dead) return; const nl = Math.max(0, Math.min(2, lane + dir)); if (nl === lane) { shake = Math.max(shake, .08); return; } lane = nl; SND.fx("vroom"); started = true; }
     let sx0 = 0, sy0 = 0, st0 = 0, moved = false;
-    api.on(api.stage, "pointerdown", e => { sx0 = e.clientX; sy0 = e.clientY; st0 = 1; moved = false; e.preventDefault(); });
+    api.on(api.stage, "pointerdown", e => { e.preventDefault(); const r = api.cv.getBoundingClientRect(), cx = (e.clientX - r.left) * W / r.width, cy = (e.clientY - r.top) * H / r.height, b = BTN();
+      if (Math.hypot(cx - b.x, cy - b.y) < b.r + 10) { fire(); st0 = 0; return; } sx0 = e.clientX; sy0 = e.clientY; st0 = 1; moved = false; });
     api.on(api.stage, "pointermove", e => { if (!st0 || moved) return; const dx = e.clientX - sx0; if (Math.abs(dx) > 24) { moved = true; steer(dx > 0 ? 1 : -1); } });
     api.on(api.stage, "pointerup", e => { if (st0 && !moved) { const r = api.stage.getBoundingClientRect(); steer(e.clientX - r.left < r.width / 2 ? -1 : 1); } st0 = 0; });
     api.ctl.innerHTML = "";
@@ -6644,8 +6670,15 @@ arcRegister("ruta", {
       c.fillStyle = "rgba(0,0,0,.18)"; c.beginPath(); c.ellipse(o.x + 2, y + 9, laneW * .16, 4, 0, 0, 7); c.fill();
       if (o.k === "coin") { const r = laneW * .12, sx = Math.abs(Math.cos(t * 4 + o.d)); c.save(); c.translate(o.x, y + b); c.scale(.35 + .65 * sx, 1); c.fillStyle = "#FFC425"; c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.arc(0, 0, r, 0, 7); c.fill(); c.stroke(); c.fillStyle = "#FFE27A"; c.beginPath(); c.arc(-r * .2, -r * .2, r * .45, 0, 7); c.fill(); c.fillStyle = "#C98F00"; c.font = `bold ${Math.round(r * 1.1)}px Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("$", 0, r * .4); c.restore(); }
       else if (o.k === "fuel") { const s = laneW * .3; c.save(); c.translate(o.x, y + b); glow(0, 0, s * 1.1, "rgba(255,80,60,A)", .35); c.fillStyle = "#EE3B2B"; c.strokeStyle = IK; c.lineWidth = 2; rr(c, -s * .42, -s * .4, s * .84, s * .9, 4); c.fill(); c.stroke(); c.fillStyle = "#3A3D4A"; rr(c, -s * .14, -s * .58, s * .28, s * .2, 2); c.fill(); c.stroke(); c.strokeStyle = "#FFF"; c.lineWidth = 2.4; c.beginPath(); c.moveTo(-s * .2, -s * .15); c.lineTo(s * .2, s * .3); c.moveTo(s * .2, -s * .15); c.lineTo(-s * .2, s * .3); c.stroke(); c.restore(); }
+      else if (o.k === "missile") { const s = laneW * .32; c.save(); c.translate(o.x, y + b); glow(0, 0, s * 1.2, "rgba(255,90,60,A)", .4); c.fillStyle = "#7A4FD9"; c.strokeStyle = IK; c.lineWidth = 2; rr(c, -s * .5, -s * .5, s, s, 6); c.fill(); c.stroke(); c.fillStyle = "rgba(255,255,255,.25)"; rr(c, -s * .4, -s * .42, s * .8, s * .2, 3); c.fill(); rocket(0, s * .05, s * .62, 0); c.restore(); }
       else { const s = laneW * .3; c.save(); c.translate(o.x, y + b); glow(0, 0, s * 1.3, "rgba(92,225,230,A)", .5); c.rotate(Math.sin(t * 3) * .15); c.fillStyle = "#FFE27A"; c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.moveTo(s * .1, -s * .55); c.lineTo(-s * .32, s * .08); c.lineTo(-s * .02, s * .08); c.lineTo(-s * .12, s * .55); c.lineTo(s * .34, -s * .1); c.lineTo(s * .04, -s * .1); c.closePath(); c.fill(); c.stroke(); c.restore(); }
     }
+    function rocket(x, y, h, fl){ c.save(); c.translate(x, y); const w = h * .36;
+      if (fl) { c.fillStyle = "#FF8A1F"; c.beginPath(); c.moveTo(-w * .4, h * .42); c.lineTo(0, h * .42 + fl); c.lineTo(w * .4, h * .42); c.fill(); c.fillStyle = "#FFE27A"; c.beginPath(); c.moveTo(-w * .22, h * .42); c.lineTo(0, h * .42 + fl * .6); c.lineTo(w * .22, h * .42); c.fill(); }
+      c.fillStyle = "#EE3B2B"; c.strokeStyle = IK; c.lineWidth = 1.6; c.beginPath(); c.moveTo(-w * .9, h * .45); c.lineTo(-w * .5, h * .15); c.lineTo(w * .5, h * .15); c.lineTo(w * .9, h * .45); c.closePath(); c.fill(); c.stroke();
+      c.fillStyle = "#F2F4F8"; c.beginPath(); c.moveTo(0, -h * .5); c.quadraticCurveTo(w * .55, -h * .2, w * .5, h * .4); c.lineTo(-w * .5, h * .4); c.quadraticCurveTo(-w * .55, -h * .2, 0, -h * .5); c.fill(); c.stroke();
+      c.fillStyle = "#EE3B2B"; c.beginPath(); c.moveTo(0, -h * .5); c.quadraticCurveTo(w * .35, -h * .32, w * .42, -h * .18); c.lineTo(-w * .42, -h * .18); c.quadraticCurveTo(-w * .35, -h * .32, 0, -h * .5); c.fill(); c.stroke();
+      c.fillStyle = "#5CE1E6"; c.beginPath(); c.arc(0, 0, w * .2, 0, 7); c.fill(); c.stroke(); c.restore(); }
     function decorDraw(o){
       const y = sy(o.d); if (y < -90 || y > H + 90) return; const s = o.s || 1;
       if (o.k === "tree") { c.fillStyle = "rgba(0,0,0,.2)"; c.beginPath(); c.ellipse(o.x + 6, y + 6, 17 * s, 15 * s, 0, 0, 7); c.fill(); c.fillStyle = "#2B8441"; c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.arc(o.x, y, 16 * s, 0, 7); c.fill(); c.stroke(); c.fillStyle = "#3DBA5C"; c.beginPath(); c.arc(o.x - 4 * s, y - 4 * s, 10 * s, 0, 7); c.fill(); c.fillStyle = "#56CC72"; c.beginPath(); c.arc(o.x - 6 * s, y - 7 * s, 4 * s, 0, 7); c.fill(); }
@@ -6679,8 +6712,8 @@ arcRegister("ruta", {
     return {
       reset,
       dbg(){ return { traffic, items, get v(){ return v; }, get meters(){ return meters; }, set meters(x){ meters = x; }, god(){ inv = 1e9; }, toll:() => toll, get fuel(){ return fuel; }, set fuel(x){ fuel = x; } }; },
-      revive(){ dead = false; spin = 0; tilt = 0; inv = 2.5; fuel = Math.max(fuel, .55); traffic = traffic.filter(o => o.d - meters > 70 || o.d - meters < -20); items = items.filter(o => o.d - meters > 60); if (toll && Math.abs(toll.d - meters) < 60) { toll.open = [true, true, true]; } overCalled = false; ARC.ruta._r = null; },
-      key(k, down){ if (!down) return false; if (k === "ArrowLeft" || k === "a" || k === "A") steer(-1); else if (k === "ArrowRight" || k === "d" || k === "D") steer(1); else return false; },
+      revive(){ ammo = Math.max(ammo, 1); missiles = []; dead = false; spin = 0; tilt = 0; inv = 2.5; fuel = Math.max(fuel, .55); traffic = traffic.filter(o => o.d - meters > 70 || o.d - meters < -20); items = items.filter(o => o.d - meters > 60); if (toll && Math.abs(toll.d - meters) < 60) { toll.open = [true, true, true]; } overCalled = false; ARC.ruta._r = null; },
+      key(k, down){ if (!down) return false; if (k === "ArrowLeft" || k === "a" || k === "A") steer(-1); else if (k === "ArrowRight" || k === "d" || k === "D") steer(1); else if (k === " " || k === "ArrowUp") fire(); else return false; },
       destroy(){ SND.engine(-1); },
       step(dt){
         t += dt;
@@ -6691,7 +6724,7 @@ arcRegister("ruta", {
         const target = Math.min(58, 22 + (tramo - 1) * 3.2 + Math.min(4, (meters % 1100) / 280));
         v += (target - v) * Math.min(1, dt * .6); const vv = v * (turbo > 0 ? 1.45 : 1);
         meters += vv * dt; dist = meters;
-        fuel -= dt / 46; if (fuel <= 0) { fuel = 0; v = Math.max(0, v - 25 * dt); if (v < 3) crash("fuel"); }
+        fuel -= dt / 60; if (fuel <= 0) { fuel = 0; v = Math.max(0, v - 25 * dt); if (v < 3) crash("fuel"); }
         if (fuel < .22 && fuel > 0) { lowBeep -= dt; if (lowBeep <= 0) { lowBeep = .9; SND.fx("turn"); } }
         if (turbo > 0) turbo = Math.max(0, turbo - dt); if (inv > 0) inv = Math.max(0, inv - dt); if (comboT > 0) { comboT -= dt; if (comboT <= 0) combo = 0; } if (honkCD > 0) honkCD -= dt;
         SND.engine(Math.min(1, vv / 70));
@@ -6703,29 +6736,36 @@ arcRegister("ruta", {
         for (let d = Math.min(nextDecorL, nextDecorR); d < ahead + 30; d += 4) addDecor(d);
         /* tráfico */
         traffic.forEach(o => {
+          if (o.fly) { o.fly.t += dt; o.x += o.fly.vx * dt; o.rot = (o.rot || 0) + o.fly.vr * dt; o.d += (o.tv - 6) * dt; return; }
           o.d += o.tv * dt;
-          const ahead2 = traffic.find(q => q !== o && q.lane === o.lane && q.d > o.d && q.d - o.d < (q.len + o.len) * 4.4 * .5 + 5); if (ahead2) o.tv = Math.min(o.tv, ahead2.tv);
           if (o.change && !o.change.done) { const ys = sy(o.d) / H; if (!o.change.dir) { const opts = [o.lane - 1, o.lane + 1].filter(l => l >= 0 && l <= 2); o.change.to = opts[Math.floor(R() * opts.length)]; o.change.dir = o.change.to > o.lane ? 1 : -1; }
             if (ys > o.change.at - .22) o.change.blink = 1;
-            if (ys > o.change.at && !o.change.moving) { const clear = !traffic.some(q => q !== o && q.lane === o.change.to && Math.abs(q.d - o.d) < 14); if (clear) { o.change.moving = true; o.lane = o.change.to; if (honkCD <= 0 && Math.abs(o.d - meters) < 40) { SND.fx("honk"); honkCD = 2; } } else o.change.done = true; } }
-          const tx2 = laneX(o.lane); o.x += (tx2 - o.x) * Math.min(1, dt * 2.6); o.rot = (tx2 - o.x) / laneW * .25; if (o.change && o.change.moving && Math.abs(tx2 - o.x) < 1) o.change.done = true;
+            if (ys > o.change.at && !o.change.moving) { const sim = traffic.map(q => q === o ? Object.assign({}, q, { lane:o.change.to, tv:laneV[o.change.to] }) : q), clear = !traffic.some(q => q !== o && !q.fly && q.lane === o.change.to && Math.abs(q.d - o.d) < 16) && !blocks(sim); if (clear) { o.change.moving = true; o.lane = o.change.to; o.tv = laneV[o.lane]; if (honkCD <= 0 && Math.abs(o.d - meters) < 40) { SND.fx("honk"); honkCD = 2; } } else o.change.done = true; } }
+          const tx2 = laneX(o.lane); o.x += (tx2 - o.x) * Math.min(1, dt * 2.6); o.rot = (tx2 - o.x) / laneW * .25;
+          const ahead3 = traffic.find(q => q !== o && !q.fly && q.lane === o.lane && q.d > o.d && q.d - o.d < (q.len + o.len) * CARL / 2 + 4); if (ahead3) o.d = Math.min(o.d, ahead3.d - (q => (q.len + o.len) * CARL / 2 + 4)(ahead3)); if (o.change && o.change.moving && Math.abs(tx2 - o.x) < 1) o.change.done = true;
         });
         /* choques y pasadas al ras */
         const pw = carW * .86, ph = carH * .86;
         for (const o of traffic) {
+          if (o.fly) continue;
           const oy = sy(o.d), oh = carH * o.len * .9, ox = o.k === "moto" ? (o.dx || o.x) : o.x, ow = o.w * .86;
           if (Math.abs(ox - px) < (ow + pw) / 2 && Math.abs(oy - PY) < (oh + ph) / 2) {
-            if (turbo > 0 || inv > 0) { if (turbo > 0 && !o.flung) { o.flung = true; o.tv = -10; o.lane = o.lane + (ox < px ? -1 : 1); SND.fx("boom"); burst(ox, oy, 12, "#FFC425"); bonus += 30; pop("¡Fuera! +30", "#5CE1E6", ox, oy); } }
+            if (turbo > 0 || inv > 0) { if (turbo > 0 && !o.flung) { o.flung = true; o.fly = { vx:(ox < px ? -1 : 1) * 260, vr:(ox < px ? -6 : 6), t:0 }; SND.fx("boom"); burst(ox, oy, 12, "#FFC425"); bonus += 30; pop("¡Fuera! +30", "#5CE1E6", ox, oy); } }
             else { crash("car", o.k); return; }
           }
           if (!o.passed && oy - oh / 2 > PY + ph / 2) { o.passed = true; const gap = Math.abs(ox - px) - (ow + pw) / 2;
             if (gap < laneW * .42 && gap >= 0 && !dead) { nm++; combo = Math.min(5, combo + 1); comboT = 3; const b = 20 * combo; bonus += b; SND.fx("nearmiss"); pop(combo > 1 ? `¡Por un pelo! ×${combo}` : "¡Por un pelo!", "#FFC425", px, PY - carH * .9); pop("+" + b, "#fff", px + laneW * .5, PY - carH * .4); } }
         }
-        traffic = traffic.filter(o => o.d > meters - 40 && o.d < meters + 400);
+        traffic = traffic.filter(o => o.d > meters - 40 && o.d < meters + 400 && (!o.fly || o.fly.t < 1.4));
+        /* misiles */
+        missiles.forEach(m => { m.t += dt; m.d += (vv + 45) * dt; const hit = traffic.find(o => !o.fly && o.lane === m.lane && Math.abs(o.d - m.d) < o.len * CARL / 2 + 1);
+          if (hit) { m.done = true; hit.fly = { vx:(R() < .5 ? -1 : 1) * 220, vr:(R() < .5 ? -7 : 7), t:0 }; hit.flung = true; const hy = sy(hit.d); SND.fx("boom"); shake = Math.max(shake, .25); burst(hit.x, hy, 22, "#FFC425", 1.4); burst(hit.x, hy, 12, "#6B7180", .8); bonus += 25; pop("¡Boom! +25", "#FF8A80", hit.x, hy); } });
+        missiles = missiles.filter(m => !m.done && m.d < meters + 260);
         /* cosas para juntar */
         items.forEach(o => { if (o.got) return; const oy = sy(o.d); if (Math.abs(o.x - px) < laneW * .45 && Math.abs(oy - PY) < carH * .6) { o.got = true;
           if (o.k === "coin") { coins++; bonus += 5; SND.fx("coin"); burst(o.x, oy, 6, "#FFC425", .6); }
-          else if (o.k === "fuel") { fuel = Math.min(1, fuel + .45); SND.fx("fuel"); pop("¡Nafta!", "#FF8A80"); burst(o.x, oy, 10, "#FF8A80"); }
+          else if (o.k === "fuel") { fuel = Math.min(1, fuel + .5); SND.fx("fuel"); pop("¡Nafta!", "#FF8A80"); burst(o.x, oy, 10, "#FF8A80"); }
+          else if (o.k === "missile") { ammo = Math.min(3, ammo + 1); SND.fx("bonus"); pop("+1 🚀", "#FF8A80"); burst(o.x, oy, 10, "#FF8A80"); }
           else { turbo = 4; SND.fx("turbo"); pop("¡TURBO!", "#5CE1E6"); burst(o.x, oy, 16, "#5CE1E6", 1.3); } } });
         items = items.filter(o => !o.got && o.d > meters - 20);
         decor = decor.filter(o => o.d > meters - (H - PY) / PPM - 30);
@@ -6750,6 +6790,7 @@ arcRegister("ruta", {
         /* ojos de gato */
         c.fillStyle = "#FFE27A"; const ce = 18 * PPM, phc = ((meters * PPM) % ce + ce) % ce; for (let y = phc - ce; y < H; y += ce) { c.fillRect(roadX + 1, y, 2, 4); c.fillRect(roadX + roadW - 3, y, 2, 4); }
         decor.forEach(decorDraw); tollDraw(); items.forEach(itemDraw); traffic.forEach(drawTraffic);
+        missiles.forEach(m => { const y = sy(m.d); rocket(laneX(m.lane), y, carH * .42, 10 + Math.random() * 8); if (Math.random() < .7) parts.push({ x:laneX(m.lane) + (Math.random() - .5) * 4, y:y + carH * .3, vx:(Math.random() - .5) * 20, vy:40, r:3 + Math.random() * 3, a:.55, col:"#C9CEDE" }); });
         if (!dead || deadT < 99) playerDraw();
         parts.forEach(p => { c.globalAlpha = Math.max(0, p.a); c.fillStyle = p.col; c.beginPath(); c.arc(p.x, p.y, p.r, 0, 7); c.fill(); }); c.globalAlpha = 1;
         /* noche: oscurece y prende luces */
@@ -6772,7 +6813,9 @@ arcRegister("ruta", {
         c.fillStyle = "#EE3B2B"; c.strokeStyle = IK; c.lineWidth = 1.6; rr(c, gx, gy - 1, 14, 16, 3); c.fill(); c.stroke(); c.strokeStyle = "#fff"; c.lineWidth = 1.6; c.beginPath(); c.moveTo(gx + 4, gy + 3); c.lineTo(gx + 10, gy + 11); c.moveTo(gx + 10, gy + 3); c.lineTo(gx + 4, gy + 11); c.stroke();
         c.fillStyle = "rgba(255,255,255,.2)"; rr(c, gx + 20, gy + 2, gw, 10, 5); c.fill(); c.fillStyle = fuel < .22 ? (Math.floor(t * 4) % 2 ? "#EE3B2B" : "#FF8A80") : fuel < .5 ? "#FFC425" : "#22C55E"; rr(c, gx + 20, gy + 2, Math.max(4, gw * fuel), 10, 5); c.fill();
         if (fuel < .22 && !dead) { c.font = `bold 11px Fredoka, sans-serif`; c.fillStyle = "#FF8A80"; c.textAlign = "left"; c.fillText("¡Poca nafta!", gx, gy - 10); }
-        if (turbo > 0) { c.fillStyle = "rgba(11,15,36,.55)"; rr(c, W - gw - 44, gy - 6, gw + 34, 26, 9); c.fill(); c.fillStyle = "#5CE1E6"; rr(c, W - gw - 20, gy + 2, gw * turbo / 4, 10, 5); c.fill(); c.fillStyle = "#FFE27A"; c.font = `bold 14px Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("⚡", W - gw - 31, gy + 12); }
+        if (turbo > 0) { const ty2 = gy - 30; c.fillStyle = "rgba(11,15,36,.55)"; rr(c, gx - 4, ty2 - 6, gw + 34, 26, 9); c.fill(); c.fillStyle = "#5CE1E6"; rr(c, gx + 20, ty2 + 2, gw * turbo / 4, 10, 5); c.fill(); c.fillStyle = "#FFE27A"; c.font = `bold 14px Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("⚡", gx + 7, ty2 + 12); }
+        { const b = BTN(); c.globalAlpha = ammo > 0 ? 1 : .55; c.fillStyle = "rgba(0,0,0,.3)"; c.beginPath(); c.arc(b.x + 2, b.y + 4, b.r, 0, 7); c.fill(); c.fillStyle = ammo > 0 ? "#7A4FD9" : "#4B5064"; c.strokeStyle = IK; c.lineWidth = 2.5; c.beginPath(); c.arc(b.x, b.y, b.r, 0, 7); c.fill(); c.stroke(); c.strokeStyle = "rgba(255,255,255,.35)"; c.lineWidth = 2; c.beginPath(); c.arc(b.x, b.y, b.r - 5, 3.6, 5.4); c.stroke();
+          rocket(b.x - 2, b.y, b.r * 1.15, 0); c.fillStyle = ammo > 0 ? "#FFC425" : "#C9CEDE"; c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.arc(b.x + b.r * .72, b.y - b.r * .72, 11, 0, 7); c.fill(); c.stroke(); c.fillStyle = IK; c.font = `bold 13px Fredoka, sans-serif`; c.textAlign = "center"; c.fillText(ammo, b.x + b.r * .72, b.y - b.r * .72 + 4.5); c.globalAlpha = 1; }
         if (combo > 1) { c.font = `${Math.round(W * .045)}px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "right"; c.lineWidth = 4; c.strokeStyle = IK; c.strokeText("×" + combo, W - 12, H * .2); c.fillStyle = "#FFC425"; c.fillText("×" + combo, W - 12, H * .2); }
         c.textAlign = "left"; c.restore();
       }
@@ -7027,7 +7070,7 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "ruta", "piano", "runner", "flappy", "cros
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "28/10 11:25";
+const APP_VER = "28/10 11:49";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -7865,7 +7908,9 @@ let lastView = "", trivTab = "general", streakOpen = false;
 const trivSeg = on => `<div class="seg triv-seg" role="group" aria-label="Trivias"><button data-act="tab:general" aria-pressed="${on === "general"}">General</button><button data-act="tab:futbol" aria-pressed="${on === "futbol"}">Fútbol</button><button data-act="tab:arg" aria-pressed="${on === "arg"}">Argentina</button></div>`;
 function render(anímate){
   const app = $("#app"), playing = view.startsWith("play"), hw = isHalloween();
-  try { const cs = getComputedStyle(document.body), nav = $("#tabs"); document.documentElement.style.backgroundColor = playing ? cs.getPropertyValue("--bg3").trim() : (nav ? getComputedStyle(nav).backgroundColor : ""); } catch(e){}
+  /* La franja de abajo que reserva el iPhone se pinta del color que hay abajo: barra blanca o fondo del juego */
+  try { const cs = getComputedStyle(document.body), nav = $("#tabs"), col = playing ? cs.getPropertyValue("--bg3").trim() : (nav ? getComputedStyle(nav).backgroundColor : "");
+    document.documentElement.style.backgroundColor = col; document.body.style.backgroundColor = col; const tc = document.querySelector('meta[name="theme-color"]'); if (tc && col) tc.setAttribute("content", col); } catch(e){}
   if (document.body.classList.contains("hw") !== hw) { document.body.classList.toggle("hw", hw); const fx = $("#hwfx"); if (hw && !fx) document.body.insertAdjacentHTML("beforeend", `<div id="hwfx" aria-hidden="true">${[0,1,2].map(i => `<span class="bat b${i}"><svg viewBox="0 0 60 30"><path d="M30 12 q-8 -12 -26 -8 q6 4 5 10 q-6 -2 -9 3 q10 1 14 8 q8 -6 16 -3 q8 -3 16 3 q4 -7 14 -8 q-3 -5 -9 -3 q-1 -6 5 -10 q-18 -4 -26 8z" fill="#140A22"/><circle cx="27" cy="13" r="1.3" fill="#FFE27A"/><circle cx="33" cy="13" r="1.3" fill="#FFE27A"/></svg></span>`).join("")}</div>`); else if (!hw && fx) fx.remove(); }
   app.classList.toggle("noads", isPrem()); app.classList.toggle("playing", playing);
   const R = { home:renderHome, games:renderGames, ruleta:renderWheel, arg:renderArg, futbol:renderFutbol, general:renderGeneral, arcade:renderArcade, "play-arc":renderArcPlay, groups:renderGroups, group:renderGroup, tito:renderTito, more:renderMore, "play-w":renderWord, "play-s":renderSoup, "play-t":renderTrivia };
