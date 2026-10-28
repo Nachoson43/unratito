@@ -2,7 +2,7 @@
 <html lang="es-AR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#2E2A8F">
 <title>unraTITO</title>
 <meta name="description" content="Trivias, sopa de letras y juegos arcade. ¡Juega un ratito con Tito!">
@@ -869,6 +869,35 @@ svg .bub.b2{animation-delay:-.8s}
 .hu-fig svg{position:relative}
 .hu-name{font-family:var(--cartoon);font-weight:400;font-size:2.2em;color:#F28C28;-webkit-text-stroke:3px var(--K);paint-order:stroke fill;text-shadow:0 3px 0 var(--K);line-height:1.1}
 body:has(#app.playing) #hwfx{display:none}
+/* ---- Pantalla completa y sin zoom ---- */
+html{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a,.opt,.tap,[data-act]{touch-action:manipulation}
+input,select,textarea{font-size:max(16px,1em)}
+.app{position:fixed;top:0;left:0;right:0;height:100%;height:var(--appH,100dvh);margin:0 auto}
+/* ---- Cartel de correcto / incorrecto en la trivia ---- */
+.qban{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 84px);margin:0 auto;width:max-content;max-width:88vw;z-index:96;display:flex;align-items:center;gap:12px;padding:12px 22px 12px 12px;border:3px solid var(--K);border-radius:22px;box-shadow:0 6px 0 var(--K);color:#fff;animation:qbin .4s cubic-bezier(.3,1.6,.5,1) both;pointer-events:auto}
+.qban.ok{background:var(--g)} .qban.bad{background:var(--r)} .qban.to{background:#F28C28}
+.qban.out{animation:qbout .3s ease-in both}
+.qban b{font-family:var(--cartoon);font-weight:400;font-size:1.75em;letter-spacing:.03em;-webkit-text-stroke:3px var(--K);paint-order:stroke fill;text-shadow:0 3px 0 var(--K);white-space:nowrap}
+.qb-ico{width:46px;height:46px;flex:none;border-radius:50%;background:#fff;color:var(--K);border:3px solid var(--K);display:grid;place-items:center;font-weight:900;font-size:1.5em}
+.qban.ok .qb-ico{color:var(--g)} .qban.bad .qb-ico{color:var(--r)}
+.qb-pts{font-family:var(--cartoon);font-size:1.9em;color:var(--y);-webkit-text-stroke:3px var(--K);paint-order:stroke fill;text-shadow:0 3px 0 var(--K);animation:ppop .6s .15s cubic-bezier(.3,1.8,.5,1) both}
+@keyframes qbin{from{transform:scale(.4) rotate(-6deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes qbout{to{transform:scale(.8) translateY(-20px);opacity:0}}
+/* Botón siguiente siempre a la vista */
+.q-actions{position:sticky;bottom:0;z-index:3;display:flex;flex-direction:column;gap:6px;padding:6px 0 2px}
+.q-actions .report-line{margin:0;padding:0}
+/* Trivia más compacta para que entre todo sin desplazar */
+.app.playing main{gap:10px}
+.q-card{padding:12px 14px}
+.q-card h2{font-size:clamp(1.05em,4.6vw,1.24em);margin-top:4px}
+.opts{gap:8px;margin-top:10px}
+.opt{min-height:48px;padding:10px 14px}
+@media (max-height:760px){.q-card h2{font-size:1.05em;line-height:1.25}.opt{min-height:44px;padding:8px 12px;box-shadow:0 3px 0 var(--K)}.opts{gap:7px}.app.playing main{gap:8px}.tbar-wrap .tito-mini svg{width:34px;height:auto}}
+.btn.two{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;padding-top:8px;padding-bottom:8px}
+.btn.two small{font-size:.72em;font-weight:700;opacity:.8}
+.q-actions .btn-row .btn{flex:1 1 0;min-width:0}
+.app.playing main{padding-bottom:calc(env(safe-area-inset-bottom) + 10px)}
 
 </style>
 </head>
@@ -6384,7 +6413,19 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "runner", "flappy", "cross", "penal", "tow
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "27/10 21:18";
+const APP_VER = "27/10 22:50";
+/* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
+(function(){
+  try {
+    const stop = e => e.preventDefault();
+    ["gesturestart","gesturechange","gestureend"].forEach(ev => document.addEventListener(ev, stop, { passive:false }));
+    document.addEventListener("touchmove", e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive:false });
+    const fit = () => { const de = document.documentElement, ios = navigator.standalone === true, port = innerHeight >= innerWidth;
+      const h = ios ? Math.max(innerHeight, port ? Math.max(screen.height, screen.width) : Math.min(screen.height, screen.width)) : innerHeight;
+      de.style.setProperty("--appH", h + "px"); };
+    fit(); addEventListener("resize", fit); addEventListener("orientationchange", () => setTimeout(fit, 300));
+  } catch(e){}
+})();
 /* Medición (Google Analytics) y opiniones: solo se activan en la versión web si están configuradas */
 const CFG = (typeof window !== "undefined" && window.UNRA_CFG) || {};
 /* Halloween: del 27/10 al 2/11 (se puede forzar con ?halloween para probar) */
@@ -7580,18 +7621,29 @@ function renderTrivia(){
   let after = "";
   if (answered) {
     const a = d.ans[i];
-    if (tPicked === q.right) after = `<div class="msg ok">¡Correcto! <span class="pts-pop">+${ctx.practice ? 0 : ansPoints(q, a)}</span></div>` + next;
-    else if (tPicked === "__timeout") after = `<div class="msg bad">¡Se acabó el tiempo! Era: ${esc(q.right)}</div>` + next;
-    else if (!tResolved) after = `<div class="msg bad">No era esa.</div><div class="btn-row"><button class="btn reward" data-act="t-second">${isPrem() ? "Otra oportunidad" : "Ver video · otra oportunidad"}</button><button class="btn" data-act="t-reveal">Seguir</button></div>`;
-    else after = `<div class="msg bad">La respuesta era: ${esc(q.right)}</div>` + next;
+    const st = tPicked === q.right ? "ok" : tPicked === "__timeout" ? "to" : !tResolved ? "bad" : "rv", bk = ctx.key + ":" + i + ":" + st;
+    if (tBan !== bk) { tBan = bk; if (st !== "rv") setTimeout(() => qBanner(st, st === "ok" ? (ctx.practice ? 0 : ansPoints(q, a)) : 0), 0); }
+    if (st === "bad") after = `<div class="btn-row"><button class="btn reward two" data-act="t-second"><b>Otra oportunidad</b>${isPrem() ? "" : `<small>mirando un video</small>`}</button><button class="btn" data-act="t-reveal">Seguir</button></div>`;
+    else after = next;
+    after = `<div class="q-actions">${after}`;
     if (tResolved && q.cat !== "mat" && !q.jer) after += (S.reports || []).some(r => r.id === q.id) ? `<p class="report-line">Gracias, ya la reportaste.</p>` : `<button class="report-line" data-act="report:${q.id}">¿Ves un error en esta pregunta? Repórtala</button>`;
   }
+  if (answered) after += `</div>`;
   const canHint = !isGroup() && ctx.kind !== "m" && !q.clues;
   const hint = canHint ? `<button class="hint-btn" data-act="t-hint" ${answered || removed.length ? "disabled" : ""}>50:50${hintLabel()}</button>` : "";
   const visual = q.jer != null ? `<div class="visual">${shirtSVG(JERSEYS[q.jer], 150)}</div>` : "";
   const clues = q.clues ? `<div class="clues">${q.clues.slice(0, answered ? 3 : (d.clues[i] || 1)).map(c => `<div class="clue">${esc(c)}</div>`).join("")}</div>${!answered && (d.clues[i] || 1) < 3 ? `<button class="btn reward block" style="margin-top:10px" data-act="t-clue">Otra pista (vale menos)</button>` : ""}` : "";
   const cat = catLabel(q);
   return head + `${hint}</div>${ctx.style === "pen" ? penScene(d, Q) : ""}${timerRow()}${dots}<section class="card q-card"><span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="eyebrow">Pregunta ${i+1} de ${n}</span>${cat ? `<span class="qcat">${esc(cat)}</span>` : ""}</span>${visual}<h2>${esc(q.q)}</h2>${clues}<div class="opts">${opts}</div></section>${after}`;
+}
+/* Cartel grande de correcto / incorrecto: aparece arriba de todo y se va solo, sin ocupar lugar en la pantalla */
+let tBan = "";
+function qBanner(st, pts){
+  if (!view.startsWith("play")) return; let b = $("#qban"); if (b) b.remove();
+  const T = { ok:["¡Correcto!", "✓"], bad:["¡No era esa!", "✕"], to:["¡Se acabó el tiempo!", "⏱"] }[st];
+  document.body.insertAdjacentHTML("beforeend", `<div id="qban" class="qban ${st}" role="status"><span class="qb-ico">${T[1]}</span><b>${T[0]}</b>${pts ? `<span class="qb-pts">+${pts}</span>` : ""}</div>`);
+  b = $("#qban"); b.addEventListener("pointerdown", () => b.remove());
+  setTimeout(() => { if (b.isConnected) { b.classList.add("out"); setTimeout(() => b.remove(), 320); } }, st === "ok" ? 1300 : 1600);
 }
 function ansPoints(q, a){ if (!a || !a.ok) return 0; const t = q.time || TIME.q, base = q.clues ? [5,3,2][(a.clues || 1) - 1] : 2; return base + Math.round((a.left || 0) / t) + (q.d === 3 ? 1 : 0); }
 
