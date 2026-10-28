@@ -939,6 +939,20 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .marks.sm .mark svg{width:15px;height:15px}
 .sc-foot{text-align:center;font-weight:800;font-size:.78em;opacity:.8}
 .share-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+/* ---- Tito Piano: lista de canciones ---- */
+.pno-list{width:100%;max-height:min(38vh,300px);overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:6px;text-align:left;padding:2px;-webkit-overflow-scrolling:touch}
+.pno-gh{grid-column:1/-1;font-family:var(--display);font-weight:700;font-size:.85em;margin-top:4px;display:flex;align-items:center;gap:6px}
+.pno-gh small{font-weight:800;color:var(--muted);display:inline-flex;align-items:center;gap:3px}
+.pno-gh .coin{width:.9em;height:.9em}
+.pno-song{display:flex;flex-direction:column;gap:1px;border:2px solid var(--line);background:var(--surface-2);border-radius:12px;padding:6px 8px;text-align:left;color:var(--ink);min-width:0}
+.pno-song b{font-size:.82em;line-height:1.15}
+.pno-song small{font-size:.7em;color:var(--muted);font-weight:700}
+.pno-song.on{border-color:var(--K);background:var(--y-soft);box-shadow:0 2px 0 var(--K)}
+.pno-song.lock{opacity:.78}
+.pno-song.tango{background:linear-gradient(135deg,#FFF1E3,#FFE0D0)}
+.pno-st{display:flex;gap:1px;font-size:.78em}
+.pno-st i{font-style:normal;color:#C9CEDE}.pno-st i.on{color:#F4A300}
+.pno-st em{font-style:normal;font-weight:800;color:var(--muted)}
 
 </style>
 </head>
@@ -4334,12 +4348,38 @@ const SND = (() => {
     noise(1.5*q, .8, .13, 5500, d);
   }
   const danceKey = () => (typeof S !== "undefined" && S && S.tito && S.tito.dance) || "funk";
+  /* Motor del auto: un zumbido continuo que sube con la velocidad (se apaga solo si nadie lo actualiza) */
+  let eng = null, engLast = 0, engTimer = 0;
+  function engine(rate){
+    if (rate < 0 || !sfxOn()) { if (eng) { try { eng.g.gain.setTargetAtTime(.0001, ac.currentTime, .05); const e = eng; setTimeout(() => { try { e.o1.stop(); e.o2.stop(); } catch(x){} }, 300); } catch(x){} eng = null; } return; }
+    const a = ctx(); if (!a) return;
+    if (!eng) { const o1 = a.createOscillator(), o2 = a.createOscillator(), f = a.createBiquadFilter(), g = a.createGain(); o1.type = "sawtooth"; o2.type = "square"; f.type = "lowpass"; f.frequency.value = 420; g.gain.value = .0001;
+      o1.connect(f); o2.connect(f); f.connect(g); g.connect(master); o1.start(); o2.start(); eng = { o1, o2, f, g }; clearInterval(engTimer); engTimer = setInterval(() => { if (eng && performance.now() - engLast > 250) eng.g.gain.setTargetAtTime(.0001, ac.currentTime, .08); if (!eng) clearInterval(engTimer); }, 200); }
+    engLast = performance.now(); const T = a.currentTime, base = 48 + rate * 95;
+    eng.o1.frequency.setTargetAtTime(base, T, .08); eng.o2.frequency.setTargetAtTime(base * .5 + 3, T, .08); eng.f.frequency.setTargetAtTime(300 + rate * 900, T, .1); eng.g.gain.setTargetAtTime(rate > 0 ? .045 + rate * .03 : .0001, T, .06);
+  }
+  /* Piano: martillo + cuerda con armónicos que se apagan como un piano de verdad */
+  function piano(m, dur, vel){
+    if (!sfxOn()) return; const a = ctx(); if (!a) return; const T = a.currentTime, f = N(m), v = (vel || 1) * (m > 80 ? .7 : 1), d = Math.max(.35, Math.min(2.4, dur || .6));
+    const g = a.createGain(), lp = a.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.setValueAtTime(Math.min(9000, f * 9), T); lp.frequency.exponentialRampToValueAtTime(Math.max(600, f * 2.2), T + d); lp.connect(g); g.connect(master);
+    g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(.32 * v, T + .006); g.gain.exponentialRampToValueAtTime(.12 * v, T + .18); g.gain.exponentialRampToValueAtTime(.0001, T + d + .5);
+    [[1, "triangle", 1], [2, "sine", .35], [3, "sine", .14], [4.01, "sine", .06], [1.003, "sine", .5]].forEach(([k, type, amp]) => { const o = a.createOscillator(), og = a.createGain(); o.type = type; o.frequency.value = f * k; og.gain.value = amp; o.connect(og); og.connect(lp); o.start(T); o.stop(T + d + .6); track(o, T + d + .6); });
+    noise(0, .03, .05 * v, 3000 + f, null, "bandpass");
+  }
   return {
+    engine, piano,
     /* Efectos de los juegos arcade */
     fx(name, v){
       if (!sfxOn()) return; v = v || 0;
       const F = {
         jump:() => tone(380, 0, .16, "square", .05, 820),
+        fuel:() => [0,.07,.14,.21].forEach((t,i) => tone(260 + i * 70, t, .08, "sine", .12, 380 + i * 70)),
+        swish:() => noise(0, .16, .07, 1600, null, "bandpass", .04),
+        skid:() => { noise(0, .55, .1, 2400, null, "bandpass", .02); tone(900, 0, .4, "sawtooth", .015, 700); },
+        turbo:() => { tone(200, 0, .7, "sawtooth", .05, 900); noise(0, .7, .08, 1200, null, "highpass", .1); },
+        nearmiss:() => { noise(0, .3, .12, 900, null, "bandpass", .03); tone(520, .02, .2, "triangle", .04, 260); },
+        toll:() => { [0,.14].forEach((t, i) => { tone(N(84 + i * 4), t, .5, "sine", .1); tone(N(96 + i * 4), t, .25, "sine", .03); }); },
+        wrongkey:() => { [N(48), N(49), N(55), N(56)].forEach(f => tone(f, 0, .5, "sawtooth", .045, f * .97)); tone(70, 0, .3, "sine", .3, 45); },
         knock:() => [0,.22,.44].forEach(t => { tone(140, t, .1, "sine", .4, 90); noise(t, .05, .14, 900, null, "lowpass"); }),
         creak:() => { tone(180, 0, .7, "sawtooth", .035, 330); tone(240, .1, .6, "square", .02, 160); },
         boo:() => { noise(0, .5, .18, 900, null, "bandpass", .05); vtone(220, 0, .9, "sawtooth", .07); vtone(165, 0, .9, "square", .05); tone(70, 0, .6, "sine", .35, 40); },
@@ -4494,7 +4534,7 @@ function arcMount(){
   const api = {
     W, H, c:c2, cv, stage, ctl, tito:S.tito,
     score(n){ const up = n > run.score; run.score = n; const e = $("#arcScore"); if (e) e.textContent = NUM.format(n);
-      const b = $("#arcBig"); if (b) { b.textContent = NUM.format(n); if (up) { b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); } } },
+      const b = $("#arcBig"); if (b) { b.textContent = NUM.format(n); if (up && performance.now() - (b._bt || 0) > 350) { b._bt = performance.now(); b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); } } },
     celebrate(txt){ const el = $("#arcCele"); if (!el || typeof danceHTML !== "function") return; el.innerHTML = `${danceHTML(70)}<b>${txt || "¡Bien!"}</b>`; el.classList.remove("on"); void el.offsetWidth; el.classList.add("on");
       celebrate(2); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 2400); },
     over(){ if (run.state !== "play") return; run.state = "over"; overScreen(); },
@@ -4550,7 +4590,7 @@ function arcMount(){
   };
   run.api = api; run.show = show; run.startNew = startNew; run.finalize = finalize; run.countdown = countdown;
   arcRun = run;
-  run.showReady = () => { const o = api.opt(); show(`<div class="arc-box"><span class="arc-thumb big">${g.thumb()}</span><b>${esc(g.t)}</b><span class="small">${g.intro}</span>${g.options ? `<div class="seg arc-opts">${g.options.map(x => `<button data-act="arc-opt:${x.k}" aria-pressed="${x.k === o}">${esc(x.l)}</button>`).join("")}</div>` : ""}<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`); };
+  run.showReady = () => { const o = api.opt(); show(`<div class="arc-box"><span class="arc-thumb big">${g.thumb()}</span><b>${esc(g.t)}</b><span class="small">${g.intro}</span>${g.readyHTML ? g.readyHTML() : g.options ? `<div class="seg arc-opts">${g.options.map(x => `<button data-act="arc-opt:${x.k}" aria-pressed="${x.k === o}">${esc(x.l)}</button>`).join("")}</div>` : ""}<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`); };
   run.showReady();
   game.draw("ready");
 }
@@ -4564,6 +4604,7 @@ function arcAction(k, v){
   if (k === "arc-open") { arcCur = v; setView("play-arc"); return true; }
   if (k === "arc-exit") { const doExit = () => { arcStop(); setView("arcade"); }; if (run && run.state === "over") { run.finalize(); const n = arcState().games; if (n % 3 === 0) { showInterstitial("Aparece cada 3 partidas de arcade", doExit); return true; } } doExit(); return true; }
   if (!run) return k.startsWith("arc-");
+  if (ARC[run.id].act && ARC[run.id].act(k, v, run)) return true;
   if (k === "arc-start") { run.startNew(); return true; }
   if (k === "arc-opt") { const st = arcState(); st.opt = st.opt || {}; st.opt[run.id] = v; save(); if (ARC[run.id].onOpt) { arcMount(); } else run.showReady(); return true; }
   if (k === "arc-again") { run.finalize(); const go = () => { run.state = "ready"; run.startNew(); }; if (arcState().games % 3 === 0) showInterstitial("Aparece cada 3 partidas de arcade", go); else go(); return true; }
@@ -6391,6 +6432,521 @@ arcRegister("tower", {
 /* Orden en la pantalla de Arcade */
 ARC_ORDER.splice(0, ARC_ORDER.length, "runner", "flappy", "cross", "penal", "tower", "bricks", "mines", "chess", "t2048", "memo", "connect", "snake");
 
+/* =================== TITO RUTA (vista desde arriba, esquivando el tráfico) =================== */
+arcRegister("ruta", {
+  t:"Tito Ruta", d:"Maneja por la ruta, esquiva el tráfico y llega lo más lejos posible.", col:"b", revive:true, fill:[1.35, 1.78], ctlH:0,
+  intro:"Toca a la izquierda o a la derecha (o desliza) para cambiar de carril. Pasa al ras de los autos para ganar «¡Por un pelo!». Junta nafta para no quedarte seco, monedas y el rayo de turbo. En los peajes pasa por la cabina con luz verde.",
+  help:"Toca o desliza: izquierda / derecha",
+  points: s => s / 80,
+  overExtra(){ const r = ARC.ruta._r; return r ? `<span class="small">Recorriste <b>${(r.m / 1000).toFixed(1).replace(".", ",")} km</b> · ${r.nm} ${r.nm === 1 ? "pasada" : "pasadas"} al ras · tramo ${r.tramo}</span>` : ""; },
+  thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thc21"><rect width="64" height="48" rx="8"/></clipPath></defs><g clip-path="url(#thc21)">
+    <rect width="64" height="48" fill="#5DBB4A"/><path d="M0 6 H64 M0 18 H64 M0 30 H64 M0 42 H64" stroke="#54AE43" stroke-width="5"/>
+    <circle cx="6" cy="10" r="5" fill="#2E8A3D" stroke="${IK}" stroke-width=".9"/><circle cx="58" cy="34" r="5" fill="#2E8A3D" stroke="${IK}" stroke-width=".9"/><circle cx="57" cy="8" r="3.4" fill="#3DBA5C" stroke="${IK}" stroke-width=".8"/>
+    <rect x="13" y="0" width="38" height="48" fill="#4B5064"/><rect x="13" y="0" width="2.4" height="48" fill="#D9DCE5"/><rect x="48.6" y="0" width="2.4" height="48" fill="#D9DCE5"/>
+    <path d="M25.7 -2 V50 M38.3 -2 V50" stroke="#fff" stroke-width="1.4" stroke-dasharray="5 5"/>
+    <rect x="40" y="4" width="8" height="14" rx="2.2" fill="#2F7FE8" stroke="${IK}" stroke-width="1"/><rect x="41.4" y="7" width="5.2" height="3" rx="1" fill="#BFE3FF"/>
+    <rect x="15.5" y="12" width="9" height="22" rx="2" fill="#FFC425" stroke="${IK}" stroke-width="1"/><rect x="17" y="14" width="6" height="3.4" rx="1" fill="#BFE3FF"/><path d="M17 22 h6 M17 26 h6" stroke="#E0A800" stroke-width="1"/>
+    <rect x="27.5" y="27" width="9" height="16" rx="2.6" fill="#EE3B2B" stroke="${IK}" stroke-width="1.1"/><rect x="28.8" y="29" width="6.4" height="3" rx="1" fill="#BFE3FF"/>
+    <circle cx="32" cy="36" r="3" fill="#F7F1E3" stroke="${IK}" stroke-width=".8"/><circle cx="31" cy="35.6" r=".5" fill="${IK}"/><circle cx="33" cy="35.6" r=".5" fill="${IK}"/>
+    <path d="M27 46 l-2 3 M37 46 l2 3" stroke="#FFE27A" stroke-width="1.4" stroke-linecap="round"/></g><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
+  make(api){
+    const { W, H, c } = api, dpr = Math.min(2, window.devicePixelRatio || 1);
+    const roadW = Math.round(Math.min(W * .64, 340)), laneW = roadW / 3, roadX = Math.round((W - roadW) / 2);
+    const carW = laneW * .54, carH = carW * 1.9, PPM = carH / 4.4, PY = H * .79;
+    const laneX = l => roadX + laneW * (l + .5);
+    const head = titoImg(api.tito, "happy", 120), headD = titoImg(api.tito, "dizzy", 120), headW = titoImg(api.tito, "star", 120);
+    const PAL = ["#2F7FE8", "#22A447", "#7A4FD9", "#F47B20", "#FF7DB0", "#14B8A6", "#E9EDF5", "#8A93A6", "#B3122E", "#3A3D4A"];
+    const BUS = [["#F4C430", "#2F7FE8"], ["#EE3B2B", "#FFFFFF"], ["#22A447", "#FFC425"], ["#2F7FE8", "#FFFFFF"], ["#7A4FD9", "#FFC425"]];
+    const CITIES = [["Mar del Plata", 404], ["Chascomús", 120], ["Pinamar", 340], ["Rosario", 300], ["Córdoba", 700], ["Mendoza", 1050], ["Bariloche", 1590], ["Salta", 1500], ["Tandil", 360], ["Villa Gesell", 365]];
+    let lane, px, tilt, dist, meters, v, fuel, turbo, inv, traffic, items, decor, parts, pops, shake, dead, deadT, deadKind, spin, overCalled, tramo, nextToll, toll, nextSpawn, nextDecorL, nextDecorR, bonus, nm, combo, comboT, coins, t, lowBeep, honkCD, fuelNext, turboNext, signN, started;
+    const R = Math.random;
+    /* ---------- texturas que se repiten (asfalto y pasto) ---------- */
+    const TILE = Math.round(H * .6);
+    const mkTile = (fn) => { const cv = document.createElement("canvas"); cv.width = Math.ceil(W * dpr); cv.height = Math.ceil(TILE * dpr); const x = cv.getContext("2d"); x.scale(dpr, dpr); fn(x); return cv; };
+    const ground = mkTile(x => {
+      x.fillStyle = "#62BD4E"; x.fillRect(0, 0, W, TILE);
+      for (let i = 0; i < 70; i++) { x.fillStyle = R() < .5 ? "rgba(255,255,255,.06)" : "rgba(20,80,20,.09)"; x.beginPath(); x.ellipse(R() * W, R() * TILE, 6 + R() * 16, 3 + R() * 6, 0, 0, 7); x.fill(); }
+      x.strokeStyle = "rgba(40,110,30,.35)"; x.lineWidth = 1.2; x.beginPath(); for (let i = 0; i < 90; i++) { const gx = R() * W, gy = R() * TILE; x.moveTo(gx, gy); x.lineTo(gx - 1.5, gy - 5); x.moveTo(gx + 2, gy); x.lineTo(gx + 3, gy - 6); } x.stroke();
+      for (let i = 0; i < 12; i++) { x.fillStyle = ["#FFF6C2", "#FFFFFF", "#FFC425", "#FF7DB0"][Math.floor(R() * 4)]; x.beginPath(); x.arc(R() * W, R() * TILE, 1.6, 0, 7); x.fill(); }
+      /* banquina de tierra y ripio */
+      const sb = laneW * .2; [[roadX - sb, sb], [roadX + roadW, sb]].forEach(([sx, w]) => { x.fillStyle = "#B99A6B"; x.fillRect(sx, 0, w, TILE); for (let i = 0; i < 120; i++) { x.fillStyle = ["#A58658", "#CDB088", "#8E7350"][Math.floor(R() * 3)]; x.beginPath(); x.arc(sx + R() * w, R() * TILE, .8 + R() * 1.3, 0, 7); x.fill(); } });
+    });
+    const asphalt = mkTile(x => {
+      x.fillStyle = "#4B5064"; x.fillRect(roadX, 0, roadW, TILE);
+      for (let i = 0; i < 700; i++) { x.fillStyle = R() < .5 ? "rgba(255,255,255,.05)" : "rgba(0,0,0,.12)"; x.fillRect(roadX + R() * roadW, R() * TILE, 1.6, 1.6); }
+      for (let i = 0; i < 3; i++) { const cx = roadX + R() * roadW, cy = R() * TILE; x.strokeStyle = "rgba(0,0,0,.22)"; x.lineWidth = 1; x.beginPath(); x.moveTo(cx, cy); for (let k = 0; k < 5; k++) x.lineTo(cx + (R() - .5) * 26, cy + k * 7); x.stroke(); }
+      for (let i = 0; i < 2; i++) { x.fillStyle = "rgba(30,32,44,.35)"; x.beginPath(); x.ellipse(roadX + laneW * (.5 + Math.floor(R() * 3)) + (R() - .5) * 20, R() * TILE, laneW * .22, laneW * .12, 0, 0, 7); x.fill(); }
+      x.fillStyle = "rgba(0,0,0,.06)"; [0, 1, 2].forEach(l => { x.fillRect(roadX + laneW * l + laneW * .2, 0, laneW * .12, TILE); x.fillRect(roadX + laneW * l + laneW * .68, 0, laneW * .12, TILE); });
+    });
+    const sy = d => PY - (d - meters) * PPM; /* posición en pantalla de algo que está a d metros */
+    const reset = () => {
+      lane = 1; px = laneX(1); tilt = 0; dist = 0; meters = 0; v = 22; fuel = 1; turbo = 0; inv = 0; traffic = []; items = []; decor = []; parts = []; pops = []; shake = 0; dead = false; deadT = 0; deadKind = ""; spin = 0; overCalled = false;
+      tramo = 1; nextToll = 1100; toll = null; nextSpawn = 70; nextDecorL = 0; nextDecorR = 6; bonus = 0; nm = 0; combo = 0; comboT = 0; coins = 0; t = 0; lowBeep = 0; honkCD = 0; fuelNext = 380; turboNext = 650; signN = 0; started = false;
+      ARC.ruta._r = null; ARC.ruta.overText = "¡Uh, chocaste!";
+      for (let d = -30; d < H / PPM + 40; d += 7) addDecor(d);
+      info();
+    };
+    const info = () => api.info(`Tramo <b>${tramo}</b> · <b>${Math.round(v * (turbo > 0 ? 1.45 : 1) * 3.6)}</b> km/h`);
+    /* ---------- decorado al costado ---------- */
+    function addDecor(d){
+      [-1, 1].forEach(side => {
+        if ((side < 0 ? nextDecorL : nextDecorR) > d) return;
+        const room = side < 0 ? roadX - laneW * .25 : W - roadX - roadW - laneW * .25; if (room < 14) return;
+        const r = R(); let k = r < .42 ? "tree" : r < .58 ? "bush" : r < .66 ? "cow" : r < .74 ? "post" : r < .8 ? "house" : r < .86 ? "lamp" : r < .92 ? "fence" : "flowers";
+        if (k === "house" && room < 70) k = "tree";
+        const x = side < 0 ? roadX - laneW * .25 - (k === "post" || k === "lamp" ? 8 : 10 + R() * Math.max(4, room - 30)) : roadX + roadW + laneW * .25 + (k === "post" || k === "lamp" ? 8 : 10 + R() * Math.max(4, room - 30));
+        decor.push({ k, d, x, side, s:.8 + R() * .5, col:PAL[Math.floor(R() * PAL.length)], km:Math.floor(d / 1000) + 1 });
+        if (side < 0) nextDecorL = d + 8 + R() * 18; else nextDecorR = d + 8 + R() * 18;
+      });
+      if (d > signN * 520 + 260 && d > 200) { signN++; const ct = CITIES[Math.floor(R() * CITIES.length)]; decor.push({ k:"sign", d, side:1, x:roadX + roadW + laneW * .25 + 6, city:ct[0], km:Math.max(5, ct[1] - Math.floor(meters / 1000)) }); }
+    }
+    /* ---------- tráfico ---------- */
+    const KIND = { car:[1, 13, 19], taxi:[1, 14, 19], bus:[2.4, 11, 14], truck:[3, 10, 13], moto:[.58, 15, 21], tractor:[1.05, 5.5, 7], pickup:[1.15, 12, 17] };
+    function spawnRow(d){
+      if (toll && Math.abs(d - toll.d) < 40) return; if (Math.abs(d - nextToll) < 40) return;
+      const busy = [0, 1, 2].map(l => traffic.some(o => o.lane === l && Math.abs(o.d - d) < 12 + o.len * 4.4));
+      const free = [0, 1, 2].filter(l => !busy[l]); if (free.length < 2) return;
+      const two = R() < Math.min(.55, .12 + tramo * .07) && free.length === 3;
+      const pickL = () => free.splice(Math.floor(R() * free.length), 1)[0];
+      const n = two ? 2 : 1;
+      for (let i = 0; i < n; i++) {
+        const l = pickL(), r = R(), k = tramo < 2 ? (r < .55 ? "car" : r < .7 ? "taxi" : r < .82 ? "pickup" : r < .92 ? "bus" : "moto") : (r < .38 ? "car" : r < .5 ? "taxi" : r < .6 ? "pickup" : r < .72 ? "bus" : r < .82 ? "truck" : r < .93 ? "moto" : "tractor");
+        const [len, a, b] = KIND[k], tv = a + R() * (b - a);
+        const o = { k, lane:l, x:laneX(l), d:d + (i ? R() * 6 : 0), tv, len, w:carW * (k === "moto" ? .5 : k === "bus" || k === "truck" ? 1.12 : k === "tractor" ? 1.05 : 1), col:PAL[Math.floor(R() * PAL.length)], bus:BUS[Math.floor(R() * BUS.length)], num:10 + Math.floor(R() * 180), ph:R() * 6, passed:false };
+        if (tramo >= 2 && (k === "car" || k === "taxi" || k === "pickup") && R() < .22 + tramo * .02) o.change = { at:.2 + R() * .3, done:false, blink:0 };
+        traffic.push(o);
+      }
+      /* algo para juntar en un carril libre */
+      if (free.length) { const l = free[Math.floor(R() * free.length)];
+        if (meters > fuelNext && fuel < .8) { items.push({ k:"fuel", lane:l, x:laneX(l), d:d + 2 }); fuelNext = meters + 300 + R() * 200; }
+        else if (meters > turboNext) { items.push({ k:"turbo", lane:l, x:laneX(l), d:d + 2 }); turboNext = meters + 700 + R() * 500; }
+        else if (R() < .5) { const nC = 3 + Math.floor(R() * 3); for (let i = 0; i < nC; i++) items.push({ k:"coin", lane:l, x:laneX(l), d:d - 8 + i * 5.5 }); } }
+    }
+    function makeToll(d){ const shut = tramo >= 1 ? Math.floor(R() * 3) : -1; toll = { d, shut, passed:false, open:[0, 1, 2].map(l => l !== shut) }; }
+    /* ---------- control ---------- */
+    function steer(dir){ if (!api.playing() || dead) return; const nl = Math.max(0, Math.min(2, lane + dir)); if (nl === lane) { shake = Math.max(shake, .08); return; } lane = nl; SND.fx("swish"); started = true; }
+    let sx0 = 0, sy0 = 0, st0 = 0, moved = false;
+    api.on(api.stage, "pointerdown", e => { sx0 = e.clientX; sy0 = e.clientY; st0 = 1; moved = false; e.preventDefault(); });
+    api.on(api.stage, "pointermove", e => { if (!st0 || moved) return; const dx = e.clientX - sx0; if (Math.abs(dx) > 24) { moved = true; steer(dx > 0 ? 1 : -1); } });
+    api.on(api.stage, "pointerup", e => { if (st0 && !moved) { const r = api.stage.getBoundingClientRect(); steer(e.clientX - r.left < r.width / 2 ? -1 : 1); } st0 = 0; });
+    api.ctl.innerHTML = "";
+    /* ---------- dibujos ---------- */
+    const glow = (x, y, r, col, a) => { const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col.replace("A", a)); g.addColorStop(1, col.replace("A", 0)); c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); };
+    function wheels(x, y, w, h, n){ c.fillStyle = "#15161C"; const ys = n === 3 ? [.16, .5, .84] : [.2, .8]; ys.forEach(f => { rr(c, x - w / 2 - 2.5, y - h / 2 + h * f - h * .07, 4.5, h * .14, 1.5); c.fill(); rr(c, x + w / 2 - 2, y - h / 2 + h * f - h * .07, 4.5, h * .14, 1.5); c.fill(); }); }
+    function carBody(x, y, w, h, col, o){
+      o = o || {}; c.save(); c.translate(x, y); if (o.rot) c.rotate(o.rot);
+      c.fillStyle = "rgba(0,0,0,.22)"; rr(c, -w / 2 + 3, -h / 2 + 5, w, h, w * .3); c.fill();
+      wheels(0, 0, w, h);
+      c.fillStyle = col; c.strokeStyle = IK; c.lineWidth = 2; rr(c, -w / 2, -h / 2, w, h, w * .32); c.fill(); c.stroke();
+      c.fillStyle = "rgba(255,255,255,.22)"; rr(c, -w / 2 + 3, -h / 2 + 3, w * .22, h - 6, w * .1); c.fill();
+      c.fillStyle = "rgba(0,0,0,.12)"; rr(c, w / 2 - w * .22 - 2, -h / 2 + 4, w * .2, h - 8, w * .1); c.fill();
+      /* parabrisas y luneta */
+      const wg = c.createLinearGradient(0, -h * .3, 0, h * .3); wg.addColorStop(0, "#CFEFFF"); wg.addColorStop(1, "#6FB6E8");
+      c.fillStyle = wg; c.strokeStyle = IK; c.lineWidth = 1.5; rr(c, -w * .36, -h * .26, w * .72, h * .2, w * .12); c.fill(); c.stroke();
+      c.fillStyle = "#7DBFE8"; rr(c, -w * .33, h * .2, w * .66, h * .13, w * .1); c.fill(); c.stroke();
+      c.fillStyle = o.roof || col; c.beginPath(); rr(c, -w * .38, -h * .06, w * .76, h * .26, w * .14); c.fill(); c.stroke();
+      if (o.taxi) { c.fillStyle = "#FFC425"; rr(c, -w * .38, -h * .06, w * .76, h * .26, w * .14); c.fill(); c.stroke(); c.fillStyle = "#fff"; c.strokeStyle = IK; c.lineWidth = 1.2; rr(c, -w * .2, h * .03, w * .4, h * .08, 2); c.fill(); c.stroke(); c.fillStyle = IK; c.font = `bold ${Math.max(6, w * .15)}px Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("TAXI", 0, h * .1); }
+      /* luces */
+      c.fillStyle = "#FFF6C2"; c.strokeStyle = IK; c.lineWidth = 1; [-1, 1].forEach(s => { rr(c, s * w * .32 - w * .1, -h / 2 + 1.5, w * .2, h * .05, 2); c.fill(); c.stroke(); });
+      c.fillStyle = o.brake ? "#FF2D2D" : "#C4161C"; [-1, 1].forEach(s => { rr(c, s * w * .32 - w * .1, h / 2 - h * .055, w * .2, h * .045, 2); c.fill(); c.stroke(); });
+      if (o.blink != null && Math.floor(t * 6) % 2) { c.fillStyle = "#FFB000"; const bx = o.blink * w * .44; [-h / 2 + 3, h / 2 - 5].forEach(by => { c.beginPath(); c.arc(bx, by, 3.2, 0, 7); c.fill(); }); }
+      c.restore();
+    }
+    function busDraw(o, y){
+      const w = o.w, h = carH * o.len, x = o.x, [c1, c2] = o.bus;
+      c.save(); c.translate(x, y); c.fillStyle = "rgba(0,0,0,.22)"; rr(c, -w / 2 + 3, -h / 2 + 5, w, h, 6); c.fill(); wheels(0, 0, w, h, 3);
+      c.fillStyle = c1; c.strokeStyle = IK; c.lineWidth = 2; rr(c, -w / 2, -h / 2, w, h, 7); c.fill(); c.stroke();
+      c.fillStyle = c2; c.fillRect(-w / 2 + 2, -h * .12, w - 4, h * .1); c.fillRect(-w / 2 + 2, h * .2, w - 4, h * .06);
+      c.fillStyle = "#9CD2F2"; rr(c, -w * .4, -h / 2 + 4, w * .8, h * .07, 3); c.fill(); c.stroke();
+      c.fillStyle = "rgba(255,255,255,.25)"; rr(c, -w * .2, -h * .3, w * .4, h * .1, 3); c.fill(); rr(c, -w * .2, h * .32, w * .4, h * .08, 3); c.fill();
+      c.fillStyle = "#FFF6C2"; c.font = `bold ${Math.max(7, w * .26)}px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "center"; c.strokeStyle = IK; c.lineWidth = 2.5; c.strokeText(o.num, 0, -h * .32); c.fillText(o.num, 0, -h * .32);
+      c.fillStyle = "#C4161C"; c.strokeStyle = IK; c.lineWidth = 1; [-1, 1].forEach(s => { rr(c, s * w * .34 - 4, h / 2 - 5, 8, 3.5, 1.5); c.fill(); c.stroke(); });
+      c.restore();
+    }
+    function truckDraw(o, y){
+      const w = o.w, h = carH * o.len, x = o.x, cab = h * .26;
+      c.save(); c.translate(x, y); c.fillStyle = "rgba(0,0,0,.22)"; rr(c, -w / 2 + 3, -h / 2 + 5, w, h, 5); c.fill(); wheels(0, 0, w, h, 3);
+      c.fillStyle = o.col; c.strokeStyle = IK; c.lineWidth = 2; rr(c, -w / 2 + 2, -h / 2, w - 4, cab, 6); c.fill(); c.stroke();
+      c.fillStyle = "#9CD2F2"; rr(c, -w * .36, -h / 2 + 3, w * .72, cab * .3, 3); c.fill(); c.stroke();
+      c.fillStyle = "#E9EDF5"; rr(c, -w / 2, -h / 2 + cab + 3, w, h - cab - 3, 4); c.fill(); c.stroke();
+      c.strokeStyle = "rgba(0,0,0,.12)"; c.lineWidth = 1.2; for (let k = 1; k < 7; k++) { const yy = -h / 2 + cab + 3 + (h - cab - 3) * k / 7; c.beginPath(); c.moveTo(-w / 2 + 3, yy); c.lineTo(w / 2 - 3, yy); c.stroke(); }
+      c.fillStyle = o.col; c.fillRect(-w / 2 + 3, -h / 2 + cab + (h - cab) * .45, w - 6, 5);
+      c.fillStyle = "#C4161C"; c.strokeStyle = IK; c.lineWidth = 1; [-1, 1].forEach(s => { rr(c, s * w * .36 - 4, h / 2 - 5, 8, 3.5, 1.5); c.fill(); c.stroke(); });
+      c.restore();
+    }
+    function motoDraw(o, y){
+      const x = o.x + Math.sin(t * 3 + o.ph) * laneW * .08, h = carH * .62;
+      c.save(); c.translate(x, y); c.fillStyle = "rgba(0,0,0,.2)"; c.beginPath(); c.ellipse(3, 5, carW * .22, h * .5, 0, 0, 7); c.fill();
+      c.fillStyle = "#15161C"; rr(c, -3, -h / 2, 6, h * .22, 2); c.fill(); rr(c, -3, h * .28, 6, h * .22, 2); c.fill();
+      c.fillStyle = o.col; c.strokeStyle = IK; c.lineWidth = 1.8; rr(c, -carW * .17, -h * .3, carW * .34, h * .62, 5); c.fill(); c.stroke();
+      c.strokeStyle = IK; c.lineWidth = 2.4; c.beginPath(); c.moveTo(-carW * .32, -h * .28); c.lineTo(carW * .32, -h * .28); c.stroke();
+      c.fillStyle = "#3A3D4A"; c.beginPath(); c.ellipse(0, h * .05, carW * .2, carW * .24, 0, 0, 7); c.fill(); c.stroke();
+      c.fillStyle = o.bus[0]; c.beginPath(); c.arc(0, -h * .06, carW * .17, 0, 7); c.fill(); c.stroke(); c.fillStyle = "rgba(255,255,255,.5)"; c.beginPath(); c.arc(-carW * .05, -h * .1, carW * .05, 0, 7); c.fill();
+      c.restore(); return x;
+    }
+    function tractorDraw(o, y){
+      const w = o.w, h = carH * o.len, x = o.x;
+      c.save(); c.translate(x, y); c.fillStyle = "rgba(0,0,0,.2)"; rr(c, -w / 2 + 3, -h / 2 + 5, w, h, 5); c.fill();
+      c.fillStyle = "#15161C"; rr(c, -w / 2 - 5, h * .02, 9, h * .4, 3); c.fill(); rr(c, w / 2 - 4, h * .02, 9, h * .4, 3); c.fill(); rr(c, -w * .42, -h / 2 + 2, 6, h * .22, 2); c.fill(); rr(c, w * .42 - 6, -h / 2 + 2, 6, h * .22, 2); c.fill();
+      c.fillStyle = "#2E9A3E"; c.strokeStyle = IK; c.lineWidth = 2; rr(c, -w * .3, -h / 2, w * .6, h * .55, 5); c.fill(); c.stroke();
+      c.fillStyle = "#FFC425"; rr(c, -w * .36, -h * .02, w * .72, h * .5, 5); c.fill(); c.stroke();
+      c.fillStyle = "#3A3D4A"; c.beginPath(); c.arc(-w * .16, -h * .3, 3, 0, 7); c.fill();
+      c.fillStyle = "#F2C9A0"; c.beginPath(); c.arc(0, h * .22, w * .16, 0, 7); c.fill(); c.stroke(); c.fillStyle = "#E9D2AE"; c.beginPath(); c.ellipse(0, h * .18, w * .26, w * .1, 0, 0, 7); c.fill(); c.stroke();
+      c.restore();
+    }
+    function drawTraffic(o){
+      const y = sy(o.d); if (y < -carH * 3.5 || y > H + carH * 3.5) return;
+      if (o.k === "bus") return busDraw(o, y);
+      if (o.k === "truck") return truckDraw(o, y);
+      if (o.k === "moto") { o.dx = motoDraw(o, y); return; }
+      if (o.k === "tractor") return tractorDraw(o, y);
+      const blink = o.change && !o.change.done && o.change.blink > 0 ? o.change.dir : null;
+      carBody(o.x, y, o.w * (o.k === "pickup" ? 1.04 : 1), carH * o.len, o.k === "taxi" ? "#1B1D2A" : o.col, { taxi:o.k === "taxi", blink, roof:o.k === "pickup" ? "#3A3D4A" : null, brake:o.k === "tractor", rot:o.rot });
+      if (o.k === "pickup") { c.fillStyle = "rgba(0,0,0,.25)"; rr(c, o.x - o.w * .36, y + carH * .12, o.w * .72, carH * .3, 3); c.fill(); }
+    }
+    function playerDraw(){
+      const y = PY, w = carW, h = carH; c.save(); c.translate(px, y + (dead ? 0 : Math.sin(t * 30) * .4)); c.rotate(tilt + spin);
+      if (turbo > 0) { const fl = 6 + Math.random() * 8; c.fillStyle = "#FF8A1F"; c.beginPath(); c.moveTo(-w * .25, h / 2 - 2); c.lineTo(-w * .12, h / 2 + fl + 6); c.lineTo(0, h / 2 - 2); c.lineTo(w * .12, h / 2 + fl + 6); c.lineTo(w * .25, h / 2 - 2); c.fill(); c.fillStyle = "#FFE27A"; c.beginPath(); c.moveTo(-w * .14, h / 2); c.lineTo(0, h / 2 + fl); c.lineTo(w * .14, h / 2); c.fill();
+        c.strokeStyle = "rgba(92,225,230,.7)"; c.lineWidth = 3; rr(c, -w / 2 - 5, -h / 2 - 5, w + 10, h + 10, w * .4); c.stroke(); }
+      if (inv > 0 && !dead && Math.floor(t * 10) % 2) c.globalAlpha = .45;
+      c.fillStyle = "rgba(0,0,0,.25)"; rr(c, -w / 2 + 3, -h / 2 + 6, w, h, w * .32); c.fill();
+      wheels(0, 0, w, h);
+      c.fillStyle = "#EE3B2B"; c.strokeStyle = IK; c.lineWidth = 2.2; rr(c, -w / 2, -h / 2, w, h, w * .34); c.fill(); c.stroke();
+      c.fillStyle = "#FFFFFF"; c.fillRect(-w * .1, -h / 2 + 2, w * .2, h - 4); c.fillStyle = "#FFC425"; c.fillRect(-w * .1 + 2, -h / 2 + 2, w * .2 - 4, h - 4);
+      c.fillStyle = "rgba(255,255,255,.25)"; rr(c, -w / 2 + 3, -h / 2 + 4, w * .2, h - 8, w * .1); c.fill();
+      const wg = c.createLinearGradient(0, -h * .32, 0, -h * .1); wg.addColorStop(0, "#DFF4FF"); wg.addColorStop(1, "#7CC3EE");
+      c.fillStyle = wg; c.lineWidth = 1.6; rr(c, -w * .38, -h * .3, w * .76, h * .17, w * .12); c.fill(); c.stroke();
+      /* Tito asomado por el techo */
+      const hs = w * .78, img = sprite(dead ? headD : turbo > 0 ? headW : head, hs, hs * 1.18);
+      c.fillStyle = "#B3122E"; c.beginPath(); c.arc(0, h * .06, w * .36, 0, 7); c.fill(); c.stroke();
+      if (img) { c.save(); c.beginPath(); c.arc(0, h * .06, w * .33, 0, 7); c.clip(); c.drawImage(img, -hs / 2, h * .06 - hs * .52, hs, hs * 1.18); c.restore(); }
+      c.fillStyle = "#FFF6C2"; c.strokeStyle = IK; c.lineWidth = 1; [-1, 1].forEach(s => { rr(c, s * w * .3 - w * .11, -h / 2 + 1.5, w * .22, h * .05, 2); c.fill(); c.stroke(); });
+      c.fillStyle = "#C4161C"; [-1, 1].forEach(s => { rr(c, s * w * .3 - w * .1, h / 2 - h * .06, w * .2, h * .045, 2); c.fill(); c.stroke(); });
+      c.globalAlpha = 1; c.restore();
+    }
+    function itemDraw(o){
+      const y = sy(o.d); if (y < -30 || y > H + 30) return; const b = Math.sin(t * 5 + o.d) * 2;
+      c.fillStyle = "rgba(0,0,0,.18)"; c.beginPath(); c.ellipse(o.x + 2, y + 9, laneW * .16, 4, 0, 0, 7); c.fill();
+      if (o.k === "coin") { const r = laneW * .12, sx = Math.abs(Math.cos(t * 4 + o.d)); c.save(); c.translate(o.x, y + b); c.scale(.35 + .65 * sx, 1); c.fillStyle = "#FFC425"; c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.arc(0, 0, r, 0, 7); c.fill(); c.stroke(); c.fillStyle = "#FFE27A"; c.beginPath(); c.arc(-r * .2, -r * .2, r * .45, 0, 7); c.fill(); c.fillStyle = "#C98F00"; c.font = `bold ${Math.round(r * 1.1)}px Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("$", 0, r * .4); c.restore(); }
+      else if (o.k === "fuel") { const s = laneW * .3; c.save(); c.translate(o.x, y + b); glow(0, 0, s * 1.1, "rgba(255,80,60,A)", .35); c.fillStyle = "#EE3B2B"; c.strokeStyle = IK; c.lineWidth = 2; rr(c, -s * .42, -s * .4, s * .84, s * .9, 4); c.fill(); c.stroke(); c.fillStyle = "#3A3D4A"; rr(c, -s * .14, -s * .58, s * .28, s * .2, 2); c.fill(); c.stroke(); c.strokeStyle = "#FFF"; c.lineWidth = 2.4; c.beginPath(); c.moveTo(-s * .2, -s * .15); c.lineTo(s * .2, s * .3); c.moveTo(s * .2, -s * .15); c.lineTo(-s * .2, s * .3); c.stroke(); c.restore(); }
+      else { const s = laneW * .3; c.save(); c.translate(o.x, y + b); glow(0, 0, s * 1.3, "rgba(92,225,230,A)", .5); c.rotate(Math.sin(t * 3) * .15); c.fillStyle = "#FFE27A"; c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.moveTo(s * .1, -s * .55); c.lineTo(-s * .32, s * .08); c.lineTo(-s * .02, s * .08); c.lineTo(-s * .12, s * .55); c.lineTo(s * .34, -s * .1); c.lineTo(s * .04, -s * .1); c.closePath(); c.fill(); c.stroke(); c.restore(); }
+    }
+    function decorDraw(o){
+      const y = sy(o.d); if (y < -90 || y > H + 90) return; const s = o.s || 1;
+      if (o.k === "tree") { c.fillStyle = "rgba(0,0,0,.2)"; c.beginPath(); c.ellipse(o.x + 6, y + 6, 17 * s, 15 * s, 0, 0, 7); c.fill(); c.fillStyle = "#2B8441"; c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.arc(o.x, y, 16 * s, 0, 7); c.fill(); c.stroke(); c.fillStyle = "#3DBA5C"; c.beginPath(); c.arc(o.x - 4 * s, y - 4 * s, 10 * s, 0, 7); c.fill(); c.fillStyle = "#56CC72"; c.beginPath(); c.arc(o.x - 6 * s, y - 7 * s, 4 * s, 0, 7); c.fill(); }
+      else if (o.k === "bush") { c.fillStyle = "#35A853"; c.strokeStyle = IK; c.lineWidth = 1.6; c.beginPath(); c.arc(o.x - 5, y, 7 * s, 0, 7); c.arc(o.x + 5, y + 1, 7 * s, 0, 7); c.fill(); c.stroke(); c.fillStyle = "#FF7DB0"; c.beginPath(); c.arc(o.x + 3, y - 3, 1.8, 0, 7); c.fill(); }
+      else if (o.k === "flowers") { ["#FFF6C2", "#FFC425", "#FF7DB0", "#FFFFFF"].forEach((col, i) => { c.fillStyle = col; c.beginPath(); c.arc(o.x + (i % 2 ? 6 : -5), y + (i > 1 ? 6 : -4), 2.6, 0, 7); c.fill(); }); }
+      else if (o.k === "cow") { c.save(); c.translate(o.x, y); c.rotate(o.side * .4); c.fillStyle = "rgba(0,0,0,.18)"; c.beginPath(); c.ellipse(4, 4, 9, 14, 0, 0, 7); c.fill(); c.fillStyle = "#fff"; c.strokeStyle = IK; c.lineWidth = 1.6; c.beginPath(); c.ellipse(0, 0, 8, 13, 0, 0, 7); c.fill(); c.stroke(); c.fillStyle = "#2B1D14"; c.beginPath(); c.ellipse(-3, -2, 3.5, 4, .4, 0, 7); c.fill(); c.beginPath(); c.ellipse(3, 5, 3, 3.6, -.3, 0, 7); c.fill(); c.fillStyle = "#F7C3C3"; c.beginPath(); c.ellipse(0, -15, 5, 5, 0, 0, 7); c.fill(); c.stroke(); c.restore(); }
+      else if (o.k === "post") { c.fillStyle = "#fff"; c.strokeStyle = IK; c.lineWidth = 1.4; rr(c, o.x - 4, y - 6, 8, 10, 2); c.fill(); c.stroke(); c.fillStyle = "#EE3B2B"; c.fillRect(o.x - 3, y - 5, 6, 2.5); }
+      else if (o.k === "lamp") { c.fillStyle = "#6B7180"; c.fillRect(o.x - 1.5, y - 2, 3, 3); c.strokeStyle = "#6B7180"; c.lineWidth = 2.5; c.beginPath(); c.moveTo(o.x, y); c.lineTo(o.x + (o.side < 0 ? 14 : -14), y); c.stroke(); c.fillStyle = "#FFF1A8"; c.beginPath(); c.arc(o.x + (o.side < 0 ? 15 : -15), y, 3, 0, 7); c.fill(); o.lx = o.x + (o.side < 0 ? 15 : -15); }
+      else if (o.k === "fence") { c.strokeStyle = "#8A5A2B"; c.lineWidth = 2.2; c.beginPath(); c.moveTo(o.x, y - 24); c.lineTo(o.x, y + 24); c.stroke(); c.fillStyle = "#6B4220"; for (let k = -2; k <= 2; k++) { c.beginPath(); c.arc(o.x, y + k * 12, 2.6, 0, 7); c.fill(); } }
+      else if (o.k === "house") { const w = 44, h = 34; c.save(); c.translate(o.x, y); c.fillStyle = "rgba(0,0,0,.2)"; c.fillRect(-w / 2 + 6, -h / 2 + 6, w, h); c.fillStyle = "#C8654A"; c.strokeStyle = IK; c.lineWidth = 2; c.fillRect(-w / 2, -h / 2, w, h); c.strokeRect(-w / 2, -h / 2, w, h); c.strokeStyle = "rgba(0,0,0,.25)"; c.lineWidth = 1; c.beginPath(); c.moveTo(-w / 2, 0); c.lineTo(w / 2, 0); c.stroke(); for (let k = -2; k <= 2; k++) { c.beginPath(); c.moveTo(k * 9, -h / 2); c.lineTo(k * 9, h / 2); c.stroke(); } c.fillStyle = "#FFF6C2"; c.strokeStyle = IK; c.lineWidth = 1.4; rr(c, -w * .4, h / 2 - 2, w * .8, 9, 2); c.fill(); c.stroke(); c.fillStyle = IK; c.font = "bold 7px Fredoka, sans-serif"; c.textAlign = "center"; c.fillText("PARADOR", 0, h / 2 + 5); c.restore(); }
+      else if (o.k === "sign") { const w = Math.min(96, W - o.x - 4), h = 30; if (w < 50) return; c.save(); c.translate(o.x, y); c.fillStyle = "rgba(0,0,0,.2)"; c.fillRect(5, -h / 2 + 5, w, h); c.fillStyle = "#6B7180"; c.fillRect(8, h / 2, 3, 8); c.fillRect(w - 11, h / 2, 3, 8); c.fillStyle = "#11804A"; c.strokeStyle = "#fff"; c.lineWidth = 1.6; rr(c, 0, -h / 2, w, h, 4); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke(); c.strokeStyle = "#fff"; c.lineWidth = 1.2; rr(c, 2.5, -h / 2 + 2.5, w - 5, h - 5, 3); c.stroke(); c.fillStyle = "#fff"; c.textAlign = "left"; c.font = `bold ${w < 80 ? 7.5 : 9}px Fredoka, sans-serif`; c.fillText(o.city, 6, -2); c.textAlign = "right"; c.font = `bold 9px Fredoka, sans-serif`; c.fillText(o.km + " km", w - 6, 10); c.restore(); }
+    }
+    function tollDraw(){
+      if (!toll) return; const y = sy(toll.d); if (y < -120 || y > H + 60) return;
+      c.fillStyle = "rgba(0,0,0,.22)"; c.fillRect(roadX - 10 + 6, y - 22 + 6, roadW + 20, 18);
+      [0, 1, 2].forEach(l => { const x = roadX + laneW * l; c.fillStyle = "#E9EDF5"; c.strokeStyle = IK; c.lineWidth = 2; rr(c, x + 2, y - 14, laneW * .16, 28, 3); c.fill(); c.stroke();
+        const op = toll.open[l]; c.fillStyle = op ? "#22A447" : "#EE3B2B"; c.beginPath(); c.arc(x + 2 + laneW * .08, y - 18, 4, 0, 7); c.fill(); c.stroke(); glow(x + 2 + laneW * .08, y - 18, 12, op ? "rgba(34,164,71,A)" : "rgba(238,59,43,A)", .5);
+        const bl = laneW * .8, ang = op ? -1.2 : 0; c.save(); c.translate(x + laneW * .18, y + 6); c.rotate(ang); c.fillStyle = "#fff"; c.strokeStyle = IK; c.lineWidth = 1.6; rr(c, 0, -3, bl, 6, 2); c.fill(); c.stroke(); c.fillStyle = "#EE3B2B"; for (let k = 0; k < 4; k++) c.fillRect(bl * (k / 4 + .06), -2.4, bl * .1, 4.8); c.restore(); });
+      c.fillStyle = "#26315A"; c.strokeStyle = IK; c.lineWidth = 2; rr(c, roadX - 8, y - 30, roadW + 16, 12, 3); c.fill(); c.stroke();
+      c.fillStyle = "#FFC425"; c.font = `bold 10px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("PEAJE  ·  TRAMO " + (tramo + 1), W / 2, y - 20.5);
+    }
+    function burst(x, y, n, col, sp){ for (let i = 0; i < n; i++) { const a = R() * 6.28, s = (sp || 1) * (50 + R() * 120); parts.push({ x, y, vx:Math.cos(a) * s, vy:Math.sin(a) * s, r:2 + R() * 3, a:1, col }); } }
+    function pop(txt, col, x, y){ pops.push({ txt, col:col || "#FFC425", x:x || px, y:y || PY - carH, t:0 }); }
+    function crash(kind, what){
+      if (dead) return; dead = true; deadT = 0; deadKind = kind; spin = 0; SND.fx("crash"); SND.fx("skid"); SND.engine(-1); shake = .5; burst(px, PY - carH * .4, 22, "#FFC425", 1.4); burst(px, PY - carH * .4, 10, "#E9EDF5", 1);
+      const W2 = { car:"un auto", taxi:"un taxi", bus:"un colectivo", truck:"un camión", moto:"una moto", tractor:"un tractor", pickup:"una camioneta" };
+      ARC.ruta.overText = kind === "fuel" ? "¡Te quedaste sin nafta!" : kind === "toll" ? "¡Te comiste la barrera del peaje!" : "¡Chocaste contra " + (W2[what] || "un auto") + "!";
+      ARC.ruta._r = { m:meters, nm, tramo };
+    }
+    reset();
+    return {
+      reset,
+      dbg(){ return { traffic, items, get v(){ return v; }, get meters(){ return meters; }, set meters(x){ meters = x; }, god(){ inv = 1e9; }, toll:() => toll, get fuel(){ return fuel; }, set fuel(x){ fuel = x; } }; },
+      revive(){ dead = false; spin = 0; tilt = 0; inv = 2.5; fuel = Math.max(fuel, .55); traffic = traffic.filter(o => o.d - meters > 70 || o.d - meters < -20); items = items.filter(o => o.d - meters > 60); if (toll && Math.abs(toll.d - meters) < 60) { toll.open = [true, true, true]; } overCalled = false; ARC.ruta._r = null; },
+      key(k, down){ if (!down) return false; if (k === "ArrowLeft" || k === "a" || k === "A") steer(-1); else if (k === "ArrowRight" || k === "d" || k === "D") steer(1); else return false; },
+      destroy(){ SND.engine(-1); },
+      step(dt){
+        t += dt;
+        if (dead) { deadT += dt; spin += dt * 9 * Math.max(0, 1 - deadT); v = Math.max(0, v - 60 * dt); meters += v * dt * .3; parts.forEach(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .96; p.vy *= .96; p.a -= dt * 1.3; }); parts = parts.filter(p => p.a > 0);
+          if (R() < .5) parts.push({ x:px + (R() - .5) * 10, y:PY, vx:(R() - .5) * 30, vy:-30 - R() * 30, r:5 + R() * 6, a:.6, col:"#6B7180" });
+          if (deadT > 1.2 && !overCalled) { overCalled = true; api.over(); } return; }
+        /* velocidad: sube de a poco y en cada peaje */
+        const target = Math.min(58, 22 + (tramo - 1) * 3.2 + Math.min(4, (meters % 1100) / 280));
+        v += (target - v) * Math.min(1, dt * .6); const vv = v * (turbo > 0 ? 1.45 : 1);
+        meters += vv * dt; dist = meters;
+        fuel -= dt / 46; if (fuel <= 0) { fuel = 0; v = Math.max(0, v - 25 * dt); if (v < 3) crash("fuel"); }
+        if (fuel < .22 && fuel > 0) { lowBeep -= dt; if (lowBeep <= 0) { lowBeep = .9; SND.fx("turn"); } }
+        if (turbo > 0) turbo = Math.max(0, turbo - dt); if (inv > 0) inv = Math.max(0, inv - dt); if (comboT > 0) { comboT -= dt; if (comboT <= 0) combo = 0; } if (honkCD > 0) honkCD -= dt;
+        SND.engine(Math.min(1, vv / 70));
+        const tx = laneX(lane); tilt = Math.max(-.22, Math.min(.22, (tx - px) / laneW * .5)); px += (tx - px) * Math.min(1, dt * 11);
+        /* generar */
+        const ahead = meters + (PY + carH * 4) / PPM;
+        while (nextSpawn < ahead) { spawnRow(nextSpawn); nextSpawn += Math.max(13, 34 - tramo * 2.6) + R() * 18; }
+        if (!toll && nextToll < ahead + 20) { makeToll(nextToll); }
+        for (let d = Math.min(nextDecorL, nextDecorR); d < ahead + 30; d += 4) addDecor(d);
+        /* tráfico */
+        traffic.forEach(o => {
+          o.d += o.tv * dt;
+          const ahead2 = traffic.find(q => q !== o && q.lane === o.lane && q.d > o.d && q.d - o.d < (q.len + o.len) * 4.4 * .5 + 5); if (ahead2) o.tv = Math.min(o.tv, ahead2.tv);
+          if (o.change && !o.change.done) { const ys = sy(o.d) / H; if (!o.change.dir) { const opts = [o.lane - 1, o.lane + 1].filter(l => l >= 0 && l <= 2); o.change.to = opts[Math.floor(R() * opts.length)]; o.change.dir = o.change.to > o.lane ? 1 : -1; }
+            if (ys > o.change.at - .22) o.change.blink = 1;
+            if (ys > o.change.at && !o.change.moving) { const clear = !traffic.some(q => q !== o && q.lane === o.change.to && Math.abs(q.d - o.d) < 14); if (clear) { o.change.moving = true; o.lane = o.change.to; if (honkCD <= 0 && Math.abs(o.d - meters) < 40) { SND.fx("honk"); honkCD = 2; } } else o.change.done = true; } }
+          const tx2 = laneX(o.lane); o.x += (tx2 - o.x) * Math.min(1, dt * 2.6); o.rot = (tx2 - o.x) / laneW * .25; if (o.change && o.change.moving && Math.abs(tx2 - o.x) < 1) o.change.done = true;
+        });
+        /* choques y pasadas al ras */
+        const pw = carW * .86, ph = carH * .86;
+        for (const o of traffic) {
+          const oy = sy(o.d), oh = carH * o.len * .9, ox = o.k === "moto" ? (o.dx || o.x) : o.x, ow = o.w * .86;
+          if (Math.abs(ox - px) < (ow + pw) / 2 && Math.abs(oy - PY) < (oh + ph) / 2) {
+            if (turbo > 0 || inv > 0) { if (turbo > 0 && !o.flung) { o.flung = true; o.tv = -10; o.lane = o.lane + (ox < px ? -1 : 1); SND.fx("boom"); burst(ox, oy, 12, "#FFC425"); bonus += 30; pop("¡Fuera! +30", "#5CE1E6", ox, oy); } }
+            else { crash("car", o.k); return; }
+          }
+          if (!o.passed && oy - oh / 2 > PY + ph / 2) { o.passed = true; const gap = Math.abs(ox - px) - (ow + pw) / 2;
+            if (gap < laneW * .42 && gap >= 0 && !dead) { nm++; combo = Math.min(5, combo + 1); comboT = 3; const b = 20 * combo; bonus += b; SND.fx("nearmiss"); pop(combo > 1 ? `¡Por un pelo! ×${combo}` : "¡Por un pelo!", "#FFC425", px, PY - carH * .9); pop("+" + b, "#fff", px + laneW * .5, PY - carH * .4); } }
+        }
+        traffic = traffic.filter(o => o.d > meters - 40 && o.d < meters + 400);
+        /* cosas para juntar */
+        items.forEach(o => { if (o.got) return; const oy = sy(o.d); if (Math.abs(o.x - px) < laneW * .45 && Math.abs(oy - PY) < carH * .6) { o.got = true;
+          if (o.k === "coin") { coins++; bonus += 5; SND.fx("coin"); burst(o.x, oy, 6, "#FFC425", .6); }
+          else if (o.k === "fuel") { fuel = Math.min(1, fuel + .45); SND.fx("fuel"); pop("¡Nafta!", "#FF8A80"); burst(o.x, oy, 10, "#FF8A80"); }
+          else { turbo = 4; SND.fx("turbo"); pop("¡TURBO!", "#5CE1E6"); burst(o.x, oy, 16, "#5CE1E6", 1.3); } } });
+        items = items.filter(o => !o.got && o.d > meters - 20);
+        decor = decor.filter(o => o.d > meters - (H - PY) / PPM - 30);
+        /* peaje */
+        if (toll && !toll.passed) { const ty = sy(toll.d); if (Math.abs(ty - PY) < carH * .5) { if (!toll.open[lane] && turbo <= 0 && inv <= 0) { crash("toll"); return; } }
+          if (ty > PY + carH * .6) { toll.passed = true; tramo++; nextToll = toll.d + 1100 + tramo * 60; SND.fx("toll"); pop(`¡Tramo ${tramo}!`, "#5CE1E6", W / 2, H * .35); bonus += 50; if (tramo % 3 === 1) api.celebrate(`¡Tramo ${tramo}!`); } }
+        if (toll && toll.passed && sy(toll.d) > H + 80) toll = null;
+        parts.forEach(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .96; p.vy *= .96; p.a -= dt * 1.6; }); parts = parts.filter(p => p.a > 0);
+        if (turbo > 0 && R() < .6) parts.push({ x:px + (R() - .5) * carW * .5, y:PY + carH * .55, vx:(R() - .5) * 40, vy:120 + R() * 80, r:2 + R() * 2.5, a:.8, col:R() < .5 ? "#5CE1E6" : "#FFE27A" });
+        pops.forEach(p => p.t += dt); pops = pops.filter(p => p.t < 1.1);
+        if (shake > 0) shake = Math.max(0, shake - dt);
+        api.score(Math.floor(meters + bonus)); if (Math.floor(t * 4) !== Math.floor((t - dt) * 4)) info();
+      },
+      draw(){
+        c.save(); if (shake > 0) c.translate((R() - .5) * shake * 18, (R() - .5) * shake * 18);
+        const off = ((meters * PPM) % TILE + TILE) % TILE;
+        for (let y = off - TILE; y < H; y += TILE) { c.drawImage(ground, 0, y, W, TILE); c.drawImage(asphalt, 0, y, W, TILE); }
+        /* líneas */
+        c.fillStyle = "#E9ECF4"; c.fillRect(roadX + 3, 0, 3, H); c.fillRect(roadX + roadW - 6, 0, 3, H);
+        const dash = 3 * PPM, gap2 = 4.5 * PPM, ph2 = ((meters * PPM) % (dash + gap2) + (dash + gap2)) % (dash + gap2);
+        c.fillStyle = "rgba(255,255,255,.88)"; [1, 2].forEach(k => { const lx = roadX + laneW * k - 1.5; for (let y = ph2 - dash - gap2; y < H; y += dash + gap2) c.fillRect(lx, y, 3, dash); });
+        /* ojos de gato */
+        c.fillStyle = "#FFE27A"; const ce = 18 * PPM, phc = ((meters * PPM) % ce + ce) % ce; for (let y = phc - ce; y < H; y += ce) { c.fillRect(roadX + 1, y, 2, 4); c.fillRect(roadX + roadW - 3, y, 2, 4); }
+        decor.forEach(decorDraw); tollDraw(); items.forEach(itemDraw); traffic.forEach(drawTraffic);
+        if (!dead || deadT < 99) playerDraw();
+        parts.forEach(p => { c.globalAlpha = Math.max(0, p.a); c.fillStyle = p.col; c.beginPath(); c.arc(p.x, p.y, p.r, 0, 7); c.fill(); }); c.globalAlpha = 1;
+        /* noche: oscurece y prende luces */
+        const cyc = (meters / 1100 + .5) % 6, night = cyc < 2.4 ? 0 : cyc < 3 ? (cyc - 2.4) / .6 : cyc < 4.6 ? 1 : cyc < 5.2 ? 1 - (cyc - 4.6) / .6 : 0, dusk = Math.max(0, 1 - Math.abs(cyc - 2.7) / .5) + Math.max(0, 1 - Math.abs(cyc - 4.9) / .5);
+        if (dusk > 0) { c.fillStyle = `rgba(255,120,60,${dusk * .16})`; c.fillRect(0, 0, W, H); }
+        if (night > 0) {
+          c.fillStyle = `rgba(12,16,48,${night * .58})`; c.fillRect(0, 0, W, H);
+          c.globalCompositeOperation = "lighter";
+          const hl = c.createLinearGradient(0, PY - carH / 2, 0, PY - carH * 3.4); hl.addColorStop(0, `rgba(255,240,180,${night * .32})`); hl.addColorStop(1, "rgba(255,240,180,0)");
+          c.fillStyle = hl; c.beginPath(); c.moveTo(px - carW * .4, PY - carH / 2); c.lineTo(px - carW * 1.3, PY - carH * 3.4); c.lineTo(px + carW * 1.3, PY - carH * 3.4); c.lineTo(px + carW * .4, PY - carH / 2); c.closePath(); c.fill();
+          traffic.forEach(o => { const y = sy(o.d); if (y < -40 || y > H + 40) return; const h = carH * o.len; [-1, 1].forEach(s => glow(o.x + s * o.w * .3, y + h / 2, 9, "rgba(255,40,40,A)", night * .55)); });
+          decor.forEach(o => { if (o.k === "lamp" && o.lx) glow(o.lx, sy(o.d), 34, "rgba(255,230,150,A)", night * .4); });
+          glow(px, PY + carH * .5, 12, "rgba(255,40,40,A)", night * .5);
+          c.globalCompositeOperation = "source-over";
+        }
+        /* textos que saltan */
+        c.textAlign = "center"; pops.forEach(p => { const s = Math.min(1, p.t * 8), a = Math.max(0, 1 - Math.max(0, p.t - .6) * 2.2); c.save(); c.globalAlpha = a; c.translate(p.x, p.y - p.t * 40); c.scale(.6 + s * .5, .6 + s * .5); c.font = `${Math.round(W * .055)}px "Luckiest Guy", Fredoka, sans-serif`; c.lineWidth = 5; c.strokeStyle = IK; c.strokeText(p.txt, 0, 0); c.fillStyle = p.col; c.fillText(p.txt, 0, 0); c.restore(); });
+        /* nafta y turbo */
+        const gx = 10, gy = H - 30, gw = Math.min(110, W * .28); c.fillStyle = "rgba(11,15,36,.55)"; rr(c, gx - 4, gy - 6, gw + 34, 26, 9); c.fill();
+        c.fillStyle = "#EE3B2B"; c.strokeStyle = IK; c.lineWidth = 1.6; rr(c, gx, gy - 1, 14, 16, 3); c.fill(); c.stroke(); c.strokeStyle = "#fff"; c.lineWidth = 1.6; c.beginPath(); c.moveTo(gx + 4, gy + 3); c.lineTo(gx + 10, gy + 11); c.moveTo(gx + 10, gy + 3); c.lineTo(gx + 4, gy + 11); c.stroke();
+        c.fillStyle = "rgba(255,255,255,.2)"; rr(c, gx + 20, gy + 2, gw, 10, 5); c.fill(); c.fillStyle = fuel < .22 ? (Math.floor(t * 4) % 2 ? "#EE3B2B" : "#FF8A80") : fuel < .5 ? "#FFC425" : "#22C55E"; rr(c, gx + 20, gy + 2, Math.max(4, gw * fuel), 10, 5); c.fill();
+        if (fuel < .22 && !dead) { c.font = `bold 11px Fredoka, sans-serif`; c.fillStyle = "#FF8A80"; c.textAlign = "left"; c.fillText("¡Poca nafta!", gx, gy - 10); }
+        if (turbo > 0) { c.fillStyle = "rgba(11,15,36,.55)"; rr(c, W - gw - 44, gy - 6, gw + 34, 26, 9); c.fill(); c.fillStyle = "#5CE1E6"; rr(c, W - gw - 20, gy + 2, gw * turbo / 4, 10, 5); c.fill(); c.fillStyle = "#FFE27A"; c.font = `bold 14px Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("⚡", W - gw - 31, gy + 12); }
+        if (combo > 1) { c.font = `${Math.round(W * .045)}px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "right"; c.lineWidth = 4; c.strokeStyle = IK; c.strokeText("×" + combo, W - 12, H * .2); c.fillStyle = "#FFC425"; c.fillText("×" + combo, W - 12, H * .2); }
+        c.textAlign = "left"; c.restore();
+      }
+    };
+  }
+});
+
+/* =================== TITO PIANO (teclas que caen, cada una es la nota siguiente de la canción) =================== */
+/* Notas en solfeo: minúscula = octava 4, MAYÚSCULA = octava 5, "+"/"-" sube o baja una octava, "/" cierra la frase (la última nota es larga).
+   Todas las melodías son de dominio público (autores fallecidos hace más de 70 años o tradicionales). */
+const PNO_SONGS = [
+  { id:"estrellita", n:"Estrellita, ¿dónde estás?", by:"Tradicional", g:"facil", notes:"do do sol sol la la sol / fa fa mi mi re re do / sol sol fa fa mi mi re / sol sol fa fa mi mi re / do do sol sol la la sol / fa fa mi mi re re do /" },
+  { id:"cumple", n:"Cumpleaños feliz", by:"Hermanas Hill", g:"facil", notes:"sol sol la sol DO si / sol sol la sol RE DO / sol sol SOL MI DO si la / FA FA MI DO RE DO /" },
+  { id:"pollitos", n:"Los pollitos dicen", by:"Tradicional", g:"facil", notes:"do re mi fa sol sol / la la la la sol / la la la la sol / fa fa fa fa mi mi / re re re re do /" },
+  { id:"alegria", n:"Himno a la alegría", by:"Beethoven", g:"facil", notes:"mi mi fa sol sol fa mi re do do re mi mi re re / mi mi fa sol sol fa mi re do do re mi re do do / re re mi do re mi fa mi do re mi fa mi re do re -sol / mi mi fa sol sol fa mi re do do re mi re do do /" },
+  { id:"elisa", n:"Para Elisa", by:"Beethoven", g:"media", notes:"MI RE# MI RE# MI si RE DO la / do mi la si / mi sol# si DO / mi MI RE# MI RE# MI si RE DO la / do mi la si / mi DO si la /" },
+  { id:"jingle", n:"Jingle Bells", by:"J. Pierpont", g:"media", notes:"mi mi mi / mi mi mi / mi sol do re mi / fa fa fa fa fa mi mi mi mi re re mi re / sol / mi mi mi / mi mi mi / mi sol do re mi / fa fa fa fa fa mi mi mi sol sol fa re do /" },
+  { id:"cucaracha", n:"La cucaracha", by:"Tradicional", g:"media", notes:"do do do fa la / do do do fa la / fa fa mi mi re re do / do do do mi sol / do do do mi sol / DO RE DO sib la sol fa /" },
+  { id:"canon", n:"Canon", by:"Pachelbel", g:"media", notes:"FA# MI RE DO# si la si DO# / RE DO# si la sol fa# sol mi / re fa# la sol fa# re fa# mi re -si re la sol si la sol / FA# MI RE DO# si la si DO# / RE DO# si la sol fa# sol mi /" },
+  { id:"turca", n:"Marcha turca", by:"Mozart", g:"dificil", notes:"si la sol# la DO / RE DO si DO MI / FA MI RE# MI SI LA SOL# LA SI LA SOL# LA +DO / LA +DO SI LA SOL LA SI LA SOL LA SI LA SOL FA# MI /" },
+  { id:"cancan", n:"Can-can", by:"Offenbach", g:"dificil", notes:"do re fa mi re sol sol sol la mi fa re re re fa mi re do DO si la sol fa mi re / do re fa mi re sol sol sol la mi fa re re re fa mi re do sol re mi do /" },
+  { id:"cumparsita", n:"La cumparsita", by:"Matos Rodríguez", g:"tango", shift:0, notes:"LA SOL FA MI RE si sol# mi fa mi re# mi mi mi do -la / mi fa mi re# mi mi mi re do -sol# mi fa mi re# mi mi mi do -si / mi fa mi re# mi re -la -sol# -la -sol# -la -sol# -la -si do -la -sol# -la / -sol# -la -sol# -la -sib -si -sol# mi re do -si -sol# -la /" },
+  { id:"choclo", n:"El choclo", by:"Ángel Villoldo", g:"tango", notes:"mi mi fa fa mi mi la la DO DO FA FA MI / MI MI LA LA MI MI DO DO RE RE DO DO si / mi mi fa fa mi mi sol# sol# si si FA FA MI / MI MIb MI SI SOL# SOL# MI MI RE RE DO si la / mi mi fa fa mi mi la la DO DO FA FA MI / MI MI LA LA MI MI DO# DO# MI MI SOL SOL FA / fa fa FA FA MI MI RE RE DO DO si si la / la la DO si la la sol# si si RE DO si la / sol fa# sol FA FA FA SOL FA MI DO# FA MI / si RE DO si la DO si fa si la sol fa# la sol / mi mib mi RE RE RE MI RE DO si RE DO / DO RE DO si la sol# la si DO RE RE# MI /" },
+  { id:"cabeza", n:"Por una cabeza", by:"Carlos Gardel", g:"tango", notes:"fa# sol sol# la si la sol# la si DO# MI RE / FA# SOL MI FA# RE MI DO# RE DO# la sol / SOL FA# LA SOL MI RE# FA# MI DO# / DO# RE RE# MI FA# MI MI FA# MI DO# si la la / fa# sol sol# la si la sol# la si DO# MI RE / FA# SOL MI FA# FA# RE RE MI FA# MI RE si / MI RE si sol fa# mi fa# sol sib RE DO sib RE la / RE MI FA# RE MI si DO# RE MI DO# RE / FA FA SOL LA LA MI / RE RE MI FA FA DO / sib sib DO RE RE la / RE MI FA RE FA MI / FA FA SOL LA LA MI / RE RE MI FA FA DO / sib sib DO RE RE la / RE MI FA RE FA MI / DO# RE MI DO# RE /" },
+  { id:"mbaq", n:"Mi Buenos Aires querido", by:"Carlos Gardel", g:"tango", notes:"FA MI RE FA MI RE FA MI / FA MI RE DO la# RE la / sol la# RE fa la FA MI RE / FA# FA# MI MI RE RE DO# DO# si si la sol / MI MI RE RE DO# DO# si si la la sol fa# / RE MI DO# RE si DO# RE DO# la si DO# si / DO# RE si DO# la si DO# si sol la si la / fa# sol sol# la fa# MI RE si la fa# / si la sol fa# re mi re do# re / fa# sol sol# la fa# MI RE si la fa# / la si DO DO# sol# si la si DO# / DO# RE RE# MI MI FA# MI RE DO# RE la / RE RE si DO# la si sol fa# la / fa# sol sol# la fa# MI RE si la fa# / si la sol fa# re mi re do# re /" }
+];
+const PNO_GROUPS = { facil:["Fáciles", 0, 2.3], media:["Medias", 1200, 2.75], dificil:["Difíciles", 2500, 3.25], tango:["Tango", 3000, 2.95] };
+function pnoParse(song){
+  if (song._seq) return song._seq;
+  const BASE = { do:0, re:2, mi:4, fa:5, sol:7, la:9, si:11 }, out = []; let prev = null;
+  song.notes.split(/\s+/).filter(Boolean).forEach(tok => {
+    if (tok === "/") { if (out.length) out[out.length - 1].long = true; return; }
+    let oct = 0; if (tok[0] === "+") { oct = 1; tok = tok.slice(1); } else if (tok[0] === "-") { oct = -1; tok = tok.slice(1); }
+    const up = tok[0] === tok[0].toUpperCase(), low = tok.toLowerCase(), m0 = low.match(/^(do|re|mi|fa|sol|la|si)(#|b)?$/); if (!m0) return;
+    let pc = BASE[m0[1]] + (m0[2] === "#" ? 1 : m0[2] === "b" ? -1 : 0), m;
+    if (song.near && prev != null) { m = pc + 12 * Math.round((prev - pc) / 12); } else m = 60 + pc + (up ? 12 : 0) + oct * 12;
+    if (song.near && prev == null) m = 69 + pc - 9;
+    out.push({ m, long:false }); prev = m;
+  });
+  const avg = out.reduce((a, n) => a + n.m, 0) / out.length, sh = song.shift != null ? song.shift : 12 * Math.round((74 - avg) / 12); out.forEach(n => n.m += sh);
+  return song._seq = out;
+}
+function pnoState(){ const st = arcState(); st.pno = st.pno || { sel:"estrellita", own:[], stars:{} }; return st.pno; }
+const pnoOwns = id => { const s = PNO_SONGS.find(x => x.id === id); return !!s && (PNO_GROUPS[s.g][1] === 0 || pnoState().own.includes(id)); };
+arcRegister("piano", {
+  t:"Tito Piano", d:"Toca las teclas negras a tiempo y la canción suena entera.", col:"y", revive:true, fill:[1.4, 1.8], ctlH:0, noCount:true,
+  intro:"Toca las teclas negras de abajo hacia arriba: cada una es la nota siguiente de la canción. Las largas se mantienen apretadas. Si tocas el blanco o se te escapa una, se termina.",
+  help:"Toca las negras · mantén las largas",
+  points: s => s / 7,
+  readyHTML(){
+    const p = pnoState(); let h = `<div class="pno-list">`;
+    Object.entries(PNO_GROUPS).forEach(([g, [label, price]]) => {
+      h += `<div class="pno-gh">${label}${price ? ` <small>${coin}${NUM.format(price)}</small>` : ` <small>gratis</small>`}</div>`;
+      PNO_SONGS.filter(s => s.g === g).forEach(s => { const own = pnoOwns(s.id), stars = p.stars[s.id] || 0;
+        h += `<button class="pno-song ${p.sel === s.id ? "on" : ""} ${own ? "" : "lock"} ${g === "tango" ? "tango" : ""}" data-act="arc-song:${s.id}"><b>${esc(s.n)}</b><small>${esc(s.by)}</small><span class="pno-st">${own ? [1, 2, 3].map(k => `<i class="${k <= stars ? "on" : ""}">★</i>`).join("") : `<em>🔒 ${NUM.format(price)}</em>`}</span></button>`; });
+    });
+    return h + `</div>`;
+  },
+  act(k, v){
+    if (k === "arc-song") { const s = PNO_SONGS.find(x => x.id === v); if (!s) return true;
+      if (pnoOwns(v)) { pnoState().sel = v; save(); SND.tap(); arcMount(); return true; }
+      const price = PNO_GROUPS[s.g][1];
+      openSheet("Desbloquear canción", `<div style="text-align:center"><p style="margin:0 0 6px"><b>${esc(s.n)}</b><br><span class="small muted">${esc(s.by)}${s.g === "tango" ? " · Tango" : ""}</span></p><p class="small">Queda tuya para siempre.</p>
+        <div class="btn-row"><button class="btn" data-act="close-sheet">Ahora no</button>${S.coins >= price ? `<button class="btn green" data-act="arc-songbuy:${v}">${coin}${NUM.format(price)} · Comprar</button>` : `<button class="btn" data-act="need:${price}">Faltan ${NUM.format(price - S.coins)}</button>`}</div></div>`, { center:true });
+      return true; }
+    if (k === "arc-songbuy") { const s = PNO_SONGS.find(x => x.id === v), price = s ? PNO_GROUPS[s.g][1] : 0; if (!s || S.coins < price) return true;
+      S.coins -= price; const p = pnoState(); p.own.push(v); p.sel = v; save(); renderHeader(); closeSheet(); SND.buy(); toast(`¡Desbloqueaste «${s.n}»!`, "ok"); if (typeof logEv === "function") logEv("spend_virtual_currency", { item_name:"cancion:" + v, virtual_currency_name:"puntos", value:price }); arcMount(); return true; }
+    return false;
+  },
+  thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thc22"><rect width="64" height="48" rx="8"/></clipPath><linearGradient id="thg22" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B1D5C"/><stop offset="1" stop-color="#5B3FB8"/></linearGradient></defs><g clip-path="url(#thc22)">
+    <rect width="64" height="48" fill="url(#thg22)"/><path d="M16 0 V38 M32 0 V38 M48 0 V38" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
+    <rect x="2" y="2" width="12" height="13" rx="2.5" fill="#15161C" stroke="#fff" stroke-opacity=".3"/><rect x="34" y="-6" width="12" height="13" rx="2.5" fill="#15161C"/><rect x="18" y="13" width="12" height="20" rx="2.5" fill="#15161C"/><rect x="21.5" y="16" width="5" height="11" rx="2" fill="#5CE1E6" opacity=".9"/><rect x="50" y="18" width="12" height="13" rx="2.5" fill="rgba(255,255,255,.25)"/>
+    <text x="42" y="22" font-size="9" fill="#FFE27A" font-family="Fredoka, sans-serif" font-weight="700">♪</text><text x="6" y="28" font-size="7" fill="#FF7DB0" font-family="Fredoka, sans-serif" font-weight="700">♫</text>
+    <rect y="36" width="64" height="12" fill="#fff"/>${[8,16,24,32,40,48,56].map(x => `<path d="M${x} 36 V48" stroke="#9AA3B5" stroke-width=".8"/>`).join("")}${[6,14,30,38,46].map(x => `<rect x="${x}" y="36" width="4.4" height="7" rx="1" fill="#15161C"/>`).join("")}<rect x="24" y="36" width="8" height="12" fill="#FFC425" opacity=".85"/>
+    ${thumbTito(46, 14, .1, "happy")}</g><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
+  make(api){
+    const { W, H, c } = api, p = pnoState(), song = PNO_SONGS.find(s => s.id === p.sel) || PNO_SONGS[0], seq = pnoParse(song), grp = PNO_GROUPS[song.g], tango = song.g === "tango";
+    const KBH = Math.round(H * .085), PH = H - KBH, rowH = PH / 4, colW = W / 4;
+    const lo = Math.min(...seq.map(n => n.m)), kbBase = 12 * Math.floor((lo - 1) / 12);
+    let tiles, nextIdx, nextRow, scroll, speed, lap, state, holds, parts, rings, pops, keysLit, combo, best, failT, fail, failMsg, bonus, tapped, t, prevCol, notes, overCalled;
+    const R = Math.random;
+    const bg = document.createElement("canvas"), dpr = Math.min(2, window.devicePixelRatio || 1); bg.width = Math.ceil(W * dpr); bg.height = Math.ceil(PH * dpr);
+    (() => { const x = bg.getContext("2d"); x.scale(dpr, dpr);
+      const g = x.createLinearGradient(0, 0, 0, PH); if (tango) { g.addColorStop(0, "#2A0E12"); g.addColorStop(.6, "#5A1E1E"); g.addColorStop(1, "#7A3A1E"); } else { g.addColorStop(0, "#1A1240"); g.addColorStop(.6, "#3B2C9E"); g.addColorStop(1, "#5B3FB8"); }
+      x.fillStyle = g; x.fillRect(0, 0, W, PH);
+      if (tango) { /* adoquines y farol */
+        x.strokeStyle = "rgba(255,210,150,.07)"; x.lineWidth = 1; for (let y = PH * .55; y < PH; y += 14) { const o = (Math.round(y / 14) % 2) * 14; x.beginPath(); x.moveTo(0, y); x.lineTo(W, y); x.stroke(); for (let xx = o; xx < W; xx += 28) { x.beginPath(); x.moveTo(xx, y); x.lineTo(xx, y + 14); x.stroke(); } }
+        const fx = W * .82, fy = PH * .16, rg = x.createRadialGradient(fx, fy, 0, fx, fy, W * .45); rg.addColorStop(0, "rgba(255,200,110,.35)"); rg.addColorStop(1, "rgba(255,200,110,0)"); x.fillStyle = rg; x.fillRect(0, 0, W, PH);
+        x.fillStyle = "rgba(0,0,0,.45)"; x.fillRect(fx - 2, fy + 10, 4, PH); x.beginPath(); x.moveTo(fx - 11, fy - 6); x.lineTo(fx + 11, fy - 6); x.lineTo(fx + 7, fy + 12); x.lineTo(fx - 7, fy + 12); x.closePath(); x.fill(); x.fillStyle = "rgba(255,220,140,.75)"; x.fillRect(fx - 6, fy - 3, 12, 12);
+        x.fillStyle = "rgba(255,255,255,.06)"; x.font = `bold ${Math.round(W * .1)}px "Luckiest Guy", Fredoka, sans-serif`; x.textAlign = "center"; x.fillText("TANGO", W / 2, PH * .45);
+      } else { const rg = x.createRadialGradient(W / 2, -PH * .1, 0, W / 2, -PH * .1, PH * .9); rg.addColorStop(0, "rgba(255,255,255,.18)"); rg.addColorStop(1, "rgba(255,255,255,0)"); x.fillStyle = rg; x.fillRect(0, 0, W, PH);
+        for (let i = 0; i < 40; i++) { x.fillStyle = `rgba(255,255,255,${.1 + R() * .3})`; x.beginPath(); x.arc(R() * W, R() * PH, .6 + R() * 1.3, 0, 7); x.fill(); } }
+      x.strokeStyle = "rgba(255,255,255,.14)"; x.lineWidth = 1; [1, 2, 3].forEach(k => { x.beginPath(); x.moveTo(colW * k, 0); x.lineTo(colW * k, PH); x.stroke(); });
+    })();
+    const pickCol = (i) => { if (prevCol == null) return Math.floor(R() * 4); const n = seq[i % seq.length], pm = seq[(i - 1 + seq.length) % seq.length].m; let opts = [0, 1, 2, 3].filter(k => k !== prevCol);
+      const want = n.m > pm ? opts.filter(k => k > prevCol) : n.m < pm ? opts.filter(k => k < prevCol) : []; if (want.length && R() < .75) opts = want; return opts[Math.floor(R() * opts.length)]; };
+    function gen(){ while (nextRow < (scroll / rowH) + 7) { const n = seq[nextIdx % seq.length], len = n.long ? 2 : 1, col = pickCol(nextIdx); prevCol = col; tiles.push({ i:nextIdx, m:n.m, row:nextRow, len, col, hit:false, hold:null, prog:0, flash:0 }); nextRow += len; nextIdx++; } }
+    const bottomOf = tl => PH - (tl.row * rowH - scroll), topOf = tl => bottomOf(tl) - tl.len * rowH;
+    const reset = () => { tiles = []; nextIdx = 0; nextRow = 1; scroll = 0; speed = grp[2]; lap = 1; state = "wait"; holds = {}; parts = []; rings = []; pops = []; keysLit = {}; combo = 0; best = 0; failT = 0; fail = null; failMsg = ""; bonus = 0; tapped = 0; t = 0; prevCol = null; notes = []; overCalled = false; gen(); ARC.piano.overText = "¡Uh, se terminó!"; api.info(`<b>${esc(song.n)}</b> · ${esc(song.by)}`); };
+    reset();
+    const nextTile = () => tiles.find(tl => !tl.hit);
+    function playNote(tl){ SND.piano(tl.m, tl.len > 1 ? 1.4 : .7 / Math.max(1, speed / 2.6), 1); keysLit[tl.m] = .35; notes.push({ x:(tl.col + .5) * colW, y:bottomOf(tl) - rowH * .5, vy:-60 - R() * 40, a:1, s:R() < .5 ? "♪" : "♫", col:["#FFE27A", "#5CE1E6", "#FF7DB0", "#B9A8FF"][Math.floor(R() * 4)] }); }
+    function doFail(kind, col, y){
+      if (fail) return; fail = { kind, col, y, t:0 }; SND.fx("wrongkey"); failMsg = kind === "miss" ? "¡Se te escapó una tecla!" : "¡Tocaste una tecla blanca!"; ARC.piano.overText = failMsg;
+      if (navigator.vibrate) try { navigator.vibrate(120); } catch(e){}
+      const p2 = pnoState(); if (lap > 1) { p2.stars[song.id] = Math.max(p2.stars[song.id] || 0, Math.min(3, lap - 1)); save(); }
+    }
+    function lapDone(){ lap++; speed *= 1.12; const p2 = pnoState(); p2.stars[song.id] = Math.max(p2.stars[song.id] || 0, Math.min(3, lap - 1)); save(); bonus += 20; SND.fx("bonus"); api.celebrate(lap - 1 >= 3 ? "¡Tres estrellas!" : `¡${"★".repeat(lap - 1)} Vuelta ${lap}!`); pops.push({ txt:`Vuelta ${lap}`, t:0, col:"#5CE1E6" }); }
+    function hitTile(tl, y, pid){
+      tl.hit = true; tapped++; combo++; best = Math.max(best, combo); playNote(tl);
+      if (state === "wait") state = "run";
+      rings.push({ x:(tl.col + .5) * colW, y, t:0 }); for (let k = 0; k < 6; k++) parts.push({ x:(tl.col + .5) * colW, y, vx:(R() - .5) * 160, vy:(R() - .5) * 160, a:1, r:2 + R() * 2.5, col:tango ? "#FFC98A" : "#9FE8FF" });
+      if (tl.len > 1) { tl.hold = { pid, y0:Math.min(y, bottomOf(tl) - 4), top0:topOf(tl) }; holds[pid] = tl; }
+      if ([25, 50, 100, 200].includes(combo)) { pops.push({ txt:combo === 25 ? "¡Bien!" : combo === 50 ? "¡Genial!" : combo === 100 ? "¡Perfecto!" : "¡Leyenda!", t:0, col:"#FFC425" }); SND.fx("milestone"); }
+      speed += .018; if ((tl.i + 1) % seq.length === 0) lapDone();
+      api.score(tapped + bonus);
+    }
+    const toCanvas = e => { const r = api.cv.getBoundingClientRect(); return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height]; };
+    api.on(api.stage, "pointerdown", e => {
+      e.preventDefault(); if (!api.playing() || fail) return; const [x, y] = toCanvas(e); if (y > PH) return; const col = Math.floor(x / colW);
+      const n = nextTile(); if (!n) return; const nb = bottomOf(n), nt = topOf(n), tol = rowH * .3;
+      if (n.col === col && y >= nt - tol && y <= nb + tol) { hitTile(n, y, e.pointerId); return; }
+      /* teclas siguientes ya tocables: deja tocar la de arriba si la de abajo ya casi pasó */
+      const n2 = tiles.find(tl => !tl.hit && tl !== n); if (n2 && n2.col === col && y >= topOf(n2) - tol && y <= bottomOf(n2) + tol) return;
+      if (y >= nt - rowH * .15 && y <= nb + rowH * .1) doFail("white", col, y);
+    }, { passive:false });
+    const release = e => { const tl = holds[e.pointerId]; if (!tl) return; delete holds[e.pointerId]; if (tl.hold && tl.prog < 1) { const b = Math.floor(tl.prog * 3); bonus += b; tl.hold.done = true; api.score(tapped + bonus); } };
+    api.on(api.stage, "pointerup", release); api.on(api.stage, "pointercancel", release);
+    api.ctl.innerHTML = "";
+    function keyboard(){
+      const y0 = PH, whites = 14, ww = W / whites, wm = [0, 2, 4, 5, 7, 9, 11];
+      c.fillStyle = "#0B0F24"; c.fillRect(0, y0, W, KBH); c.fillStyle = tango ? "#7A1F2B" : "#B3122E"; c.fillRect(0, y0, W, 4);
+      for (let i = 0; i < whites; i++) { const m = kbBase + 12 * Math.floor(i / 7) + wm[i % 7], lit = keysLit[m] || 0; c.fillStyle = lit > 0 ? `rgb(255,${Math.round(255 - 60 * lit / .35)},${Math.round(255 - 200 * lit / .35)})` : "#F7F7F2"; c.strokeStyle = "#9AA3B5"; c.lineWidth = 1; c.fillRect(i * ww + .5, y0 + 4, ww - 1, KBH - 5); c.strokeRect(i * ww + .5, y0 + 4, ww - 1, KBH - 5); }
+      for (let i = 0; i < whites; i++) { const k = i % 7; if (k === 2 || k === 6) continue; const m = kbBase + 12 * Math.floor(i / 7) + wm[k] + 1, lit = keysLit[m] || 0; c.fillStyle = lit > 0 ? "#FFC425" : "#15161C"; rr(c, (i + 1) * ww - ww * .3, y0 + 4, ww * .6, KBH * .58, 2); c.fill(); }
+    }
+    function tileDraw(tl){
+      const b = bottomOf(tl), tp = b - tl.len * rowH; if (b < -4 || tp > PH + 4) return; const x = tl.col * colW + 3, w = colW - 6, h = tl.len * rowH - 4, y = tp + 2;
+      const first = state === "wait" && tl === nextTile();
+      if (tl.hit && tl.len === 1) { const a = .22; c.fillStyle = `rgba(255,255,255,${a})`; rr(c, x, y, w, h, 10); c.fill(); return; }
+      const g = c.createLinearGradient(0, y, 0, y + h); if (first) { g.addColorStop(0, "#3E8BFF"); g.addColorStop(1, "#1F5FC0"); } else { g.addColorStop(0, "#2C2F45"); g.addColorStop(.5, "#15161C"); g.addColorStop(1, "#0B0C12"); }
+      c.fillStyle = "rgba(0,0,0,.3)"; rr(c, x + 2, y + 4, w, h, 10); c.fill();
+      c.fillStyle = g; rr(c, x, y, w, h, 10); c.fill(); c.strokeStyle = first ? "#BFE0FF" : "rgba(255,255,255,.22)"; c.lineWidth = 1.5; c.stroke();
+      c.fillStyle = "rgba(255,255,255,.12)"; rr(c, x + 5, y + 4, w - 10, Math.min(12, h * .12), 6); c.fill();
+      if (tl.len > 1) { const cx = x + w / 2; c.strokeStyle = "rgba(92,225,230,.55)"; c.lineWidth = 3; c.setLineDash([4, 6]); c.beginPath(); c.moveTo(cx, y + 12); c.lineTo(cx, y + h - 18); c.stroke(); c.setLineDash([]);
+        if (tl.prog > 0) { const ph2 = (h - 6) * tl.prog, gg = c.createLinearGradient(0, y + h, 0, y + h - ph2); gg.addColorStop(0, tango ? "#FF9F43" : "#2F7FE8"); gg.addColorStop(1, tango ? "#FFE27A" : "#5CE1E6"); c.fillStyle = gg; rr(c, x + 3, y + h - 3 - ph2, w - 6, ph2, 8); c.fill(); }
+        c.fillStyle = tl.prog >= 1 ? "#FFE27A" : "#5CE1E6"; c.beginPath(); c.arc(cx, y + h - 14, 7, 0, 7); c.fill(); }
+      if (first) { c.fillStyle = "#fff"; c.font = `${Math.round(colW * .2)}px "Luckiest Guy", Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("TOCA", x + w / 2, y + h / 2 + colW * .07); c.textAlign = "left"; }
+      if (fail && fail.kind === "miss" && tl === fail.tile && Math.floor(fail.t * 6) % 2) { c.fillStyle = "rgba(238,59,43,.75)"; rr(c, x, y, w, h, 10); c.fill(); }
+    }
+    return {
+      reset,
+      dbg(){ return { tiles, next:nextTile, get scroll(){ return scroll; }, rowH, PH, colW, song:song.id, seq }; },
+      revive(){ fail = null; failT = 0; overCalled = false; holds = {}; state = "wait"; speed = Math.max(grp[2], speed * .85); const n = nextTile(); if (n) scroll = n.row * rowH - rowH; },
+      key(k, down){ if (!down) return false; const m = { d:0, f:1, j:2, k:3, D:0, F:1, J:2, K:3 }[k]; if (m == null) return false; const n = nextTile(); if (!n || fail) return; if (n.col === m) hitTile(n, bottomOf(n) - rowH * .5, "key" + m); else doFail("white", m, PH * .7); setTimeout(() => release({ pointerId:"key" + m }), 400); },
+      step(dt){
+        t += dt; Object.keys(keysLit).forEach(m => { keysLit[m] -= dt; if (keysLit[m] <= 0) delete keysLit[m]; });
+        parts.forEach(q => { q.x += q.vx * dt; q.y += q.vy * dt; q.a -= dt * 2.2; }); parts = parts.filter(q => q.a > 0);
+        rings.forEach(q => q.t += dt * 3); rings = rings.filter(q => q.t < 1);
+        notes.forEach(q => { q.y += q.vy * dt; q.a -= dt * .8; }); notes = notes.filter(q => q.a > 0);
+        pops.forEach(q => q.t += dt); pops = pops.filter(q => q.t < 1.2);
+        if (fail) { fail.t += dt; if (fail.kind === "miss") { const n = fail.tile; const want = n.row * rowH - rowH * 2; scroll += (want - scroll) * Math.min(1, dt * 8); } if (fail.t > 1.1 && !overCalled) { overCalled = true; api.over(); } return; }
+        if (state === "run") scroll += speed * rowH * dt;
+        Object.values(holds).forEach(tl => { const h = tl.hold, topNow = topOf(tl); tl.prog = Math.max(0, Math.min(1, (topNow - h.top0) / Math.max(1, h.y0 - h.top0)));
+          if (tl.prog >= 1 && !h.done) { h.done = true; bonus += 3; api.score(tapped + bonus); SND.fx("pair"); for (let k = 0; k < 10; k++) parts.push({ x:(tl.col + .5) * colW, y:h.y0, vx:(R() - .5) * 200, vy:-R() * 200, a:1, r:2 + R() * 3, col:"#FFE27A" }); } });
+        const n = nextTile(); if (n && topOf(n) > PH - 2) { fail = null; doFail("miss", n.col, PH); fail.tile = n; }
+        gen(); tiles = tiles.filter(tl => topOf(tl) < H + rowH * 2 || !tl.hit);
+        if (Math.floor(t * 2) !== Math.floor((t - dt) * 2)) api.info(`<b>${esc(song.n)}</b> · vuelta ${lap}${combo > 9 ? ` · combo <b>${combo}</b>` : ""}`);
+      },
+      draw(){
+        c.drawImage(bg, 0, 0, W, PH);
+        tiles.forEach(tileDraw);
+        rings.forEach(q => { c.strokeStyle = `rgba(255,255,255,${(1 - q.t) * .8})`; c.lineWidth = 3; c.beginPath(); c.arc(q.x, q.y, colW * .2 + q.t * colW * .45, 0, 7); c.stroke(); });
+        parts.forEach(q => { c.globalAlpha = Math.max(0, q.a); c.fillStyle = q.col; c.beginPath(); c.arc(q.x, q.y, q.r, 0, 7); c.fill(); }); c.globalAlpha = 1;
+        c.textAlign = "center"; notes.forEach(q => { c.globalAlpha = Math.max(0, q.a); c.fillStyle = q.col; c.font = `bold ${Math.round(colW * .22)}px Fredoka, sans-serif`; c.fillText(q.s, q.x, q.y); }); c.globalAlpha = 1;
+        if (fail && fail.kind === "white" && Math.floor(fail.t * 6) % 2 === 0) { c.fillStyle = "rgba(238,59,43,.6)"; const n = nextTile(); const y = n ? topOf(n) : fail.y - rowH / 2; c.fillRect(fail.col * colW + 2, y, colW - 4, rowH); }
+        keyboard();
+        if (combo > 4 && !fail) { c.font = `${Math.round(W * .1)}px "Luckiest Guy", Fredoka, sans-serif`; c.lineWidth = 6; c.strokeStyle = "rgba(11,15,36,.6)"; c.fillStyle = "rgba(255,255,255,.22)"; c.strokeText(combo, W / 2, PH * .3); c.fillText(combo, W / 2, PH * .3); }
+        pops.forEach(q => { const s = Math.min(1, q.t * 7), a = Math.max(0, 1 - Math.max(0, q.t - .7) * 2.4); c.save(); c.globalAlpha = a; c.translate(W / 2, PH * .42 - q.t * 24); c.scale(.6 + s * .5, .6 + s * .5); c.font = `${Math.round(W * .085)}px "Luckiest Guy", Fredoka, sans-serif`; c.lineWidth = 6; c.strokeStyle = IK; c.strokeText(q.txt, 0, 0); c.fillStyle = q.col; c.fillText(q.txt, 0, 0); c.restore(); });
+        if (state === "wait" && !fail && api.playing()) { c.fillStyle = "rgba(255,255,255,.85)"; c.font = `bold ${Math.round(W * .042)}px Fredoka, sans-serif`; c.fillText("Toca la tecla azul para empezar", W / 2, PH * .2); }
+        c.textAlign = "left";
+      },
+      destroy(){}
+    };
+  }
+});
+
+/* Orden en la pantalla de Arcade: los nuevos primero */
+ARC_ORDER.splice(0, ARC_ORDER.length, "ruta", "piano", "runner", "flappy", "cross", "penal", "tower", "bricks", "mines", "chess", "t2048", "memo", "connect", "snake");
+
 /* =================== Miniaturas detalladas del arcade =================== */
 (() => {
   const crowd = (y0, rows, seed, w) => { let s = "", r = rng(seed); const cols = ["#EE3B2B","#FFC425","#2F7FE8","#FFFFFF","#22A447","#74ACDF","#F47B20","#FF7DB0","#7A4FD9"], sk = ["#F2C9A0","#C68A5A","#E0AC7E"];
@@ -6454,7 +7010,7 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "runner", "flappy", "cross", "penal", "tow
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "28/10 01:41";
+const APP_VER = "28/10 09:53";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
