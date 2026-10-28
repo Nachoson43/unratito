@@ -788,6 +788,87 @@ p.report-line{text-decoration:none}
 .tito.dance-gusanito{animation:worm 3s ease-in-out infinite;transform-origin:50% 92%}
 @keyframes worm{0%,4%{transform:translate(0,0) rotate(0) scale(1,1)}12%{transform:translate(38%,0) rotate(-90deg) scale(.62,.62)}19%{transform:translate(36%,0) rotate(-90deg) scale(.74,.5)}26%{transform:translate(32%,0) rotate(-90deg) scale(.56,.66)}33%{transform:translate(29%,0) rotate(-90deg) scale(.74,.5)}40%{transform:translate(25%,0) rotate(-90deg) scale(.56,.66)}47%{transform:translate(22%,0) rotate(-90deg) scale(.74,.5)}54%{transform:translate(18%,0) rotate(-90deg) scale(.56,.66)}61%{transform:translate(15%,0) rotate(-90deg) scale(.74,.5)}68%{transform:translate(12%,0) rotate(-90deg) scale(.62,.62)}80%{transform:translate(0,-22%) rotate(-360deg) scale(1,1)}88%{transform:translate(0,0) rotate(-360deg) scale(1.12,.88)}94%,100%{transform:translate(0,0) rotate(-360deg) scale(1,1)}}
 @media (prefers-reduced-motion: reduce){.tito.dance-breakdance,.tito.dance-pogo,.tito.dance-gusanito{animation:none}}
+/* ================= Halloween ================= */
+body.hw{--bg1:#1A0A2E;--bg2:#3A1258;--bg3:#8A3A0E}
+body.hw::before{background:radial-gradient(circle at 18% 22%,rgba(160,80,255,.32),transparent 32%),radial-gradient(circle at 85% 78%,rgba(255,122,26,.38),transparent 34%),radial-gradient(circle at 60% 50%,rgba(255,180,60,.08),transparent 50%)}
+#hwfx{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+#hwfx .hw-moon{position:absolute;top:calc(env(safe-area-inset-top) + 86px);right:-34px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFF6D6,#FFE7A0 60%,#F4C66A);box-shadow:0 0 50px 14px rgba(255,220,140,.25);opacity:.22}
+#hwfx .bat{position:absolute;left:-80px;width:56px;opacity:0;animation:batfly 17s linear infinite}
+#hwfx .bat svg{display:block;animation:flapw .28s ease-in-out infinite alternate;transform-origin:50% 40%}
+#hwfx .b0{top:18%}
+#hwfx .b1{top:42%;width:40px;animation-duration:23s;animation-delay:6s}
+#hwfx .b2{top:68%;width:48px;animation-duration:29s;animation-delay:13s}
+@keyframes batfly{0%{transform:translate(0,0);opacity:0}2%{opacity:.85}20%{transform:translate(55vw,-40px)}38%{transform:translate(calc(100vw + 160px),20px);opacity:.85}39%,100%{transform:translate(calc(100vw + 160px),20px);opacity:0}}
+@keyframes flapw{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
+.hw-pk{position:absolute;bottom:6px;width:54px;z-index:1;filter:drop-shadow(0 0 10px rgba(255,170,60,.55));animation:pkglow 2.4s ease-in-out infinite}
+.hw-pk.l{left:-6px}.hw-pk.r{right:-6px;width:44px;animation-delay:-1.2s}
+.hw-pk svg{display:block;width:100%;height:auto}
+@keyframes pkglow{50%{filter:drop-shadow(0 0 18px rgba(255,170,60,.85))}}
+.hw-card{background:linear-gradient(160deg,#2A1840,#4A1F6E);color:#fff;border-color:var(--K)}
+.hw-card .hw-top{display:flex;align-items:center;gap:10px}
+.hw-door-mini{width:40px;flex:none}.hw-door-mini svg{width:100%;height:auto;display:block}
+.hw-txt{flex:1;display:flex;flex-direction:column;gap:2px}.hw-txt b{font-family:var(--cartoon);font-weight:400;font-size:1.3em;letter-spacing:.03em;color:#FFB347}
+.hw-txt small{opacity:.85;font-weight:700}
+.hw-card .muted{color:rgba(255,255,255,.7)}
+.hw-candy{display:flex;align-items:center;gap:8px;margin-top:10px;background:rgba(0,0,0,.22);border-radius:12px;padding:6px 10px}
+.hw-cico{width:34px;flex:none}.hw-cico svg{width:100%;display:block}
+.hw-bar{flex:1;height:12px;border-radius:9px;background:rgba(255,255,255,.18);border:2px solid var(--K);overflow:hidden}
+.hw-bar span{display:block;height:100%;background:linear-gradient(90deg,#FF9F43,#FF5FA2)}
+.hw-goal{width:30px;flex:none}.hw-goal svg{display:block}
+.hw-ter{all:unset;box-sizing:border-box;cursor:pointer;margin-top:10px;width:100%;display:grid;grid-template-columns:40px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;background:#F28C28;color:var(--K);border:2px solid var(--K);border-radius:14px;padding:8px 12px;box-shadow:0 3px 0 var(--K)}
+.hw-ter span{grid-row:1 / 3;width:40px}.hw-ter span svg{width:100%;display:block}
+.hw-ter b{font-family:var(--cartoon);font-weight:400;font-size:1.1em;letter-spacing:.03em}.hw-ter small{font-weight:700;font-size:.8em}
+.hw-tcard .ico svg{width:46px;height:auto}
+.hw-sec{color:#F28C28!important}
+.ch-card.hw-lock{border-color:#F28C28}
+.ch-card .hw-tag{position:static;display:block;font-style:normal;font-size:.72em;font-weight:800;color:#F28C28;margin-top:2px;background:none;border:0;padding:0}
+.hw-sheet{text-align:center}
+.hw-stage{position:relative;height:210px;display:grid;place-items:center}
+.hw-stage .door{width:140px;height:auto;overflow:visible}
+.hw-stage.knock .door{animation:knock .3s ease-in-out 3}
+@keyframes knock{50%{transform:translateX(3px) rotate(1deg)}}
+.door .panel{transform-box:fill-box;transform-origin:0 50%;transition:transform .7s cubic-bezier(.5,0,.3,1)}
+.door.open .panel{transform:perspective(300px) rotateY(-75deg)}
+.door .eyes{animation:blinkeyes 2.4s steps(1) infinite}
+@keyframes blinkeyes{90%{opacity:0}}
+.hw-msg{font-weight:800;font-size:1.05em;margin:6px 0 12px;min-height:2.6em}
+.hw-ghost{position:absolute;inset:0;display:grid;place-items:center;animation:boo .6s cubic-bezier(.3,1.6,.5,1) both}
+.hw-ghost b{position:absolute;top:6px;font-family:var(--cartoon);font-weight:400;font-size:2.4em;color:#fff;-webkit-text-stroke:4px var(--K);paint-order:stroke fill;text-shadow:0 4px 0 var(--K)}
+@keyframes boo{from{transform:scale(.2);opacity:0}to{transform:scale(1.25);opacity:1}}
+.sheet.shake{animation:shake .5s}
+.hw-treat{position:absolute;inset:0;pointer-events:none}
+.hw-treat span{position:absolute;left:50%;top:50%;width:46px;margin:-14px 0 0 -23px;animation:candyout .8s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i) * .08s)}
+.hw-treat span svg{width:100%;display:block}
+@keyframes candyout{from{transform:translate(0,0) scale(.2)}to{transform:translate(calc((var(--i) - 2) * 44px),calc(60px - var(--i) * 6px)) rotate(calc(var(--i) * 40deg - 60deg)) scale(1)}}
+#toast.t-candy{--tc:#FF7A1A;background:#FFE9D6}
+#toast.t-candy .ti svg{width:26px;height:auto}
+.furni .bub,.tito .bub{transform-box:fill-box;animation:bub 1.6s ease-in infinite}
+svg .bub{transform-box:fill-box;animation:bub 1.6s ease-in infinite}
+svg .bub.b2{animation-delay:-.8s}
+@keyframes bub{0%{transform:translateY(8px) scale(.4);opacity:0}30%{opacity:1}100%{transform:translateY(-10px) scale(1);opacity:0}}
+/* Baile zombi */
+.dance-zombi .t-body{animation:zombi 1.3s cubic-bezier(.7,0,.3,1) infinite}
+@keyframes zombi{0%,100%{transform:translate(-3px,0) rotate(-7deg)}22%{transform:translate(-3px,-2px) rotate(-11deg)}50%{transform:translate(4px,0) rotate(6deg)}62%{transform:translate(4px,-3px) rotate(12deg) skewX(-6deg)}80%{transform:translate(0,1px) rotate(0)}}
+.dance-zombi .t-foot-l{animation:zstep 1.3s ease-in-out infinite}
+.dance-zombi .t-foot-r{animation:zdrag 1.3s ease-in-out infinite}
+@keyframes zstep{0%,100%{transform:none}25%{transform:translateY(-7px) rotate(-10deg)}}
+@keyframes zdrag{0%,100%{transform:translateX(0) rotate(0)}50%{transform:translateX(5px) rotate(14deg)}70%{transform:translateX(5px) rotate(6deg)}}
+.tito .zarms{transform-box:view-box;transform-origin:60px 96px;animation:zarms .65s ease-in-out infinite alternate}
+@keyframes zarms{from{transform:translateY(0)}to{transform:translateY(-5px) rotate(2deg)}}
+@media (prefers-reduced-motion: reduce){#hwfx .bat,.hw-pk{animation:none}}
+.hw-card{padding:12px 14px}
+.hw-txt b{font-size:1.15em;white-space:nowrap}
+.hw-txt small{font-size:.78em;line-height:1.25}
+.hw-door-mini{width:34px}
+.hw-candy{margin-top:8px;padding:4px 10px}
+.hw-ter{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 12px;margin-top:8px}
+.hw-ter span{width:28px}
+.hw-unlock{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.hu-fig{position:relative;width:180px;height:200px;display:grid;place-items:center}
+.hu-glow{position:absolute;inset:10px;border-radius:50%;background:radial-gradient(circle,rgba(255,170,60,.55),rgba(255,122,26,.12) 60%,transparent 70%);animation:glow 2s ease-in-out infinite}
+.hu-fig svg{position:relative}
+.hu-name{font-family:var(--cartoon);font-weight:400;font-size:2.2em;color:#F28C28;-webkit-text-stroke:3px var(--K);paint-order:stroke fill;text-shadow:0 3px 0 var(--K);line-height:1.1}
+body:has(#app.playing) #hwfx{display:none}
 
 </style>
 </head>
@@ -993,6 +1074,7 @@ const TEAMS = {
 const teamItems = (kind, pre, label) => ["sel","arg","eur"].flatMap(g => TEAMS[g].list.map(([k,n],i) => [pre+k, label(n), TEAMS[g][kind], i === 0 ? TEAMS[g].l : undefined]));
 /* Disfraces: cada kit es un conjunto de prendas que también se venden sueltas */
 const KITS = {
+  vampiro:{ hat:"vampiro", clothes:"vampiro" }, calabaza:{ hat:"gorrocalabaza", clothes:"calabaza" },
   dragon:{ hat:"dragon", clothes:"dragon", feet:"garras" },
   romano:{ hat:"laureles", clothes:"toga", feet:"sandalias" },
   gladiador:{ hat:"gladiador", clothes:"gladiador", feet:"sandalias" },
@@ -1012,23 +1094,27 @@ const SHOP = {
     ["lunares","Lunares",1200,"Con dibujo"],["vaca","Vaca",1400],["camuflaje","Camuflaje",1500],["dalmata","Dálmata",1600],["papiro","Papiro antiguo",1800],["cebra","Cebra",2000],["marmol","Mármol",2400],["atardecer","Atardecer",2800],["pelota","Pelota de fútbol",3000],["arcoiris","Arcoíris",3500],["galaxia","Galaxia",4500],["rotito","Rotito",4800],["negro","Negro",12000],["dorado","Oro pulido","P"],["plateada","Plateada","L15","Premios de nivel"],["rajada","Rajaduras doradas","L30"],["cristal","Cristal","L65"],["diamante","Diamante","L90"]] },
   hat:    { l:"Gorros", g:"tito", items:[["none","Nada",0,"Gorros"],["vincha","Vincha de tenis",250],["gorra","Gorra para atrás",400],["hincha","Gorro de hincha",500],["boina","Boina",600],["laureles","Corona de laureles",700],["cientifico","Pelo de científico",900],["galera","Galera",1000],["pirata","Sombrero pirata",1100],["gaucho","Sombrero de gaucho",1200],["vikingo","Casco vikingo",1500],["peluca","Peluca barroca",1600],["bicornio","Bicornio con escarapela",1800],["gladiador","Casco de gladiador",2000],["faraon","Tocado de faraón",2600],["astronauta","Casco de astronauta",3500],["corona","Corona de rockstar","P"],
     ["murga","Galera de murga",1300,"Carnaval"],["bufon","Gorro de bufón",1500],["penacho","Penacho de plumas",2200],
-    ["vincharoja","Vincha de artes marciales",600,"De disfraces"],["ninja","Capucha ninja",1200],["mago","Sombrero de mago",1500],["yelmo","Yelmo de caballero",1800],["cascogal","Casco galáctico",2000],["dragon","Cuernos de dragón",2200]].concat(teamItems("pil","pil_", n => "Piluso "+n), [["laurelesoro","Laureles dorados","L20","Premios de nivel"],["aureola","Aureola","L25"],["coronareal","Corona real","L50"],["fuego","Pelo de fuego","L80"],["leyenda","Corona de leyenda","L100"]]) },
+    ["vincharoja","Vincha de artes marciales",600,"De disfraces"],["ninja","Capucha ninja",1200],["mago","Sombrero de mago",1500],["yelmo","Yelmo de caballero",1800],["cascogal","Casco galáctico",2000],["dragon","Cuernos de dragón",2200]].concat(teamItems("pil","pil_", n => "Piluso "+n), [["bruja","Sombrero de bruja",1800,"Halloween"],["gorrocalabaza","Gorro de calabaza",1500],["vampiro","Peinado de vampiro",1200],["laurelesoro","Laureles dorados","L20","Premios de nivel"],["aureola","Aureola","L25"],["coronareal","Corona real","L50"],["fuego","Pelo de fuego","L80"],["leyenda","Corona de leyenda","L100"]]) },
   clothes:{ l:"Camisetas y ropa", g:"tito", items:[["none","Nada",0,"Ropa"],["bufanda","Bufanda",350],["musculosa","Camiseta sin mangas celeste",300],["buzo","Sudadera",500],["esmoquin","Esmoquin",1500],["esmoquinb","Esmoquin blanco",1600]].concat(teamItems("shirt","", n => n), [
-    ["toga","Toga romana",1400,"Disfraces"],["karate","Traje de artes marciales",1400],["ninja","Traje ninja",1500],["pirata","Camisa pirata",1500],["vikingo","Ropa vikinga",1800],["faraon","Ropa de faraón",1800],["gladiador","Coraza de gladiador",2000],["mago","Túnica de mago",2000],["heroe","Traje de superhéroe",2200],["trajegal","Traje galáctico",2200],["armadura","Armadura medieval",2800],["astro","Traje espacial",2800],["dino","Disfraz de dino",3000],["dragon","Disfraz de dragón",3200],["capareal","Capa real","L35","Premios de nivel"],["sacooro","Saco dorado","L60"],["capagal","Capa galáctica","L85"]]) },
-  kit:    { l:"Disfraces", g:"tito", items:[["romano","Emperador romano",1900],["pirata","Pirata",2600],["marcial","Artista marcial",2600],["ninja","Ninja",2700],["heroe","Superhéroe",3000],["vikingo","Vikingo",3000],["faraon","Faraón",3500],["gladiador","Gladiador",3200],["mago","Mago",3400],["dragon","Dragón",3600],["galactico","Explorador galáctico",3800],["caballero","Caballero",4000],["astronauta","Astronauta",5000]] },
-  dance:  { l:"Bailes", g:"tito", items:[["funk","Funk brasilero",0],["cumbia","Cumbia",2500],["robot","Robot",3500],["malambo","Malambo",4500],["cuarteto","Cuarteto",5000],["murga","Murga",5500],["disco","Disco",6000],["avioncito","Avioncito de gol",6500],["pogo","Pogo",7000],["tango","Tango",7500],["trompo","Trompo",8000],["gusanito","Gusanito",9000],["moonwalk","Moonwalk",11000],["breakdance","Breakdance",15000],["campeon","Festejo de campeón","P"]] },
+    ["toga","Toga romana",1400,"Disfraces"],["karate","Traje de artes marciales",1400],["ninja","Traje ninja",1500],["pirata","Camisa pirata",1500],["vikingo","Ropa vikinga",1800],["faraon","Ropa de faraón",1800],["gladiador","Coraza de gladiador",2000],["mago","Túnica de mago",2000],["heroe","Traje de superhéroe",2200],["trajegal","Traje galáctico",2200],["armadura","Armadura medieval",2800],["astro","Traje espacial",2800],["dino","Disfraz de dino",3000],["dragon","Disfraz de dragón",3200],["calabaza","Disfraz de calabaza",2500,"Halloween"],["vampiro","Capa de vampiro",3000],["esqueleto","Traje de esqueleto",2200],["momia","Vendas de momia",2800],["capareal","Capa real","L35","Premios de nivel"],["sacooro","Saco dorado","L60"],["capagal","Capa galáctica","L85"]]) },
+  kit:    { l:"Disfraces", g:"tito", items:[["romano","Emperador romano",1900],["pirata","Pirata",2600],["marcial","Artista marcial",2600],["ninja","Ninja",2700],["heroe","Superhéroe",3000],["vikingo","Vikingo",3000],["faraon","Faraón",3500],["gladiador","Gladiador",3200],["mago","Mago",3400],["dragon","Dragón",3600],["galactico","Explorador galáctico",3800],["caballero","Caballero",4000],["astronauta","Astronauta",5000],["vampiro","Vampiro",3800,"Halloween"],["calabaza","Calabaza",3500]] },
+  dance:  { l:"Bailes", g:"tito", items:[["funk","Funk brasilero",0],["cumbia","Cumbia",2500],["robot","Robot",3500],["malambo","Malambo",4500],["cuarteto","Cuarteto",5000],["murga","Murga",5500],["disco","Disco",6000],["avioncito","Avioncito de gol",6500],["pogo","Pogo",7000],["tango","Tango",7500],["trompo","Trompo",8000],["gusanito","Gusanito",9000],["moonwalk","Moonwalk",11000],["breakdance","Breakdance",15000],["campeon","Festejo de campeón","P"],["zombi","Zombi",6666,"Halloween"]] },
   glasses:{ l:"Lentes", g:"tito", items:[["none","Nada",0],["redondos","Redondos",300],["sol","De sol",700],["antifaz","Antifaz de héroe",800],["monoculo","Monóculo",1000],["vr","Realidad virtual",2200],["estrellas","Lentes de estrella","L10","Premios de nivel"],["diamante","Lentes de diamante","L45"]] },
   feet:   { l:"Calzado", g:"tito", items:[["none","Patitas",0,"Calzado"],["ojotas","Chanclas",250],["alpargatas","Alpargatas",350],["zapatillas","Zapatillas",400],["pantuflas","Pantuflas",500],["lluvia","Botas de lluvia",600],["charol","Zapatos de charol",700],["sandalias","Sandalias romanas",800],["aletas","Patas de rana",900],["potro","Botas de gaucho",1000],["botines","Botines",1200],["patines","Patines",1600],["dorados","Botines dorados","P"],
     ["vendas","Vendas de luchador",400,"De disfraces"],["tabi","Tabi ninja",500],["botaspirata","Botas de pirata",800],["botaspiel","Botas de piel",800],["curvos","Zapatos de mago",900],["heroe","Botas de héroe",900],["botasgal","Botas galácticas",1000],["garras","Garras de dragón",1100],["botasmetal","Botas de armadura",1200],["botasastro","Botas espaciales",1400],["alas","Zapatillas con alas","L40","Premios de nivel"],["cohete","Botas cohete","L70"]] },
-  float:  { l:"Flotantes", g:"tito", items:[["none","Nada",0],["mate","Mate",250],["silbato","Silbato",300],["libro","Libro antiguo",500],["banderin","Banderín",500],["pelota","Pelota",600],["guantes","Guantes de arquero",700],["varita","Varita mágica",800],["probeta","Probeta",900],["pelotaretro","Pelota de cuero antigua",900],["reloj","Reloj de arena",1000],["bombo","Bombo de la hinchada",1000],["pergamino","Pergamino",1100],["brujula","Brújula",1200],["joystick","Joystick",1300],["esfera","Esfera de energía",1400],["planeta","Planetita",1600],["medalla","Medalla",2500],["copa","Copa",3000],["copamundo","Copa del mundo",5000],["copaoro","Copa dorada","P"],["estrella","Estrellita","L5","Premios de nivel"],["nube","Nubecita","L55"],["fenix","Fénix","L75"],["orbita","Órbita de estrellas","L95"]] },
-  wall:   { l:"Pared", g:"casa", items:[["lisa","Lisa",0],["celeste","Celeste",200],["rayas","Rayada",400],["ladrillo","Ladrillos",900],["noche","Noche estrellada",1800],["tribuna","Tribuna",2500],["oro","Dorada","P"]] },
+  float:  { l:"Flotantes", g:"tito", items:[["none","Nada",0],["mate","Mate",250],["silbato","Silbato",300],["libro","Libro antiguo",500],["banderin","Banderín",500],["pelota","Pelota",600],["guantes","Guantes de arquero",700],["varita","Varita mágica",800],["probeta","Probeta",900],["pelotaretro","Pelota de cuero antigua",900],["reloj","Reloj de arena",1000],["bombo","Bombo de la hinchada",1000],["pergamino","Pergamino",1100],["brujula","Brújula",1200],["joystick","Joystick",1300],["esfera","Esfera de energía",1400],["planeta","Planetita",1600],["medalla","Medalla",2500],["copa","Copa",3000],["copamundo","Copa del mundo",5000],["copaoro","Copa dorada","P"],["murcielago","Murcielaguito",1200,"Halloween"],["farol","Farol de calabaza",1600],["caramelo","Caramelo gigante",900],["estrella","Estrellita","L5","Premios de nivel"],["nube","Nubecita","L55"],["fenix","Fénix","L75"],["orbita","Órbita de estrellas","L95"]] },
+  wall:   { l:"Pared", g:"casa", items:[["lisa","Lisa",0],["celeste","Celeste",200],["rayas","Rayada",400],["ladrillo","Ladrillos",900],["noche","Noche estrellada",1800],["tribuna","Tribuna",2500],["oro","Dorada","P"],["telaranas","Telarañas",1500,"Halloween"]] },
   floor:  { l:"Piso", g:"casa", items:[["gris","Cemento",0],["madera","Madera",300],["damero","Damero",700],["cesped","Césped de cancha",1500],["alfombra","Alfombra roja",2200]] },
   frame:  { l:"Cuadros", g:"casa", items:[["none","Nada",0],["argentina","Bandera argentina",300],["mapa","Mapa del mundo",600],["poster","Póster de fútbol",800],["retrato","Retrato antiguo",1500]] },
-  furni:  { l:"Muebles", g:"casa", items:[["none","Nada",0],["sillon","Sillón",500],["biblio","Biblioteca",900],["tele","Tele",1200],["arco","Arco de fútbol",2000]] },
-  deco:   { l:"Objetos", g:"casa", items:[["none","Nada",0],["planta","Planta",200],["lampara","Lámpara",350],["globo","Globo terráqueo",700],["trofeo","Trofeo",1600],["trofeooro","Trofeo de oro","P"]] }
+  furni:  { l:"Muebles", g:"casa", items:[["none","Nada",0],["sillon","Sillón",500],["biblio","Biblioteca",900],["tele","Tele",1200],["arco","Arco de fútbol",2000],["caldero","Caldero de bruja",2000,"Halloween"]] },
+  deco:   { l:"Objetos", g:"casa", items:[["none","Nada",0],["planta","Planta",200],["lampara","Lámpara",350],["globo","Globo terráqueo",700],["trofeo","Trofeo",1600],["trofeooro","Trofeo de oro","P"],["calabazas","Calabazas con velas",1200,"Halloween"]] }
 };
 const RAR = { c:["Común","var(--g)"], r:["Rara","var(--b)"], e:["Épica","var(--r)"], l:["Legendaria","#0B0F24"], p:["PREMIUM","linear-gradient(180deg,#FFD34D,#C98F00)"], n:["Por nivel","#7A4FD9"], n1:["Rara","var(--b)"], n2:["Épica","var(--r)"], n3:["Legendaria","#0B0F24"], n4:["Mítica","linear-gradient(90deg,#7A4FD9,#FF5FA2)"] };
 const rarityOf = price => typeof price === "string" && price[0] === "L" ? (+price.slice(1) <= 20 ? "n1" : +price.slice(1) <= 50 ? "n2" : +price.slice(1) <= 80 ? "n3" : "n4") : price === "P" ? "p" : price < 600 ? "c" : price < 1500 ? "r" : price < 5000 ? "e" : "l";
+
+/* Temporada de Halloween: estos objetos solo se venden durante el evento (después quedan para quien los tenga) */
+const SEASON_ITEMS = { kit:["vampiro","calabaza"], hat:["bruja","gorrocalabaza","vampiro"], clothes:["calabaza","vampiro","esqueleto","momia"], float:["murcielago","farol","caramelo"], dance:["zombi"], wall:["telaranas"], deco:["calabazas"], furni:["caldero"] };
+const isSeasonal = (cat, key) => !!(SEASON_ITEMS[cat] && SEASON_ITEMS[cat].includes(key));
 
 /* ---------- Personajes: cambian el cuerpo, comparten ropa, gorros, lentes, calzado, flotantes y bailes ---------- */
 const MBOX_PRICE = 12000;
@@ -1090,6 +1176,13 @@ const CHARS = {
       <path d="M10 100 L22 92 L32 101 L44 90 L56 101 L68 90 L80 101 L92 92 L104 100 L114 96 V140 H10 Z" fill="#F7F1E3" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="34" cy="116" r="3" fill="#E8DCC2"/><circle cx="82" cy="112" r="2.4" fill="#E8DCC2"/>`,
     over:() => `<circle cx="55" cy="80" r="1.8" fill="#2E7A3A"/><circle cx="65" cy="80" r="1.8" fill="#2E7A3A"/>` }
 };
+/* Personaje de temporada: solo se consigue juntando caramelos en Truco o trato */
+CHARS.calabacin = { n:"Calabacín", d:"Una calabaza de Halloween que solo se consigue con caramelos.", season:true,
+  path:"M60 22 C70 14 92 14 104 34 C114 52 114 96 104 112 C94 128 76 130 60 128 C44 130 26 128 16 112 C6 96 6 52 16 34 C28 14 50 14 60 22 Z",
+  defs:id => `<radialGradient id="${id}ch" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#FFB347"/><stop offset=".65" stop-color="#F28C28"/><stop offset="1" stop-color="#D96A12"/></radialGradient>`,
+  fill:id => `url(#${id}ch)`,
+  decor:() => `<path d="M40 20 C30 50 30 100 40 128 M80 20 C90 50 90 100 80 128 M60 22 V128" stroke="#C25A0C" stroke-width="3" fill="none" opacity=".55"/><path d="M26 40 q-6 30 0 66 M94 40 q6 30 0 66" stroke="#FFD08A" stroke-width="3" fill="none" opacity=".5" stroke-linecap="round"/>`,
+  over:(id, t, band) => band ? `<path d="M58 22 q-2 -12 6 -18 l4 3 q-6 5 -4 15z" fill="#5A7A2A" stroke="${IK}" stroke-width="2.4" stroke-linejoin="round"/><path d="M66 10 q10 -8 18 -2 q-8 8 -18 2z" fill="#6FB04A" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/><path d="M70 14 q6 4 4 10" stroke="#5A7A2A" stroke-width="2" fill="none" stroke-linecap="round"/>` : "" };
 const charOf = id => CHARS[id] || null;
 function charName(id){ return id && CHARS[id] ? CHARS[id].n : "Tito"; }
 
@@ -3801,6 +3894,63 @@ GEN.push(...GEN4, ...GEN5, ...GEN6, ...GEN7, ...GEN8);
 FUT.push(...FUT3);
 [ARG3, ARG4, ARG5].forEach(src => ARG.forEach(c => { if (src[c.id]) c.q.push(...src[c.id]); }));
 
+/* ---------- Trivia de terror (solo durante Halloween). El último número es la dificultad ---------- */
+const HWQ_RAW = [
+// Leyendas argentinas y latinoamericanas
+["ter","¿Qué ser de la mitología guaraní cuida a los pájaros del monte y anda a la hora de la siesta?","El Pombero","El Lobizón","El Familiar","Mandinga",1],
+["ter","Según la leyenda, ¿en qué se convierte el séptimo hijo varón las noches de luna llena?","En lobizón","En vampiro","En murciélago","En pombero",1],
+["ter","En Argentina, ¿quién es padrino honorario del séptimo hijo varón o la séptima hija mujer?","El presidente de la Nación","El gobernador","El intendente","El Papa",2],
+["ter","Según el folclore del campo, ¿qué marcaría la «luz mala» que aparece de noche?","Un alma en pena o restos enterrados","La llegada de la lluvia","Un pozo de agua","Un incendio que se acerca",2],
+["ter","¿Qué leyenda de los ingenios del norte cuenta que un enorme perro negro se lleva a un peón por año?","El Familiar","El Lobizón","El Pombero","La Mulánima",2],
+["ter","¿Qué espíritu de las leyendas latinoamericanas llora de noche buscando a sus hijos?","La Llorona","La Telesita","La Difunta Correa","La Pachamama",1],
+["ter","¿En qué provincia está el santuario de la Difunta Correa, donde la gente deja botellas de agua?","San Juan","Mendoza","La Rioja","Catamarca",2],
+["ter","¿De qué provincia es la leyenda de la Telesita, que bailaba chacarera?","Santiago del Estero","Tucumán","Salta","Jujuy",3],
+["ter","¿Cómo se le dice al diablo en el campo argentino?","Mandinga","Coquena","Yasí Yateré","Ekeko",2],
+["ter","¿Cómo llamaban los tehuelches al espíritu del mal, palabra que hoy usamos para los hechizos?","Gualicho","Mandinga","Coquena","Pachamama",3],
+["ter","¿Qué duende guaraní, rubio y con un bastón de oro, se lleva a los chicos que no duermen la siesta?","Yasí Yateré","El Pombero","El Ekeko","Coquena",3],
+["ter","¿Qué ser de la Puna cuida a las vicuñas y castiga a los cazadores que matan de más?","Coquena","El Pombero","El Familiar","El Ekeko",3],
+["ter","¿Qué criatura se hizo famosa en Puerto Rico en los años 90 por atacar cabras?","El chupacabras","Pie Grande","El yeti","El hombre polilla",1],
+// Libros y monstruos clásicos
+["ter","¿Quién escribió «Frankenstein»?","Mary Shelley","Bram Stoker","Edgar Allan Poe","H. P. Lovecraft",2],
+["ter","En la novela «Frankenstein», ¿cómo se llama el científico que crea al monstruo?","Victor Frankenstein","Henry Jekyll","Abraham Van Helsing","Jonathan Harker",2],
+["ter","¿Quién escribió la novela «Drácula»?","Bram Stoker","Mary Shelley","Oscar Wilde","Stephen King",2],
+["ter","¿En qué región vivía el conde Drácula?","Transilvania","Baviera","Siberia","Escocia",1],
+["ter","¿Qué escritor estadounidense escribió el poema «El cuervo»?","Edgar Allan Poe","Stephen King","Mark Twain","H. P. Lovecraft",2],
+["ter","¿Qué escritor es conocido como «el rey del terror» y escribió «It»?","Stephen King","Edgar Allan Poe","Dean Koontz","R. L. Stine",1],
+["ter","¿Qué cuentista escribió «El almohadón de plumas» y vivió en la selva de Misiones?","Horacio Quiroga","Julio Cortázar","Jorge Luis Borges","Mario Benedetti",3],
+["ter","¿Qué escritora argentina escribió la novela de terror «Nuestra parte de noche»?","Mariana Enriquez","Samanta Schweblin","Claudia Piñeiro","Selva Almada",3],
+["ter","¿En qué animal se puede convertir Drácula?","En murciélago","En gato negro","En cuervo","En araña",1],
+["ter","Según las leyendas, ¿qué metal sirve contra los hombres lobo?","La plata","El oro","El hierro","El cobre",1],
+["ter","¿Qué planta se usa en las historias para espantar a los vampiros?","El ajo","El perejil","La albahaca","El romero",1],
+// Cine y series
+["ter","¿Cómo se llama el payaso de «It»?","Pennywise","Krusty","Chucky","Freddy",1],
+["ter","¿Cómo se llama el muñeco asesino de la película «Child's Play» (1988)?","Chucky","Annabelle","Slappy","Billy",1],
+["ter","¿Qué villano de pesadillas usa un guante con cuchillas y un suéter a rayas?","Freddy Krueger","Jason Voorhees","Michael Myers","Ghostface",1],
+["ter","¿Qué personaje usa una máscara de hockey en «Viernes 13»?","Jason Voorhees","Michael Myers","Leatherface","Freddy Krueger",2],
+["ter","¿Qué director hizo la película «Psicosis» (1960)?","Alfred Hitchcock","Stanley Kubrick","John Carpenter","Steven Spielberg",2],
+["ter","¿En qué hotel transcurre «El resplandor» de Stanley Kubrick?","El hotel Overlook","El hotel Transilvania","El motel Bates","El hotel Cecil",3],
+["ter","¿Qué director argentino hizo la película de terror «Aterrados» (2017)?","Demián Rugna","Damián Szifron","Juan José Campanella","Lucrecia Martel",3],
+["ter","¿Qué película de terror argentina ganó el premio a mejor película en el Festival de Sitges 2023?","Cuando acecha la maldad","Relatos salvajes","El clan","Muere, monstruo, muere",3],
+["ter","¿Cómo se llama la familia que vive en una mansión con una mano llamada Dedos?","Los Locos Addams","Los Munster","Los Simpson","Los Picapiedra",1],
+["ter","¿Cómo se llama la hija de los Addams que protagoniza su propia serie en Netflix?","Merlina","Morticia","Pericles","Mamá Addams",1],
+["ter","En «Los cazafantasmas», ¿qué gigante ataca Nueva York?","El hombre de malvavisco","Un dinosaurio de goma","Un pollo gigante","Una calabaza gigante",2],
+["ter","¿Qué hay que decir tres veces para llamar a Beetlejuice?","Su nombre: «Beetlejuice»","«Abracadabra»","«Truco o trato»","«Bloody Mary»",1],
+["ter","¿Qué cantante bailó con zombis en el video de «Thriller»?","Michael Jackson","Prince","Madonna","Freddie Mercury",1],
+["ter","¿Qué película de Pixar transcurre en la Tierra de los Muertos?","Coco","Soul","Unidos","Luca",1],
+["ter","¿En qué videojuego de Nintendo Luigi caza fantasmas con una aspiradora?","Luigi's Mansion","Super Mario Sunshine","Paper Mario","Mario Party",2],
+// Halloween y Día de Muertos
+["ter","¿De qué antigua fiesta celta viene Halloween?","Samhain","Yule","Saturnalia","Hanukkah",2],
+["ter","¿Qué significa el nombre «Halloween»?","Víspera de Todos los Santos","Noche de calabazas","Fiesta de las brujas","Luna de fantasmas",2],
+["ter","Antes de usar calabazas, ¿qué verdura se tallaba en Irlanda para hacer faroles?","El nabo","La zanahoria","La cebolla","La berenjena",2],
+["ter","¿Cómo se llama en inglés el farol hecho con una calabaza tallada?","Jack-o'-lantern","Pumpkin pie","Candy corn","Trick-or-treat",1],
+["ter","¿En qué país se celebra el Día de Muertos con altares y calaveritas de azúcar?","México","España","Perú","Colombia",1],
+["ter","¿Qué flor naranja se usa en los altares del Día de Muertos?","El cempasúchil","El girasol","El tulipán","La margarita",2],
+["ter","¿Qué murciélago se alimenta de sangre?","El vampiro común","El zorro volador","El murciélago frutero","El murciélago orejudo",2],
+["ter","¿A qué le tiene miedo una persona con aracnofobia?","A las arañas","A la oscuridad","A las alturas","A los payasos",1],
+["ter","¿Cómo se llama el miedo a los payasos?","Coulrofobia","Claustrofobia","Acrofobia","Nictofobia",3],
+["ter","¿Qué es la nictofobia?","El miedo a la oscuridad","El miedo a los gatos","El miedo al agua","El miedo a los ruidos",3]
+];
+
 /* ---------- Íconos dibujados (estilo caricatura con contorno tinta) ---------- */
 let icoN = 0;
 const IK = "#0B0F24";
@@ -4051,6 +4201,19 @@ const SND = (() => {
         [0,3,6,10].forEach(i => tone(N(36 + k), o + i*s, s*1.8, "sine", .34, N(48 + k), d));
         if (b % 2) { tone(180, o + 14*s, .12, "sine", .2, 620, d); tone(620, o + 14.8*s, .2, "sine", .18, 140, d); }
       } return bars*32*s; },
+    /* Zombi: órgano tenebroso, bajo con swing, theremin, aullido de lobo, campanas y risa de bruja */
+    zombi(d, bars){ const q = 60/112, sw = q*.62;
+      const P = [[[50,53,57],38,[[69,1],[68,.5],[69,.5],[72,1],[69,1]]],[[46,50,53],34,[[70,1],[69,.5],[70,.5],[74,1],[70,1]]],[[43,46,50],31,[[67,1],[69,.5],[70,.5],[67,1],[62,1]]],[[45,49,52],33,[[73,1],[74,.5],[76,.5],[73,1.5],[0,.5]]]];
+      if (bars > 0) { vtone(440, 0, 1.1, "sine", .05, d); tone(440, 0, .5, "sine", .03, 700, d); tone(700, .5, .7, "sine", .03, 480, d); }
+      for (let b = 0; b < bars*2; b++) { const o = b*4*q, [ch, r, mel] = P[b % 4];
+        [0,2].forEach(i => kick(o + i*q, d, .55)); [1,3].forEach(i => { snare(o + i*q, d, .2); noise(o + i*q, .3, .05, 6000, d); });
+        for (let i = 0; i < 4; i++) { tone(N(r + (i % 2 ? 7 : 0)), o + i*q, q*.55, "triangle", .24, null, d); tone(N(r + (i % 2 ? 12 : 7)), o + i*q + sw, q*.3, "triangle", .14, null, d); hat(o + i*q + sw, d, .04); }
+        [0,2].forEach(i => { chord(ch.map(m => m + 12), o + i*q, q*1.8, "square", .02, d); chord(ch.map(m => m + 24), o + i*q, q*1.8, "sine", .025, d); });
+        seq(mel, o, q, (m, t, l) => vtone(N(m + 12), t, l*.9, "sine", .06, d));
+        if (b % 4 === 1) [0,1].forEach(i => { tone(N(81), o + 3*q + i*.5, 1.2, "sine", .05, null, d); tone(N(81) * 2.76, o + 3*q + i*.5, .6, "sine", .015, null, d); });
+        if (b % 4 === 3) [0,.08,.16,.24,.32,.4,.48].forEach((x, k) => tone(k % 2 ? 900 : 1150, o + 3*q + x, .07, "sawtooth", .035, k % 2 ? 750 : 1250, d));
+        if (b % 4 === 2) { noise(o + 2*q, 1.4, .14, 300, d, "lowpass", .05); tone(60, o + 2*q, 1.2, "sine", .2, 35, d); }
+      } return bars*8*q; },
     /* Festejo de campeón (baile): marcha de banda con redoblante, tuba y glockenspiel */
     campeon(d, bars){ const q = 60/120;
       const mel = [[79,79,81,79],[84,83,81,79],[77,79,81,84],[83,79,84,0]], bass = [[36,43],[41,48],[43,50],[36,43]], ch = [[64,67,72],[65,69,72],[67,71,74],[64,67,72]];
@@ -4107,6 +4270,11 @@ const SND = (() => {
       if (!sfxOn()) return; v = v || 0;
       const F = {
         jump:() => tone(380, 0, .16, "square", .05, 820),
+        knock:() => [0,.22,.44].forEach(t => { tone(140, t, .1, "sine", .4, 90); noise(t, .05, .14, 900, null, "lowpass"); }),
+        creak:() => { tone(180, 0, .7, "sawtooth", .035, 330); tone(240, .1, .6, "square", .02, 160); },
+        boo:() => { noise(0, .5, .18, 900, null, "bandpass", .05); vtone(220, 0, .9, "sawtooth", .07); vtone(165, 0, .9, "square", .05); tone(70, 0, .6, "sine", .35, 40); },
+        treat:() => [72,76,79,84,88].forEach((m,i) => { tone(N(m), i*.07, .14, "triangle", .08); tone(N(m+12), i*.07, .08, "sine", .04); }),
+        candy:() => { tone(N(84), 0, .06, "square", .04); tone(N(91), .06, .1, "triangle", .06); },
         duck:() => noise(0, .12, .06, 900, null, "bandpass"),
         whistle:() => { [0,.07,.14,.21,.28].forEach((t,i) => tone(i % 2 ? 2500 : 2800, t, .08, "sine", .12)); tone(2650, .36, .45, "sine", .12, 2550); noise(.3, .9, .08, 700, null, "bandpass", .2); },
         milestone:() => { tone(N(84), 0, .09, "square", .05); tone(N(91), .09, .16, "square", .05); },
@@ -4307,6 +4475,7 @@ function arcMount(){
     if (run.done || run.state === "ready" || run.score == null) return; run.done = true;
     const pts = ptsFor(); if (pts > 0) { addCoins(pts); toast("+"+pts+" puntos"); }
     const st = arcState(); st.games = (st.games || 0) + 1; save(); pushMember && pushMember();
+    if (pts > 0 && typeof addCandy === "function" && isHalloween()) { const h = hwS(); if (h.arcDay !== today()) { h.arcDay = today(); h.arcN = 0; } if (h.arcN < HW_ARC_DAY) { h.arcN++; setTimeout(() => addCandy(1), 900); } }
     if (typeof logEv === "function") logEv("arcade_terminado", { juego:run.id, puntaje:run.score, puntos:pts, gano:!!run.won });
   };
   run.api = api; run.show = show; run.startNew = startNew; run.finalize = finalize; run.countdown = countdown;
@@ -6215,9 +6384,68 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "runner", "flappy", "cross", "penal", "tow
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "27/10 16:15";
+const APP_VER = "27/10 21:18";
 /* Medición (Google Analytics) y opiniones: solo se activan en la versión web si están configuradas */
 const CFG = (typeof window !== "undefined" && window.UNRA_CFG) || {};
+/* Halloween: del 27/10 al 2/11 (se puede forzar con ?halloween para probar) */
+const HW_TEST = (() => { try { if (/[?#&]halloween\b/.test(location.href)) localStorage.setItem("unratito.hw", "1"); return localStorage.getItem("unratito.hw") === "1"; } catch(e){ return false; } })();
+function isHalloween(){ if (HW_TEST) return true; const d = new Date(), m = d.getMonth() + 1, day = d.getDate(); return (m === 10 && day >= 27) || (m === 11 && day <= 2); }
+const HW_GOAL = 25, HW_CANDY_PTS = 30, HW_ARC_DAY = 5;
+const CANDY_SVG = `<svg viewBox="0 0 40 24" aria-hidden="true"><path d="M10 12 L2 4 L2 20 Z M30 12 L38 4 L38 20 Z" fill="#FF7A1A" stroke="#0B0F24" stroke-width="2" stroke-linejoin="round"/><ellipse cx="20" cy="12" rx="11" ry="8" fill="#FF9F43" stroke="#0B0F24" stroke-width="2"/><path d="M13 7 q4 10 0 10 M20 4 q4 16 0 16 M27 7 q-4 10 0 10" stroke="#fff" stroke-width="2" fill="none" opacity=".8"/></svg>`;
+const PUMPKIN_SVG = `<svg viewBox="0 0 60 52" aria-hidden="true"><path d="M30 10 C38 6 52 8 56 22 C60 36 52 50 30 50 C8 50 0 36 4 22 C8 8 22 6 30 10 Z" fill="#F28C28" stroke="#0B0F24" stroke-width="2.6"/><path d="M20 10 C14 24 14 40 20 50 M40 10 C46 24 46 40 40 50 M30 10 V50" stroke="#C25A0C" stroke-width="2" fill="none" opacity=".6"/><path d="M28 10 q-1 -7 4 -9" stroke="#3E6B1E" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M17 24 l6 -5 l2 7z M43 24 l-6 -5 l-2 7z" fill="#3A1A00"/><path d="M16 34 q14 10 28 0 l-4 4 l-3 -3 l-3 4 l-4 -4 l-3 4 l-3 -3 z" fill="#3A1A00"/><path d="M17 24 l6 -5 l2 7z M43 24 l-6 -5 l-2 7z M16 34 q14 10 28 0" stroke="#FFD34D" stroke-width="1" fill="none" opacity=".7"/></svg>`;
+const hwS = () => S.hw = S.hw || { day:"", candy:0, total:0, arcDay:"", arcN:0 };
+function addCandy(n, quiet){
+  if (!isHalloween() || !n) return; const st = hwS(), has = ownedChars().includes("calabacin");
+  st.total += n;
+  if (has) { addCoins(n * HW_CANDY_PTS); if (!quiet) toast(`+${n} ${n === 1 ? "caramelo" : "caramelos"} (+${n * HW_CANDY_PTS} puntos)`, "candy"); save(); return; }
+  st.candy += n; if (!quiet) { toast(`+${n} ${n === 1 ? "caramelo" : "caramelos"} · ${Math.min(st.candy, HW_GOAL)}/${HW_GOAL}`, "candy"); SND.fx("candy"); }
+  if (st.candy >= HW_GOAL) { st.candy -= HW_GOAL; ownedChars().push("calabacin"); save(); pushMember(); setTimeout(openCalabacin, quiet ? 200 : 1300); }
+  save();
+}
+function openCalabacin(){
+  if ($("#sheetRoot").classList.contains("open")) closeSheet();
+  logEv("calabacin_desbloqueado");
+  const fig = titoSVG(Object.assign({}, S.tito, { char:"calabacin" }), 150, { mood:"happy", level:level(), noFloat:true, dance:myDance() });
+  openSheet("¡Calabacín es tuyo!", `<div class="hw-unlock"><div class="hu-fig"><span class="hu-glow"></span>${fig}</div><span class="eyebrow">Personaje exclusivo de Halloween</span><b class="hu-name">Calabacín</b><p class="small muted">Juntaste ${HW_GOAL} caramelos. Desde ahora cada caramelo extra vale ${HW_CANDY_PTS} puntos.</p>
+    <div class="btn-row"><button class="btn" data-act="close-sheet">Seguir</button><button class="btn yellow" data-act="char-use:calabacin">¡Usarlo ahora!</button></div></div>`, { center:true, sticky:true });
+  confetti(120); celebrate(2);
+}
+function hwCard(){
+  if (!isHalloween()) return "";
+  const st = hwS(), done = st.day === today(), has = ownedChars().includes("calabacin"), pc = Math.min(100, Math.round(100 * st.candy / HW_GOAL));
+  return `<section class="card hw-card"><div class="hw-top"><span class="hw-door-mini">${doorSVG(false)}</span><span class="hw-txt"><b>Truco o trato</b><small>${done ? "Vuelve mañana · los caramelos también caen jugando" : "Una puerta por día · también caen jugando"}</small></span>
+      <button class="btn ${done ? "" : "yellow"}" data-act="hw-door" ${done ? "disabled" : ""}>${done ? "Mañana" : "Tocar"}</button></div>
+    <div class="hw-candy"><span class="hw-cico">${CANDY_SVG}</span>${has ? `<span class="small" style="font-weight:800">Calabacín ya es tuyo · cada caramelo vale ${HW_CANDY_PTS} puntos</span>` : `<span class="hw-bar"><span style="width:${pc}%"></span></span><b>${st.candy}/${HW_GOAL}</b><span class="hw-goal">${titoSVG({ char:"calabacin" }, 30, { still:true, noFloat:true })}</span>`}</div>
+    <button class="hw-ter press" data-act="run:c:ter"><span>${PUMPKIN_SVG}</span><b>Trivia de terror</b></button></section>`;
+}
+function doorSVG(open){
+  return `<svg viewBox="0 0 80 110" class="door ${open ? "open" : ""}" aria-hidden="true"><rect x="4" y="100" width="72" height="8" rx="2" fill="#4A3626" stroke="#0B0F24" stroke-width="2.5"/><path d="M10 102 V34 a30 30 0 0 1 60 0 V102 Z" fill="#160B24" stroke="#0B0F24" stroke-width="3"/>
+    <g class="eyes"><ellipse cx="32" cy="56" rx="4" ry="5" fill="#FFE27A"/><ellipse cx="48" cy="56" rx="4" ry="5" fill="#FFE27A"/></g>
+    <g class="panel"><path d="M10 102 V34 a30 30 0 0 1 60 0 V102 Z" fill="#6B2FB8" stroke="#0B0F24" stroke-width="3"/><path d="M18 96 V38 a22 22 0 0 1 44 0 V96 Z" fill="none" stroke="#4A1F86" stroke-width="3"/><path d="M40 12 V102" stroke="#4A1F86" stroke-width="2.5"/><circle cx="58" cy="66" r="3.5" fill="#F4C440" stroke="#0B0F24" stroke-width="2"/><circle cx="40" cy="40" r="6" fill="none" stroke="#F4C440" stroke-width="3"/><g transform="translate(26 74) scale(.47)">${PUMPKIN_SVG.replace(/<\/?svg[^>]*>/g, "")}</g></g></svg>`;
+}
+function openDoor(){
+  const st = hwS(); if (st.day === today()) { toast("Ya tocaste hoy. ¡Vuelve mañana!"); return; }
+  openSheet("Truco o trato", `<div class="hw-sheet"><div class="hw-stage" id="hwStage">${doorSVG(false)}</div><p class="hw-msg" id="hwMsg">¿Te animas a tocar?</p><button class="btn yellow block" data-act="hw-knock" id="hwKnock">Toc, toc</button></div>`, { center:true, sticky:true });
+}
+function knockDoor(){
+  const st = hwS(); if (st.day === today()) return; st.day = today(); save();
+  const btn = $("#hwKnock"); if (btn) btn.remove(); const msg = $("#hwMsg"); msg.textContent = "Toc, toc…";
+  SND.fx("knock"); const stg = $("#hwStage"); stg.classList.add("knock");
+  const trick = rnd() < .3, candy = trick ? 2 : 3 + Math.floor(rnd() * 3), pts = trick ? 50 : 80 + Math.floor(rnd() * 9) * 15;
+  logEv("truco_o_trato", { resultado:trick ? "truco" : "trato", caramelos:candy });
+  setTimeout(() => { SND.fx("creak"); stg.classList.remove("knock"); stg.querySelector(".door").classList.add("open"); }, 900);
+  setTimeout(() => {
+    if (trick) {
+      SND.fx("boo"); stg.insertAdjacentHTML("beforeend", `<div class="hw-ghost">${titoSVG({ char:"fantasmin" }, 120, { mood:"happy", still:true, noFloat:true })}<b>¡BUU!</b></div>`);
+      $("#sheetRoot .sheet").classList.add("shake"); msg.innerHTML = "¡Truco! Fantasmín te dio un susto…";
+      setTimeout(() => { msg.innerHTML = `…pero igual te deja <b>${candy} caramelos</b> y <b>${pts} puntos</b>.`; finish(); }, 1500);
+    } else {
+      SND.fx("treat"); confetti(70); stg.insertAdjacentHTML("beforeend", `<div class="hw-treat">${Array.from({ length:candy }, (_, i) => `<span style="--i:${i}">${CANDY_SVG}</span>`).join("")}</div>`);
+      msg.innerHTML = `¡Trato! Te ganaste <b>${candy} caramelos</b> y <b>${pts} puntos</b>.`; finish();
+    }
+  }, 1600);
+  const finish = () => { addCoins(pts); renderHeader(); $("#sheetRoot .hw-sheet").insertAdjacentHTML("beforeend", `<button class="btn primary block" data-act="close-sheet" style="margin-top:10px">¡Genial!</button>`); addCandy(candy); render(false); };
+}
 function logEv(name, params){ try { if (window.gtag) window.gtag("event", name, Object.assign({ app_version:APP_VER }, params || {})); } catch(e){} }
 /* ---------- Utilidades ---------- */
 const pad = n => String(n).padStart(2,"0");
@@ -6248,7 +6476,7 @@ const countryName = cc => (COUNTRIES.find(c => c[0] === cc) || ["","Otro país"]
 function toast(m, kind, o){
   const t = $("#toast"); o = o || {};
   if (!kind) kind = /^\+\d|\+[\d.]+ puntos/.test(m) ? "pts" : /falta|no te alcanza/i.test(m) ? "money" : /^¡/.test(m) ? "ok" : "info";
-  const ico = kind === "pts" ? coin : kind === "money" ? "<b>!</b>" : kind === "ok" ? "<b>✓</b>" : "<b>i</b>";
+  const ico = kind === "candy" ? CANDY_SVG : kind === "pts" ? coin : kind === "money" ? "<b>!</b>" : kind === "ok" ? "<b>✓</b>" : "<b>i</b>";
   const bar = o.need ? `<span class="t-bar"><span style="width:${Math.min(100, Math.round(100 * o.have / o.need))}%"></span></span><span class="t-sub">Tienes ${NUM.format(o.have)} de ${NUM.format(o.need)}</span>` : "";
   t.className = "t-" + kind; t.innerHTML = `<span class="ti">${ico}</span><span class="tm"><span>${esc(m)}</span>${bar}</span>`;
   t.style.display = "none"; void t.offsetWidth; t.style.display = "flex"; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = "none", o.need ? 3200 : 2600);
@@ -6389,6 +6617,7 @@ function titoSVG(t, px, o){
     return `<ellipse cx="${cx}" cy="131" rx="11" ry="6" fill="#F2A33A" stroke="${K}" stroke-width="3"/>`;
   };
   s += `<g class="t-feet"><g class="t-foot t-foot-l">${foot(46)}</g><g class="t-foot t-foot-r">${foot(74)}</g></g><g class="t-body">`;
+  if (t.clothes === "vampiro") s += `<path d="M26 92 Q2 112 8 138 L30 128 Z M94 92 Q118 112 112 138 L90 128 Z" fill="#B3122E" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M30 96 L14 60 L36 84 Z M90 96 L106 60 L84 84 Z" fill="#1B1D2A" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`;
   if (t.clothes === "capareal" || t.clothes === "capagal") { const g = t.clothes === "capagal"; s += `<path d="M28 88 Q4 110 8 138 L30 128 Z M92 88 Q116 110 112 138 L90 128 Z" fill="${g ? "#2B1D5C" : "#B3122E"}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M24 96 Q10 114 12 134 M96 96 Q110 114 108 134" stroke="${g ? "#7FD8FF" : "#F4C440"}" stroke-width="2.5" fill="none" opacity=".9"/>` + (g ? [[14,120],[18,104],[104,110],[108,128]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.3" fill="#fff"/>`).join("") : ""); }
   if (t.clothes === "dino") s += `<path d="M32 30 L38 2 L49 14 L60 -7 L71 14 L82 2 L88 30 Z" fill="#4CB85C" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M22 110 q-16 4 -18 -10 q8 6 18 2z" fill="#4CB85C" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`;
   if (t.clothes === "dragon") s += `<path d="M26 66 Q2 52 2 26 Q10 38 17 36 Q14 48 22 52 Q16 58 28 60 Z M94 66 Q118 52 118 26 Q110 38 103 36 Q106 48 98 52 Q104 58 92 60 Z" fill="#2E8A3D" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M6 32 L22 58 M114 32 L98 58" stroke="#1E6A2C" stroke-width="2"/><path d="M96 116 q20 4 24 -12 q-2 -6 -8 -4 q0 10 -16 8z" fill="#4CB85C" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M112 98 l6 -6 l1 8 z" fill="#F3E08A" stroke="${K}" stroke-width="2" stroke-linejoin="round"/>`;
@@ -6417,6 +6646,10 @@ function titoSVG(t, px, o){
   if (t.skin === "galaxia") s += [[34,34],[80,30],[90,60],[28,80],[70,110],[50,24],[96,96],[40,104]].map(([x,y],i) => `<circle cx="${x}" cy="${y}" r="${i%3?1.4:2.2}" fill="#fff" opacity=".9"/>`).join("");
   if (KIT[t.clothes]) s += shirtOnTito(t.clothes, id);
   const CL = {
+    calabaza:`<rect x="10" y="86" width="104" height="54" fill="#F28C28"/><rect x="10" y="86" width="104" height="54" fill="url(#${id}sh)"/><path d="M36 86 C30 104 30 124 36 140 M84 86 C90 104 90 124 84 140 M60 86 V140" stroke="#C25A0C" stroke-width="3" fill="none" opacity=".6"/><path d="M40 100 l8 -6 l3 9z M80 100 l-8 -6 l-3 9z" fill="#3A1A00"/><path d="M38 112 q22 14 44 0 l-5 5 l-4 -4 l-4 5 l-4 -5 l-4 5 l-4 -5 l-4 5 l-4 -4 z" fill="#3A1A00"/><path d="M10 86 H114" stroke="${K}" stroke-width="3"/>`,
+    vampiro:`<rect x="10" y="90" width="104" height="48" fill="#1B1D2A"/><rect x="10" y="90" width="104" height="48" fill="url(#${id}sh)"/><path d="M42 90 L60 118 L78 90 Z" fill="#F6F3EA"/><path d="M48 90 L60 108 L72 90" fill="#B3122E"/><path d="M52 92 l8 4 l-8 4z M68 92 l-8 4 l8 4z" fill="#B3122E" stroke="${K}" stroke-width="1.4"/><circle cx="60" cy="96" r="2.2" fill="#F4C440" stroke="${K}" stroke-width="1"/><path d="M10 90 H114" stroke="${K}" stroke-width="3"/>`,
+    esqueleto:`<rect x="10" y="88" width="104" height="52" fill="#1B1D2A"/>` + [96,104,112,120].map((y, i) => `<path d="M${36 + i*2} ${y} Q60 ${y + 5} ${84 - i*2} ${y}" stroke="#F3EFE4" stroke-width="4" fill="none" stroke-linecap="round"/>`).join("") + `<path d="M60 92 V128" stroke="#F3EFE4" stroke-width="5" stroke-linecap="round"/><path d="M48 130 q12 8 24 0" stroke="#F3EFE4" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M10 88 H114" stroke="${K}" stroke-width="3"/>`,
+    momia:[...Array(13)].map((_, i) => { const y = 8 + i * 10; return (y > 52 && y < 92) ? "" : `<path d="M0 ${y + (i % 2 ? 4 : -2)} L124 ${y + (i % 2 ? -3 : 5)}" stroke="#EDE6D2" stroke-width="9"/><path d="M0 ${y + (i % 2 ? 4 : -2)} L124 ${y + (i % 2 ? -3 : 5)}" stroke="#C9BFA4" stroke-width="1.2" opacity=".8" stroke-dasharray="6 9"/>`; }).join("") + `<path d="M0 50 L124 56 M0 94 L124 90" stroke="#EDE6D2" stroke-width="8"/><path d="M20 44 L40 70 M96 40 L84 66 M24 104 L44 132 M98 100 L80 126" stroke="#E2D9C0" stroke-width="7" opacity=".9"/>`,
     capareal:`<rect x="10" y="90" width="104" height="48" fill="#B3122E"/><rect x="10" y="90" width="104" height="48" fill="url(#${id}sh)"/><path d="M60 98 V138" stroke="#F4C440" stroke-width="5"/><path d="M10 86 Q60 104 114 86 L114 99 Q60 117 10 99 Z" fill="#FBF8F0" stroke="${K}" stroke-width="2.4"/>` + [22,36,50,70,84,98].map((x, i) => `<path d="M${x} ${96 + (i === 2 || i === 3 ? 6 : i === 1 || i === 4 ? 4 : 1)} v3" stroke="${K}" stroke-width="2.4" stroke-linecap="round"/>`).join("") + `<circle cx="60" cy="106" r="5.5" fill="#F4C440" stroke="${K}" stroke-width="2.2"/><circle cx="60" cy="106" r="2.2" fill="#EE3B2B"/>`,
     sacooro:`<rect x="10" y="90" width="104" height="48" fill="#E6B422"/><rect x="10" y="90" width="104" height="48" fill="url(#${id}sh)"/>` + [[22,104],[30,122],[88,104],[98,124],[24,132],[94,96],[36,98],[84,128]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="#FFF3B0"/>`).join("") + `<path d="M46 90 L60 120 L74 90 Z" fill="#fff"/><path d="M42 90 L58 124 L50 124 L36 92 Z M78 90 L62 124 L70 124 L84 92 Z" fill="#B8860B" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/><path d="M51 94 l9 4 l-9 4z M69 94 l-9 4 l9 4z" fill="#1B1D2A"/><circle cx="60" cy="98" r="2.4" fill="#1B1D2A"/><circle cx="60" cy="112" r="1.8" fill="#1B1D2A"/>`,
     capagal:`<rect x="10" y="90" width="104" height="48" fill="#1B1640"/><rect x="10" y="90" width="104" height="48" fill="url(#${id}sh)"/>` + [[24,104,1.6],[40,128,1.2],[86,100,1.4],[100,122,1.8],[70,132,1.2],[30,118,1],[94,110,1]].map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`).join("") + `<path d="M24 120 Q60 104 98 116" stroke="#7A4FD9" stroke-width="6" fill="none" opacity=".55"/><path d="M10 88 Q60 100 114 88 L114 96 Q60 108 10 96 Z" fill="#5B3FB8" stroke="${K}" stroke-width="2.2"/><polygon points="${starPts(60,106,6.5)}" fill="#FFE27A" stroke="${K}" stroke-width="2" stroke-linejoin="round"/>`,
@@ -6465,6 +6698,7 @@ function titoSVG(t, px, o){
   else if (mood === "dizzy" || mood === "sad" || mood === "hungry") s += `<path d="M52 92 Q60 85 68 92" stroke="${mc}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
   else if (mood === "nervous") s += `<path d="M50 89 q2.5 -3 5 0 t5 0 t5 0 t5 0" stroke="${mc}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
   else s += `<path d="M53 86 Q60 93 67 86" stroke="${mc}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  if (t.clothes === "vampiro") s += `<path d="M53 87 l2.6 6 l2.6 -6z M62 87 l2.6 6 l2.6 -6z" fill="#fff" stroke="${K}" stroke-width="1.4" stroke-linejoin="round"/>`;
   if (mood === "nervous") s += `<path d="M96 46 q4 7 0 10 q-4 -3 0 -10z M22 54 q4 7 0 10 q-4 -3 0 -10z" fill="#7CC8F2" stroke="${K}" stroke-width="1.8"/>`;
   if (mood === "dizzy") s += `<path d="M84 34 l3 3 l-3 3 M90 28 l2 2" stroke="#FFC425" stroke-width="3" stroke-linecap="round"/>`;
   // lentes
@@ -6479,6 +6713,9 @@ function titoSVG(t, px, o){
   // gorros y peinados
   const hy = CH && CH.hatDy || 0; if (hy) s += `<g transform="translate(0 ${hy})">`;
   const H = {
+    bruja:`<ellipse cx="60" cy="30" rx="44" ry="9" fill="#2A1840" stroke="${K}" stroke-width="3.2"/><path d="M36 30 C40 16 48 4 56 -2 C62 -6 74 -6 80 2 C72 0 66 4 66 10 C70 16 78 24 84 30 Z" fill="#2A1840" stroke="${K}" stroke-width="3.2" stroke-linejoin="round"/><path d="M37 26 C52 30 68 30 83 26 L84 30 C68 34 52 34 36 30 Z" fill="#F28C28" stroke="${K}" stroke-width="2"/><rect x="54" y="23" width="12" height="10" rx="1.5" fill="none" stroke="#F4C440" stroke-width="2.6"/><circle cx="74" cy="12" r="1.6" fill="#B9A8FF"/><circle cx="50" cy="16" r="1.2" fill="#B9A8FF"/>`,
+    gorrocalabaza:`<path d="M24 38 C22 10 98 10 96 38 Q60 46 24 38 Z" fill="#F28C28" stroke="${K}" stroke-width="3.2" stroke-linejoin="round"/><path d="M42 16 C38 24 38 34 42 42 M78 16 C82 24 82 34 78 42 M60 13 V44" stroke="#C25A0C" stroke-width="2.6" fill="none" opacity=".7"/><path d="M58 14 q-2 -10 6 -14 l3 3 q-5 4 -4 11z" fill="#5A7A2A" stroke="${K}" stroke-width="2.2" stroke-linejoin="round"/><path d="M66 4 q10 -6 16 0 q-8 6 -16 0z" fill="#6FB04A" stroke="${K}" stroke-width="2" stroke-linejoin="round"/>`,
+    vampiro:`<path d="M24 44 C18 14 40 4 60 4 C80 4 102 14 96 44 C92 34 86 30 78 28 L60 42 L42 28 C34 30 28 34 24 44 Z" fill="#1B1D2A" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M40 12 q14 -6 30 -2" stroke="#4A4F66" stroke-width="3" fill="none" stroke-linecap="round"/>`,
     aureola:`<ellipse cx="60" cy="0" rx="25" ry="7" fill="none" stroke="#FFE27A" stroke-width="10" opacity=".3"/><ellipse cx="60" cy="0" rx="22" ry="5.5" fill="none" stroke="${K}" stroke-width="7"/><ellipse cx="60" cy="0" rx="22" ry="5.5" fill="none" stroke="#FFD84D" stroke-width="3.6"/><path d="M46 -3 q8 -3 16 -3" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>`,
     coronareal:`<path d="M36 32 Q60 -4 84 32 Z" fill="#B3122E" stroke="${K}" stroke-width="3"/><path d="M31 34 L29 10 L42 21 L51 4 L60 17 L69 4 L78 21 L91 10 L89 34 Z" fill="#F4C440" stroke="${K}" stroke-width="3.2" stroke-linejoin="round"/><path d="M36 26 L35 18 M84 26 L85 18" stroke="#FFF1A8" stroke-width="2" stroke-linecap="round"/><rect x="28" y="29" width="64" height="10" rx="4" fill="#FBF8F0" stroke="${K}" stroke-width="2.6"/>` + [36,46,56,66,76,86].map((x, i) => `<path d="M${x} ${i % 2 ? 32 : 33} v3" stroke="${K}" stroke-width="2.2" stroke-linecap="round"/>`).join("") + [[29,9,"#EE3B2B"],[51,3,"#2F7FE8"],[69,3,"#22A447"],[91,9,"#EE3B2B"]].map(([x,y,c]) => `<circle cx="${x}" cy="${y}" r="3.4" fill="${c}" stroke="${K}" stroke-width="2"/>`).join("") + `<path d="M60 9 v-9 M56 -5 h8" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 9 v-9 M56 -5 h8" stroke="#F4C440" stroke-width="2.4" stroke-linecap="round"/>`,
     fuego:`<path d="M26 42 C16 24 30 20 28 6 C38 12 40 20 44 12 C46 2 56 0 58 -6 C64 2 70 6 70 14 C76 8 82 6 84 0 C90 12 102 22 94 42 Z" fill="#FF5A1F" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M36 42 C30 30 38 26 38 18 C44 24 48 26 52 18 C54 12 58 10 60 4 C62 14 70 16 70 24 C74 20 78 18 80 14 C82 24 88 32 84 42 Z" fill="#FFA41F"/><path d="M46 42 C44 34 50 32 52 28 C54 34 60 32 62 26 C64 32 72 34 70 42 Z" fill="#FFE27A"/>`,
@@ -6515,6 +6752,9 @@ function titoSVG(t, px, o){
   // objetos flotantes
   if (t.float !== "none" && !o.noFloat) {
     const F = {
+      murcielago:`<path d="M109 66 q-6 -8 -16 -6 q4 3 3 7 q-4 -2 -7 1 q6 2 8 6 q6 -4 12 -2 q6 -2 12 2 q2 -4 8 -6 q-3 -3 -7 -1 q-1 -4 3 -7 q-10 -2 -16 6z" fill="#2A1840" stroke="${K}" stroke-width="2" stroke-linejoin="round"/><ellipse cx="109" cy="70" rx="5" ry="6" fill="#3B2458" stroke="${K}" stroke-width="2"/><path d="M106 64 l1 -4 l2 3 M112 64 l-1 -4 l-2 3" fill="#3B2458" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="107.2" cy="69" r="1.2" fill="#FFE27A"/><circle cx="110.8" cy="69" r="1.2" fill="#FFE27A"/><path d="M107.6 73 l.8 1.6 .8 -1.6 M110 73 l.8 1.6 .8 -1.6" stroke="#fff" stroke-width=".9" fill="none"/>`,
+      farol:`<path d="M100 56 Q109 44 118 56" stroke="${K}" stroke-width="2.4" fill="none"/><circle cx="109" cy="70" r="16" fill="#FFD34D" opacity=".28"/><path d="M109 58 C114 56 121 58 122 66 C123 76 118 82 109 82 C100 82 95 76 96 66 C97 58 104 56 109 58 Z" fill="#F28C28" stroke="${K}" stroke-width="2.4"/><path d="M103 66 l3 -3 l1 4z M115 66 l-3 -3 l-1 4z M102 73 q7 6 14 0 l-3 2 l-2 -2 l-2 2 l-2 -2 l-2 2z" fill="#FFE27A" stroke="#C25A0C" stroke-width=".8"/><path d="M108 58 q0 -4 3 -5" stroke="#3E6B1E" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+      caramelo:`<g transform="rotate(-20 109 68)"><path d="M98 68 L88 60 L88 76 Z M120 68 L130 60 L130 76 Z" fill="#FF5FA2" stroke="${K}" stroke-width="2.2" stroke-linejoin="round"/><ellipse cx="109" cy="68" rx="12" ry="9" fill="#FF9FCB" stroke="${K}" stroke-width="2.4"/><path d="M101 63 q4 10 0 10 M109 59 q4 18 0 18 M117 63 q-4 10 0 10" stroke="#fff" stroke-width="2.4" fill="none"/></g>`,
       nube:`<path d="M99 80 a7 7 0 0 1 1 -14 a9 9 0 0 1 17 -3 a7 7 0 0 1 4 13 a5 5 0 0 1 -4 4 Z" fill="#fff" stroke="${K}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="106" cy="72" r="1.5" fill="${K}"/><circle cx="114" cy="72" r="1.5" fill="${K}"/><path d="M107.5 75.5 q2.5 2 5 0" stroke="${K}" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="103" cy="75" r="1.8" fill="#FF7D96" opacity=".6"/><circle cx="117" cy="75" r="1.8" fill="#FF7D96" opacity=".6"/><path d="M103 84 v4 M110 85 v5 M117 84 v4" stroke="#7CC8F2" stroke-width="2.4" stroke-linecap="round"/>`,
       fenix:`<g transform="translate(-6 3)"><path d="M104 72 Q92 76 93 92 Q98 84 102 85 Q97 94 101 101 Q104 90 108 86 Q107 95 112 98 Q111 86 112 78 Z" fill="#FFC425" stroke="${K}" stroke-width="2" stroke-linejoin="round"/><path d="M104 74 Q98 80 98 88 Q102 82 106 82 Z" fill="#FF7A1A"/><ellipse cx="110" cy="72" rx="9" ry="7.5" fill="#FF5A1F" stroke="${K}" stroke-width="2.4"/><path d="M113 58 q-1 -6 2 -9 q0 4 2 5 q1 -4 4 -5 q-2 5 0 8" fill="#FFC425" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="117" cy="62" r="6.5" fill="#FF5A1F" stroke="${K}" stroke-width="2.4"/><path d="M122.5 60.5 L128 62.5 L122.5 65 Z" fill="#FFC425" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="118.5" cy="61" r="1.5" fill="${K}"/><path d="M103 71 Q100 58 112 55 Q109 62 113 69 Z" fill="#FFA41F" stroke="${K}" stroke-width="2" stroke-linejoin="round"/><path d="M106 66 q2 -4 4 -6" stroke="#FFE27A" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`,
       orbita:`<circle cx="108" cy="68" r="11" fill="#B9A8FF" opacity=".18"/><ellipse cx="108" cy="68" rx="13" ry="5" fill="none" stroke="#B9A8FF" stroke-width="2" transform="rotate(-20 108 68)"/><circle cx="108" cy="68" r="7" fill="#FFE27A" opacity=".4"/>${[[108,68,6.5],[96.5,73,3.6],[119.5,63,3.6],[110,57.5,2.6],[104,79,2.2]].map(([x,y,r]) => `<polygon points="${starPts(x,y,r)}" fill="#FFE27A" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"/>`).join("")}`,
@@ -6544,6 +6784,7 @@ function titoSVG(t, px, o){
   }
   // accesorios que aparecen solo mientras baila
   const dk = o.dance && !o.still ? o.dance : "";
+  if (dk === "zombi") s += `<g class="zarms"><path d="M24 96 L2 88" stroke="${K}" stroke-width="10" stroke-linecap="round"/><path d="M24 96 L2 88" stroke="#8FB86E" stroke-width="6" stroke-linecap="round"/><path d="M96 96 L118 88" stroke="${K}" stroke-width="10" stroke-linecap="round"/><path d="M96 96 L118 88" stroke="#8FB86E" stroke-width="6" stroke-linecap="round"/><path d="M0 84 l-3 -3 M0 88 l-4 0 M0 92 l-3 2 M120 84 l3 -3 M120 88 l4 0 M120 92 l3 2" stroke="#6E9450" stroke-width="2.4" stroke-linecap="round"/></g>`;
   if (dk === "tango") s += `<g transform="translate(0 ${fy})"><path d="M40 93 Q58 88 78 90" stroke="#2E8A3D" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M50 90 q-4 -6 -10 -5 q4 6 10 5z M64 89 q3 -6 9 -6 q-3 6 -9 6z" fill="#4CB85C" stroke="${K}" stroke-width="1.4"/><circle cx="82" cy="89" r="7.5" fill="#E0213A" stroke="${K}" stroke-width="2.2"/><path d="M78 88 q4 -5 8 0 q-3 4 -6 1 q2 -2 3 0" stroke="#9C1226" stroke-width="1.6" fill="none"/></g>`;
   let dp = "";
   if (dk === "disco") dp = [[6,18,"#FF5FA2"],[116,26,"#5CE1E6"],[4,86,"#FFE27A"],[118,96,"#7A4FD9"],[26,-4,"#22A447"],[96,-4,"#EE3B2B"]].map(([x,y,c], i) => `<circle class="dl" style="animation-delay:${-i*.17}s" cx="${x}" cy="${y}" r="4" fill="${c}" stroke="${K}" stroke-width="1.6"/>`).join("");
@@ -6553,7 +6794,7 @@ function titoSVG(t, px, o){
 }
 
 /* ---------- Casa de Tito ---------- */
-const WALL = { lisa:"background:#EDE7DC", celeste:"background:#CFE9F7", rayas:"background:repeating-linear-gradient(90deg,#F3E9FF 0 18px,#E3D4FF 18px 36px)", ladrillo:"background:#C8654A;background-image:linear-gradient(#E9D6C8 2px,transparent 2px),linear-gradient(90deg,#E9D6C8 2px,transparent 2px),linear-gradient(90deg,#E9D6C8 2px,transparent 2px);background-size:40px 20px,40px 40px,40px 40px;background-position:0 0,0 0,20px 20px", noche:"background:radial-gradient(circle at 20% 30%,#fff 1.5px,transparent 2px),radial-gradient(circle at 70% 20%,#fff 1.5px,transparent 2px),radial-gradient(circle at 45% 60%,#fff 1px,transparent 1.5px),radial-gradient(circle at 85% 55%,#fff 1.2px,transparent 1.8px),linear-gradient(180deg,#1C1F4A,#3B2C7E)", tribuna:"background:radial-gradient(circle,#FFC425 3px,transparent 3.5px) 0 0/16px 16px,radial-gradient(circle,#2F7FE8 3px,transparent 3.5px) 8px 8px/16px 16px,linear-gradient(180deg,#2A3A7A,#3A5FB8)", oro:"background:linear-gradient(135deg,#FFE9A3,#F4C440 50%,#D9A21F)" };
+const WALL = { lisa:"background:#EDE7DC", celeste:"background:#CFE9F7", rayas:"background:repeating-linear-gradient(90deg,#F3E9FF 0 18px,#E3D4FF 18px 36px)", ladrillo:"background:#C8654A;background-image:linear-gradient(#E9D6C8 2px,transparent 2px),linear-gradient(90deg,#E9D6C8 2px,transparent 2px),linear-gradient(90deg,#E9D6C8 2px,transparent 2px);background-size:40px 20px,40px 40px,40px 40px;background-position:0 0,0 0,20px 20px", noche:"background:radial-gradient(circle at 20% 30%,#fff 1.5px,transparent 2px),radial-gradient(circle at 70% 20%,#fff 1.5px,transparent 2px),radial-gradient(circle at 45% 60%,#fff 1px,transparent 1.5px),radial-gradient(circle at 85% 55%,#fff 1.2px,transparent 1.8px),linear-gradient(180deg,#1C1F4A,#3B2C7E)", tribuna:"background:radial-gradient(circle,#FFC425 3px,transparent 3.5px) 0 0/16px 16px,radial-gradient(circle,#2F7FE8 3px,transparent 3.5px) 8px 8px/16px 16px,linear-gradient(180deg,#2A3A7A,#3A5FB8)", oro:"background:linear-gradient(135deg,#FFE9A3,#F4C440 50%,#D9A21F)" , telaranas:"background-color:#2A1840;background-image:url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27140%27%20height=%27140%27%3E%3Cg%20stroke=%27%23fff%27%20stroke-opacity=%27.5%27%20fill=%27none%27%20stroke-width=%271.3%27%3E%3Cpath%20d=%27M0%200%20L70%2070%20M0%200%20L35%2075%20M0%200%20L75%2035%20M0%200%20L0%2080%20M0%200%20L80%200%27/%3E%3Cpath%20d=%27M0%2014%20Q9%209%2014%200%20M0%2028%20Q18%2018%2028%200%20M0%2044%20Q28%2030%2044%200%20M0%2060%20Q38%2040%2060%200%27/%3E%3C/g%3E%3Cg%20transform=%27translate%28140%200%29%20scale%28-1%201%29%27%20stroke=%27%23fff%27%20stroke-opacity=%27.5%27%20fill=%27none%27%20stroke-width=%271.3%27%3E%3Cpath%20d=%27M0%200%20L50%2050%20M0%200%20L25%2055%20M0%200%20L55%2025%20M0%200%20L0%2060%20M0%200%20L60%200%27/%3E%3Cpath%20d=%27M0%2012%20Q8%208%2012%200%20M0%2024%20Q16%2016%2024%200%20M0%2038%20Q24%2026%2038%200%27/%3E%3C/g%3E%3Ccircle%20cx=%27118%27%20cy=%2730%27%20r=%273%27%20fill=%27%23140A22%27/%3E%3Cpath%20d=%27M118%200%20V27%27%20stroke=%27%23fff%27%20stroke-opacity=%27.6%27/%3E%3C/svg%3E'),radial-gradient(circle at 50% 18%,#FFE9A8 0 5%,rgba(255,233,168,.25) 6%,transparent 12%),linear-gradient(180deg,#2A1840,#4A2370);background-repeat:no-repeat;background-size:100% 100%,auto,auto"};
 const FLOOR = { gris:"background:#B9BEC8", madera:"background:repeating-linear-gradient(90deg,#C98F55 0 30px,#B57C44 30px 32px)", damero:"background:conic-gradient(#222 25%,#fff 0 50%,#222 0 75%,#fff 0) 0 0/36px 36px", cesped:"background:repeating-linear-gradient(90deg,#3FA34D 0 26px,#37944A 26px 52px)", alfombra:"background:#C8322A;box-shadow:inset 0 0 0 6px #F4C440" };
 function frameSVG(k){
   const F = { argentina:`<rect x="4" y="4" width="82" height="54" rx="3" fill="#8A5A2B" stroke="${IK}" stroke-width="3"/><rect x="10" y="10" width="70" height="42" fill="#74ACDF"/><rect x="10" y="24" width="70" height="14" fill="#fff"/>`,
@@ -6566,6 +6807,7 @@ function furniSVG(k){
   const F = { sillon:`<rect x="6" y="28" width="108" height="34" rx="12" fill="#EE3B2B" stroke="${IK}" stroke-width="3"/><rect x="2" y="36" width="20" height="30" rx="8" fill="#C42A1C" stroke="${IK}" stroke-width="3"/><rect x="98" y="36" width="20" height="30" rx="8" fill="#C42A1C" stroke="${IK}" stroke-width="3"/><rect x="22" y="42" width="76" height="20" rx="6" fill="#FF6B5A" stroke="${IK}" stroke-width="2.5"/><path d="M14 66 v8 M106 66 v8" stroke="${IK}" stroke-width="4"/>`,
     biblio:`<rect x="20" y="0" width="80" height="78" rx="3" fill="#8A5A2B" stroke="${IK}" stroke-width="3"/><path d="M20 26 H100 M20 52 H100" stroke="${IK}" stroke-width="3"/>` + [[26,"#2F7FE8"],[34,"#EE3B2B"],[42,"#22A447"],[52,"#FFC425"],[60,"#7A4FD9"],[70,"#2F7FE8"],[80,"#EE3B2B"]].map(([x,c],i) => `<rect x="${x}" y="${i%2?6:9}" width="7" height="${i%2?20:17}" fill="${c}" stroke="${IK}" stroke-width="1.5"/><rect x="${x+2}" y="${i%2?35:32}" width="7" height="${i%2?17:20}" fill="${c}" stroke="${IK}" stroke-width="1.5"/>`).join(""),
     tele:`<rect x="12" y="8" width="96" height="54" rx="6" fill="#26315A" stroke="${IK}" stroke-width="3"/><rect x="18" y="14" width="84" height="42" rx="3" fill="#5CE1E6"/><path d="M24 50 L44 30 L56 42 L68 32 L96 50" fill="#3FA34D"/><rect x="30" y="62" width="60" height="14" rx="3" fill="#8A5A2B" stroke="${IK}" stroke-width="3"/>`,
+    caldero:`<ellipse cx="60" cy="22" rx="30" ry="8" fill="#7CFF6B" opacity=".35"/><circle class="bub" cx="50" cy="18" r="5" fill="#9BFF8A" stroke="${IK}" stroke-width="2"/><circle class="bub b2" cx="68" cy="14" r="4" fill="#9BFF8A" stroke="${IK}" stroke-width="2"/><path d="M22 30 Q20 70 60 72 Q100 70 98 30 Z" fill="#26283A" stroke="${IK}" stroke-width="3"/><ellipse cx="60" cy="30" rx="40" ry="8" fill="#5BD64A" stroke="${IK}" stroke-width="3"/><path d="M34 70 l-6 8 M86 70 l6 8 M60 72 v6" stroke="${IK}" stroke-width="4" stroke-linecap="round"/><path d="M40 68 q-6 6 -2 10 q4 -4 8 -2 q-2 -6 -6 -8z M70 70 q4 6 10 4 q-4 -4 -2 -8z" fill="#FF7A1A" opacity=".9"/>`,
     arco:`<path d="M6 76 V10 H114 V76" fill="rgba(255,255,255,.35)" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>` + [24,42,60,78,96].map(x => `<path d="M${x} 12 V76" stroke="#fff" stroke-width="1.5" opacity=".8"/>`).join("") + [28,46,62].map(y => `<path d="M8 ${y} H112" stroke="#fff" stroke-width="1.5" opacity=".8"/>`).join("") + `<path d="M6 76 V10 H114 V76" fill="none" stroke="${IK}" stroke-width="2"/>` };
   return F[k] ? svgWrap(F[k], "0 0 120 80") : "";
 }
@@ -6573,6 +6815,7 @@ function decoSVG(k){
   const F = { planta:`<path d="M32 40 C20 30 14 14 22 6 C28 18 32 26 32 40 Z M32 40 C44 30 50 14 42 6 C36 18 32 26 32 40 Z M32 42 C24 36 8 34 6 24 C18 24 28 32 32 42 Z M32 42 C40 36 56 34 58 24 C46 24 36 32 32 42 Z" fill="#3FA34D" stroke="${IK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M18 42 H46 L42 70 H22 Z" fill="#E2622B" stroke="${IK}" stroke-width="3" stroke-linejoin="round"/>`,
     lampara:`<path d="M18 4 H46 L54 26 H10 Z" fill="#FFC425" stroke="${IK}" stroke-width="3" stroke-linejoin="round"/><path d="M32 26 V66" stroke="${IK}" stroke-width="4"/><ellipse cx="32" cy="68" rx="14" ry="4" fill="#26315A" stroke="${IK}" stroke-width="3"/><path d="M14 30 L8 46 M50 30 L56 46" stroke="#FFE27A" stroke-width="3" stroke-linecap="round" opacity=".8"/>`,
     globo:`<circle cx="32" cy="26" r="20" fill="#7CC8F2" stroke="${IK}" stroke-width="3"/><path d="M20 16 q8 -4 12 4 q-4 8 -10 6z M36 28 q10 -2 12 8 q-8 4 -12 -2z" fill="#3FA34D" stroke="${IK}" stroke-width="1.5"/><path d="M10 26 A22 22 0 0 0 54 26" stroke="#C99A2E" stroke-width="3" fill="none"/><path d="M32 48 V62" stroke="${IK}" stroke-width="4"/><rect x="18" y="62" width="28" height="7" rx="3" fill="#8A5A2B" stroke="${IK}" stroke-width="2.5"/>`,
+    calabazas:`<ellipse cx="22" cy="40" rx="18" ry="22" fill="#FFD34D" opacity=".3"/><g transform="translate(2 36) scale(.62)">${PUMPKIN_SVG.replace(/<\/?svg[^>]*>/g, "")}</g><g transform="translate(28 30) scale(.58)">${PUMPKIN_SVG.replace(/<\/?svg[^>]*>/g, "")}</g><rect x="44" y="18" width="7" height="16" rx="1.5" fill="#F3EFE4" stroke="${IK}" stroke-width="2"/><path d="M47.5 18 q-3 -5 0 -9 q3 4 0 9z" fill="#FFC425" stroke="${IK}" stroke-width="1.4"/>`,
     trofeo:`<path d="M16 6 H48 V22 C48 34 40 38 32 38 C24 38 16 34 16 22 Z" fill="#D5DAE6" stroke="${IK}" stroke-width="3" stroke-linejoin="round"/><path d="M16 12 H8 C8 22 12 26 18 26 M48 12 H56 C56 22 52 26 46 26" fill="none" stroke="${IK}" stroke-width="3"/><rect x="28" y="38" width="8" height="12" fill="#D5DAE6" stroke="${IK}" stroke-width="2.5"/><rect x="18" y="50" width="28" height="14" rx="2" fill="#8A5A2B" stroke="${IK}" stroke-width="3"/>`,
     trofeooro:`<path d="M16 6 H48 V22 C48 34 40 38 32 38 C24 38 16 34 16 22 Z" fill="#F4C440" stroke="${IK}" stroke-width="3" stroke-linejoin="round"/><path d="M16 12 H8 C8 22 12 26 18 26 M48 12 H56 C56 22 52 26 46 26" fill="none" stroke="${IK}" stroke-width="3"/><rect x="28" y="38" width="8" height="12" fill="#F4C440" stroke="${IK}" stroke-width="2.5"/><rect x="18" y="50" width="28" height="14" rx="2" fill="#B37A00" stroke="${IK}" stroke-width="3"/><path d="M24 12 v12" stroke="#fff" stroke-width="3" stroke-linecap="round"/>` };
   return F[k] ? svgWrap(F[k], "0 0 64 72") : "";
@@ -6731,7 +6974,7 @@ function makeCtx(kind, a, day, n){
   }
   if (kind === "m") return { key:"m:"+a+":"+day, kind, n:a, day, pick:() => pickFresh(GENQ.concat(ARGQ, FUTQ), 3), tlabel:"Merienda de Tito" };
   if (kind === "a") { const c = ARGC.find(x => x.id === a); return { key:"a:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, pick:() => pickFresh(a === "mix" ? ARGQ : c.qs, 7), tlabel: a === "mix" ? "Mezcla argentina" : c.t }; }
-  if (kind === "c") { const c = GCATS.find(x => x.id === a) || GCATS[0]; return { key:"c:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, pick:() => c.math ? mathQs(7) : pickFresh(c.cats ? GENQ.filter(q => c.cats.includes(q.cat)) : GENQ, 7), tlabel:c.t }; }
+  if (kind === "c") { const c = GCATS.find(x => x.id === a) || GCATS[0]; return { key:"c:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, pick:() => c.math ? mathQs(7) : c.hw ? pickFresh(HWQ, 7) : pickFresh(c.cats ? GENQ.filter(q => c.cats.includes(q.cat)) : GENQ, 7), tlabel:c.t }; }
   const f = FGAMES[a];
   return { key:"f:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, style:f.style, pick:f.pick, tlabel:f.t };
 }
@@ -6954,7 +7197,8 @@ function setView(v, opt){
 let lastView = "", trivTab = "general", streakOpen = false;
 const trivSeg = on => `<div class="seg triv-seg" role="group" aria-label="Trivias"><button data-act="tab:general" aria-pressed="${on === "general"}">General</button><button data-act="tab:futbol" aria-pressed="${on === "futbol"}">Fútbol</button><button data-act="tab:arg" aria-pressed="${on === "arg"}">Argentina</button></div>`;
 function render(anímate){
-  const app = $("#app"), playing = view.startsWith("play");
+  const app = $("#app"), playing = view.startsWith("play"), hw = isHalloween();
+  if (document.body.classList.contains("hw") !== hw) { document.body.classList.toggle("hw", hw); const fx = $("#hwfx"); if (hw && !fx) document.body.insertAdjacentHTML("beforeend", `<div id="hwfx" aria-hidden="true">${[0,1,2].map(i => `<span class="bat b${i}"><svg viewBox="0 0 60 30"><path d="M30 12 q-8 -12 -26 -8 q6 4 5 10 q-6 -2 -9 3 q10 1 14 8 q8 -6 16 -3 q8 -3 16 3 q4 -7 14 -8 q-3 -5 -9 -3 q-1 -6 5 -10 q-18 -4 -26 8z" fill="#140A22"/><circle cx="27" cy="13" r="1.3" fill="#FFE27A"/><circle cx="33" cy="13" r="1.3" fill="#FFE27A"/></svg></span>`).join("")}</div>`); else if (!hw && fx) fx.remove(); }
   app.classList.toggle("noads", isPrem()); app.classList.toggle("playing", playing);
   const R = { home:renderHome, games:renderGames, ruleta:renderWheel, arg:renderArg, futbol:renderFutbol, general:renderGeneral, arcade:renderArcade, "play-arc":renderArcPlay, groups:renderGroups, group:renderGroup, tito:renderTito, more:renderMore, "play-w":renderWord, "play-s":renderSoup, "play-t":renderTrivia };
   if (arcRun && view !== "play-arc") arcStop();
@@ -7012,8 +7256,8 @@ function renderHome(){
       <span class="dc-go">${doneN === 3 ? "VER" : doneN ? "SEGUIR" : "JUGAR"}</span></button>
     <button class="streak-mini press ${streakOpen ? "open" : ""} ${c ? "" : "off"}" data-act="streak-toggle" aria-expanded="${streakOpen}" aria-label="Racha: ${c} días seguidos"><span class="flame">${icon("flame")}</span><span class="cartoon-num">${c}</span></button></div>
     ${streakOpen ? `<div class="card streak-drop"><div class="sd-head"><b>${c} ${c === 1 ? "día seguido" : "días seguidos"}</b><span>${c % 7 === 0 && c ? "¡Regalo ganado!" : "Regalo en " + toGift + (toGift === 1 ? " día" : " días")}</span></div>${weekHTML()}<div class="perk"><b>Día 3:</b> pista · <b>Día 5:</b> +50 · <b>Día 7:</b> regalo</div></div>` : ""}`;
-  return daily + `<section class="hero"><div class="bubble" id="heroBubble">${esc(phrase())}</div>
-      <div class="stage"><button class="tap" data-act="tito-tap" aria-label="Tocar a Tito"><span class="anim-enter"><span id="heroTito" class="anim-idle">${titoSVG(S.tito, 150, { level:level(), mood: roomMood() === "normal" ? "normal" : roomMood() })}</span></span></button></div>
+  return daily + hwCard() + `<section class="hero"><div class="bubble" id="heroBubble">${esc(phrase())}</div>
+      <div class="stage"><button class="tap" data-act="tito-tap" aria-label="Tocar a Tito"><span class="anim-enter">${isHalloween() ? `<span class="hw-pk l">${PUMPKIN_SVG}</span><span class="hw-pk r">${PUMPKIN_SVG}</span>` : ""}<span id="heroTito" class="anim-idle">${titoSVG(S.tito, 150, { level:level(), mood: roomMood() === "normal" ? "normal" : roomMood() })}</span></span></button></div>
       <div class="who">${esc(S.profile.name || "Tu Tito")} <span>${flag(S.profile.country)}</span> </div>${lvlChip()}</section>
     ${wheelBanner}
     ${pendingGroup ? `<p class="status-line"><button data-act="open-group:${pendingGroup}" style="all:unset;cursor:pointer;text-decoration:underline">Tu grupo te espera</button></p>` : ""}`;
@@ -7110,7 +7354,7 @@ function mountWheel(){
   wrap.addEventListener("pointerup", end); wrap.addEventListener("pointercancel", end);
 }
 function randomItem(maxPrice){
-  const pool = []; TITO_CATS.concat(CASA_CATS).filter(cat => cat !== "kit" && cat !== "dance").forEach(cat => SHOP[cat].items.forEach(([k,n,p]) => { if (typeof p === "number" && p > 0 && p <= maxPrice && !owns(cat, k)) pool.push({ cat, k, n }); }));
+  const pool = []; TITO_CATS.concat(CASA_CATS).filter(cat => cat !== "kit" && cat !== "dance").forEach(cat => SHOP[cat].items.forEach(([k,n,p]) => { if (typeof p === "number" && p > 0 && p <= maxPrice && !owns(cat, k) && (!isSeasonal(cat, k) || isHalloween())) pool.push({ cat, k, n }); }));
   return pool.length ? pool[Math.floor(rnd()*pool.length)] : null;
 }
 function grantPrize(w){
@@ -7405,13 +7649,15 @@ const BOX_SVG = `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGrad
 function ownedChars(){ S.chars = S.chars && S.chars.length ? S.chars : ["tito"]; return S.chars; }
 function charsSection(){
   const own = ownedChars(), cur = S.tito.char || "tito", left = CHAR_ORDER.filter(c => !own.includes(c));
+  const list = CHAR_ORDER.concat(own.includes("calabacin") || isHalloween() ? ["calabacin"] : []);
   const card = id => { const has = own.includes(id), t = Object.assign({}, has ? S.tito : {}, { char:id === "tito" ? undefined : id });
     const svg = titoSVG(has ? t : { char:t.char }, 62, { still:true, noFloat:true, mood:"happy" });
     return has ? `<button class="ch-card press ${cur === id ? "on" : ""}" data-act="char-use:${id}" aria-pressed="${cur === id}"><span class="ch-fig">${svg}</span><b>${esc(charName(id === "tito" ? null : id))}</b>${cur === id ? `<i>En uso</i>` : ""}</button>`
+      : id === "calabacin" ? `<button class="ch-card locked hw-lock press" data-act="hw-door-info" aria-label="Calabacín: se consigue en Truco o trato"><span class="ch-fig">${svg}</span><b>Calabacín</b><i class="hw-tag">${hwS().candy}/${HW_GOAL} caramelos</i></button>`
       : `<div class="ch-card locked" aria-label="Personaje bloqueado"><span class="ch-fig">${svg}</span><b>???</b></div>`; };
   const can = S.coins >= MBOX_PRICE;
-  return `<section class="card chars-card"><div class="ch-head"><h2>Personajes</h2><span class="group-tag">${own.length}/${CHAR_ORDER.length}</span></div>
-    <div class="ch-grid">${CHAR_ORDER.map(card).join("")}</div>
+  return `<section class="card chars-card"><div class="ch-head"><h2>Personajes</h2><span class="group-tag">${own.filter(c => list.includes(c)).length}/${list.length}</span></div>
+    <div class="ch-grid">${list.map(card).join("")}</div>
     ${left.length ? `<button class="mbox-btn press ${can ? "" : "poor"}" data-act="mbox"><span class="mb-ico">${BOX_SVG}</span><span class="mb-txt"><b>Caja misteriosa</b><small>Te sale un personaje nuevo al azar</small></span><span class="mb-price">${coin}${NUM.format(MBOX_PRICE)}</span></button>`
       : `<p class="small" style="font-weight:800;text-align:center">¡Tienes todos los personajes!</p>`}
     <p class="small muted">Todos usan la misma ropa, gorros, lentes, calzado y bailes que Tito.</p></section>`;
@@ -7449,6 +7695,7 @@ function finishGame(kind){
   const first = ctx.kind !== "m" && (ctx.n == null || ctx.n === 1), base = basePoints(kind, p), mult = isGroup() || first ? 2 : 1, rr = rating(kind);
   const v0 = view; setTimeout(() => { if (view === v0) SND.react(rr); }, 380);
   p.pts[kind] = base; addCoins(base * mult); cheer(isGroup() ? 18 : 6);
+  addCandy(1);
   logEv("juego_terminado", { juego:{ w:"palabra", s:"sopa", t:"trivia" }[kind] || kind, modo:ctx.kind, puntos:base * mult, resultado:rr });
   if (ctx.kind === "m") dayCounter("snacks").n++;
   if (isGroup()) { const gs = S.gscore[ctx.code] = S.gscore[ctx.code] || { total:0, days:{} }; if (gs.days[ctx.day] == null) { gs.days[ctx.day] = base; gs.total += base; } delete groupCache[ctx.code]; }
@@ -7543,10 +7790,12 @@ const GCATS = [
   { id:"cur", t:"Curiosidades", sub:"Tecnología, comida y más", ico:"gift", col:"g", cats:["tec","gas","var"] },
   { id:"mat", t:"Cuentas rápidas", sub:"Matemática contra reloj", ico:"clock", col:"r", math:true }
 ];
-GEN_CATS.mat = "Cuentas rápidas";
+GEN_CATS.mat = "Cuentas rápidas"; GEN_CATS.ter = "Terror";
+const HWQ = mkQ(HWQ_RAW, "h");
+GCATS.push({ id:"ter", t:"Trivia de terror", sub:"Leyendas, monstruos y cine de miedo", ico:"trivia", col:"r", hw:true });
 function renderGeneral(){
-  const big = GCATS[0], rest = GCATS.slice(1);
-  return trivSeg("general") + `<div class="page-head"><span class="eyebrow">Cultura de todo el mundo</span><h1>General</h1></div>
+  const big = GCATS[0], rest = GCATS.slice(1).filter(c => !c.hw);
+  return trivSeg("general") + `<div class="page-head"><span class="eyebrow">Cultura de todo el mundo</span><h1>General</h1></div>${isHalloween() ? `<button class="card game press hw-tcard" data-act="run:c:ter"><span class="ico" style="--c:#F28C28">${PUMPKIN_SVG}</span><span><h2>Trivia de terror</h2><p>Leyendas, monstruos y cine de miedo · solo por Halloween</p><p class="small" style="font-weight:800">${runState("c", "ter")}</p></span><span class="go" style="--c:#F28C28">Jugar</span></button>` : ""}
     <button class="card game press" data-act="run:c:mix"><span class="ico" style="--c:var(--y)">${icon(big.ico)}</span><span><h2>${esc(big.t)}</h2><p>${esc(big.sub)}</p><p class="small" style="font-weight:800">${runState("c", "mix")}</p></span><span class="go y" style="--c:var(--y)">Jugar</span></button>
     <div class="cat-grid">${rest.map(c => `<button class="card cat press" data-act="run:c:${c.id}"><span class="ico sm" style="--c:${COL[c.col]}">${icon(c.ico)}</span><h2>${esc(c.t)}</h2><p>${esc(c.sub)}</p><span class="state">${runState("c", c.id)}</span></button>`).join("")}</div>`;
 }
@@ -7700,9 +7949,9 @@ function renderTito(){
     <p class="small muted" style="margin-top:10px">La panza se llena respondiendo bien y el ánimo jugando. Si no juegas, bajan un poco cada día. ${lv < LV_MAX ? "En el nivel "+(Math.floor(lv / 5) + 1) * 5+" ganas un premio exclusivo." : ""}</p></section>`;
   h += charsSection();
   const cats = shopCatsOf(shopGroup); if (!cats.includes(shopCat)) shopCat = cats[0];
-  const items = SHOP[shopCat].items.map(([key, name, base, sec]) => {
+  const items = SHOP[shopCat].items.filter(([key]) => !isSeasonal(shopCat, key) || isHalloween() || owns(shopCat, key)).map(([key, name, base, sec]) => {
     const own = owns(shopCat, key), on = worn(shopCat) === key, trying = tryOn && tryOn.cat === shopCat && tryOn.key === key, rar = rarityOf(base), price = priceOf(shopCat, key);
-    const head = sec ? `<div class="shop-sec">${esc(sec)}</div>` : "";
+    const head = sec ? `<div class="shop-sec ${sec === "Halloween" ? "hw-sec" : ""}">${sec === "Halloween" ? "Halloween · solo hasta el 2 de noviembre" : esc(sec)}</div>` : "";
     const label = own ? (on ? "Puesto" : "Usar") : lockLv(price) ? `<span class="price-l">Nivel ${lockLv(price)}</span>` : price === "P" ? `<span class="price-l">PREMIUM</span>` : `<span class="price-l ${S.coins < price ? "no" : ""}">${coin}${NUM.format(price)}</span>`;
     return head + `<button class="item ${on ? "on" : ""} ${trying ? "try" : ""}" data-act="pick:${shopCat}:${key}" aria-pressed="${on}"><span class="thumb">${thumb(shopCat, key)}</span><span>${esc(name)}</span>${base ? `<span class="rar ${rar}" style="--rc:${RAR[rar][1]}">${RAR[rar][0]}</span>` : ""}<span class="small">${label}</span></button>`;
   }).join("");
@@ -7837,6 +8086,9 @@ document.addEventListener("click", e => {
   else if (k === "games") setView("games", { day:today() });
   else if (k === "settings") { moreTab = "set"; setView("more"); }
   else if (k === "feedback") openFeedback();
+  else if (k === "hw-door") openDoor();
+  else if (k === "hw-knock") knockDoor();
+  else if (k === "hw-door-info") { if (isHalloween()) { setView("home"); toast(`Junta ${HW_GOAL} caramelos en Truco o trato y jugando`, "candy"); } else toast("Calabacín solo se consiguió en Halloween"); }
   else if (k === "fbtype") { fbType = v; document.querySelectorAll('[data-act^="fbtype:"]').forEach(b => b.setAttribute("aria-pressed", b.dataset.act === "fbtype:" + v)); }
   else if (k === "redeem") openRedeem();
   else if (k === "mbox") openMBox();
@@ -7968,7 +8220,7 @@ function boot(){
   decayCare();
   const away = Date.now() - (S.lastOpen || 0), returning = !!S.lastOpen; S.lastOpen = Date.now();
   applySettings(); buildTabs(); checkSlots(false); save(); setView("home", { day:today() });
-  const sp = $("#splash"), paint = () => { sp.innerHTML = `${brandHTML("xl")}<span class="egg">${titoSVG(S.tito, 110, { mood:"happy", level:level() })}</span>`; };
+  const sp = $("#splash"), paint = () => { sp.innerHTML = `${brandHTML("xl")}<span class="egg">${titoSVG(isHalloween() ? Object.assign({}, S.tito, { hat:"bruja" }) : S.tito, 110, { mood:"happy", level:level() })}</span>`; };
   let stage = "intro";
   const leave = () => {
     if (stage === "gate" || sp.classList.contains("out")) return; sp.classList.add("out"); setTimeout(() => sp.remove(), 500);
