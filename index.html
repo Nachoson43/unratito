@@ -939,20 +939,33 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .marks.sm .mark svg{width:15px;height:15px}
 .sc-foot{text-align:center;font-weight:800;font-size:.78em;opacity:.8}
 .share-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
-/* ---- Tito Piano: lista de canciones ---- */
-.pno-list{width:100%;max-height:min(38vh,300px);overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:6px;text-align:left;padding:2px;-webkit-overflow-scrolling:touch}
-.pno-gh{grid-column:1/-1;font-family:var(--display);font-weight:700;font-size:.85em;margin-top:4px;display:flex;align-items:center;gap:6px}
+/* ---- Tito Piano: elegir canción ---- */
+.arc-ov .arc-box.pno-box{width:100%;max-width:420px;max-height:100%;display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:10px;margin:0;text-align:left}
+.arc-ov:has(.pno-box){padding:8px;align-items:stretch}
+.pno-head{display:flex;gap:10px;align-items:center}
+.pno-head .arc-thumb{width:64px;flex:none}
+.pno-head b{display:block;font-family:var(--display);font-size:1.1em}
+.pno-head small{display:block;font-size:.78em;color:var(--muted);font-weight:700;line-height:1.25}
+.pno-list{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding:2px 2px 6px;-webkit-overflow-scrolling:touch;border-radius:12px}
+.pno-gh{font-family:var(--display);font-weight:700;font-size:.85em;margin:6px 0 0;display:flex;align-items:center;gap:6px}
 .pno-gh small{font-weight:800;color:var(--muted);display:inline-flex;align-items:center;gap:3px}
 .pno-gh .coin{width:.9em;height:.9em}
-.pno-song{display:flex;flex-direction:column;gap:1px;border:2px solid var(--line);background:var(--surface-2);border-radius:12px;padding:6px 8px;text-align:left;color:var(--ink);min-width:0}
-.pno-song b{font-size:.82em;line-height:1.15}
-.pno-song small{font-size:.7em;color:var(--muted);font-weight:700}
-.pno-song.on{border-color:var(--K);background:var(--y-soft);box-shadow:0 2px 0 var(--K)}
-.pno-song.lock{opacity:.78}
-.pno-song.tango{background:linear-gradient(135deg,#FFF1E3,#FFE0D0)}
-.pno-st{display:flex;gap:1px;font-size:.78em}
-.pno-st i{font-style:normal;color:#C9CEDE}.pno-st i.on{color:#F4A300}
-.pno-st em{font-style:normal;font-weight:800;color:var(--muted)}
+.pno-song{display:flex;align-items:center;gap:10px;border:2px solid var(--line);background:var(--surface-2);border-radius:12px;padding:7px 10px;text-align:left;color:var(--ink);min-width:0;width:100%;flex:none}
+.pno-ic{width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:2px solid var(--line);font-size:.8em}
+.pno-tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.pno-tx b{font-size:.9em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pno-tx small{font-size:.72em;color:var(--muted);font-weight:700}
+.pno-song.on{border-color:var(--K);background:var(--y);color:var(--K);box-shadow:0 3px 0 var(--K)}
+.pno-song.on small{color:rgba(11,15,36,.7)}
+.pno-song.on .pno-ic{background:var(--K);color:var(--y);border-color:var(--K)}
+.pno-song.lock{opacity:.75}
+.pno-song.tango:not(.on){border-color:#C25A0C}
+.pno-st{display:flex;gap:1px;font-size:.85em;flex:none}
+.pno-st i{font-style:normal;color:var(--line)}.pno-st i.on{color:#F4A300}
+.pno-song.on .pno-st i{color:rgba(11,15,36,.25)}.pno-song.on .pno-st i.on{color:#B35A00}
+.pno-st em{font-style:normal;font-weight:800;color:var(--muted);font-size:.9em}
+.btn.pno-go{flex:none;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.btn.pno-go small{font-family:var(--body);font-size:.6em;font-weight:800;opacity:.75;letter-spacing:0}
 
 </style>
 </head>
@@ -4590,7 +4603,7 @@ function arcMount(){
   };
   run.api = api; run.show = show; run.startNew = startNew; run.finalize = finalize; run.countdown = countdown;
   arcRun = run;
-  run.showReady = () => { const o = api.opt(); show(`<div class="arc-box"><span class="arc-thumb big">${g.thumb()}</span><b>${esc(g.t)}</b><span class="small">${g.intro}</span>${g.readyHTML ? g.readyHTML() : g.options ? `<div class="seg arc-opts">${g.options.map(x => `<button data-act="arc-opt:${x.k}" aria-pressed="${x.k === o}">${esc(x.l)}</button>`).join("")}</div>` : ""}<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`); };
+  run.showReady = () => { if (g.readyBox) { show(g.readyBox()); return; } const o = api.opt(); show(`<div class="arc-box"><span class="arc-thumb big">${g.thumb()}</span><b>${esc(g.t)}</b><span class="small">${g.intro}</span>${g.readyHTML ? g.readyHTML() : g.options ? `<div class="seg arc-opts">${g.options.map(x => `<button data-act="arc-opt:${x.k}" aria-pressed="${x.k === o}">${esc(x.l)}</button>`).join("")}</div>` : ""}<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`); };
   run.showReady();
   game.draw("ready");
 }
@@ -6807,24 +6820,26 @@ arcRegister("piano", {
   intro:"Toca las teclas negras de abajo hacia arriba: cada una es la nota siguiente de la canción. Las largas se mantienen apretadas. Si tocas el blanco o se te escapa una, se termina.",
   help:"Toca las negras · mantén las largas",
   points: s => s / 7,
-  readyHTML(){
-    const p = pnoState(); let h = `<div class="pno-list">`;
+  readyBox(){
+    const p = pnoState(), sel = PNO_SONGS.find(s => s.id === p.sel) || PNO_SONGS[0]; let h = "";
     Object.entries(PNO_GROUPS).forEach(([g, [label, price]]) => {
-      h += `<div class="pno-gh">${label}${price ? ` <small>${coin}${NUM.format(price)}</small>` : ` <small>gratis</small>`}</div>`;
-      PNO_SONGS.filter(s => s.g === g).forEach(s => { const own = pnoOwns(s.id), stars = p.stars[s.id] || 0;
-        h += `<button class="pno-song ${p.sel === s.id ? "on" : ""} ${own ? "" : "lock"} ${g === "tango" ? "tango" : ""}" data-act="arc-song:${s.id}"><b>${esc(s.n)}</b><small>${esc(s.by)}</small><span class="pno-st">${own ? [1, 2, 3].map(k => `<i class="${k <= stars ? "on" : ""}">★</i>`).join("") : `<em>🔒 ${NUM.format(price)}</em>`}</span></button>`; });
+      h += `<div class="pno-gh">${label}${price ? ` <small>${coin}${NUM.format(price)} c/u</small>` : ` <small>gratis</small>`}</div>`;
+      PNO_SONGS.filter(s => s.g === g).forEach(s => { const own = pnoOwns(s.id), stars = p.stars[s.id] || 0, on = p.sel === s.id;
+        h += `<button class="pno-song ${on ? "on" : ""} ${own ? "" : "lock"} ${g === "tango" ? "tango" : ""}" data-act="arc-song:${s.id}" aria-pressed="${on}"><span class="pno-ic">${on ? "▶" : own ? "♪" : "🔒"}</span><span class="pno-tx"><b>${esc(s.n)}</b><small>${esc(s.by)}</small></span><span class="pno-st">${own ? [1, 2, 3].map(k => `<i class="${k <= stars ? "on" : ""}">★</i>`).join("") : `<em>${NUM.format(price)}</em>`}</span></button>`; });
     });
-    return h + `</div>`;
+    return `<div class="arc-box pno-box"><div class="pno-head"><span class="arc-thumb">${ARC.piano.thumb()}</span><span><b>Elige una canción</b><small>Toca las negras de abajo hacia arriba. Las largas, mantenlas apretadas.</small></span></div>
+      <div class="pno-list">${h}</div>
+      <button class="btn big-cta block pno-go" data-act="arc-start">¡JUGAR! <small>${esc(sel.n)}</small></button></div>`;
   },
   act(k, v){
     if (k === "arc-song") { const s = PNO_SONGS.find(x => x.id === v); if (!s) return true;
-      if (pnoOwns(v)) { pnoState().sel = v; save(); SND.tap(); arcMount(); return true; }
+      if (pnoOwns(v)) { const l = document.querySelector(".pno-list"), sc = l ? l.scrollTop : 0; pnoState().sel = v; save(); SND.tap(); arcMount(); const l2 = document.querySelector(".pno-list"); if (l2) l2.scrollTop = sc; return true; }
       const price = PNO_GROUPS[s.g][1];
       openSheet("Desbloquear canción", `<div style="text-align:center"><p style="margin:0 0 6px"><b>${esc(s.n)}</b><br><span class="small muted">${esc(s.by)}${s.g === "tango" ? " · Tango" : ""}</span></p><p class="small">Queda tuya para siempre.</p>
         <div class="btn-row"><button class="btn" data-act="close-sheet">Ahora no</button>${S.coins >= price ? `<button class="btn green" data-act="arc-songbuy:${v}">${coin}${NUM.format(price)} · Comprar</button>` : `<button class="btn" data-act="need:${price}">Faltan ${NUM.format(price - S.coins)}</button>`}</div></div>`, { center:true });
       return true; }
     if (k === "arc-songbuy") { const s = PNO_SONGS.find(x => x.id === v), price = s ? PNO_GROUPS[s.g][1] : 0; if (!s || S.coins < price) return true;
-      S.coins -= price; const p = pnoState(); p.own.push(v); p.sel = v; save(); renderHeader(); closeSheet(); SND.buy(); toast(`¡Desbloqueaste «${s.n}»!`, "ok"); if (typeof logEv === "function") logEv("spend_virtual_currency", { item_name:"cancion:" + v, virtual_currency_name:"puntos", value:price }); arcMount(); return true; }
+      S.coins -= price; const p = pnoState(); p.own.push(v); p.sel = v; save(); renderHeader(); closeSheet(); SND.buy(); toast(`¡Desbloqueaste «${s.n}»!`, "ok"); if (typeof logEv === "function") logEv("spend_virtual_currency", { item_name:"cancion:" + v, virtual_currency_name:"puntos", value:price }); const l = document.querySelector(".pno-list"), sc = l ? l.scrollTop : 0; arcMount(); const l2 = document.querySelector(".pno-list"); if (l2) l2.scrollTop = sc; return true; }
     return false;
   },
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thc22"><rect width="64" height="48" rx="8"/></clipPath><linearGradient id="thg22" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B1D5C"/><stop offset="1" stop-color="#5B3FB8"/></linearGradient></defs><g clip-path="url(#thc22)">
@@ -7010,7 +7025,7 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "ruta", "piano", "runner", "flappy", "cros
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "28/10 09:53";
+const APP_VER = "28/10 10:24";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
