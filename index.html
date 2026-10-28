@@ -29,6 +29,7 @@
 /* Layout: app de una pantalla para celular. Fondo degradé violeta → azul → turquesa con manchas de luz que se mueven.
    Estilo caricatura: todo lo tocable tiene contorno tinta y sombra sólida, como el logo y Tito. Los 4 colores de marca marcan secciones. */
 :root{
+  --sab:env(safe-area-inset-bottom,0px);
   --g:#22A447; --r:#EE3B2B; --y:#FFC425; --b:#2F7FE8;
   --g-soft:#E2F5E7; --r-soft:#FDE7E4; --y-soft:#FFF4D2; --b-soft:#E3EEFD;
   --bg1:#3B2C9E; --bg2:#1F4DB0; --bg3:#0D8197;
@@ -172,7 +173,7 @@ main.enter > *{animation:rise .42s cubic-bezier(.2,.9,.3,1.2) both;animation-del
 .ad-tag{font-size:.75em;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border:1.5px solid currentColor;border-radius:4px;padding:1px 5px;flex:none}
 .ad-banner button{margin-left:auto;white-space:nowrap;border:0;background:none;color:inherit;font-weight:800;text-decoration:underline;padding:4px}
 .app.noads .ad-banner, .app.playing .ad-banner{display:none}
-nav.tabs{display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:var(--bw) solid var(--K);border-radius:24px 24px 0 0;padding:6px 2px calc(env(safe-area-inset-bottom) + 4px);position:relative;z-index:2}
+nav.tabs{display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:var(--bw) solid var(--K);border-radius:24px 24px 0 0;padding:6px 2px calc(var(--sab) + 4px);position:relative;z-index:2}
 nav.tabs button{border:0;background:none;padding:2px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.7em;width:100%;font-weight:800;color:var(--muted);min-width:0}
 nav.tabs .ti{width:56px;height:40px;border-radius:14px;display:grid;place-items:center;transition:transform .2s}
 nav.tabs .ti svg{width:33px;height:33px}
@@ -411,7 +412,7 @@ nav.tabs button[aria-current="page"] .ti{background:var(--c);border:2px solid va
 .price b{display:block;font-family:var(--display);font-size:1.25em;font-variant-numeric:tabular-nums}
 
 /* Overlays */
-.overlay{position:fixed;inset:0;z-index:60;background:#0A0D1F;color:#EEF1FA;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 18px)}
+.overlay{position:fixed;inset:0;z-index:60;background:#0A0D1F;color:#EEF1FA;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 14px) 18px calc(var(--sab) + 18px)}
 .ov-top{display:flex;justify-content:space-between;align-items:center}
 .ov-top .ad-tag{color:#E9D98F}
 .ov-close{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:9px 16px;font-weight:800;font-variant-numeric:tabular-nums}
@@ -435,7 +436,7 @@ nav.tabs button[aria-current="page"] .ti{background:var(--c);border:2px solid va
 #sheetRoot.open{display:block}
 .backdrop{position:absolute;inset:0;background:rgba(6,8,24,.55);animation:fade .2s}
 @keyframes fade{from{opacity:0}}
-.sheet{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;max-height:92%;overflow-y:auto;background:var(--surface);color:var(--ink);border-radius:24px 24px 0 0;border:var(--bw) solid var(--K);border-bottom:0;padding:14px 16px calc(20px + env(safe-area-inset-bottom));animation:up .32s cubic-bezier(.2,.9,.3,1.15)}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;max-height:92%;overflow-y:auto;background:var(--surface);color:var(--ink);border-radius:24px 24px 0 0;border:var(--bw) solid var(--K);border-bottom:0;padding:14px 16px calc(20px + var(--sab));animation:up .32s cubic-bezier(.2,.9,.3,1.15)}
 @keyframes up{from{transform:translateY(60px);opacity:.4}to{transform:none;opacity:1}}
 .sheet.center{top:50%;bottom:auto;left:16px;right:16px;border-radius:24px;border-bottom:var(--bw) solid var(--K);transform:translateY(-50%);animation:popc .4s cubic-bezier(.2,.9,.3,1.4)}
 @keyframes popc{from{transform:translateY(-50%) scale(.7);opacity:0}to{transform:translateY(-50%) scale(1);opacity:1}}
@@ -873,7 +874,7 @@ body:has(#app.playing) #hwfx{display:none}
 html{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,a,.opt,.tap,[data-act]{touch-action:manipulation}
 input,select,textarea{font-size:max(16px,1em)}
-.app{position:fixed;top:0;left:0;right:0;height:100%;height:var(--appH,100dvh);margin:0 auto}
+.app{position:fixed;top:0;left:0;right:0;height:100%;height:var(--appH,100%);margin:0 auto}
 /* ---- Cartel de correcto / incorrecto en la trivia ---- */
 .qban{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 84px);margin:0 auto;width:max-content;max-width:88vw;z-index:96;display:flex;align-items:center;gap:12px;padding:12px 22px 12px 12px;border:3px solid var(--K);border-radius:22px;box-shadow:0 6px 0 var(--K);color:#fff;animation:qbin .4s cubic-bezier(.3,1.6,.5,1) both;pointer-events:auto}
 .qban.ok{background:var(--g)} .qban.bad{background:var(--r)} .qban.to{background:#F28C28}
@@ -897,7 +898,47 @@ input,select,textarea{font-size:max(16px,1em)}
 .btn.two{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;padding-top:8px;padding-bottom:8px}
 .btn.two small{font-size:.72em;font-weight:700;opacity:.8}
 .q-actions .btn-row .btn{flex:1 1 0;min-width:0}
-.app.playing main{padding-bottom:calc(env(safe-area-inset-bottom) + 10px)}
+.app.playing main{padding-bottom:calc(var(--sab) + 10px)}
+
+/* ---- Alto completo en iPhone instalado: todas las capas a pantalla completa usan el alto medido ---- */
+html{height:var(--appH,100%)}
+body{height:var(--appH,100%);background-attachment:scroll}
+.overlay,#splash,#sheetRoot,.confetti,.arc-ov.full,#hwfx{bottom:auto;height:var(--appH,100%)}
+nav.tabs{box-shadow:0 80px 0 var(--surface)}
+/* ---- Tarjeta de resultados para compartir ---- */
+.sc-card{width:100%;border-radius:20px;border:3px solid var(--K);box-shadow:0 5px 0 var(--K);background:linear-gradient(160deg,#3B2C9E,#1F4DB0 60%,#0D8197);color:#fff;padding:12px 14px 10px;display:flex;flex-direction:column;gap:10px;text-align:left}
+body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
+.sc-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sc-top .brand{--k:.82}
+.sc-date{font-family:var(--display);font-weight:700;font-size:.85em;text-align:right;line-height:1.15;opacity:.9}
+.sc-date small{font-size:.85em;opacity:.8}
+.sc-score{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,.22);border-radius:16px;padding:8px 12px}
+.sc-ring{--p:0;flex:none;width:76px;height:76px;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(closest-side,#1A2040 74%,transparent 76%),conic-gradient(var(--y) calc(var(--p)*1%),rgba(255,255,255,.18) 0);border:3px solid var(--K);line-height:1}
+.sc-ring b{font-family:var(--cartoon);font-weight:400;font-size:1.9em;color:var(--y);-webkit-text-stroke:2px var(--K);paint-order:stroke fill}
+.sc-ring small{font-size:.7em;font-weight:800;opacity:.75}
+.sc-msg{display:flex;flex-direction:column;gap:1px;min-width:0}
+.sc-medal{font-size:1.6em;line-height:1}
+.sc-msg b{font-family:var(--cartoon);font-weight:400;font-size:1.35em;letter-spacing:.02em;line-height:1.1}
+.sc-msg small{font-weight:800;font-size:.8em;opacity:.85;display:flex;align-items:center;gap:4px}
+.sc-msg small svg{width:16px;height:16px}
+.sc-row{display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.1);border-radius:14px;padding:8px 10px}
+.sc-ico.ico.sm{width:38px;height:38px;border-radius:12px}
+.sc-ico.ico.sm svg{width:26px;height:26px}
+.sc-rb{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.sc-rt{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sc-rt b{font-family:var(--display);font-size:1.05em}
+.sc-rt span{font-family:var(--cartoon);font-size:1.15em;color:var(--y);-webkit-text-stroke:1.5px var(--K);paint-order:stroke fill;letter-spacing:.02em}
+.sc-row .mini-grid{gap:3px}
+.sc-row .mt{width:20px;height:20px;border-radius:5px}
+.sc-row .mt.absent{background:rgba(255,255,255,.22)}
+.sc-bar{display:flex;gap:4px}
+.sc-bar i{flex:1;height:12px;border-radius:4px;background:rgba(255,255,255,.18);border:1.5px solid var(--K)}
+.sc-bar i.on{background:var(--r)}
+.marks.sm{gap:5px;justify-content:flex-start;flex-wrap:nowrap}
+.marks.sm .mark{width:28px;height:28px;border-width:2px;box-shadow:0 2px 0 var(--K)}
+.marks.sm .mark svg{width:15px;height:15px}
+.sc-foot{text-align:center;font-weight:800;font-size:.78em;opacity:.8}
+.share-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
 
 </style>
 </head>
@@ -4504,7 +4545,7 @@ function arcMount(){
     if (run.done || run.state === "ready" || run.score == null) return; run.done = true;
     const pts = ptsFor(); if (pts > 0) { addCoins(pts); toast("+"+pts+" puntos"); }
     const st = arcState(); st.games = (st.games || 0) + 1; save(); pushMember && pushMember();
-    if (pts > 0 && typeof addCandy === "function" && isHalloween()) { const h = hwS(); if (h.arcDay !== today()) { h.arcDay = today(); h.arcN = 0; } if (h.arcN < HW_ARC_DAY) { h.arcN++; setTimeout(() => addCandy(1), 900); } }
+    if (pts > 0 && typeof playCandy === "function") playCandy(.35);
     if (typeof logEv === "function") logEv("arcade_terminado", { juego:run.id, puntaje:run.score, puntos:pts, gano:!!run.won });
   };
   run.api = api; run.show = show; run.startNew = startNew; run.finalize = finalize; run.countdown = countdown;
@@ -6413,16 +6454,23 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "runner", "flappy", "cross", "penal", "tow
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "27/10 22:50";
+const APP_VER = "28/10 01:41";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
     const stop = e => e.preventDefault();
     ["gesturestart","gesturechange","gestureend"].forEach(ev => document.addEventListener(ev, stop, { passive:false }));
     document.addEventListener("touchmove", e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive:false });
-    const fit = () => { const de = document.documentElement, ios = navigator.standalone === true, port = innerHeight >= innerWidth;
-      const h = ios ? Math.max(innerHeight, port ? Math.max(screen.height, screen.width) : Math.min(screen.height, screen.width)) : innerHeight;
-      de.style.setProperty("--appH", h + "px"); };
+    /* iOS (sobre todo iOS 26) no deja dibujar en la franja de abajo de las apps ancladas: se usa el alto real visible,
+       no se suma el margen inferior dos veces, y la franja se pinta del mismo color que lo que hay abajo para que no se note */
+    const probe = (css) => { const d = document.createElement("div"); d.style.cssText = "position:fixed;left:0;top:0;width:0;visibility:hidden;pointer-events:none;" + css; document.documentElement.appendChild(d); const r = d.getBoundingClientRect().height; d.remove(); return r; };
+    const fit = () => { const de = document.documentElement, port = innerHeight >= innerWidth;
+      const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      const standalone = navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
+      de.style.setProperty("--appH", innerHeight + "px");
+      const gap = ios && standalone && port ? Math.max(screen.height, screen.width) - innerHeight : 0, envT = probe("height:env(safe-area-inset-top,0px)");
+      if (gap > envT + 8) de.style.setProperty("--sab", "6px"); else de.style.removeProperty("--sab");
+      de.classList.toggle("ios-app", ios && standalone); };
     fit(); addEventListener("resize", fit); addEventListener("orientationchange", () => setTimeout(fit, 300));
   } catch(e){}
 })();
@@ -6431,10 +6479,15 @@ const CFG = (typeof window !== "undefined" && window.UNRA_CFG) || {};
 /* Halloween: del 27/10 al 2/11 (se puede forzar con ?halloween para probar) */
 const HW_TEST = (() => { try { if (/[?#&]halloween\b/.test(location.href)) localStorage.setItem("unratito.hw", "1"); return localStorage.getItem("unratito.hw") === "1"; } catch(e){ return false; } })();
 function isHalloween(){ if (HW_TEST) return true; const d = new Date(), m = d.getMonth() + 1, day = d.getDate(); return (m === 10 && day >= 27) || (m === 11 && day <= 2); }
-const HW_GOAL = 25, HW_CANDY_PTS = 30, HW_ARC_DAY = 5;
+const HW_GOAL = 60, HW_CANDY_PTS = 30, HW_PLAY_DAY = 6;
 const CANDY_SVG = `<svg viewBox="0 0 40 24" aria-hidden="true"><path d="M10 12 L2 4 L2 20 Z M30 12 L38 4 L38 20 Z" fill="#FF7A1A" stroke="#0B0F24" stroke-width="2" stroke-linejoin="round"/><ellipse cx="20" cy="12" rx="11" ry="8" fill="#FF9F43" stroke="#0B0F24" stroke-width="2"/><path d="M13 7 q4 10 0 10 M20 4 q4 16 0 16 M27 7 q-4 10 0 10" stroke="#fff" stroke-width="2" fill="none" opacity=".8"/></svg>`;
 const PUMPKIN_SVG = `<svg viewBox="0 0 60 52" aria-hidden="true"><path d="M30 10 C38 6 52 8 56 22 C60 36 52 50 30 50 C8 50 0 36 4 22 C8 8 22 6 30 10 Z" fill="#F28C28" stroke="#0B0F24" stroke-width="2.6"/><path d="M20 10 C14 24 14 40 20 50 M40 10 C46 24 46 40 40 50 M30 10 V50" stroke="#C25A0C" stroke-width="2" fill="none" opacity=".6"/><path d="M28 10 q-1 -7 4 -9" stroke="#3E6B1E" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M17 24 l6 -5 l2 7z M43 24 l-6 -5 l-2 7z" fill="#3A1A00"/><path d="M16 34 q14 10 28 0 l-4 4 l-3 -3 l-3 4 l-4 -4 l-3 4 l-3 -3 z" fill="#3A1A00"/><path d="M17 24 l6 -5 l2 7z M43 24 l-6 -5 l-2 7z M16 34 q14 10 28 0" stroke="#FFD34D" stroke-width="1" fill="none" opacity=".7"/></svg>`;
 const hwS = () => S.hw = S.hw || { day:"", candy:0, total:0, arcDay:"", arcN:0 };
+/* Caramelos jugando: como mucho ${HW_PLAY_DAY} por día. Los juegos diarios siempre dan; el resto, a veces */
+function playCandy(chance){
+  if (!isHalloween()) return; const st = hwS(); if (st.playDay !== today()) { st.playDay = today(); st.playN = 0; }
+  if (st.playN >= HW_PLAY_DAY || rnd() > chance) return; st.playN++; save(); setTimeout(() => addCandy(1), 900);
+}
 function addCandy(n, quiet){
   if (!isHalloween() || !n) return; const st = hwS(), has = ownedChars().includes("calabacin");
   st.total += n;
@@ -6454,7 +6507,7 @@ function openCalabacin(){
 function hwCard(){
   if (!isHalloween()) return "";
   const st = hwS(), done = st.day === today(), has = ownedChars().includes("calabacin"), pc = Math.min(100, Math.round(100 * st.candy / HW_GOAL));
-  return `<section class="card hw-card"><div class="hw-top"><span class="hw-door-mini">${doorSVG(false)}</span><span class="hw-txt"><b>Truco o trato</b><small>${done ? "Vuelve mañana · los caramelos también caen jugando" : "Una puerta por día · también caen jugando"}</small></span>
+  return `<section class="card hw-card"><div class="hw-top"><span class="hw-door-mini">${doorSVG(false)}</span><span class="hw-txt"><b>Truco o trato</b><small>${done ? "Vuelve mañana · jugando caen hasta " + HW_PLAY_DAY + " por día" : "Una puerta por día · jugando caen hasta " + HW_PLAY_DAY}</small></span>
       <button class="btn ${done ? "" : "yellow"}" data-act="hw-door" ${done ? "disabled" : ""}>${done ? "Mañana" : "Tocar"}</button></div>
     <div class="hw-candy"><span class="hw-cico">${CANDY_SVG}</span>${has ? `<span class="small" style="font-weight:800">Calabacín ya es tuyo · cada caramelo vale ${HW_CANDY_PTS} puntos</span>` : `<span class="hw-bar"><span style="width:${pc}%"></span></span><b>${st.candy}/${HW_GOAL}</b><span class="hw-goal">${titoSVG({ char:"calabacin" }, 30, { still:true, noFloat:true })}</span>`}</div>
     <button class="hw-ter press" data-act="run:c:ter"><span>${PUMPKIN_SVG}</span><b>Trivia de terror</b></button></section>`;
@@ -7239,6 +7292,7 @@ let lastView = "", trivTab = "general", streakOpen = false;
 const trivSeg = on => `<div class="seg triv-seg" role="group" aria-label="Trivias"><button data-act="tab:general" aria-pressed="${on === "general"}">General</button><button data-act="tab:futbol" aria-pressed="${on === "futbol"}">Fútbol</button><button data-act="tab:arg" aria-pressed="${on === "arg"}">Argentina</button></div>`;
 function render(anímate){
   const app = $("#app"), playing = view.startsWith("play"), hw = isHalloween();
+  try { const cs = getComputedStyle(document.body), nav = $("#tabs"); document.documentElement.style.backgroundColor = playing ? cs.getPropertyValue("--bg3").trim() : (nav ? getComputedStyle(nav).backgroundColor : ""); } catch(e){}
   if (document.body.classList.contains("hw") !== hw) { document.body.classList.toggle("hw", hw); const fx = $("#hwfx"); if (hw && !fx) document.body.insertAdjacentHTML("beforeend", `<div id="hwfx" aria-hidden="true">${[0,1,2].map(i => `<span class="bat b${i}"><svg viewBox="0 0 60 30"><path d="M30 12 q-8 -12 -26 -8 q6 4 5 10 q-6 -2 -9 3 q10 1 14 8 q8 -6 16 -3 q8 -3 16 3 q4 -7 14 -8 q-3 -5 -9 -3 q-1 -6 5 -10 q-18 -4 -26 8z" fill="#140A22"/><circle cx="27" cy="13" r="1.3" fill="#FFE27A"/><circle cx="33" cy="13" r="1.3" fill="#FFE27A"/></svg></span>`).join("")}</div>`); else if (!hw && fx) fx.remove(); }
   app.classList.toggle("noads", isPrem()); app.classList.toggle("playing", playing);
   const R = { home:renderHome, games:renderGames, ruleta:renderWheel, arg:renderArg, futbol:renderFutbol, general:renderGeneral, arcade:renderArcade, "play-arc":renderArcPlay, groups:renderGroups, group:renderGroup, tito:renderTito, more:renderMore, "play-w":renderWord, "play-s":renderSoup, "play-t":renderTrivia };
@@ -7319,7 +7373,7 @@ function renderGames(){
   if (!isToday) h += `<div class="note"><span>Estás jugando el ${fmtShort(day)}</span><button data-act="back-today">Volver a hoy</button></div>`;
   h += `<div class="page-head"><span class="eyebrow">${isToday ? "Juegos de hoy" : "Día anterior"}</span><h1>${fmtDay(day)}</h1></div>`;
   h += gameCard("w", c) + gameCard("s", c) + gameCard("t", c);
-  if ([p.w.done, p.s.done, p.t.done].every(Boolean)) h += `<button class="btn yellow block" data-act="share-day">Compartir mis resultados</button>`;
+  if ([p.w.done, p.s.done, p.t.done].every(Boolean)) h += `<button class="btn yellow block" data-act="share-day">${SHARE_ICO} Compartir mis resultados</button>`;
   h += `<div class="btn-row"><button class="btn ghost" data-act="home">Volver</button><button class="btn ghost" data-act="more:arch">Días anteriores</button></div>`;
   return h;
 }
@@ -7747,7 +7801,7 @@ function finishGame(kind){
   const first = ctx.kind !== "m" && (ctx.n == null || ctx.n === 1), base = basePoints(kind, p), mult = isGroup() || first ? 2 : 1, rr = rating(kind);
   const v0 = view; setTimeout(() => { if (view === v0) SND.react(rr); }, 380);
   p.pts[kind] = base; addCoins(base * mult); cheer(isGroup() ? 18 : 6);
-  addCandy(1);
+  playCandy(ctx.kind === "d" ? 1 : .4);
   logEv("juego_terminado", { juego:{ w:"palabra", s:"sopa", t:"trivia" }[kind] || kind, modo:ctx.kind, puntos:base * mult, resultado:rr });
   if (ctx.kind === "m") dayCounter("snacks").n++;
   if (isGroup()) { const gs = S.gscore[ctx.code] = S.gscore[ctx.code] || { total:0, days:{} }; if (gs.days[ctx.day] == null) { gs.days[ctx.day] = base; gs.total += base; } delete groupCache[ctx.code]; }
@@ -7772,13 +7826,34 @@ function openGift(){
   openSheet("Regalo de la semana", `<div class="prize"><span class="anim-happy">${icon("gift").replace("<svg","<svg width='110' height='110'")}</span><div class="big">¡Regalo!</div><p>+150 puntos${it ? " y <b>"+esc(it.n)+"</b> para Tito" : ""}.</p>${it ? `<div>${TITO_CATS.includes(it.cat) ? titoSVG(Object.assign({}, S.tito, { [it.cat]:it.k }), 100, { mood:"star", level:level() }) : thumb(it.cat, it.k)}</div><button class="btn green block" data-act="wear-now:${it.cat}:${it.k}">Ponérselo</button>` : ""}<button class="btn block" data-act="close-sheet">Genial</button></div>`, { center:true });
   confetti(70); SND.prize(); renderHeader();
 }
+const SHARE_URL = "https://nachoson43.github.io/unratito/";
+const WEEKDAYS = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const dayName = d => WEEKDAYS[parse(d).getDay()] + " " + fmtShort(d);
+function triviaTotal(c){ const p = play(c); return (c.fixed || p.t.qs || []).length || p.t.ans.length || 7; }
+/* Puntaje del día de 0 a 100 con lo que se haya jugado */
+function dayScore(c){
+  const p = play(c); let sc = 0, mx = 0;
+  if (p.w.done) { mx += 40; if (p.w.won) sc += Math.max(10, 40 - (p.w.g.length - 1) * 6); }
+  if (p.s.done) { mx += 30; sc += p.s.found.length / 8 * 26 + (p.s.found.length === 8 ? Math.max(0, 4 - Math.floor(p.s.time / 60)) : 0); }
+  if (p.t.done) { mx += 30; sc += p.t.ans.filter(a => a && a.ok).length / triviaTotal(c) * 30; }
+  return mx ? Math.min(100, Math.round(sc * 100 / mx)) : 0;
+}
+const scoreMedal = n => n >= 90 ? ["🏆", "¡Día perfecto!"] : n >= 75 ? ["🥇", "¡Crack!"] : n >= 55 ? ["🥈", "¡Muy bien!"] : n >= 35 ? ["🥉", "Nada mal"] : ["🥚", "Mañana la rompo"];
 function shareText(c){
-  const p = play(c), E = { correct:"🟩", present:"🟨", absent:"⬜" };
-  let s = "unraTITO · "+fmtShort(c.day)+(c.kind === "g" ? " · "+S.groupMeta[c.code].name : c.kind === "f" || c.kind === "a" ? " · "+c.tlabel : "")+"\n";
-  if (p.w.done) s += "Palabra "+(p.w.won ? p.w.g.length : "X")+"/"+(p.w.extra?7:6)+"\n"+p.w.g.map(g => evalGuess(g, c.word).map(r => E[r]).join("")).join("\n")+"\n";
-  if (p.s.done) s += "Sopa "+p.s.found.length+"/8"+(p.s.found.length === 8 ? " en "+mmss(p.s.time) : "")+"\n";
-  if (p.t.done) s += (c.style === "pen" ? "Penales " : c.kind === "d" || c.kind === "g" ? c.tlabel+" " : "")+p.t.ans.map(a => a && a.ok ? (c.style === "pen" ? "⚽" : "✅") : a && a.to ? "⏰" : "❌").join("")+"\n";
-  return s.trim();
+  const p = play(c), E = { correct:"🟩", present:"🟨", absent:"⬛" }, sc = dayScore(c), [md, mt] = scoreMedal(sc);
+  const streak = S.streak.count && S.streak.last >= addDays(today(), -1) ? S.streak.count : 0;
+  const label = c.kind === "g" ? S.groupMeta[c.code].name : c.kind === "d" ? "" : c.tlabel;
+  let s = `🥚 unraTITO · ${dayName(c.day)}${label ? " · " + label : ""}\n${md} ${sc}/100 · ${mt}${c.kind === "d" && streak > 1 ? " · 🔥 " + streak + " días" : ""}\n`;
+  if (p.w.done) s += `\n🔤 Palabra ${p.w.won ? p.w.g.length : "X"}/${p.w.extra ? 7 : 6}\n` + p.w.g.map(g => evalGuess(g, c.word).map(r => E[r]).join("")).join("\n") + "\n";
+  if (p.s.done) s += `\n🔎 Sopa ${p.s.found.length}/8${p.s.found.length === 8 ? " en " + mmss(p.s.time) : ""}\n`;
+  if (p.t.done) { const ok = p.t.ans.filter(a => a && a.ok).length; s += `${p.s.done ? "" : "\n"}${c.style === "pen" ? "⚽ Penales" : "💡 Trivia"} ${ok}/${triviaTotal(c)}  ` + p.t.ans.map(a => a && a.ok ? (c.style === "pen" ? "⚽" : "✅") : a && a.to ? "⏰" : "❌").join("") + "\n"; }
+  s += `\n${sc >= 75 ? "¿Te animas a superarme? 😏" : "¿A ti cómo te va? 👀"} Juega gratis, es un ratito:\n${SHARE_URL}`;
+  return s;
+}
+async function shareOut(text){
+  logEv("share", { method:navigator.share ? "native" : "copy" });
+  if (navigator.share) { try { await navigator.share({ text }); return; } catch(e){ if (e && e.name === "AbortError") return; } }
+  copy(text, "Copiado. Pégalo en WhatsApp.");
 }
 /* Cómo le fue: perfect (salta), good (baila su baile), meh (indiferente), bad (llora) */
 function rating(kind){
@@ -7799,13 +7874,17 @@ const CHECK = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="
 const CROSS = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>`;
 const CLOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="${IK}" stroke-width="2.8" stroke-linecap="round"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 1.6"/></svg>`;
 function summaryHTML(c){
-  const p = play(c), label = c.kind === "g" ? S.groupMeta[c.code].name : c.kind === "d" ? "" : c.tlabel;
-  let h = `<div class="summary"><div class="sum-head">unraTITO · ${fmtShort(c.day)}${label ? " · "+esc(label) : ""}</div>`;
-  if (p.w.done) h += `<div class="sum-line"><b>Palabra ${p.w.won ? p.w.g.length : "X"}/${p.w.extra?7:6}</b></div><div class="mini-grid">${p.w.g.map(g => `<div class="mini-row">${evalGuess(g, c.word).map(r => `<i class="mt ${r}"></i>`).join("")}</div>`).join("")}</div>`;
-  if (p.s.done) h += `<div class="sum-line"><b>Sopa ${p.s.found.length}/8</b>${p.s.found.length === 8 ? " · "+mmss(p.s.time) : ""}</div>`;
-  if (p.t.done) h += `${p.w.done || p.s.done ? `<div class="sum-line"><b>Trivia</b></div>` : ""}<div class="marks">${p.t.ans.map(a => a && a.ok ? `<span class="mark ok" title="Bien">${CHECK}</span>` : a && a.to ? `<span class="mark to" title="Sin tiempo">${CLOCK}</span>` : `<span class="mark no" title="Mal">${CROSS}</span>`).join("")}</div>`;
-  return h + `</div>`;
+  const p = play(c), label = c.kind === "g" ? S.groupMeta[c.code].name : c.kind === "d" ? "" : c.tlabel, sc = dayScore(c), [md, mt] = scoreMedal(sc);
+  const streak = S.streak.count && S.streak.last >= addDays(today(), -1) ? S.streak.count : 0;
+  let h = `<div class="sc-card"><div class="sc-top">${brandHTML("")}<span class="sc-date">${dayName(c.day)}${label ? `<br><small>${esc(label)}</small>` : ""}</span></div>
+    <div class="sc-score"><span class="sc-ring" style="--p:${sc}"><b>${sc}</b><small>/100</small></span><span class="sc-msg"><span class="sc-medal">${md}</span><b>${mt}</b>${c.kind === "d" && streak > 1 ? `<small>${icon("flame")} ${streak} días seguidos</small>` : `<small>Puntaje del día</small>`}</span></div>`;
+  const row = (ic, col, name, val, body) => `<div class="sc-row"><span class="sc-ico ico sm" style="--c:${col}">${icon(ic)}</span><div class="sc-rb"><div class="sc-rt"><b>${name}</b><span>${val}</span></div>${body || ""}</div></div>`;
+  if (p.w.done) h += row("word", COL.g, "Palabra", `${p.w.won ? p.w.g.length : "X"}/${p.w.extra ? 7 : 6}`, `<div class="mini-grid">${p.w.g.map(g => `<div class="mini-row">${evalGuess(g, c.word).map(r => `<i class="mt ${r}"></i>`).join("")}</div>`).join("")}</div>`);
+  if (p.s.done) h += row("soup", COL.r, "Sopa", `${p.s.found.length}/8${p.s.found.length === 8 ? " · " + mmss(p.s.time) : ""}`, `<div class="sc-bar">${[...Array(8)].map((_, i) => `<i class="${i < p.s.found.length ? "on" : ""}"></i>`).join("")}</div>`);
+  if (p.t.done) h += row(c.style === "pen" ? "ball" : "trivia", COL.b, c.style === "pen" ? "Penales" : "Trivia", `${p.t.ans.filter(a => a && a.ok).length}/${triviaTotal(c)}`, `<div class="marks sm">${p.t.ans.map(a => a && a.ok ? `<span class="mark ok" title="Bien">${CHECK}</span>` : a && a.to ? `<span class="mark to" title="Sin tiempo">${CLOCK}</span>` : `<span class="mark no" title="Mal">${CROSS}</span>`).join("")}</div>`);
+  return h + `<div class="sc-foot">¿Quién te gana hoy? Compártelo con tus amigos</div></div>`;
 }
+const SHARE_ICO = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>`;
 const RESULT_LINE = { perfect:"¡Perfecto! Tito salta de la alegría.", good:"¡Muy bien! Tito se pone a bailar.", meh:"Más o menos… la próxima sale mejor.", bad:"Uh, Tito se puso a llorar. ¡Revancha!" };
 function resultBlock(kind){
   const p = play(ctx), n = kind === "t" ? qsOf(ctx).length : 5, r = rating(kind);
@@ -7816,7 +7895,7 @@ function resultBlock(kind){
   const pts = ctx.practice ? `<span class="small muted" style="font-weight:800">Partida de práctica: ya sumaste puntos ${LIMITS.pointRuns} veces hoy en este juego</span>` : p.pts[kind] != null ? `<span class="pts-badge">+${p.pts[kind] * (isGroup() ? 2 : 1)} pts</span>` : "";
   const again = (ctx.kind === "a" || ctx.kind === "f") ? `<button class="btn green" data-act="again">Jugar otra vez</button>` : "";
   return `<section class="card result"><span class="anim-enter">${titoReaction(r, 120)}</span><div class="big">${title}</div><div class="muted">${sub}</div>${pts}${ctx.kind === "m" ? "" : summaryHTML(ctx)}
-    <div class="btn-row" style="width:100%">${ctx.kind === "m" ? "" : `<button class="btn" data-act="share-ctx">Copiar</button>`}${again}<button class="btn primary" data-act="exit-game">${isGroup() ? "Ver ranking" : ctx.kind === "m" ? "Volver con Tito" : "Listo"}</button></div></section>`;
+    <div class="btn-row" style="width:100%">${ctx.kind === "m" ? "" : `<button class="btn yellow share-btn" data-act="share-ctx">${SHARE_ICO}Compartir</button>`}${again}<button class="btn primary" data-act="exit-game">${isGroup() ? "Ver ranking" : ctx.kind === "m" ? "Volver con Tito" : "Listo"}</button></div></section>`;
 }
 
 /* ---------- Argentina ---------- */
@@ -8173,8 +8252,8 @@ document.addEventListener("click", e => {
   else if (k === "t-reveal") { play(ctx).t.ans[tQ] = { ok:false, left:0 }; tResolved = true; save(); render(); }
   else if (k === "t-next") { autoNx = null; const d = play(ctx).t, n = qsOf(ctx).length; tPicked = null; tResolved = false; tQ++; if (d.ans.length >= n && d.ans.every(Boolean)) { d.done = true; finishGame("t"); if (wonGame("t")) setTimeout(() => confetti(), 300); } save(); render(); }
   else if (k === "t-hint") { const d = play(ctx).t, i = tQ, q = qsOf(ctx)[i]; useHint("una pista 50:50", () => { d.removed[i] = shuffle(q.opts.filter(o => o !== q.right)).slice(0,2); save(); render(); }); }
-  else if (k === "share-day") copy(shareText(makeCtx("d", null, curDay || today())));
-  else if (k === "share-ctx") copy(shareText(ctx));
+  else if (k === "share-day") shareOut(shareText(makeCtx("d", null, curDay || today())));
+  else if (k === "share-ctx") shareOut(shareText(ctx));
   else if (k === "open-day") setView("games", { day:v });
   else if (k === "unlock") showRewarded("el día "+fmtShort(v), () => { S.unlocked.push(v); save(); setView("games", { day:v }); }, () => toast("Saliste antes de terminar el video."));
   else if (k === "more") { moreTab = v; setView("more"); }
