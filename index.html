@@ -966,6 +966,7 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .pno-st em{font-style:normal;font-weight:800;color:var(--muted);font-size:.9em}
 .btn.pno-go{flex:none;display:flex;flex-direction:column;align-items:center;line-height:1.1}
 .btn.pno-go small{font-family:var(--body);font-size:.6em;font-weight:800;opacity:.75;letter-spacing:0}
+.arc-cele{bottom:auto;top:20%}
 
 </style>
 </head>
@@ -4548,8 +4549,9 @@ function arcMount(){
     W, H, c:c2, cv, stage, ctl, tito:S.tito,
     score(n){ const up = n > run.score; run.score = n; const e = $("#arcScore"); if (e) e.textContent = NUM.format(n);
       const b = $("#arcBig"); if (b) { b.textContent = NUM.format(n); if (up && performance.now() - (b._bt || 0) > 350) { b._bt = performance.now(); b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); } } },
-    celebrate(txt){ const el = $("#arcCele"); if (!el || typeof danceHTML !== "function") return; el.innerHTML = `${danceHTML(70)}<b>${txt || "¡Bien!"}</b>`; el.classList.remove("on"); void el.offsetWidth; el.classList.add("on");
-      celebrate(2); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 2400); },
+    /* Cartel corto durante la partida (sin baile ni música: el festejo con baile queda para el final, con récord o victoria) */
+    celebrate(txt){ const el = $("#arcCele"); if (!el) return; el.innerHTML = `<b>${txt || "¡Bien!"}</b>`; el.classList.remove("on"); void el.offsetWidth; el.classList.add("on");
+      clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 2400); },
     over(){ if (run.state !== "play") return; run.state = "over"; overScreen(); },
     info(h){ const e = $("#arcInfo"); if (e && e._h !== h) { e._h = h; e.innerHTML = h; } },
     opt(){ const st = arcState(); st.opt = st.opt || {}; return st.opt[arcCur] || (g.options ? g.options[0].k : null); },
@@ -6880,7 +6882,7 @@ arcRegister("piano", {
       if (navigator.vibrate) try { navigator.vibrate(120); } catch(e){}
       const p2 = pnoState(); if (lap > 1) { p2.stars[song.id] = Math.max(p2.stars[song.id] || 0, Math.min(3, lap - 1)); save(); }
     }
-    function lapDone(){ lap++; speed *= 1.12; const p2 = pnoState(); p2.stars[song.id] = Math.max(p2.stars[song.id] || 0, Math.min(3, lap - 1)); save(); bonus += 20; SND.fx("bonus"); api.celebrate(lap - 1 >= 3 ? "¡Tres estrellas!" : `¡${"★".repeat(lap - 1)} Vuelta ${lap}!`); pops.push({ txt:`Vuelta ${lap}`, t:0, col:"#5CE1E6" }); }
+    function lapDone(){ lap++; speed *= 1.12; const p2 = pnoState(); p2.stars[song.id] = Math.max(p2.stars[song.id] || 0, Math.min(3, lap - 1)); save(); bonus += 20; api.celebrate(lap - 1 >= 3 ? "¡Tres estrellas!" : `¡${"★".repeat(lap - 1)} Vuelta ${lap}!`); pops.push({ txt:`Vuelta ${lap}`, t:0, col:"#5CE1E6" }); }
     function hitTile(tl, y, pid){
       tl.hit = true; tapped++; combo++; best = Math.max(best, combo); playNote(tl);
       if (state === "wait") state = "run";
@@ -7025,7 +7027,7 @@ ARC_ORDER.splice(0, ARC_ORDER.length, "ruta", "piano", "runner", "flappy", "cros
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "28/10 10:24";
+const APP_VER = "28/10 11:25";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
