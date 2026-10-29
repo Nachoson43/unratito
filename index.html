@@ -8011,7 +8011,10 @@ arcRegister("rescate", {
       CH = rescCur(); buildWorld(CH); bgKey = ""; lastKey = "";
       const lvl = api.opt();
       D = { facil:{ aim:2.4, toast:.62, lives:5, cool:[1.4, 2.4], maxAim:1, whp:4, dm:.7 }, normal:{ aim:1.75, toast:.5, lives:4, cool:[1, 2], maxAim:2, whp:6, dm:1 }, crack:{ aim:1.3, toast:.4, lives:3, cool:[.7, 1.5], maxAim:3, whp:8, dm:1.35 } }[lvl] || { aim:1.75, toast:.5, lives:4, cool:[1, 2], maxAim:2, whp:6, dm:1 };
-      ARC.rescate._dm = D.dm;
+      /* Cada capítulo es más difícil que el anterior: jefes con más vida, robots que apuntan y disparan más rápido */
+      const CM = { 1:{ hp:1, sp:1, max:0, bs:1, pts:1 }, 2:{ hp:1.6, sp:.86, max:0, bs:1.18, pts:1.15 }, 3:{ hp:2.2, sp:.75, max:1, bs:1.35, pts:1.3 } }[CH.id] || { hp:1, sp:1, max:0, bs:1, pts:1 };
+      D = Object.assign({}, D, { aim:D.aim * CM.sp, toast:D.toast * (.5 + CM.sp * .5), cool:D.cool.map(v => v * CM.sp), maxAim:D.maxAim + CM.max, whp:Math.round(D.whp * CM.hp), bs:CM.bs });
+      ARC.rescate._dm = D.dm * CM.pts;
       cam = { x:0, y:EYE, z:-9 }; lives = D.lives; ammo = 6; coverK = 0; covering = false; coverId = null; reloadT = 0;
       enemies = []; toasts = []; parts = []; pops = []; splats = []; stIdx = 0; phase = "walk"; phaseT = 0; walkFrom = -9; walkTo = 0;
       timeLeft = STATIONS[0] ? STATIONS[0].time : 45; queue = []; spawnT = 0; combo = 0; shake = 0; flash = 0; pflash = 0; stop = 0; slow = 1; slowT = 0; inv = 0; dying = false; dyingT = 0;
@@ -8606,10 +8609,10 @@ arcRegister("rescate", {
           for (let i = 0; i < 10; i++) addSplat(R() < .5 ? "L" : "R", b.z - 5 + R() * 3, 1 + R() * 5, .6 + R() * .5, PAINT[i % 7]); addSplat("E", 0, 2.5, 2, PAINT[Math.floor(R() * 7)]); }
         return; }
       if (dying || phase !== "fight") return;
-      if (!b.att) { b.cd -= dt; if (b.cd <= 0) { const seqA = b.phase2 ? ["volley", "giant", "summon", "volley", "giant"] : ["volley", "summon", "volley", "giant"], k = seqA[b.cycle++ % seqA.length];
+      if (!b.att) { b.cd -= dt * D.bs; if (b.cd <= 0) { const seqA = b.phase2 ? ["volley", "giant", "summon", "volley", "giant"] : ["volley", "summon", "volley", "giant"], k = seqA[b.cycle++ % seqA.length];
           if (k === "summon") { const kind = b.d.summon, n = enemies.filter(e => e.st !== "dead" && e.kind !== "civ").length; let ok = 0; for (let i = 0; i < 2 - n; i++) if (spawn(kind)) ok++; if (ok) pop("¡Refuerzos!", W / 2, H * .82, "#FF8A3D", true); b.cd = b.phase2 ? 1.4 : 2; }
           else { b.att = { k, t:0, i:0, n:k === "volley" ? (b.phase2 ? 4 : 3) : 1, dur:(k === "giant" ? 1.3 : D.aim * .7) * (b.phase2 ? .78 : 1) }; SND.fx("alarm"); if (k === "giant") hint("giant", "¡Viene algo enorme! Rómpelo a tiros o mantén CUBRIRSE", "red", true); } } return; }
-      const a = b.att; a.t += dt;
+      const a = b.att; a.t += dt * (a.k === "volley" ? D.bs : 1);
       if (a.t >= a.dur) {
         if (a.k === "volley") { const sl = b.slots[a.i % b.slots.length]; if (sl) toasts.push({ k:b.d.proj, x0:sl[0], y0:sl[1], x1:W / 2 + (R() - .5) * W * .3, y1:H * .5 + R() * H * .08, t:0, dur:D.toast * 1.05, rot:R() * 6 }); SND.fx(b.type === "tost" ? "ding" : "launch"); b.pop = 1; a.i++; a.t = 0; if (a.i >= a.n) { b.att = null; b.cd = b.phase2 ? 1.1 : 1.6; } }
         else { toasts.push({ k:"giant", gk:b.d.giant, hp:4, x0:b.gslot[0], y0:b.gslot[1], x1:W / 2, y1:H * .52, t:0, dur:1.55, rot:0 }); SND.fx("launch"); if (b.type === "bus") SM("horn", 0); b.pop = 1; b.att = null; b.cd = b.phase2 ? 1.2 : 1.8; }
@@ -8836,7 +8839,7 @@ arcRegister("rescate", {
       toasts.forEach(o => { if (o.sx != null && !o.dead && Math.hypot(o.sx - x, o.sy - y) < RAD + o.sz * .4) { applyHit({ k:"toast", o }, o.sx, o.sy, 2, "#2F9BFF"); any = true; } });
       enemies.slice().forEach(e => { if (e.box && e.st !== "dead" && e.p > .35) { const cx = Math.max(e.box.x1, Math.min(x, e.box.x2)), cy = Math.max(e.box.y1, Math.min(y, e.box.y2)); if (Math.hypot(cx - x, cy - y) < RAD) { applyHit({ k:"enemy", e }, e.sx, e.sy, 2, "#2F9BFF"); any = true; } } });
       PROPS.forEach(p => { if (p.box && !p.broken && p.item && Math.hypot(p.box.cx - x, p.box.cy - y) < RAD) { breakCrate(p); any = true; } });
-      if (boss && boss.landed && !boss.dead && boss.wkS) boss.wk.forEach((w, i) => { const S2 = boss.wkS[i]; if (w.hp > 0 && Math.hypot(S2.x - x, S2.y - y) < RAD) { hitBoss(S2.x, S2.y, 2, "#2F9BFF"); any = true; } });
+      if (boss && boss.landed && !boss.dead && boss.wkS) { let bi = -1, bd = RAD; boss.wk.forEach((w, i) => { const S2 = boss.wkS[i], dd = Math.hypot(S2.x - x, S2.y - y); if (w.hp > 0 && dd < bd) { bd = dd; bi = i; } }); if (bi >= 0) { hitBoss(boss.wkS[bi].x, boss.wkS[bi].y, 2, "#2F9BFF"); any = true; } }
       if (!any) missAt(x, y, "#2F9BFF", .6);
     }
     function paintBomb(){
@@ -8844,7 +8847,7 @@ arcRegister("rescate", {
       for (let i = 0; i < 6; i++) burst(R() * W, R() * H * .7, 20, PAINT, 1.5);
       toasts.forEach(o => { if (!o.dead && o.sx != null) applyHit({ k:"toast", o }, o.sx, o.sy, 9, "#FF4FA0"); });
       enemies.slice().forEach(e => { if (e.box && e.st !== "dead" && e.kind !== "civ") { e.hp = 0; kill(e, PAINT[Math.floor(R() * 7)]); } });
-      if (boss && boss.landed && !boss.dead && boss.wkS) boss.wk.forEach((w, i) => { if (w.hp > 0 && !boss.dead) hitBoss(boss.wkS[i].x, boss.wkS[i].y, 3, "#FF4FA0"); });
+      if (boss && boss.landed && !boss.dead && boss.wkS) boss.wk.forEach((w, i) => { if (w.hp > 0 && !boss.dead) hitBoss(boss.wkS[i].x, boss.wkS[i].y, 1, "#FF4FA0"); });
       for (let i = 0; i < 8; i++) addSplat(R() < .5 ? "L" : "R", cam.z + WALLDZ + R() * 6, 1 + R() * 4, .5 + R() * .5, PAINT[i % 7]);
       fogT = 0;
     }
@@ -9143,7 +9146,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("rescate"), 1); ARC_ORDER.unshift("rescate");
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
 
-const APP_VER = "28/10 22:24";
+const APP_VER = "28/10 22:47";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
