@@ -9281,7 +9281,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("rescate"), 1); ARC_ORDER.unshift("rescate");
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "29/10 02:04";
+const APP_VER = "29/10 02:21";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -9964,14 +9964,14 @@ const CAT_ONE = { skin:"Cáscara", hat:"Gorro", clothes:"Ropa", glasses:"Lentes"
 function lvGiftRow(g, L){
   const got = L >= g.l, on = got && S.tito[g.cat] === g.k, rar = rarityOf("L" + g.l);
   return `<li class="${got ? "ok" : "lock"}"><span class="lv-n">${g.l}</span><span class="lv-th">${thumb(g.cat, g.k)}</span><span class="lv-tx"><b>${esc(g.t)}</b><small><span class="rar ${rar}" style="--rc:${RAR[rar][1]}">${RAR[rar][0].replace("Nivel · ", "")}</span> ${CAT_ONE[g.cat]}${g.cat === "skin" ? " · solo Tito" : ""}</small></span>
-    ${got ? `<button class="btn sm ${on ? "" : "green"}" data-act="lvwear:${g.cat}:${on ? "off" : g.k}">${on ? "Sacar" : "Ponerlo"}</button>` : `<span class="lv-lock">${NUM.format(Math.max(0, lvlNeed(g.l) - S.earned))}<small>puntos</small></span>`}</li>`;
+    ${got ? `<button class="btn sm ${on ? "" : "green"}" data-act="lvwear:${g.cat}:${on ? "off" : g.k}">${on ? "Sacar" : "Ponerlo"}</button>` : `<span class="lv-lock">${NUM.format(Math.max(0, lvlNeed(g.l) - S.earned))}<small>exp.</small></span>`}</li>`;
 }
 function levelHTML(){
   const L = level(), now = S.earned, max = L >= LV_MAX, a0 = lvlNeed(L), a1 = lvlNeed(L + 1), pc = max ? 100 : Math.round(100 * (now - a0) / (a1 - a0));
   const next = lvGifts().find(g => g.l > L);
   return `<div class="lvl-sheet"><div class="lvl-big"><span class="anim-idle">${titoSVG(S.tito, 84, { level:L, mood:"happy" })}</span><div><small>Estás en el</small><b>Nivel ${L}</b><small>de ${LV_MAX}</small></div></div>
-    <div class="lvl-bar"><span style="width:${pc}%"></span></div><p class="small" style="margin:6px 0 14px;text-align:center">${max ? "<b>¡Llegaste al nivel máximo!</b> Eres una leyenda." : `<b>${NUM.format(now - a0)} de ${NUM.format(a1 - a0)}</b> · te faltan ${NUM.format(a1 - now)} puntos ganados para el nivel ${L + 1}`}</p>
-    <p style="margin:0 0 8px"><b>¿Cómo se sube?</b> Cada punto que ganas jugando, en la ruleta, con la merienda o con videos suma experiencia. Gastar en la tienda no te baja de nivel.</p>
+    <div class="lvl-bar"><span style="width:${pc}%"></span></div><p class="small" style="margin:6px 0 14px;text-align:center">${max ? "<b>¡Llegaste al nivel máximo!</b> Eres una leyenda." : `<b>${NUM.format(now - a0)} de ${NUM.format(a1 - a0)}</b> · te faltan ${NUM.format(a1 - now)} de experiencia para el nivel ${L + 1}`}</p>
+    <p style="margin:0 0 8px"><b>¿Cómo se sube?</b> Con experiencia, y la experiencia solo se gana <b>jugando</b>: juegos del día, trivias, arcade y rachas. Los puntos de la ruleta, los videos, los regalos y los códigos van a tu billetera pero no suben el nivel. Gastar en la tienda no te baja de nivel.</p>
     <p style="margin:0 0 12px"><b>Cada nivel:</b> 1 pista extra y monedas (nivel × 10). <b>Cada 5 niveles:</b> un objeto exclusivo que solo se gana así, cada vez mejor. Se pone y se saca desde acá o desde la tienda.</p>
     ${next ? `<p class="lvl-new" style="text-align:center">Próximo premio en el nivel ${next.l}: <b>${esc(next.t)}</b></p>` : ""}
     <ul class="lvl-list">${lvGifts().map(g => lvGiftRow(g, L)).join("")}</ul></div>`;
@@ -9991,7 +9991,8 @@ function checkLevelUp(){
 }
 const isPrem = () => !!S.settings.premium || (S.premUntil || 0) > Date.now();
 const dayCounter = key => { const T = today(); if (!S[key] || S[key].day !== T) S[key] = { day:T, n:0 }; return S[key]; };
-const addCoins = n => { S.coins += n; S.earned += n; };
+/* Puntos (billetera) y experiencia (nivel) van por separado: jugar da las dos cosas; regalos, ruleta, videos y códigos dan solo puntos */
+const addCoins = (n, gift) => { S.coins += n; if (!gift) S.earned += n; };
 
 /* ---------- Cuidado diario ---------- */
 function decayCare(){
@@ -10284,10 +10285,10 @@ function randomItem(maxPrice){
   return pool.length ? pool[Math.floor(rnd()*pool.length)] : null;
 }
 function grantPrize(w){
-  if (w.k === "pts") { addCoins(w.v); return { title:"+"+w.v+" puntos", sub:"Ya están en tu billetera.", mood:"star" }; }
+  if (w.k === "pts") { addCoins(w.v, true); return { title:"+"+w.v+" puntos", sub:"Ya están en tu billetera.", mood:"star" }; }
   if (w.k === "hint") { S.hints += 1; return { title:"+1 pista", sub:"Úsala cuando te trabes.", mood:"happy" }; }
   if (w.k === "prem") { S.premUntil = Math.max(Date.now(), S.premUntil || 0) + 3*864e5; return { title:"¡PREMIUM 3 días!", sub:"Sin anuncios y con todos los beneficios hasta el "+fmtShort(ymd(new Date(S.premUntil)))+".", mood:"star", prem:true }; }
-  if (w.k === "item") { const it = randomItem(1000); if (!it) { addCoins(150); return { title:"+150 puntos", sub:"Ya tenías toda la ropa de ese nivel, así que te damos puntos.", mood:"star" }; } (S.owned[it.cat] = S.owned[it.cat] || []).push(it.k); return { title:it.n, sub:"¡Nuevo para Tito! Ya está en tu ropero.", mood:"star", item:it }; }
+  if (w.k === "item") { const it = randomItem(1000); if (!it) { addCoins(150, true); return { title:"+150 puntos", sub:"Ya tenías toda la ropa de ese nivel, así que te damos puntos.", mood:"star" }; } (S.owned[it.cat] = S.owned[it.cat] || []).push(it.k); return { title:it.n, sub:"¡Nuevo para Tito! Ya está en tu ropero.", mood:"star", item:it }; }
   return { title:"Nada esta vez", sub:"¡Mañana seguro tienes más suerte!", mood:"sad" };
 }
 function showPrize(p){
@@ -10566,7 +10567,7 @@ function redeemCode(raw){
   if (!r) return bad("Ese código no existe o ya venció");
   if (S.codes.includes(h)) return bad("Ya canjeaste ese código");
   S.codes.push(h);
-  if (r.pts) addCoins(r.pts);
+  if (r.pts) addCoins(r.pts, true);
   if (r.item) (S.owned[r.item[0]] = S.owned[r.item[0]] || []).push(r.item[1]);
   if (r.char) { S.chars = S.chars || ["tito"]; if (!S.chars.includes(r.char)) S.chars.push(r.char); }
   if (r.candy) { const had = ownedChars().includes("calabacin");
@@ -10658,7 +10659,7 @@ function finishGame(kind){
   pushMember();
 }
 function openGift(){
-  const it = randomItem(1500); addCoins(150); if (it) (S.owned[it.cat] = S.owned[it.cat] || []).push(it.k); save();
+  const it = randomItem(1500); addCoins(150, true); if (it) (S.owned[it.cat] = S.owned[it.cat] || []).push(it.k); save();
   openSheet("Regalo de la semana", `<div class="prize"><span class="anim-happy">${icon("gift").replace("<svg","<svg width='110' height='110'")}</span><div class="big">¡Regalo!</div><p>+150 puntos${it ? " y <b>"+esc(it.n)+"</b> para Tito" : ""}.</p>${it ? `<div>${TITO_CATS.includes(it.cat) ? titoSVG(Object.assign({}, S.tito, { [it.cat]:it.k }), 100, { mood:"star", level:level() }) : thumb(it.cat, it.k)}</div><button class="btn green block" data-act="wear-now:${it.cat}:${it.k}">Ponérselo</button>` : ""}<button class="btn block" data-act="close-sheet">Genial</button></div>`, { center:true });
   confetti(70); SND.prize(); renderHeader();
 }
@@ -11112,7 +11113,7 @@ document.addEventListener("click", e => {
     const name = it[1]; tryOn = null; save(); pushMember(); render(false); toast("¡Compraste "+name+"!"); confetti(30);
   }
   else if (k === "snack") { const sn = dayCounter("snacks"), go = () => startGame(makeCtx("m", dayCounter("snacks").n, today()), "t"); if (sn.n >= LIMITS.freeSnacks) showRewarded("una merienda más", go, () => toast("Saliste antes de terminar el video.")); else go(); }
-  else if (k === "bonus") { const b = dayCounter("bonus"); if (b.n >= LIMITS.bonus) return; showRewarded("30 puntos", () => { dayCounter("bonus").n++; addCoins(30); save(); pushMember(); render(false); toast("+30 puntos"); }, () => toast("Saliste antes de terminar el video.")); }
+  else if (k === "bonus") { const b = dayCounter("bonus"); if (b.n >= LIMITS.bonus) return; showRewarded("30 puntos", () => { dayCounter("bonus").n++; addCoins(30, true); save(); pushMember(); render(false); toast("+30 puntos"); }, () => toast("Saliste antes de terminar el video.")); }
   else if (k === "profile") openProfile(false);
   else if (k === "report") { const q = qsOf(ctx)[tQ]; (S.reports = S.reports || []).push({ id:v, q:q ? q.q : "", right:q ? q.right : "", day:today() }); save(); SND.pop(); toast("¡Gracias! La vamos a revisar."); render(); }
   else if (k === "streak-toggle") { streakOpen = !streakOpen; render(false); }
@@ -11182,6 +11183,10 @@ function boot(){
   if (S.owned.clothes) S.owned.clothes = S.owned.clothes.map(k => MIG[k] || k);
   if (S.owned.clothes && S.owned.clothes.includes("granate")) { S.owned.clothes = S.owned.clothes.filter(k => k !== "granate"); S.coins += 900; }
   if (S.tito.clothes === "granate") S.tito.clothes = "none";
+  /* La experiencia ya no incluye los puntos regalados por códigos: se los descuento una sola vez a quien ya los canjeó */
+  if (!S.xpFix) { S.xpFix = 1; const gift = (S.codes || []).reduce((a, h) => a + ((CODES[h] && CODES[h].pts) || 0), 0);
+    if (gift) { S.earned = Math.max(0, (S.earned || 0) - gift); const L = level(); if (S.lvlSeen != null) S.lvlSeen = Math.min(S.lvlSeen, L);
+      lvGifts().forEach(g => { if (g.l > L && S.tito[g.cat] === g.k) S.tito[g.cat] = "none"; }); } }
   if (S.settings.sound == null) S.settings.sound = true; if (S.settings.music == null) S.settings.music = true;
   if (S.streak.last && S.streak.last < addDays(today(), -1)) S.streak.count = 0;
   decayCare();
