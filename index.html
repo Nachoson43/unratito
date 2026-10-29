@@ -9283,7 +9283,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("rescate"), 1); ARC_ORDER.unshift("rescate");
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "29/10 02:21";
+const APP_VER = "29/10 03:16";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -11186,7 +11186,9 @@ function boot(){
   if (S.owned.clothes && S.owned.clothes.includes("granate")) { S.owned.clothes = S.owned.clothes.filter(k => k !== "granate"); S.coins += 900; }
   if (S.tito.clothes === "granate") S.tito.clothes = "none";
   /* La experiencia ya no incluye los puntos regalados por códigos: se los descuento una sola vez a quien ya los canjeó */
-  if (!S.xpFix) { S.xpFix = 1; const gift = (S.codes || []).reduce((a, h) => a + ((CODES[h] && CODES[h].pts) || 0), 0);
+  /* Códigos viejos que ya no existen pero algunos canjearon (el de prueba de 100.000) */
+  const OLD_CODES = { 2599833649:100000 };
+  if ((S.xpFix || 0) < 2) { const was = S.xpFix || 0; S.xpFix = 2; const gift = (S.codes || []).reduce((a, h) => a + (was < 1 && CODES[h] && CODES[h].pts || 0) + (OLD_CODES[h] || 0), 0);
     if (gift) { S.earned = Math.max(0, (S.earned || 0) - gift); const L = level(); if (S.lvlSeen != null) S.lvlSeen = Math.min(S.lvlSeen, L);
       lvGifts().forEach(g => { if (g.l > L && S.tito[g.cat] === g.k) S.tito[g.cat] = "none"; }); } }
   if (S.settings.sound == null) S.settings.sound = true; if (S.settings.music == null) S.settings.music = true;
