@@ -971,6 +971,8 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 
 .arc-candy{display:inline-flex;align-items:center;gap:6px;font-weight:800;color:#C25A0C;background:#FFF1DF;border:2px solid #FF9F43;border-radius:999px;padding:3px 12px 3px 8px;font-size:.9em}.arc-candy svg{width:28px;height:17px}
 
+.prem-free{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;margin:0 0 12px;padding:10px 12px;border-radius:14px;background:var(--y-soft,#FFF6D6);border:2px dashed var(--K)}.prem-free b{font-family:var(--cartoon);font-size:1.6em;color:#16A34A;letter-spacing:.04em;text-shadow:0 2px 0 rgba(11,15,36,.18)}.prem-free span{font-size:.85em;font-weight:700;color:var(--ink)}
+
 </style>
 </head>
 <body>
@@ -9279,7 +9281,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("rescate"), 1); ARC_ORDER.unshift("rescate");
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "28/10 23:27";
+const APP_VER = "29/10 02:04";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10998,9 +11000,7 @@ function openPremium(reason){
     ${reason ? `<p style="margin:0 0 12px;font-weight:800;text-align:center">${esc(reason)}</p>` : ""}
     <ul class="benefits">${B.map(([c,ic,t,d]) => `<li style="--c:${c==="gold"?"linear-gradient(180deg,var(--gold1),var(--gold2))":COL[c]};--c-soft:${c==="gold"?"var(--y-soft)":SOFT[c]}"><span class="bi" style="background:var(--c)">${icon(ic)}</span><span>${t}<small>${d}</small></span></li>`).join("")}</ul>
     <p class="small muted" style="margin:-4px 0 12px;text-align:center">PREMIUM no da más puntos ni respuestas: es para jugar más cómodo.</p>
-    <div class="price"><div><span class="small muted">Mensual</span><b>$ 1.990</b></div><div class="best"><span class="save">Ahorras 37%</span><span class="small muted">Anual</span><b>$ 14.990</b></div></div>
-    ${S.settings.premium ? `<p style="text-align:center;font-weight:800">Ya tienes PREMIUM activo.</p>` : `<button class="btn gold block" data-act="go-premium">Activar PREMIUM (demo)</button>`}
-    <p class="small muted" style="margin-top:10px;text-align:center">Precios de ejemplo. En la app real el cobro lo hace Google Play.</p>`, { bare:true });
+    ${S.settings.premium ? `<p style="text-align:center;font-weight:800">Ya tienes PREMIUM activo. ¡Gracias por probar unraTITO!</p>` : `<div class="prem-free"><b>¡GRATIS!</b><span>Mientras unraTITO está en prueba, PREMIUM no cuesta nada. No pide tarjeta ni datos.</span></div><button class="btn gold block" data-act="go-premium">Activar PREMIUM gratis</button>`}`, { bare:true });
 }
 function openProfile(first){
   openSheet(first ? "Este es Tito" : "Tu perfil", `<form id="profileForm">${first ? `<p>Tito es tu huevo. Respondiendo bien lo alimentas, y con los puntos que ganas le compras ropa y cosas para su casa.</p>` : ""}
