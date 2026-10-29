@@ -5355,12 +5355,14 @@ function sprite(img, w, h){
 function renderArcade(){
   const st = arcState();
   return `<div class="page-head"><span class="eyebrow">Para jugar un ratito más</span><h1>Arcade</h1><p>Todas las partidas suman puntos y la primera del día de cada juego vale doble. Si bates tu récord, ganas un extra.</p></div>
-    <div class="arc-grid">${ARC_ORDER.map(id => { const g = ARC[id], r = st.runs[id] || 0, rec = st.rec[id], meta = g.limit ? (r >= g.limit ? "Práctica" : r === 0 ? "×2 hoy" : (g.limit - r) + " con puntos") : (r === 0 ? "×2 hoy" : "Suma puntos");
+    <div class="arc-grid">${ARC_ORDER.map(id => { const g = ARC[id], r = st.runs[id] || 0, rec = st.rec[arcRecKey(id)], meta = g.limit ? (r >= g.limit ? "Práctica" : r === 0 ? "×2 hoy" : (g.limit - r) + " con puntos") : (r === 0 ? "×2 hoy" : "Suma puntos");
       return `<button class="card arc-card press" data-act="arc-open:${id}" style="--c:${COL[g.col]}"><span class="arc-thumb">${g.thumb()}</span><h2>${esc(g.t)}</h2><p>${esc(g.d)}</p>
         <span class="arc-meta"><span>${rec != null ? "Récord: <b>"+NUM.format(rec)+"</b>" : "Sin récord"}</span><span class="${r === 0 ? "x2" : ""}">${meta}</span></span></button>`; }).join("")}</div>`;
 }
+/* Récord por juego; algunos juegos (Tito Rescate) guardan uno por dificultad */
+const arcRecKey = id => ARC[id] && ARC[id].recKey ? id + ":" + ARC[id].recKey() : id;
 function renderArcPlay(){
-  const g = ARC[arcCur], rec = arcState().rec[arcCur];
+  const g = ARC[arcCur], rec = arcState().rec[arcRecKey(arcCur)];
   return `<div class="play-head"><button class="icon-btn" data-act="arc-exit" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1>${esc(g.t)}</h1></div>
     <div class="arc-hud"><span class="arc-info" id="arcInfo"></span>${g.noBig ? `<span class="arc-pill">Puntos <b id="arcScore">0</b></span>` : ""}<span class="arc-pill dim">Récord <b id="arcRec">${rec != null ? NUM.format(rec) : "—"}</b></span></div>
     <div class="arc-stage ${g.stageClass || ""}" id="arcStage"><canvas id="arcCv"></canvas>${g.noBig ? "" : `<div class="arc-live" id="arcBig">0</div>`}<div class="arc-cele" id="arcCele"></div><div class="arc-ov" id="arcOv"></div></div>
@@ -5420,10 +5422,10 @@ function arcMount(){
     const tickC = () => { if (arcRun !== run) return; if (paused()) { setTimeout(tickC, 300); return; } if (n === 0) { show(""); run.state = "play"; run.last = 0; return; } show(`<div class="arc-count">${n}</div>`); SND.count(n); n--; setTimeout(tickC, 650); };
     tickC();
   };
-  const ptsFor = () => { if (run.practice) return 0; const st = arcState(), prev = st.rec[run.id]; let p = Math.max(0, Math.round(g.points(run.score))) * (run.first ? 2 : 1); if (prev != null && run.score > prev && prev > 0 && p > 0) p += ARC_RECBONUS; return p; };
+  const ptsFor = () => { if (run.practice) return 0; const st = arcState(), prev = st.rec[arcRecKey(run.id)]; let p = Math.max(0, Math.round(g.points(run.score))) * (run.first ? 2 : 1); if (prev != null && run.score > prev && prev > 0 && p > 0) p += ARC_RECBONUS; return p; };
   const overScreen = () => {
-    const st = arcState(), prev = st.rec[run.id], isRec = prev == null ? run.score > 0 : run.score > prev;
-    if (isRec) { st.rec[run.id] = run.score; save(); const r = $("#arcRec"); if (r) r.textContent = NUM.format(run.score); }
+    const st = arcState(), prev = st.rec[arcRecKey(run.id)], isRec = prev == null ? run.score > 0 : run.score > prev;
+    if (isRec) { st.rec[arcRecKey(run.id)] = run.score; save(); const r = $("#arcRec"); if (r) r.textContent = NUM.format(run.score); }
     const party = run.won || (isRec && prev != null && run.score > 0);
     if (party) { confetti(run.won ? 90 : 60); if (typeof celebrate === "function") celebrate(2); else SND.fx("victory"); } else SND.fx(run.drawn ? "turn" : "over");
     const canRevive = g.revive && !run.revived && !run.won && run.score > 0;
@@ -5459,7 +5461,7 @@ function arcAction(k, v){
   if (!run) return k.startsWith("arc-");
   if (ARC[run.id].act && ARC[run.id].act(k, v, run)) return true;
   if (k === "arc-start") { run.startNew(); return true; }
-  if (k === "arc-opt") { const st = arcState(); st.opt = st.opt || {}; st.opt[run.id] = v; save(); if (ARC[run.id].onOpt) { arcMount(); } else run.showReady(); return true; }
+  if (k === "arc-opt") { const st = arcState(); st.opt = st.opt || {}; st.opt[run.id] = v; save(); if (ARC[run.id].onOpt) arcMount(); else run.showReady(); if (ARC[run.id].recKey) { const rv = st.rec[arcRecKey(run.id)], e = $("#arcRec"); if (e) e.textContent = rv != null ? NUM.format(rv) : "—"; } return true; }
   if (k === "arc-again") { run.finalize(); const go = () => { run.state = "ready"; run.startNew(); }; if (arcState().games % 3 === 0) showInterstitial("Aparece cada 3 partidas de arcade", go); else go(); return true; }
   if (k === "arc-share") { if (run.res && typeof shareOut === "function") shareOut(arcShareText(run.id, run.res)); return true; }
   if (k === "arc-revive") { showRewarded("seguir jugando", () => { run.revived = true; run.game.revive(); run.countdown(); }, () => toast("Saliste antes de terminar el video.")); return true; }
@@ -7878,8 +7880,12 @@ const RESC_CH = [
   { id:3, n:"Puerto Madero", sub:"Los diques a la mañana", style:"port", mus:"puerto", bmus:"boss3", boss:"crane", need:2 },
   { id:"k", n:"Kermés de Tito", sub:"Bonus: tiro al blanco de feria", style:"kermes", mus:"kermes", need:1 }
 ];
-function rescState(){ const st = arcState(); st.resc = st.resc || { sel:1, won:{}, hints:0 }; st.resc.won = st.resc.won || {}; return st.resc; }
-const rescOpen = ch => !ch.need || !!rescState().won[ch.need];
+/* Progreso por dificultad: ganar un capítulo en Fácil no lo abre en Normal ni en Crack (v2: arranca de cero para todos) */
+const rescLvl = () => { const st = arcState(); return (st.opt && st.opt.rescate) || "facil"; };
+function rescState(){ const st = arcState(); st.resc2 = st.resc2 || { sel:1, won:{ facil:{}, normal:{}, crack:{} }, hints:(st.resc && st.resc.hints) || 0 }; const r = st.resc2; ["facil", "normal", "crack"].forEach(k => r.won[k] = r.won[k] || {}); return r; }
+const rescWon = (lv) => rescState().won[lv || rescLvl()];
+const LVN = () => ({ facil:"Fácil", normal:"Normal", crack:"Crack" })[rescLvl()];
+const rescOpen = ch => !ch.need || !!rescWon()[ch.need];
 const rescCur = () => { const r = rescState(), ch = RESC_CH.find(c => String(c.id) === String(r.sel)) || RESC_CH[0]; return rescOpen(ch) ? ch : RESC_CH[0]; };
 arcRegister("rescate", {
   t:"Tito Rescate", d:"Robots invadieron Buenos Aires. ¡Píntalos y derrota a los jefes de cada barrio!", col:"r", revive:true, fill:[1.3, 1.78], ctlH:0, noBig:true,
@@ -7893,18 +7899,20 @@ arcRegister("rescate", {
     return `<span class="small">${esc(r.ch)} · ${r.kills} robots pintados · puntería <b>${r.acc}%</b>${r.boss ? " · <b>¡jefe derrotado!</b>" : ""}${r.civ ? ` · ${r.civ} ${r.civ === 1 ? "vecino" : "vecinos"} con pintura` : ""}</span>${r.unlock ? `<span class="small" style="color:var(--g);font-weight:800">🔓 ¡Desbloqueaste ${esc(r.unlock)}!</span>` : ""}`; },
   readyBox(){
     const r = rescState(), cur = rescCur(), st = arcState(), o = (st.opt && st.opt.rescate) || "facil";
-    const list = RESC_CH.map(ch => { const open = rescOpen(ch), on = cur.id === ch.id, won = r.won[ch.id];
-      return `<button class="pno-song ${on ? "on" : ""} ${open ? "" : "lock"}" data-act="arc-ch:${ch.id}" aria-pressed="${on}"><span class="pno-ic">${on ? "▶" : open ? (ch.id === "k" ? "🎯" : ch.id) : "🔒"}</span><span class="pno-tx"><b>${ch.id === "k" ? "" : "Cap. " + ch.id + ": "}${esc(ch.n)}</b><small>${open ? esc(ch.sub) : ch.id === "k" ? "Gana el capítulo 1 para abrirla" : "Gana el capítulo " + ch.need + " para abrirlo"}</small></span>${won ? `<span class="pno-st"><i class="on">★</i></span>` : ""}</button>`; }).join("");
+    const W2 = rescWon(), list = RESC_CH.map(ch => { const open = rescOpen(ch), on = cur.id === ch.id, won = W2[ch.id];
+      return `<button class="pno-song ${on ? "on" : ""} ${open ? "" : "lock"}" data-act="arc-ch:${ch.id}" aria-pressed="${on}"><span class="pno-ic">${on ? "▶" : open ? (ch.id === "k" ? "🎯" : ch.id) : "🔒"}</span><span class="pno-tx"><b>${ch.id === "k" ? "" : "Cap. " + ch.id + ": "}${esc(ch.n)}</b><small>${open ? esc(ch.sub) : ch.id === "k" ? "Gana el capítulo 1 en " + LVN() + " para abrirla" : "Gana el capítulo " + ch.need + " en " + LVN() + " para abrirlo"}</small></span>${won ? `<span class="pno-st"><i class="on">★</i></span>` : ""}</button>`; }).join("");
     return `<div class="arc-box pno-box"><div class="pno-head"><span class="arc-thumb">${ARC.rescate.thumb()}</span><span><b>Elige un capítulo</b><small>Toca para pintar robots y mantén CUBRIRSE para recargar. <span style="color:#E8412C">Círculo rojo</span>: te van a disparar. <span style="color:#16A34A">Mira verde</span>: punto débil del jefe.</small></span></div>
-      <div class="pno-list">${list}</div><div class="seg arc-opts">${ARC.rescate.options.map(x => `<button data-act="arc-opt:${x.k}" aria-pressed="${x.k === o}">${esc(x.l)}</button>`).join("")}</div>
+      <div class="seg arc-opts">${ARC.rescate.options.map(x => `<button data-act="arc-opt:${x.k}" aria-pressed="${x.k === o}">${esc(x.l)}</button>`).join("")}</div><span style="font-size:.74em;font-weight:700;color:var(--muted);text-align:center;margin-top:-3px">Cada dificultad tiene su propio progreso y récord</span><div class="pno-list">${list}</div>
       <button class="btn big-cta block pno-go" data-act="arc-start">¡JUGAR! <small>${esc(cur.n)}</small></button></div>`;
   },
   act(k, v, run){
     if (k === "arc-ch") { const ch = RESC_CH.find(c => String(c.id) === v); if (!ch) return true;
-      if (!rescOpen(ch)) { toast(ch.id === "k" ? "Gana el capítulo 1 para abrir la Kermés" : "Gana el capítulo " + ch.need + " para abrirlo", "info"); return true; }
+      if (!rescOpen(ch)) { toast(ch.id === "k" ? "Gana el capítulo 1 en " + LVN() + " para abrir la Kermés" : "Gana el capítulo " + ch.need + " en " + LVN() + " para abrirlo", "info"); return true; }
       rescState().sel = ch.id; save(); SND.tap(); const l = document.querySelector(".pno-list"), sc = l ? l.scrollTop : 0; arcMount(); const l2 = document.querySelector(".pno-list"); if (l2) l2.scrollTop = sc; return true; }
     return false;
   },
+  recKey: () => rescLvl(),
+  onOpt: true,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thres"><rect width="64" height="48" rx="8"/></clipPath><linearGradient id="thresS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B2A7A"/><stop offset="1" stop-color="#FF9A62"/></linearGradient></defs><g clip-path="url(#thres)">
     <rect width="64" height="48" fill="url(#thresS)"/><path d="M0 0 L22 16 L22 40 L0 48Z" fill="#E8412C" stroke="${IK}" stroke-width="1"/><path d="M64 0 L42 16 L42 40 L64 48Z" fill="#2F7FE8" stroke="${IK}" stroke-width="1"/>
     <path d="M22 16 H42 V40 H22Z" fill="#F6C026" stroke="${IK}" stroke-width="1"/><path d="M0 48 L22 40 H42 L64 48Z" fill="#8C7C74"/>
@@ -8906,7 +8914,7 @@ arcRegister("rescate", {
           if (queue.length && spawnT <= 0 && alive < STATIONS[stIdx].max) { if (spawn(queue[0])) queue.shift(); else if (!freeSpots(stIdx, queue[0]).length && queue[0] !== "tost") queue[0] = "tost"; spawnT = .5 + R() * .7; }
           if (!queue.length && !enemies.some(e => e.st !== "dead" && e.kind !== "civ")) { phase = "clear"; phaseT = 0; const b = Math.ceil(timeLeft) * 10; addScore(b); SND.fx("clear"); banner = { txt:"¡ZONA LIBRE!", sub:`Tiempo extra +${b}`, t:0, dur:1.9 }; enemies = enemies.filter(e => e.st === "dead"); toasts = []; covering = false; firing = false; } }
         else if (boss.gone) { phase = "won"; phaseT = 0; const acc = stats.shots ? Math.min(1, stats.hits / stats.shots) : 0, ab = Math.round(acc * 600), nb = lives === D.lives ? 500 : 0, tb = Math.ceil(timeLeft) * 10; addScore(ab + nb + tb);
-          const r = rescState(), first = !r.won[CH.id]; r.won[CH.id] = true; save(); const nx = first ? RESC_CH.filter(c2 => c2.need === CH.id).map(c2 => c2.id === "k" ? "la Kermés" : "el capítulo " + c2.id).join(" y ") : "";
+          const r = rescWon(), first = !r[CH.id]; r[CH.id] = true; save(); const nx = first ? RESC_CH.filter(c2 => c2.need === CH.id).map(c2 => c2.id === "k" ? "la Kermés" : "el capítulo " + c2.id).join(" y ") : "";
           banner = { txt:"¡LIBERASTE", sub:CH.n.toUpperCase() + "!", t:0, dur:9 }; api.win(); finishStats(nx); confetti(80); SND.fx("victory"); toasts = []; }
         bossStep(dt);
       } else if (phase === "clear") {
@@ -9238,7 +9246,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("rescate"), 1); ARC_ORDER.unshift("rescate");
     <g transform="translate(21.5 27) rotate(-8)"><circle r="4" fill="url(#trtC)" opacity=".6"/><path d="M-2.2 -2.4 h3 l1.4 1.4 v4 h-4.4z" fill="#E8412C" stroke="${K}" stroke-width=".55" stroke-linejoin="round"/><rect x="-1.6" y="-1.9" width="1.6" height=".9" rx=".35" fill="#14101C"/><path d="M1.2 -2.4 l1 -1.3 h.9" stroke="${K}" stroke-width=".55" fill="none" stroke-linecap="round"/><rect x="-1.4" y=".2" width="2.6" height="1.6" rx=".3" fill="#FFC425" opacity=".9"/></g>
     <path d="M28.5 44 v4 M35.5 44 v4" stroke="url(#trtT)" stroke-width="2.4" stroke-linecap="round"/><path d="M29.2 47 l.8 3 l.8 -3z M34.2 47 l.8 3 l.8 -3z" fill="#FFE06B"/>
     <path d="M26 41 v6 M38 41 v6 M24.5 36 v4" stroke="#fff" stroke-width=".4" opacity=".6"/>
-    ${car(32, 36.5, "#E8412C", "#9A1E14", 8, 13.5, `<rect x="-3.6" y="-1.5" width="7.2" height=".9" rx=".3" fill="#fff"/><g transform="translate(0 .6)"><ellipse cx="0" cy="0" rx="2.6" ry="3" fill="#F4ECD8" stroke="${K}" stroke-width=".55"/><circle cx="-.9" cy="-.4" r=".45" fill="${K}"/><circle cx=".9" cy="-.4" r=".45" fill="${K}"/><path d="M-.9 .9 q.9 .8 1.8 0" stroke="${K}" stroke-width=".4" fill="none" stroke-linecap="round"/><circle cx="-1.6" cy=".5" r=".4" fill="#FF9AA8" opacity=".8"/><circle cx="1.6" cy=".5" r=".4" fill="#FF9AA8" opacity=".8"/></g>`)}
+    ${car(32, 36.5, "#E8412C", "#9A1E14", 8, 13.5, `<rect x="-.9" y="-6.6" width=".7" height="13.2" fill="#fff" opacity=".9"/><rect x=".3" y="-6.6" width=".7" height="13.2" fill="#fff" opacity=".9"/><rect x="-2.2" y="-.6" width="4.4" height="2.6" rx=".6" fill="#14101C" opacity=".85"/><rect x="-1.8" y="-.3" width="1.4" height=".6" fill="#fff" opacity=".35"/>`)}
     </g>${fr}</svg>`; };
   /* ---------- Tito Piano: solo teclas, fichas que caen y notas ---------- */
   const piano = () => { const wk = [...Array(10)].map((_, i) => { const x = i * 6.4, on = i === 3; return `<rect x="${x + .25}" y="31.5" width="5.9" height="${on ? 16.2 : 16.8}" rx="1" fill="url(#${on ? "tpnY" : "tpnW"})" stroke="${K}" stroke-width=".55"/>`; }).join("");
@@ -9271,7 +9279,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("rescate"), 1); ARC_ORDER.unshift("rescate");
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "28/10 23:17";
+const APP_VER = "28/10 23:27";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
