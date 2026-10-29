@@ -969,6 +969,8 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .arc-cele{bottom:auto;top:20%}
 .arc-stage{-webkit-touch-callout:none}
 
+.arc-candy{display:inline-flex;align-items:center;gap:6px;font-weight:800;color:#C25A0C;background:#FFF1DF;border:2px solid #FF9F43;border-radius:999px;padding:3px 12px 3px 8px;font-size:.9em}.arc-candy svg{width:28px;height:17px}
+
 </style>
 </head>
 <body>
@@ -5411,7 +5413,7 @@ function arcMount(){
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full"); };
   const startNew = () => {
     const st = arcState(); st.runs[run.id] = (st.runs[run.id] || 0) + 1; run.practice = !!g.limit && st.runs[run.id] > g.limit; run.first = st.runs[run.id] === 1; save();
-    run.score = 0; run.revived = false; run.done = false; run.won = false; run.drawn = false; api.score(0); game.reset(); g.noCount ? (show(""), run.state = "play", run.last = 0) : countdown();
+    run.score = 0; run.candyRoll = false; run.candy = false; run.revived = false; run.done = false; run.won = false; run.drawn = false; api.score(0); game.reset(); g.noCount ? (show(""), run.state = "play", run.last = 0) : countdown();
   };
   const countdown = () => {
     let n = 3; run.state = "count";
@@ -5425,9 +5427,10 @@ function arcMount(){
     const party = run.won || (isRec && prev != null && run.score > 0);
     if (party) { confetti(run.won ? 90 : 60); if (typeof celebrate === "function") celebrate(2); else SND.fx("victory"); } else SND.fx(run.drawn ? "turn" : "over");
     const canRevive = g.revive && !run.revived && !run.won && run.score > 0;
+    if (!run.candyRoll && run.score > 0 && typeof playCandy === "function") { run.candyRoll = true; run.candy = playCandy(run.practice ? .3 : .55, true); }
     const pts = ptsFor(); run.res = { score:run.score, rec:isRec && prev != null && run.score > 0, won:!!run.won, drawn:!!run.drawn };
     show(`<div class="arc-box">${party && typeof danceHTML === "function" ? danceHTML(64, "in-box") : ""}${run.score ? `<span class="arc-big">${NUM.format(run.score)}</span>` : ""}<b>${isRec && prev != null ? "¡Nuevo récord!" : run.won ? "¡Ganaste!" : run.drawn ? "¡Empate!" : g.overText || "¡Uh, se terminó!"}</b>
-      <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${g.overExtra ? g.overExtra() : ""}
+      <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${run.candy ? `<span class="arc-candy">${typeof CANDY_SVG !== "undefined" ? CANDY_SVG : ""}<b>+1 caramelo</b></span>` : ""}${g.overExtra ? g.overExtra() : ""}
       ${canRevive ? `<button class="btn reward block" data-act="arc-revive">${isPrem() ? "Seguir jugando (PREMIUM)" : "Revivir · ver video"}</button>` : ""}
       ${run.score > 0 || run.won || run.drawn ? `<button class="btn yellow share-btn block" data-act="arc-share">${typeof SHARE_ICO !== "undefined" ? SHARE_ICO : ""}Compartir resultado</button>` : ""}
       <div class="btn-row"><button class="btn" data-act="arc-exit">Salir</button><button class="btn primary" data-act="arc-again">Otra vez</button></div></div>`);
@@ -5436,7 +5439,6 @@ function arcMount(){
     if (run.done || run.state === "ready" || run.score == null) return; run.done = true;
     const pts = ptsFor(); if (pts > 0) { addCoins(pts); toast("+"+pts+" puntos"); }
     const st = arcState(); st.games = (st.games || 0) + 1; save(); pushMember && pushMember();
-    if (pts > 0 && typeof playCandy === "function") playCandy(.35);
     if (typeof logEv === "function") logEv("arcade_terminado", { juego:run.id, puntaje:run.score, puntos:pts, gano:!!run.won });
   };
   run.api = api; run.show = show; run.startNew = startNew; run.finalize = finalize; run.countdown = countdown;
@@ -9145,8 +9147,131 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("rescate"), 1); ARC_ORDER.unshift("rescate");
   };
   Object.keys(TH).forEach(id => { if (ARC[id]) ARC[id].thumb = TH[id]; });
 })();
+/* Miniaturas nuevas y bien detalladas: Tito Rescate, Tito Ruta y Tito Piano */
+(() => {
+  const K = IK, fr = `<rect width="64" height="48" rx="8" fill="none" stroke="${K}" stroke-width="2"/>`;
+  const cp = id => `<clipPath id="${id}"><rect width="64" height="48" rx="8"/></clipPath>`;
+  /* ---------- Tito Rescate: la Tostadora Gigante en Caminito al atardecer ---------- */
+  const lw = (x, t0, t1, b0, b1, x0, x1) => { const u = (x - x0) / (x1 - x0); return [t0 + (t1 - t0) * u, b0 + (b1 - b0) * u]; };
+  const wallPoly = (xa, xb, side) => { const f = x => side < 0 ? lw(x, -3, 12, 51, 33, 0, 20) : lw(x, -3, 12, 51, 33, 64, 44); const [ta, ba] = f(xa), [tb, bb] = f(xb); return `${xa},${ta.toFixed(2)} ${xb},${tb.toFixed(2)} ${xb},${bb.toFixed(2)} ${xa},${ba.toFixed(2)}`; };
+  const winPoly = (xa, xb, ya, yb, side) => { const f = x => side < 0 ? lw(x, -3, 12, 51, 33, 0, 20) : lw(x, -3, 12, 51, 33, 64, 44); const [t1, b1] = f(xa), [t2, b2] = f(xb), y = (t, b, k) => (t + (b - t) * k).toFixed(2); return `${xa},${y(t1, b1, ya)} ${xb},${y(t2, b2, ya)} ${xb},${y(t2, b2, yb)} ${xa},${y(t1, b1, yb)}`; };
+  const corr = (xa, xb, side) => { let s = ""; const f = x => side < 0 ? lw(x, -3, 12, 51, 33, 0, 20) : lw(x, -3, 12, 51, 33, 64, 44); for (let x = Math.min(xa, xb) + .9; x < Math.max(xa, xb); x += 1.3) { const [tt, bb] = f(x); s += `M${x.toFixed(1)} ${tt.toFixed(1)} V${bb.toFixed(1)} `; } return s; };
+  const rescate = () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs>${cp("trc")}
+    <linearGradient id="trcS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B1E5E"/><stop offset=".5" stop-color="#9A3F86"/><stop offset=".85" stop-color="#F0727A"/><stop offset="1" stop-color="#FFB35C"/></linearGradient>
+    <radialGradient id="trcG" cx=".5" cy=".42" r=".5"><stop offset="0" stop-color="#FFE7A3" stop-opacity=".95"/><stop offset=".35" stop-color="#FF9A62" stop-opacity=".45"/><stop offset="1" stop-color="#FF9A62" stop-opacity="0"/></radialGradient>
+    <linearGradient id="trcB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2F333D"/><stop offset=".25" stop-color="#A9B1C0"/><stop offset=".55" stop-color="#6E7686"/><stop offset="1" stop-color="#262930"/></linearGradient>
+    <radialGradient id="trcE" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF3C4"/><stop offset=".4" stop-color="#FF2E1E"/><stop offset="1" stop-color="#FF2E1E" stop-opacity="0"/></radialGradient>
+    <radialGradient id="trcK" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF0A0"/><stop offset=".5" stop-color="#FF8A1F"/><stop offset="1" stop-color="#C21D0A"/></radialGradient>
+    <linearGradient id="trcF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B79A8E"/><stop offset="1" stop-color="#5E4D4C"/></linearGradient>
+    <linearGradient id="trcW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D79A5C"/><stop offset="1" stop-color="#8F5A2A"/></linearGradient>
+    <linearGradient id="trcP" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1F5FC4"/><stop offset=".5" stop-color="#5AA9FF"/><stop offset="1" stop-color="#1F5FC4"/></linearGradient></defs>
+    <g clip-path="url(#trc)">
+    <rect width="64" height="48" fill="url(#trcS)"/><rect width="64" height="40" fill="url(#trcG)"/>
+    <circle cx="9" cy="4" r=".5" fill="#fff" opacity=".8"/><circle cx="55" cy="6" r=".45" fill="#fff" opacity=".7"/><circle cx="46" cy="2.5" r=".4" fill="#fff" opacity=".6"/>
+    <path d="M24 32 L26 23 L27 23 L29 32 M35 32 L37 23 L38 23 L40 32 M24.5 23 H40.5" stroke="#3B2A6E" stroke-width=".9" fill="none" opacity=".75"/>
+    <polygon points="20,32 44,32 64,51 0,51" fill="url(#trcF)"/>
+    <path d="M21.5 34 H42.5 M17 38 H47 M11 43 H53" stroke="#4E3F3E" stroke-width=".45" opacity=".6"/><path d="M26 32 L22 51 M32 32 V51 M38 32 L42 51 M29 32 L27 51 M35 32 L37 51" stroke="#4E3F3E" stroke-width=".35" opacity=".45"/>
+    <ellipse cx="32" cy="33" rx="12" ry="2.2" fill="#FF2E1E" opacity=".3"/>
+    <polygon points="${wallPoly(0, 10, -1)}" fill="#E8412C"/><polygon points="${wallPoly(10, 20, -1)}" fill="#F6C026"/>
+    <polygon points="${wallPoly(64, 54, 1)}" fill="#2F7FE8"/><polygon points="${wallPoly(54, 44, 1)}" fill="#22A447"/>
+    <path d="${corr(0, 10, -1)}${corr(10, 20, -1)}${corr(54, 64, 1)}${corr(44, 54, 1)}" stroke="#000" stroke-width=".35" opacity=".16"/>
+    <polygon points="${wallPoly(0, 20, -1).split(" ").slice(0, 2).join(" ")} 20,13.6 0,0.4" fill="#F6C026"/><polygon points="${wallPoly(44, 64, 1).split(" ").slice(0, 2).join(" ")} 64,0.4 44,13.6" fill="#FFFFFF" opacity=".85"/>
+    <polygon points="${winPoly(2.4, 7, .2, .42, -1)}" fill="#2A1E3A" stroke="${K}" stroke-width=".7"/><polygon points="${winPoly(1.2, 2.4, .2, .42, -1)}" fill="#1C8C4E"/><polygon points="${winPoly(7, 8.2, .2, .42, -1)}" fill="#1C8C4E"/>
+    <polygon points="${winPoly(3, 6.6, .6, .98, -1)}" fill="#3A2430" stroke="${K}" stroke-width=".7"/><polygon points="${winPoly(12.5, 16, .26, .44, -1)}" fill="#2A1E3A" stroke="${K}" stroke-width=".6"/><polygon points="${winPoly(16, 16.8, .26, .44, -1)}" fill="#7A4FD9"/>
+    <polygon points="${winPoly(57, 61.6, .2, .42, 1)}" fill="#2A1E3A" stroke="${K}" stroke-width=".7"/><polygon points="${winPoly(61.6, 62.8, .2, .42, 1)}" fill="#E8412C"/><polygon points="${winPoly(55.8, 57, .2, .42, 1)}" fill="#E8412C"/>
+    <polygon points="${winPoly(47.6, 51.4, .26, .44, 1)}" fill="#2A1E3A" stroke="${K}" stroke-width=".6"/><polygon points="${winPoly(48, 51.4, .6, .98, 1)}" fill="#3A2430" stroke="${K}" stroke-width=".6"/>
+    <path d="M3 17 q2 -2.2 4 -.6 q2 1.5 .4 3.6 q-1.6 2 -3.6 .8 q-2.2 -1.4 -.8 -3.8z M5 21 v4.5 M6.3 20.6 v2.6" fill="#FF4FA0" stroke="#FF4FA0" stroke-width=".9" stroke-linecap="round"/>
+    <path d="M57 26 q2.4 -1.6 4 .4 q1.4 2.2 -.8 3.4 q-2.4 1.2 -3.6 -.8 q-.8 -1.6 .4 -3z M59.4 30 v3.6" fill="#7CFF6B" stroke="#22A447" stroke-width=".8" stroke-linecap="round"/>
+    <path d="M0 9.5 Q32 16 64 9.5" stroke="${K}" stroke-width=".5" fill="none" opacity=".7"/>
+    ${[[3, "#E8412C"], [8, "#F6C026"], [13, "#2F7FE8"], [18, "#22A447"], [46, "#E8412C"], [51, "#F6C026"], [56, "#2F7FE8"], [61, "#22A447"]].map(([x, col]) => { const y = 9.5 + 6.5 * (1 - Math.pow((x - 32) / 32, 2)) * .98; return `<path d="M${x - 1.6} ${y.toFixed(2)} H${x + 1.6} L${x} ${(y + 2.6).toFixed(2)}Z" fill="${col}" stroke="${K}" stroke-width=".4"/>`; }).join("")}
+    <g stroke="${K}" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M23 22 L17.5 17 L19.5 10.5 M41 22 L46.5 17 L44.5 10.5" stroke-width="2.6" fill="none"/><path d="M23 22 L17.5 17 L19.5 10.5 M41 22 L46.5 17 L44.5 10.5" stroke="#5A606E" stroke-width="1.5" fill="none"/>
+      <g fill="#C9D0DB" stroke-width=".55"><path d="M18.6 11 h1.8 l.2 -2.2 h-2.2z M18.7 8.8 l.2 -4.6 M19.5 8.8 v-4.8 M20.3 8.8 l-.1 -4.6"/><path d="M43.6 11 h1.8 l.2 -2.2 h-2.2z M43.7 8.8 l.2 -4.6 M44.5 8.8 v-4.8 M45.3 8.8 l-.1 -4.6"/></g>
+      <path d="M26 29.5 l-.8 1.2 l.8 1.2 l-.8 1.2 M38 29.5 l.8 1.2 l-.8 1.2 l.8 1.2" stroke="#8A93A6" stroke-width="1.1" fill="none"/>
+      <rect x="37.6" y="9" width="2.2" height="5" rx=".4" fill="#3A3D4A" stroke-width=".6"/>
+      <rect x="24" y="11.2" width="6" height="3.2" rx="1" fill="#2A170A" stroke-width=".6"/><rect x="34" y="11.2" width="6" height="3.2" rx="1" fill="#2A170A" stroke-width=".6"/>
+    </g>
+    <path d="M24.6 12 l1 -2.6 l.9 1.8 l1 -3 l.9 2.4 l.9 -1.6 l.6 3z M34.6 12 l1 -2.6 l.9 1.8 l1 -3 l.9 2.4 l.9 -1.6 l.6 3z" fill="#FF5A1F"/><path d="M25.6 12 l.8 -1.6 l.8 1.1 l.9 -1.8 l.8 2.3z M35.6 12 l.8 -1.6 l.8 1.1 l.9 -1.8 l.8 2.3z" fill="#FFC425"/>
+    <circle cx="38.7" cy="6.8" r="1.6" fill="#2A2028" opacity=".75"/><circle cx="40.2" cy="4.2" r="2.1" fill="#2A2028" opacity=".55"/><circle cx="42.4" cy="1.6" r="2.6" fill="#2A2028" opacity=".35"/>
+    <rect x="21.5" y="13.5" width="21" height="16" rx="2.6" fill="url(#trcB)" stroke="${K}" stroke-width=".9"/>
+    <path d="M21.9 25 h4.6 l-.4 4.3 h-4.2z" fill="#A8352A" opacity=".75"/><path d="M38 14 h4.2 v4.5 l-1.5 -.6 l-1.3 .9 l-1.4 -.7z" fill="#2E5E8C" opacity=".75"/><ellipse cx="38.5" cy="26.5" rx="2" ry="1.1" fill="#7A3A16" opacity=".45"/><ellipse cx="25.5" cy="17" rx="1.5" ry=".9" fill="#7A3A16" opacity=".4"/>
+    <rect x="22.4" y="14.6" width=".9" height="13" fill="#fff" opacity=".28"/>
+    ${[0, 1, 2, 3, 4, 5, 6].map(i => `<circle cx="${23.5 + i * 2.85}" cy="14.6" r=".28" fill="#23262E"/><circle cx="${23.5 + i * 2.85}" cy="28.5" r=".28" fill="#23262E"/>`).join("")}
+    <circle cx="27.4" cy="18.4" r="3.2" fill="url(#trcE)" opacity=".8"/><circle cx="36.6" cy="18.4" r="3.2" fill="url(#trcE)" opacity=".8"/>
+    <path d="M25 17.6 L29.8 18.6 L29.4 19.8 L25.2 19.4Z M39 17.6 L34.2 18.6 L34.6 19.8 L38.8 19.4Z" fill="#FF1E1E" stroke="#5A0606" stroke-width=".3"/><path d="M26.6 18.9 h1.6 M35.8 18.9 h1.6" stroke="#FFF3C4" stroke-width=".55" stroke-linecap="round"/>
+    <path d="M23.8 14.6 L30.6 17 L30.4 17.9 L23.6 15.8Z M40.2 14.6 L33.4 17 L33.6 17.9 L40.4 15.8Z" fill="#23262E" stroke="${K}" stroke-width=".45"/>
+    <rect x="25.2" y="21.3" width="13.6" height="3.4" rx=".8" fill="#14080A" stroke="${K}" stroke-width=".55"/><rect x="26" y="22.3" width="12" height="1.4" fill="#FF5A1F" opacity=".75"/>
+    <path d="M25.4 21.3 ${[...Array(9)].map((_, i) => `l.75 1.1 l.75 -1.1`).join(" ")} M25.4 24.7 ${[...Array(9)].map(() => `l.75 -1 l.75 1`).join(" ")}" fill="#E9E3D2" stroke="${K}" stroke-width=".3"/>
+    <circle cx="32" cy="27" r="1.9" fill="#3A3D4A" stroke="${K}" stroke-width=".45"/><circle cx="32" cy="27" r="1.35" fill="url(#trcK)"/>
+    <g fill="none" stroke-linecap="round"><path d="M28.6 24.6 h-1.2 v1.2 M28.6 29.4 h-1.2 v-1.2 M35.4 24.6 h1.2 v1.2 M35.4 29.4 h1.2 v-1.2" stroke="${K}" stroke-width="1.6"/><path d="M28.6 24.6 h-1.2 v1.2 M28.6 29.4 h-1.2 v-1.2 M35.4 24.6 h1.2 v1.2 M35.4 29.4 h1.2 v-1.2" stroke="#3DFF8F" stroke-width=".8"/></g>
+    <g stroke="${K}" stroke-width=".4" fill="none" opacity=".0"><path d="M0 0"/></g>
+    <g transform="translate(15 30) rotate(-18)"><rect x="-3.4" y="-3.2" width="6.8" height="6.4" rx="1.6" fill="#C9813A" stroke="${K}" stroke-width=".6"/><rect x="-2.5" y="-2.2" width="5" height="4.4" rx="1" fill="#F4D59A"/><circle cx="-.8" cy="-.4" r=".35" fill="#E3A75A"/><circle cx="1" cy=".8" r=".35" fill="#E3A75A"/></g><path d="M19 27.4 l3 -1.6 M18.6 30.6 l3.4 -.6 M18 33.4 l3 .8" stroke="#fff" stroke-width=".55" stroke-linecap="round" opacity=".7"/>
+    <path d="M41.8 30.5 q1.6 -2.4 3.6 -1 q.7 2 -1.5 2.4 q-2 .4 -2.1 -1.4z" fill="#FF4FA0" stroke="${K}" stroke-width=".4"/>
+    <rect x="-1" y="42.2" width="66" height="7" fill="url(#trcW)" stroke="${K}" stroke-width=".9"/><path d="M0 45 H64" stroke="#6B4220" stroke-width=".4" opacity=".6"/>
+    <g transform="translate(55.5 47.5) rotate(-24) scale(.78)" stroke="${K}" stroke-width=".7" stroke-linejoin="round"><rect x="-3.6" y="-14" width="7.2" height="15" rx="2.2" fill="url(#trcP)"/><rect x="-2" y="-21.5" width="4" height="8" rx="1.2" fill="#FF8A3D"/><rect x="-2.5" y="-23" width="5" height="2.2" rx="1" fill="#FFC425"/><circle cx="-5.2" cy="-7.5" r="2.8" fill="#fff"/><path d="M-7.6 -7.5 a2.4 2.4 0 0 0 4.8 0z" fill="#22A447" stroke="none"/><rect x="1" y="-13" width="1" height="11" fill="#fff" stroke="none" opacity=".75"/><ellipse cx="1" cy="1.5" rx="4.8" ry="3.6" fill="#F4ECD8"/></g>
+    </g>${fr}</svg>`;
+  /* ---------- Tito Ruta: la ruta vista desde arriba, con el auto de Tito ---------- */
+  const tree = (x, y, r, c1) => `<ellipse cx="${x + r * .35}" cy="${y + r * .45}" rx="${r}" ry="${r * .8}" fill="#000" opacity=".2"/><circle cx="${x}" cy="${y}" r="${r}" fill="${c1}" stroke="${K}" stroke-width=".7"/><circle cx="${x - r * .35}" cy="${y - r * .35}" r="${r * .45}" fill="#fff" opacity=".18"/><circle cx="${x + r * .3}" cy="${y + r * .2}" r="${r * .35}" fill="#000" opacity=".1"/>`;
+  const car = (x, y, col, dark, w, h, extra) => `<g transform="translate(${x} ${y})"><ellipse cx=".8" cy="1.2" rx="${w * .6}" ry="${h * .55}" fill="#000" opacity=".25"/>
+    <rect x="${-w / 2 - .6}" y="${-h * .34}" width="1.2" height="${h * .2}" rx=".4" fill="#1A1A22"/><rect x="${w / 2 - .6}" y="${-h * .34}" width="1.2" height="${h * .2}" rx=".4" fill="#1A1A22"/><rect x="${-w / 2 - .6}" y="${h * .16}" width="1.2" height="${h * .2}" rx=".4" fill="#1A1A22"/><rect x="${w / 2 - .6}" y="${h * .16}" width="1.2" height="${h * .2}" rx=".4" fill="#1A1A22"/>
+    <rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="${w * .32}" fill="${col}" stroke="${K}" stroke-width=".8"/><rect x="${-w / 2 + .6}" y="${-h / 2 + .6}" width="${w * .22}" height="${h - 1.2}" rx="${w * .1}" fill="#fff" opacity=".22"/>
+    <path d="M${-w * .38} ${-h * .22} Q0 ${-h * .32} ${w * .38} ${-h * .22} L${w * .32} ${-h * .06} H${-w * .32}Z" fill="#BFE6FF" stroke="${K}" stroke-width=".5"/><path d="M${-w * .34} ${h * .2} H${w * .34} L${w * .38} ${h * .32} Q0 ${h * .38} ${-w * .38} ${h * .32}Z" fill="#8FC4E8" stroke="${K}" stroke-width=".5"/>
+    <rect x="${-w * .32}" y="${-h * .06}" width="${w * .64}" height="${h * .26}" rx="1" fill="${dark}"/><circle cx="${-w * .3}" cy="${-h * .47}" r=".7" fill="#FFF6CC"/><circle cx="${w * .3}" cy="${-h * .47}" r=".7" fill="#FFF6CC"/><rect x="${-w * .38}" y="${h * .44}" width="1.4" height=".8" fill="#FF2E2E"/><rect x="${w * .38 - 1.4}" y="${h * .44}" width="1.4" height=".8" fill="#FF2E2E"/>${extra || ""}</g>`;
+  const ruta = () => { let grass = ""; for (let y = -4; y < 50; y += 6) grass += `<rect x="0" y="${y}" width="64" height="3" fill="#54AE43"/>`;
+    let fl = ""; [[3, 14, "#FFC425"], [9, 23, "#FF7DB0"], [5, 41, "#fff"], [57, 30, "#FFC425"], [60, 8, "#fff"], [55, 44, "#FF7DB0"], [12, 35, "#fff"]].forEach(([x, y, c]) => fl += `<circle cx="${x}" cy="${y}" r=".7" fill="${c}"/><circle cx="${x}" cy="${y}" r=".3" fill="#E8A02C"/>`);
+    let kerb = ""; for (let y = -2; y < 50; y += 4) kerb += `<rect x="15" y="${y}" width="2" height="2" fill="#E8412C"/><rect x="47" y="${y + 2}" width="2" height="2" fill="#E8412C"/>`;
+    let dash = ""; for (let y = -1; y < 50; y += 7) dash += `<rect x="26.3" y="${y}" width=".9" height="3.8" rx=".3" fill="#fff"/><rect x="36.8" y="${y}" width=".9" height="3.8" rx=".3" fill="#fff"/>`;
+    return `<svg viewBox="0 0 64 48" aria-hidden="true"><defs>${cp("trt")}
+    <linearGradient id="trtA" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3A3D4A"/><stop offset=".5" stop-color="#4A4E5C"/><stop offset="1" stop-color="#3A3D4A"/></linearGradient>
+    <radialGradient id="trtT" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#FFE06B"/><stop offset=".45" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FF2E1E" stop-opacity="0"/></radialGradient>
+    <radialGradient id="trtC" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFE7A3" stop-opacity=".8"/><stop offset="1" stop-color="#FFE7A3" stop-opacity="0"/></radialGradient>
+    <radialGradient id="trtL" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFB020" stop-opacity=".95"/><stop offset="1" stop-color="#FFB020" stop-opacity="0"/></radialGradient></defs>
+    <g clip-path="url(#trt)"><rect width="64" height="48" fill="#5DBB4A"/>${grass}${fl}
+    <rect x="16" y="-1" width="32" height="50" fill="url(#trtA)"/>${kerb}<rect x="17" y="-1" width=".6" height="50" fill="#fff"/><rect x="46.4" y="-1" width=".6" height="50" fill="#fff"/>
+    <path d="M19 6 q1.5 .6 3 0 M41 30 q2 .5 3.5 -.2 M30 17 q1 .4 2 0" stroke="#2E3038" stroke-width=".6" fill="none" opacity=".7"/>${dash}
+    ${tree(5, 6, 4.2, "#2E8A3D")}${tree(10.5, 30, 3.4, "#3FA64C")}${tree(4, 45, 3.8, "#2E8A3D")}${tree(59, 18, 4, "#3FA64C")}${tree(58, 38, 3.3, "#2E8A3D")}
+    <g transform="translate(55 4)"><rect x="-4" y="-2.2" width="8" height="4.4" rx=".6" fill="#2F7FE8" stroke="${K}" stroke-width=".55"/><rect x="-.4" y="2.2" width=".8" height="3.4" fill="#8A93A6"/><path d="M-2.4 0 h3.6 m-1.2 -1.1 l1.2 1.1 l-1.2 1.1" stroke="#fff" stroke-width=".6" fill="none"/></g>
+    <path d="M32 9 l2 -1.6 M32 12 l2 -1.6 M32 9 l-2 -1.6 M32 12 l-2 -1.6" stroke="#FFB020" stroke-width=".9" stroke-linecap="round" opacity=".9" transform="rotate(-90 32 10) translate(0 -1)"/>
+    ${car(21.5, 9, "#FFC425", "#C98A10", 7.4, 12, `<circle cx="3.6" cy="-5.6" r="2.6" fill="url(#trtL)"/><circle cx="3.6" cy="5.6" r="2.6" fill="url(#trtL)"/><circle cx="3.4" cy="-5.6" r=".8" fill="#FFB020"/><circle cx="3.4" cy="5.6" r=".8" fill="#FFB020"/><rect x="-1.4" y="-.4" width="2.8" height="1.6" rx=".3" fill="#14141C"/><path d="M-1 .4 h2" stroke="#FFC425" stroke-width=".4" stroke-dasharray=".4 .3"/>`)}
+    ${car(42.4, 3, "#2F7FE8", "#1D4E89", 7, 11.5)}
+    <g transform="translate(42.3 22)"><circle r="4.2" fill="url(#trtC)"/><circle r="2.4" fill="#FFC425" stroke="${K}" stroke-width=".6"/><circle r="1.5" fill="none" stroke="#E8A02C" stroke-width=".4"/><path d="M-.9 -1.4 l1 2.8" stroke="#fff" stroke-width=".5" opacity=".8"/></g>
+    <g transform="translate(21.5 27) rotate(-8)"><circle r="4" fill="url(#trtC)" opacity=".6"/><path d="M-2.2 -2.4 h3 l1.4 1.4 v4 h-4.4z" fill="#E8412C" stroke="${K}" stroke-width=".55" stroke-linejoin="round"/><rect x="-1.6" y="-1.9" width="1.6" height=".9" rx=".35" fill="#14101C"/><path d="M1.2 -2.4 l1 -1.3 h.9" stroke="${K}" stroke-width=".55" fill="none" stroke-linecap="round"/><rect x="-1.4" y=".2" width="2.6" height="1.6" rx=".3" fill="#FFC425" opacity=".9"/></g>
+    <path d="M28.5 44 v4 M35.5 44 v4" stroke="url(#trtT)" stroke-width="2.4" stroke-linecap="round"/><path d="M29.2 47 l.8 3 l.8 -3z M34.2 47 l.8 3 l.8 -3z" fill="#FFE06B"/>
+    <path d="M26 41 v6 M38 41 v6 M24.5 36 v4" stroke="#fff" stroke-width=".4" opacity=".6"/>
+    ${car(32, 36.5, "#E8412C", "#9A1E14", 8, 13.5, `<rect x="-3.6" y="-1.5" width="7.2" height=".9" rx=".3" fill="#fff"/><g transform="translate(0 .6)"><ellipse cx="0" cy="0" rx="2.6" ry="3" fill="#F4ECD8" stroke="${K}" stroke-width=".55"/><circle cx="-.9" cy="-.4" r=".45" fill="${K}"/><circle cx=".9" cy="-.4" r=".45" fill="${K}"/><path d="M-.9 .9 q.9 .8 1.8 0" stroke="${K}" stroke-width=".4" fill="none" stroke-linecap="round"/><circle cx="-1.6" cy=".5" r=".4" fill="#FF9AA8" opacity=".8"/><circle cx="1.6" cy=".5" r=".4" fill="#FF9AA8" opacity=".8"/></g>`)}
+    </g>${fr}</svg>`; };
+  /* ---------- Tito Piano: solo teclas, fichas que caen y notas ---------- */
+  const piano = () => { const wk = [...Array(10)].map((_, i) => { const x = i * 6.4, on = i === 3; return `<rect x="${x + .25}" y="31.5" width="5.9" height="${on ? 16.2 : 16.8}" rx="1" fill="url(#${on ? "tpnY" : "tpnW"})" stroke="${K}" stroke-width=".55"/>`; }).join("");
+    const bk = [0, 1, 3, 4, 5, 7, 8].map(i => { const x = (i + 1) * 6.4 - 2; return `<rect x="${x}" y="31.5" width="4" height="9.6" rx=".8" fill="url(#tpnB)" stroke="${K}" stroke-width=".5"/><rect x="${x + .7}" y="32" width=".8" height="7.5" rx=".3" fill="#fff" opacity=".25"/>`; }).join("");
+    return `<svg viewBox="0 0 64 48" aria-hidden="true"><defs>${cp("tpn")}
+    <linearGradient id="tpnS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#120B33"/><stop offset=".6" stop-color="#2B1D5C"/><stop offset="1" stop-color="#4A2F9A"/></linearGradient>
+    <linearGradient id="tpnL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9A8" stop-opacity=".0"/><stop offset="1" stop-color="#FFE9A8" stop-opacity=".28"/></linearGradient>
+    <linearGradient id="tpnW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4E0D6"/><stop offset=".2" stop-color="#FFFFFF"/><stop offset="1" stop-color="#EDE7DA"/></linearGradient>
+    <linearGradient id="tpnY" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB020"/><stop offset="1" stop-color="#FFE06B"/></linearGradient>
+    <linearGradient id="tpnB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3550"/><stop offset=".8" stop-color="#14101C"/><stop offset="1" stop-color="#2A2438"/></linearGradient>
+    <linearGradient id="tpnT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A2438"/><stop offset="1" stop-color="#0B0816"/></linearGradient>
+    <linearGradient id="tpnH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5CE1E6" stop-opacity="0"/><stop offset="1" stop-color="#5CE1E6" stop-opacity=".55"/></linearGradient>
+    <radialGradient id="tpnG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFE06B" stop-opacity=".9"/><stop offset="1" stop-color="#FFE06B" stop-opacity="0"/></radialGradient></defs>
+    <g clip-path="url(#tpn)"><rect width="64" height="48" fill="url(#tpnS)"/>
+    <path d="M24 -2 L14 30 H50 L40 -2Z" fill="url(#tpnL)"/>
+    <path d="M16 0 V30 M32 0 V30 M48 0 V30" stroke="#fff" stroke-width=".35" opacity=".18"/>
+    ${[[6, 4], [58, 9], [27, 3], [44, 14], [10, 20]].map(([x, y], i) => `<path d="M${x} ${y - 1.3} L${x + .35} ${y - .35} L${x + 1.3} ${y} L${x + .35} ${y + .35} L${x} ${y + 1.3} L${x - .35} ${y + .35} L${x - 1.3} ${y} L${x - .35} ${y - .35}Z" fill="#fff" opacity="${.5 + (i % 2) * .3}"/>`).join("")}
+    <rect x="1.5" y="-6" width="13" height="10" rx="1.6" fill="url(#tpnT)" stroke="#6B5BB5" stroke-width=".6"/><rect x="49.5" y="-9" width="13" height="12" rx="1.6" fill="url(#tpnT)" stroke="#6B5BB5" stroke-width=".6"/>
+    <rect x="33.5" y="1" width="13" height="23" rx="1.6" fill="url(#tpnT)" stroke="#6B5BB5" stroke-width=".6"/><rect x="38.4" y="8" width="3.2" height="16" rx="1.6" fill="url(#tpnH)"/><rect x="38.6" y="3.5" width="2.8" height="8" rx="1.4" fill="#5CE1E6" opacity=".95"/><circle cx="40" cy="3.6" r="1.6" fill="#B8F6F8"/>
+    <rect x="17.5" y="14" width="13" height="13" rx="1.6" fill="#8C84A8" opacity=".55" stroke="#FFE06B" stroke-width=".9"/>
+    <circle cx="24" cy="27.5" r="8" fill="url(#tpnG)"/><circle cx="24" cy="27" r="5.5" fill="none" stroke="#FFE06B" stroke-width=".8" opacity=".9"/><circle cx="24" cy="27" r="8.3" fill="none" stroke="#FFE06B" stroke-width=".4" opacity=".5"/>
+    ${[[-1, -1], [1, -1], [-1.4, 0], [1.4, 0]].map(([dx, dy]) => `<path d="M${24 + dx * 9} ${27 + dy * 6.5} l${dx * 2.2} ${dy * 1.6 - (dy ? 0 : .01)}" stroke="#FFF3C4" stroke-width=".7" stroke-linecap="round"/>`).join("")}<path d="M24 9.6 L24.5 11.2 L26 11.7 L24.5 12.2 L24 13.8 L23.5 12.2 L22 11.7 L23.5 11.2Z" fill="#FFE06B"/>
+    <g fill="#FF7DB0" stroke="${K}" stroke-width=".35"><ellipse cx="54.2" cy="20" rx="1.6" ry="1.2" transform="rotate(-20 54.2 20)"/><path d="M55.6 19.6 V13.4 l3.4 -1 v5.8" fill="none" stroke="#FF7DB0" stroke-width=".8"/><ellipse cx="57.6" cy="18.4" rx="1.6" ry="1.2" transform="rotate(-20 57.6 18.4)"/></g>
+    <g fill="#FFC425" stroke="${K}" stroke-width=".35"><ellipse cx="7.6" cy="17" rx="1.7" ry="1.25" transform="rotate(-20 7.6 17)"/><path d="M9.1 16.6 V10.8 q2.2 .8 2.4 3" fill="none" stroke="#FFC425" stroke-width=".85"/></g>
+    <g fill="#5CE1E6"><ellipse cx="52.5" cy="5.5" rx="1.1" ry=".8" transform="rotate(-20 52.5 5.5)"/><path d="M53.5 5.3 V1.4" stroke="#5CE1E6" stroke-width=".6"/></g>
+    <rect x="-1" y="28" width="66" height="3.6" fill="#14101C"/><rect x="-1" y="28" width="66" height=".7" fill="#4A4060"/><rect x="-1" y="30.6" width="66" height="1.1" fill="#B5122E"/><path d="M-1 29.5 H65" stroke="#D9A93A" stroke-width=".35"/>
+    <rect x="-1" y="31.5" width="66" height="18" fill="#14101C"/>${wk}${bk}
+    <circle cx="22.2" cy="42" r="3.4" fill="url(#tpnG)" opacity=".8"/>
+    </g>${fr}</svg>`; };
+  if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
+})();
 
-const APP_VER = "28/10 22:47";
+const APP_VER = "28/10 23:17";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -9171,14 +9296,16 @@ const CFG = (typeof window !== "undefined" && window.UNRA_CFG) || {};
 /* Halloween: del 27/10 al 2/11 (se puede forzar con ?halloween para probar) */
 const HW_TEST = (() => { try { if (/[?#&]halloween\b/.test(location.href)) localStorage.setItem("unratito.hw", "1"); return localStorage.getItem("unratito.hw") === "1"; } catch(e){ return false; } })();
 function isHalloween(){ if (HW_TEST) return true; const d = new Date(), m = d.getMonth() + 1, day = d.getDate(); return (m === 10 && day >= 27) || (m === 11 && day <= 2); }
-const HW_GOAL = 60, HW_CANDY_PTS = 30, HW_PLAY_DAY = 6;
+const HW_GOAL = 60, HW_CANDY_PTS = 30, HW_PLAY_DAY = 10;
 const CANDY_SVG = `<svg viewBox="0 0 40 24" aria-hidden="true"><path d="M10 12 L2 4 L2 20 Z M30 12 L38 4 L38 20 Z" fill="#FF7A1A" stroke="#0B0F24" stroke-width="2" stroke-linejoin="round"/><ellipse cx="20" cy="12" rx="11" ry="8" fill="#FF9F43" stroke="#0B0F24" stroke-width="2"/><path d="M13 7 q4 10 0 10 M20 4 q4 16 0 16 M27 7 q-4 10 0 10" stroke="#fff" stroke-width="2" fill="none" opacity=".8"/></svg>`;
 const PUMPKIN_SVG = `<svg viewBox="0 0 60 52" aria-hidden="true"><path d="M30 10 C38 6 52 8 56 22 C60 36 52 50 30 50 C8 50 0 36 4 22 C8 8 22 6 30 10 Z" fill="#F28C28" stroke="#0B0F24" stroke-width="2.6"/><path d="M20 10 C14 24 14 40 20 50 M40 10 C46 24 46 40 40 50 M30 10 V50" stroke="#C25A0C" stroke-width="2" fill="none" opacity=".6"/><path d="M28 10 q-1 -7 4 -9" stroke="#3E6B1E" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M17 24 l6 -5 l2 7z M43 24 l-6 -5 l-2 7z" fill="#3A1A00"/><path d="M16 34 q14 10 28 0 l-4 4 l-3 -3 l-3 4 l-4 -4 l-3 4 l-3 -3 z" fill="#3A1A00"/><path d="M17 24 l6 -5 l2 7z M43 24 l-6 -5 l-2 7z M16 34 q14 10 28 0" stroke="#FFD34D" stroke-width="1" fill="none" opacity=".7"/></svg>`;
 const hwS = () => S.hw = S.hw || { day:"", candy:0, total:0, arcDay:"", arcN:0 };
 /* Caramelos jugando: como mucho ${HW_PLAY_DAY} por día. Los juegos diarios siempre dan; el resto, a veces */
-function playCandy(chance){
-  if (!isHalloween()) return; const st = hwS(); if (st.playDay !== today()) { st.playDay = today(); st.playN = 0; }
-  if (st.playN >= HW_PLAY_DAY || rnd() > chance) return; st.playN++; save(); setTimeout(() => addCandy(1), 900);
+function playCandy(chance, quiet){
+  if (!isHalloween()) return false; const st = hwS(); if (st.playDay !== today()) { st.playDay = today(); st.playN = 0; }
+  if (st.playN >= HW_PLAY_DAY || rnd() > chance) return false; st.playN++; save();
+  if (quiet) { addCandy(1, true); SND.fx("candy"); } else setTimeout(() => addCandy(1), 1500);
+  return true;
 }
 function addCandy(n, quiet){
   if (!isHalloween() || !n) return; const st = hwS(), has = ownedChars().includes("calabacin");
@@ -10398,7 +10525,9 @@ function ansPoints(q, a){ if (!a || !a.ok) return 0; const t = q.time || TIME.q,
 
 /* ---------- Códigos de regalo (se guardan como hash; más adelante se validan en el servidor) ---------- */
 const DEV = (() => { try { return !!window.claude || /[?#&]dev\b/.test(location.href) || localStorage.getItem("unratito.dev") === "1"; } catch(e){ return false; } })();
-const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" } };
+const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" },
+  2411822123:{ pts:15000, t:"Regalo de unraTITO" }, 4232887451:{ pts:20000, t:"Regalo de unraTITO" }, 1223714602:{ pts:50000, t:"Regalo de unraTITO" },
+  4168856878:{ candy:60, t:"Caramelos de Halloween" } };
 function openRedeem(){
   openSheet("Canjear código", `<form id="redeemForm"><div class="field"><label for="rCode">Escribe tu código</label><input id="rCode" maxlength="24" required placeholder="Ej.: TITO2026" style="text-transform:uppercase;letter-spacing:.08em;font-weight:800" autocomplete="off" autocapitalize="characters"></div><button class="btn yellow block" type="submit">Canjear</button><p class="small muted">Los códigos se consiguen en eventos, sorteos y en la comunidad de unraTITO.</p></form>`);
   setTimeout(() => { const i = $("#rCode"); if (i) i.focus(); }, 250);
@@ -10430,9 +10559,12 @@ function redeemCode(raw){
   if (r.pts) addCoins(r.pts);
   if (r.item) (S.owned[r.item[0]] = S.owned[r.item[0]] || []).push(r.item[1]);
   if (r.char) { S.chars = S.chars || ["tito"]; if (!S.chars.includes(r.char)) S.chars.push(r.char); }
+  if (r.candy) { const had = ownedChars().includes("calabacin");
+    if (isHalloween()) addCandy(r.candy, true); else if (!had) ownedChars().push("calabacin");
+    if (!had && ownedChars().includes("calabacin")) { save(); pushMember(); renderHeader(); closeSheet(); if (!isHalloween()) setTimeout(openCalabacin, 280); return; } }
   save(); pushMember(); renderHeader(); closeSheet();
   setTimeout(() => {
-    openSheet("¡Código canjeado!", `<div class="redeem-win">${danceHTML(130)}${r.pts ? `<b class="rw-big">+${NUM.format(r.pts)}</b><span class="rw-sub">puntos para la tienda</span>` : ""}<p class="small muted">${esc(r.t)}</p><button class="btn yellow block" data-act="close-sheet">¡Genial!</button></div>`);
+    openSheet("¡Código canjeado!", `<div class="redeem-win">${danceHTML(130)}${r.pts ? `<b class="rw-big">+${NUM.format(r.pts)}</b><span class="rw-sub">puntos para la tienda</span>` : ""}${r.candy ? `<b class="rw-big">+${r.candy}</b><span class="rw-sub">caramelos</span>` : ""}<p class="small muted">${esc(r.t)}</p><button class="btn yellow block" data-act="close-sheet">¡Genial!</button></div>`);
     celebrate(2); confetti(90);
   }, 280);
 }
@@ -10495,7 +10627,7 @@ function finishGame(kind){
   const first = ctx.kind !== "m" && (ctx.n == null || ctx.n === 1), base = basePoints(kind, p), mult = isGroup() || first ? 2 : 1, rr = rating(kind);
   const v0 = view; setTimeout(() => { if (view === v0) SND.react(rr); }, 380);
   p.pts[kind] = base; addCoins(base * mult); cheer(isGroup() ? 18 : 6);
-  playCandy(ctx.kind === "d" ? 1 : .4);
+  playCandy(ctx.kind === "d" ? 1 : .6);
   logEv("juego_terminado", { juego:{ w:"palabra", s:"sopa", t:"trivia" }[kind] || kind, modo:ctx.kind, puntos:base * mult, resultado:rr });
   if (ctx.kind === "m") dayCounter("snacks").n++;
   if (isGroup()) { const gs = S.gscore[ctx.code] = S.gscore[ctx.code] || { total:0, days:{} }; if (gs.days[ctx.day] == null) { gs.days[ctx.day] = base; gs.total += base; } delete groupCache[ctx.code]; }
