@@ -10024,7 +10024,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "29/10 13:18";
+const APP_VER = "30/10 02:03";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -11281,7 +11281,7 @@ function ansPoints(q, a){ if (!a || !a.ok) return 0; const t = q.time || TIME.q,
 /* ---------- Códigos de regalo (se guardan como hash; más adelante se validan en el servidor) ---------- */
 const DEV = (() => { try { return !!window.claude || /[?#&]dev\b/.test(location.href) || localStorage.getItem("unratito.dev") === "1"; } catch(e){ return false; } })();
 const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" },
-  2411822123:{ pts:15000, t:"Regalo de unraTITO" }, 4232887451:{ pts:20000, t:"Regalo de unraTITO" }, 1223714602:{ pts:50000, t:"Regalo de unraTITO" },
+  2411822123:{ pts:15000, t:"Regalo de unraTITO" }, 4232887451:{ pts:20000, t:"Regalo de unraTITO" },
   4168856878:{ candy:60, t:"Caramelos de Halloween" },
   1672653570:{ char:"hadita", t:"Personaje secreto" }, 3195898044:{ char:"diablito", t:"Personaje secreto" } };
 function openRedeem(){
@@ -11932,7 +11932,7 @@ function boot(){
   /* La experiencia ya no incluye los puntos regalados por códigos: se los descuento una sola vez a quien ya los canjeó */
   /* Códigos viejos que ya no existen pero algunos canjearon (el de prueba de 100.000) */
   const OLD_CODES = { 2599833649:100000 };
-  if ((S.xpFix || 0) < 2) { const was = S.xpFix || 0; S.xpFix = 2; const gift = (S.codes || []).reduce((a, h) => a + (was < 1 && CODES[h] && CODES[h].pts || 0) + (OLD_CODES[h] || 0), 0);
+  if ((S.xpFix || 0) < 2) { const was = S.xpFix || 0; S.xpFix = 2; const GONE = { 1223714602:50000 }, gift = (S.codes || []).reduce((a, h) => a + (was < 1 ? (CODES[h] && CODES[h].pts) || GONE[h] || 0 : 0) + (OLD_CODES[h] || 0), 0);
     if (gift) { S.earned = Math.max(0, (S.earned || 0) - gift); const L = level(); if (S.lvlSeen != null) S.lvlSeen = Math.min(S.lvlSeen, L);
       lvGifts().forEach(g => { if (g.l > L && S.tito[g.cat] === g.k) S.tito[g.cat] = "none"; }); } }
   if (S.settings.sound == null) S.settings.sound = true; if (S.settings.music == null) S.settings.music = true;
