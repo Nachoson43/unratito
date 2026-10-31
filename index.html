@@ -1225,7 +1225,7 @@ const SHOP = {
   hat:    { l:"Gorros", g:"tito", items:[["none","Nada",0,"Gorros"],["vincha","Vincha de tenis",250],["gorra","Gorra para atrás",400],["hincha","Gorro de hincha",500],["boina","Boina",600],["laureles","Corona de laureles",700],["cientifico","Pelo de científico",900],["galera","Galera",1000],["pirata","Sombrero pirata",1100],["gaucho","Sombrero de gaucho",1200],["vikingo","Casco vikingo",1500],["peluca","Peluca barroca",1600],["bicornio","Bicornio con escarapela",1800],["gladiador","Casco de gladiador",2000],["faraon","Tocado de faraón",2600],["astronauta","Casco de astronauta",3500],["corona","Corona de rockstar","P"],
     ["murga","Galera de murga",1300,"Carnaval"],["bufon","Gorro de bufón",1500],["penacho","Penacho de plumas",2200],
     ["vincharoja","Vincha de artes marciales",600,"De disfraces"],["ninja","Capucha ninja",1200],["mago","Sombrero de mago",1500],["yelmo","Yelmo de caballero",1800],["cascogal","Casco galáctico",2000],["dragon","Cuernos de dragón",2200]].concat(teamItems("pil","pil_", n => "Piluso "+n), [["bruja","Sombrero de bruja",1800,"Halloween"],["gorrocalabaza","Gorro de calabaza",1500],["vampiro","Peinado de vampiro",1200],["laurelesoro","Laureles dorados","L20","Premios de nivel"],["aureola","Aureola","L25"],["coronareal","Corona real","L50"],["fuego","Pelo de fuego","L80"],["leyenda","Corona de leyenda","L100"]]) },
-  clothes:{ l:"Camisetas y ropa", g:"tito", items:[["none","Nada",0,"Ropa"],["bufanda","Bufanda",350],["musculosa","Camiseta sin mangas celeste",300],["buzo","Sudadera",500],["esmoquin","Esmoquin",1500],["esmoquinb","Esmoquin blanco",1600]].concat(teamItems("shirt","", n => n), [
+  clothes:{ l:"Camisetas y ropa", g:"tito", items:[["none","Nada",0,"Ropa"],["bufanda","Bufanda",350],["musculosa","Camiseta sin mangas celeste",300],["buzo","Sudadera",500],["esmoquin","Esmoquin",1500],["esmoquinb","Esmoquin blanco",1600]].concat(teamItems("shirt","", n => n), [["temperley","Temperley","C","Secretas"],["santelmo","San Telmo","C"],["chacarita","Chacarita Juniors","C"],["chicago","Nueva Chicago","C"],["almirante","Almirante Brown","C"],["ferro","Ferro Carril Oeste","C"]], [
     ["toga","Toga romana",1400,"Disfraces"],["karate","Traje de artes marciales",1400],["ninja","Traje ninja",1500],["pirata","Camisa pirata",1500],["vikingo","Ropa vikinga",1800],["faraon","Ropa de faraón",1800],["gladiador","Coraza de gladiador",2000],["mago","Túnica de mago",2000],["heroe","Traje de superhéroe",2200],["trajegal","Traje galáctico",2200],["armadura","Armadura medieval",2800],["astro","Traje espacial",2800],["dino","Disfraz de dino",3000],["dragon","Disfraz de dragón",3200],["calabaza","Disfraz de calabaza",2500,"Halloween"],["vampiro","Capa de vampiro",3000],["esqueleto","Traje de esqueleto",2200],["momia","Vendas de momia",2800],["capareal","Capa real","L35","Premios de nivel"],["sacooro","Saco dorado","L60"],["capagal","Capa galáctica","L85"]]) },
   kit:    { l:"Disfraces", g:"tito", items:[["romano","Emperador romano",1900],["pirata","Pirata",2600],["marcial","Artista marcial",2600],["ninja","Ninja",2700],["heroe","Superhéroe",3000],["vikingo","Vikingo",3000],["faraon","Faraón",3500],["gladiador","Gladiador",3200],["mago","Mago",3400],["dragon","Dragón",3600],["galactico","Explorador galáctico",3800],["caballero","Caballero",4000],["astronauta","Astronauta",5000],["vampiro","Vampiro",3800,"Halloween"],["calabaza","Calabaza",3500]] },
   dance:  { l:"Bailes", g:"tito", items:[["funk","Funk brasilero",0],["cumbia","Cumbia",2500],["robot","Robot",3500],["malambo","Malambo",4500],["cuarteto","Cuarteto",5000],["murga","Murga",5500],["disco","Disco",6000],["avioncito","Avioncito de gol",6500],["pogo","Pogo",7000],["tango","Tango",7500],["trompo","Trompo",8000],["gusanito","Gusanito",9000],["moonwalk","Moonwalk",11000],["breakdance","Breakdance",15000],["campeon","Festejo de campeón","P"],["zombi","Zombi",6666,"Halloween"]] },
@@ -1239,8 +1239,8 @@ const SHOP = {
   furni:  { l:"Muebles", g:"casa", items:[["none","Nada",0],["sillon","Sillón",500],["biblio","Biblioteca",900],["tele","Tele",1200],["arco","Arco de fútbol",2000],["caldero","Caldero de bruja",2000,"Halloween"]] },
   deco:   { l:"Objetos", g:"casa", items:[["none","Nada",0],["planta","Planta",200],["lampara","Lámpara",350],["globo","Globo terráqueo",700],["trofeo","Trofeo",1600],["trofeooro","Trofeo de oro","P"],["calabazas","Calabazas con velas",1200,"Halloween"]] }
 };
-const RAR = { c:["Común","var(--g)"], r:["Rara","var(--b)"], e:["Épica","var(--r)"], l:["Legendaria","#0B0F24"], p:["PREMIUM","linear-gradient(180deg,#FFD34D,#C98F00)"], n:["Por nivel","#7A4FD9"], n1:["Rara","var(--b)"], n2:["Épica","var(--r)"], n3:["Legendaria","#0B0F24"], n4:["Mítica","linear-gradient(90deg,#7A4FD9,#FF5FA2)"] };
-const rarityOf = price => typeof price === "string" && price[0] === "L" ? (+price.slice(1) <= 20 ? "n1" : +price.slice(1) <= 50 ? "n2" : +price.slice(1) <= 80 ? "n3" : "n4") : price === "P" ? "p" : price < 600 ? "c" : price < 1500 ? "r" : price < 5000 ? "e" : "l";
+const RAR = { s:["Secreta","#5B3FB8"], c:["Común","var(--g)"], r:["Rara","var(--b)"], e:["Épica","var(--r)"], l:["Legendaria","#0B0F24"], p:["PREMIUM","linear-gradient(180deg,#FFD34D,#C98F00)"], n:["Por nivel","#7A4FD9"], n1:["Rara","var(--b)"], n2:["Épica","var(--r)"], n3:["Legendaria","#0B0F24"], n4:["Mítica","linear-gradient(90deg,#7A4FD9,#FF5FA2)"] };
+const rarityOf = price => price === "C" ? "s" : typeof price === "string" && price[0] === "L" ? (+price.slice(1) <= 20 ? "n1" : +price.slice(1) <= 50 ? "n2" : +price.slice(1) <= 80 ? "n3" : "n4") : price === "P" ? "p" : price < 600 ? "c" : price < 1500 ? "r" : price < 5000 ? "e" : "l";
 
 /* Temporada de Halloween: estos objetos solo se venden durante el evento (después quedan para quien los tenga) */
 const SEASON_ITEMS = { kit:["vampiro","calabaza"], hat:["bruja","gorrocalabaza","vampiro"], clothes:["calabaza","vampiro","esqueleto","momia"], float:["murcielago","farol","caramelo"], dance:["zombi"], wall:["telaranas"], deco:["calabazas"], furni:["caldero"] };
@@ -10024,7 +10024,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "30/10 02:03";
+const APP_VER = "30/10 23:44";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10174,13 +10174,17 @@ const KIT = {
   barcelona:["anchos",["#A2214B","#1B3F8F"],"#F6C700",0], realmadrid:["lisa",["#FFFFFF","#D4AF37"],"#D4AF37",0], atletico:["bastones",["#FFFFFF","#D8232A"],"#1A2B6D",0],
   juventus:["bastones",["#FFFFFF","#151515"],"#151515",0], milan:["bastones",["#151515","#D8232A"],"#151515",0], inter:["bastones",["#151515","#1F55B3"],"#151515",0],
   manutd:["lisa",["#DA291C","#FFFFFF"],"#151515",0], liverpool:["lisa",["#C8102E","#F6C700"],"#FFFFFF",0], city:["lisa",["#6CABDD","#FFFFFF"],"#1C2C5B",0],
-  chelsea:["lisa",["#034694","#FFFFFF"],"#FFFFFF",0], psg:["centro",["#0B2A5B","#DA291C"],"#FFFFFF",0]
+  chelsea:["lisa",["#034694","#FFFFFF"],"#FFFFFF",0], psg:["centro",["#0B2A5B","#DA291C"],"#FFFFFF",0],
+  /* secretas (solo con código) */
+  temperley:["lisa",["#79C6EA","#FFFFFF"],"#FFFFFF",0], santelmo:["bastones",["#1F3F94","#7EC8F0"],"#1F3F94",0], chacarita:["tri",["#D8232A","#FFFFFF","#151515"],"#151515",0],
+  chicago:["bastones",["#0F7A3D","#151515"],"#151515",0], almirante:["bastones",["#F6C700","#151515"],"#151515",0], ferro:["lisa",["#0B7A3B","#FFFFFF"],"#FFFFFF",0]
 };
 function kitFill(p, c, x, y, w, h){
   const R = (rx, ry, rw, rh, f) => `<rect x="${rx}" y="${ry}" width="${rw}" height="${rh}" fill="${f}"/>`;
   let s = R(x, y, w, h, c[0]);
   const stripes = (sw, step) => { for (let k = x + step/2 - sw/2; k < x + w; k += step) s += R(k, y, sw, h, c[1]); };
   if (p === "bastones") stripes(11, 22);
+  if (p === "tri") for (let k = x, i = 0; k < x + w; k += 10, i++) s += R(k, y, 10, h, c[i % 3]);
   if (p === "finos") stripes(6, 12);
   if (p === "anchos") stripes(17, 34);
   if (p === "franja") s += R(x, y + h*.32, w, h*.26, c[1]);
@@ -11283,7 +11287,10 @@ const DEV = (() => { try { return !!window.claude || /[?#&]dev\b/.test(location.
 const CODES = { 4249658599:{ pts:3000, t:"Código de bienvenida" },
   2411822123:{ pts:15000, t:"Regalo de unraTITO" }, 4232887451:{ pts:20000, t:"Regalo de unraTITO" },
   4168856878:{ candy:60, t:"Caramelos de Halloween" },
-  1672653570:{ char:"hadita", t:"Personaje secreto" }, 3195898044:{ char:"diablito", t:"Personaje secreto" } };
+  1672653570:{ char:"hadita", t:"Personaje secreto" }, 3195898044:{ char:"diablito", t:"Personaje secreto" },
+  535209245:{ item:["clothes", "temperley"], t:"Camiseta secreta" }, 2459309127:{ item:["clothes", "santelmo"], t:"Camiseta secreta" }, 2229107580:{ item:["clothes", "chacarita"], t:"Camiseta secreta" },
+  3936822080:{ item:["clothes", "chicago"], t:"Camiseta secreta" }, 191824861:{ item:["clothes", "almirante"], t:"Camiseta secreta" }, 828670203:{ item:["clothes", "almirante"], t:"Camiseta secreta" },
+  2997167886:{ item:["clothes", "ferro"], t:"Camiseta secreta" } };
 function openRedeem(){
   openSheet("Canjear código", `<form id="redeemForm"><div class="field"><label for="rCode">Escribe tu código</label><input id="rCode" maxlength="24" required placeholder="Ej.: TITO2026" style="text-transform:uppercase;letter-spacing:.08em;font-weight:800" autocomplete="off" autocapitalize="characters"></div><button class="btn yellow block" type="submit">Canjear</button><p class="small muted">Los códigos se consiguen en eventos, sorteos y en la comunidad de unraTITO.</p></form>`);
   setTimeout(() => { const i = $("#rCode"); if (i) i.focus(); }, 250);
@@ -11313,14 +11320,14 @@ function redeemCode(raw){
   if (S.codes.includes(h)) return bad("Ya canjeaste ese código");
   S.codes.push(h);
   if (r.pts) addCoins(r.pts, true);
-  if (r.item) (S.owned[r.item[0]] = S.owned[r.item[0]] || []).push(r.item[1]);
+  if (r.item) { const o = S.owned[r.item[0]] = S.owned[r.item[0]] || []; if (!o.includes(r.item[1])) o.push(r.item[1]); }
   if (r.char) { S.chars = S.chars || ["tito"]; if (!S.chars.includes(r.char)) S.chars.push(r.char); }
   if (r.candy) { const had = ownedChars().includes("calabacin");
     if (isHalloween()) addCandy(r.candy, true); else if (!had) ownedChars().push("calabacin");
     if (!had && ownedChars().includes("calabacin")) { save(); pushMember(); renderHeader(); closeSheet(); if (!isHalloween()) setTimeout(openCalabacin, 280); return; } }
   save(); pushMember(); renderHeader(); closeSheet();
   setTimeout(() => {
-    openSheet("¡Código canjeado!", `<div class="redeem-win">${r.char ? "" : danceHTML(130)}${r.pts ? `<b class="rw-big">+${NUM.format(r.pts)}</b><span class="rw-sub">puntos para la tienda</span>` : ""}${r.candy ? `<b class="rw-big">+${r.candy}</b><span class="rw-sub">caramelos</span>` : ""}${r.char ? `<span class="rw-char anim-happy">${titoSVG(Object.assign({}, S.tito, { char:r.char }), 150, { mood:"star", noFloat:true })}</span><b class="rw-cname">¡${esc(charName(r.char))}!</b><span class="rw-sub">Desbloqueaste un personaje secreto</span><button class="btn green block" data-act="char-use:${r.char}">Usarlo ahora</button>` : ""}<p class="small muted">${esc(r.t)}</p><button class="btn yellow block" data-act="close-sheet">¡Genial!</button></div>`);
+    openSheet("¡Código canjeado!", `<div class="redeem-win">${r.char || r.item ? "" : danceHTML(130)}${r.pts ? `<b class="rw-big">+${NUM.format(r.pts)}</b><span class="rw-sub">puntos para la tienda</span>` : ""}${r.candy ? `<b class="rw-big">+${r.candy}</b><span class="rw-sub">caramelos</span>` : ""}${r.item ? `<span class="rw-char anim-happy">${titoSVG(Object.assign({}, S.tito, { [r.item[0]]:r.item[1] }), 140, { mood:"star", noFloat:true })}</span><b class="rw-cname">${esc((itemOf(r.item[0], r.item[1]) || [, ""])[1])}</b><span class="rw-sub">Camiseta secreta desbloqueada</span><button class="btn green block" data-act="codewear:${r.item[0]}:${r.item[1]}">Ponérmela</button>` : ""}${r.char ? `<span class="rw-char anim-happy">${titoSVG(Object.assign({}, S.tito, { char:r.char }), 150, { mood:"star", noFloat:true })}</span><b class="rw-cname">¡${esc(charName(r.char))}!</b><span class="rw-sub">Desbloqueaste un personaje secreto</span><button class="btn green block" data-act="char-use:${r.char}">Usarlo ahora</button>` : ""}<p class="small muted">${esc(r.t)}</p><button class="btn yellow block" data-act="close-sheet">¡Genial!</button></div>`);
     celebrate(2); confetti(90);
   }, 280);
 }
@@ -11665,8 +11672,10 @@ function renderTito(){
     <p class="small muted" style="margin-top:10px">La panza se llena respondiendo bien y el ánimo jugando. Si no juegas, bajan un poco cada día. ${lv < LV_MAX ? "En el nivel "+(Math.floor(lv / 5) + 1) * 5+" ganas un premio exclusivo." : ""}</p></section>`;
   h += charsSection();
   const cats = shopCatsOf(shopGroup); if (!cats.includes(shopCat)) shopCat = cats[0];
-  const items = SHOP[shopCat].items.filter(([key]) => !isSeasonal(shopCat, key) || isHalloween() || owns(shopCat, key)).map(([key, name, base, sec]) => {
+  let secHead = false;
+  const items = SHOP[shopCat].items.filter(([key, , p]) => (!isSeasonal(shopCat, key) || isHalloween() || owns(shopCat, key)) && (p !== "C" || owns(shopCat, key))).map(([key, name, base, sec]) => {
     const own = owns(shopCat, key), on = worn(shopCat) === key, trying = tryOn && tryOn.cat === shopCat && tryOn.key === key, rar = rarityOf(base), price = priceOf(shopCat, key);
+    if (base === "C" && !secHead) { secHead = true; sec = "Secretas"; } else if (base === "C") sec = undefined;
     const head = sec ? `<div class="shop-sec ${sec === "Halloween" ? "hw-sec" : ""}">${sec === "Halloween" ? "Halloween · solo hasta el 2 de noviembre" : esc(sec)}</div>` : "";
     const label = own ? (on ? "Puesto" : "Usar") : lockLv(price) ? `<span class="price-l">Nivel ${lockLv(price)}</span>` : price === "P" ? `<span class="price-l">PREMIUM</span>` : `<span class="price-l ${S.coins < price ? "no" : ""}">${coin}${NUM.format(price)}</span>`;
     return head + `<button class="item ${on ? "on" : ""} ${trying ? "try" : ""}" data-act="pick:${shopCat}:${key}" aria-pressed="${on}"><span class="thumb">${thumb(shopCat, key)}</span><span>${esc(name)}</span>${base ? `<span class="rar ${rar}" style="--rc:${RAR[rar][1]}">${RAR[rar][0]}</span>` : ""}<span class="small">${label}</span></button>`;
@@ -11864,6 +11873,7 @@ document.addEventListener("click", e => {
   else if (k === "report") { const q = qsOf(ctx)[tQ]; (S.reports = S.reports || []).push({ id:v, q:q ? q.q : "", right:q ? q.right : "", day:today() }); save(); SND.pop(); toast("¡Gracias! La vamos a revisar."); render(); }
   else if (k === "streak-toggle") { streakOpen = !streakOpen; render(false); }
   else if (k === "level") { closeSheet(); openLevel(); }
+  else if (k === "codewear") { const [cat, key] = v.split(":"); if (owns(cat, key)) { S.tito[cat] = key; save(); pushMember(); closeSheet(); render(false); toast("¡Te la pusiste!", "ok"); } }
   else if (k === "lvwear") { const [cat, key] = v.split(":"); S.tito[cat] = key === "off" ? DEF[cat] : key; save();
     const ls = $("#sheetRoot .lvl-sheet"), lu = $("#sheetRoot .lvlup-list"); if (ls) ls.outerHTML = levelHTML(); else if (lu) lu.innerHTML = lvUpNews.map(g => lvGiftRow(g, level())).join("");
     render(false); toast(key === "off" ? "Listo, te lo sacaste" : "¡Te queda genial!", key === "off" ? "info" : "ok"); }
