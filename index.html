@@ -10074,7 +10074,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 00:43";
+const APP_VER = "03/11 00:51";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -11012,11 +11012,10 @@ function renderGames(){
 /* ---------- Ruleta diaria ---------- */
 /* Ruleta: 9 gajos, todos dan algo (desde 150 puntos hasta el premio mayor de 1.000) */
 const WHEEL = [
-  { k:"pts", v:150, t:"150", col:"#22A447", c2:"#58D36F", w:24, ic:"coin" }, { k:"hint", v:1, t:"PISTA", col:"#F2B705", c2:"#FFD95A", w:12, ic:"bulb" },
-  { k:"pts", v:250, t:"250", col:"#2F7FE8", c2:"#6FB0FF", w:14, ic:"coin" }, { k:"pts", v:1000, t:"1000", col:"#1B1640", c2:"#4A3A9A", w:2, ic:"star", jack:true },
-  { k:"pts", v:200, t:"200", col:"#F47B20", c2:"#FFA95C", w:18, ic:"coin" }, { k:"item", t:"ROPA", col:"#7A4FD9", c2:"#A887F2", w:9, ic:"shirt" },
-  { k:"pts", v:500, t:"500", col:"#E8412C", c2:"#FF7A66", w:7, ic:"coin" }, { k:"prem", v:3, t:"PREMIUM", col:"#C98F00", c2:"#FFD34D", w:4, ic:"crown" },
-  { k:"pts", v:300, t:"300", col:"#0E9AA7", c2:"#4FD1D9", w:10, ic:"coin" }
+  { k:"pts", v:150, t:"150", col:"#22A447", c2:"#58D36F", w:28 }, { k:"hint", v:1, t:"PISTA", col:"#F2B705", c2:"#FFD95A", w:12 },
+  { k:"pts", v:250, t:"250", col:"#2F7FE8", c2:"#6FB0FF", w:20 }, { k:"pts", v:1000, t:"1000", col:"#1B1640", c2:"#4A3A9A", w:2, jack:true },
+  { k:"item", t:"ROPA", col:"#7A4FD9", c2:"#A887F2", w:9 }, { k:"pts", v:500, t:"500", col:"#E8412C", c2:"#FF7A66", w:9 },
+  { k:"prem", v:3, t:"PREMIUM", col:"#C98F00", c2:"#FFD34D", w:4 }, { k:"pts", v:300, t:"300", col:"#0E9AA7", c2:"#4FD1D9", w:16 }
 ];
 const WSEG = 360 / WHEEL.length;
 function wheelIcon(ic){
@@ -11036,10 +11035,11 @@ function wheelSVG(){
   WHEEL.forEach((w, i) => {
     const a0 = i * WSEG, a1 = (i + 1) * WSEG, mid = a0 + WSEG / 2, [x0, y0] = P(R, a0), [x1, y1] = P(R, a1);
     s += `<path d="M0 0 L${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} Z" fill="url(#wg${i})" stroke="${IK}" stroke-width="2.5"/>`;
-    const L = w.t.length, fs = Math.min(w.k === "pts" ? 19 : 15, 38 / (L * .64)), light = w.k === "hint";
-    s += `<g transform="rotate(${mid})"><g transform="translate(0 -80)">${wheelIcon(w.ic)}</g>
-      <text transform="translate(0 -54) rotate(-90)" text-anchor="middle" dominant-baseline="central" font-family="Luckiest Guy, Impact, sans-serif" font-size="${fs.toFixed(1)}" fill="${light ? IK : w.jack ? "#FFE27A" : "#fff"}" stroke="${light ? "#fff" : IK}" stroke-width="${light ? 2.5 : 4}" paint-order="stroke" letter-spacing=".5">${w.t}</text>
-</g>`;
+    const L = w.t.length, fs = Math.min(w.k === "pts" ? 20 : 17, (w.k === "pts" ? 36 : 50) / (L * .64)), light = w.k === "hint";
+    /* puntos: número que termina siempre a la misma distancia de la moneda; el resto, solo la palabra */
+    const coin = w.k === "pts", txtCol = light ? IK : w.jack ? "#FFE27A" : "#fff", strokeCol = light ? "#fff" : IK;
+    s += `<g transform="rotate(${mid})">${coin ? `<g transform="translate(0 -82)">${wheelIcon("coin")}</g>` : ""}
+      <text transform="translate(0 ${coin ? -71 : -58}) rotate(-90)" text-anchor="${coin ? "end" : "middle"}" dominant-baseline="central" font-family="Luckiest Guy, Impact, sans-serif" font-size="${fs.toFixed(1)}" fill="${txtCol}" stroke="${strokeCol}" stroke-width="${light ? 2.5 : 4}" paint-order="stroke" letter-spacing=".5">${w.t}</text></g>`;
   });
   s += `<circle r="${R}" fill="url(#wshade)" pointer-events="none"/><path d="M-70 -62 A94 94 0 0 1 40 -86" stroke="#fff" stroke-width="7" fill="none" opacity=".18" stroke-linecap="round"/>`;
   for (let i = 0; i < n; i++) { const [px, py] = P(R - 3, i * WSEG); s += `<circle cx="${px}" cy="${py}" r="3.6" fill="#F4F6FA" stroke="${IK}" stroke-width="1.6"/>`; }
