@@ -10224,7 +10224,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 15:28";
+const APP_VER = "03/11 15:32";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10896,7 +10896,7 @@ function save(){
 }
 function play(c){
   if (!S.plays[c.key]) S.plays[c.key] = { w:{ g:[], done:false, won:false, extra:false, hints:[], t0:0, bonus:0, left:0 }, s:{ found:[], done:false, t0:0, bonus:0, time:0, left:0 }, t:{ ans:[], done:false, second:false, removed:{}, clues:{}, started:false, qt0:0, qi:-1 }, pts:{} };
-  if (c.cat && !S.plays[c.key].cat) S.plays[c.key].cat = c.cat;
+  if (c.kind === "g" && c.cat && !S.plays[c.key].cat) S.plays[c.key].cat = c.cat;
   return S.plays[c.key];
 }
 const dailyDone = d => { const p = S.plays["d:"+d]; return !!(p && p.w.done && p.s.done && p.t.done); };
