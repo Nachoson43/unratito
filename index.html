@@ -10246,7 +10246,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 17:01";
+const APP_VER = "03/11 17:07";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -11244,12 +11244,44 @@ function startGame(c, kind){
 function backFromGame(){ const c = ctx; if (c.kind === "a" || c.kind === "f" || c.kind === "c") trivTab = c.kind === "a" ? "arg" : c.kind === "f" ? "futbol" : "general"; if (c.kind === "c") { setView("general"); return; } if (c.kind === "g") setView("group", { group:c.code }); else if (c.kind === "a") setView("arg"); else if (c.kind === "f") setView("futbol"); else if (c.kind === "m") setView("tito"); else setView("games"); }
 
 /* ---------- Inicio: Tito grande, frase, racha y un solo botón ---------- */
+/* Frases de Tito: primero lo que más importa ahora (hambre, lo que falta, grupos, racha), después según la hora y alguna al azar */
+const PH_SEED = Math.floor(Math.random() * 1000);
+let phTaps = [];
 function phrase(){
-  const p = S.plays["d:"+today()], done = p && p.w.done && p.s.done && p.t.done;
-  if (S.care.food < 30) return "¡Tengo hambre de preguntas! ¿Me das una merienda?";
-  if (done) return ["¡Crack! Hoy completamos todo.","¿Vamos a la tienda a gastar puntos?","¿Probamos la sección de fútbol?"][phraseI % 3];
-  if (S.streak.count && S.streak.last === addDays(today(),-1)) return ["¡No cortemos la racha de "+S.streak.count+" días!","Hoy sumamos el día "+(S.streak.count+1)+". ¿Arrancamos?"][phraseI % 2];
-  return ["¿Jugamos un ratito?","¡Hoy me siento con suerte!","Tengo ganas de aprender algo nuevo.","¿Me ayudas a llenar la panza de saber?","¡Vamos, que hoy lo logramos en tres!"][phraseI % 5];
+  const T = today(), p = S.plays["d:"+T], w = p && p.w.done, so = p && p.s.done, tr = p && p.t.done, done = w && so && tr;
+  const h = new Date().getHours(), dow = new Date().getDay(), nm = (S.profile.name || "").split(" ")[0];
+  const pick = a => a[(phraseI + PH_SEED) % a.length];
+  /* Si lo tocan muchas veces seguidas */
+  const now = Date.now(); phTaps = phTaps.filter(t => now - t < 3500);
+  if (phTaps.length >= 5) return pick(["¡Para, que me mareo! 😵‍💫", "Me vas a hacer puré 🥚", "Cosquillas no, ¡cosquillas no! 🤭", "Con tanto toque me sale pollito 🐣"]);
+  const top = [];
+  if (S.care.food < 30) top.push(pick(["Me hace ruido la panza… ¿una merienda de preguntas? 🥐", "Tengo un hambre de saber que no veo 😩", "Si no como una trivia, me desmayo 🫠"]));
+  if (S.care.mood < 30) top.push("Me siento solito… ¿jugamos algo juntos? 🥺");
+  if (dayCounter("wheel").n === 0) top.push(pick(["La ruleta está girando sola de las ganas 🎡", "Dicen que hoy la ruleta paga bien. Yo no dije nada 🤫", "¿Ya giraste la ruleta? Es gratis, eh 🎡"]));
+  const pg = S.groups.find(c => S.groupMeta[c] && !S.groupMeta[c].demo && gPending(c));
+  if (pg) top.push(pick([`En «${S.groupMeta[pg].name}» ya están jugando. ¿Te vas a dejar ganar? 👀`, `Tu grupo te espera. Hoy hay desafío nuevo 🔥`, `Ojo que en «${S.groupMeta[pg].name}» te pasan por arriba 😬`]));
+  const lead = S.groups.find(c => { const g = S.groupMeta[c]; if (!g || g.demo || !groupCache[c] || !groupCache[c].list) return false; return myMonthPos(groupCache[c].list, c) === 1; });
+  if (lead) top.push(pick([`En «${S.groupMeta[lead].name}» vas 1º. Que no te alcancen 👑`, `Puntero en «${S.groupMeta[lead].name}». Así me gusta 😎`]));
+  if (!done && S.streak.count && S.streak.last === addDays(T, -1)) top.push(pick([`Llevamos ${S.streak.count} ${S.streak.count === 1 ? "día" : "días"} seguidos. Hoy no se corta 🔥`, `Día ${S.streak.count + 1} de racha. Esto ya es costumbre 💪`, `${S.streak.count} días sin fallar. No me abandones ahora 🥺`]));
+  if (!done) {
+    if (!w && !so && !tr) top.push(pick(["Hoy hay palabra, sopa y trivia nuevas. ¿Arrancamos? 🚀", "Ya está el juego de hoy. Lo probé y está bravo 😏", nm ? `¡Hola, ${nm}! Te guardé el juego de hoy 🎁` : "¡Hola! Te guardé el juego de hoy 🎁"]));
+    else {
+      if (!w) top.push(pick(["Te falta la palabra. Yo arrancaría con una con vocales 😉", "Falta adivinar la palabra. Seis intentos, sin presión 😅"]));
+      if (!so) top.push(pick(["Te falta la sopa. Yo ya encontré tres palabras… mentira 🙈", "La sopa de letras se está enfriando 🍲"]));
+      if (!tr) top.push(pick(["Te falta la trivia. Hoy vienen picantes 🌶️", "Siete preguntas y terminamos el día. ¡Vamos! 💪"]));
+    }
+  } else top.push(pick(["¡Crack! Hoy completamos todo 🏆", "Día completo. Ahora a presumir en el grupo 😎", "Listo lo de hoy. ¿Una de Arcade para el postre? 🕹️", "Terminamos todo. Mañana más y mejor ✨"]));
+  /* Según la hora y el día */
+  const time = h < 6 ? ["¿A esta hora despierto? Bueno, una trivia y a dormir 😴", "Los búhos también juegan 🦉", "Shh… que todos duermen. Juguemos bajito 🤫"]
+    : h < 12 ? ["Buen día. Café, palabra del día y a romperla ☕", "Arrancar el día con una trivia despierta más que el mate 🧉", "Mañana fresquita, cerebro despierto ☀️"]
+    : h < 20 ? ["Ideal para un ratito de juego 🕹️", "Pausa merecida: un juego y sigues 😌", "La tarde está para una de Arcade 😏"]
+    : ["Una partidita antes de dormir y listo 🌙", "La noche está para juntar puntos ✨", "Último juego del día y a la cama 🛌"];
+  const extra = [];
+  if (dow === 0 || dow === 6) extra.push("Finde largo de juegos. Así sí 🎉");
+  if (daysLeftMonth() <= 3) extra.push("Se termina la temporada. ¡A meter puntos en el grupo! 🏆");
+  const fun = ["Si me tocas muchas veces me mareo 😵‍💫", "Soy un huevo, pero no me hago el gallito 🐓", "Con los puntos de hoy me compras algo lindo, ¿no? 🛍️", "Dicen que los que juegan conmigo saben más. Lo dije yo 🤓", "No soy un huevo cualquiera: soy tu huevo 🥚", "Si aciertas todo hoy, bailo 💃"];
+  const pool = top.concat([pick(time)], extra, [fun[(phraseI + PH_SEED) % fun.length]]);
+  return pool[phraseI % pool.length];
 }
 function weekHTML(){
   const c = S.streak.count, alive = c && S.streak.last >= addDays(today(),-1);
@@ -12523,7 +12555,7 @@ document.addEventListener("click", e => {
   else if (k === "start") { const p = play(ctx); if (v === "t") { qsOf(ctx); p.t.started = true; p.t.qi = -1; } else p[v].t0 = Date.now(); save(); render(true); }
   else if (k === "exit-game") exitGame();
   else if (k === "back-today") setView("games", { day:today() });
-  else if (k === "tito-tap") { phraseI++; const b = $("#heroBubble"); if (b) { b.textContent = phrase(); b.style.animation = "none"; void b.offsetWidth; b.style.animation = ""; } const t = $("#heroTito"); if (t) { SND.groove(); t.className = ""; t.innerHTML = titoSVG(S.tito, 150, { mood:"happy", level:level(), dance:S.tito.dance || "funk" }); clearTimeout(t._d); t._d = setTimeout(() => { if ($("#heroTito") === t) { t.className = "anim-idle"; t.innerHTML = titoSVG(S.tito, 150, { level:level(), mood: roomMood() }); } }, 2600); } }
+  else if (k === "tito-tap") { phraseI++; phTaps.push(Date.now()); const b = $("#heroBubble"); if (b) { b.textContent = phrase(); b.style.animation = "none"; void b.offsetWidth; b.style.animation = ""; } const t = $("#heroTito"); if (t) { SND.groove(); t.className = ""; t.innerHTML = titoSVG(S.tito, 150, { mood:"happy", level:level(), dance:S.tito.dance || "funk" }); clearTimeout(t._d); t._d = setTimeout(() => { if ($("#heroTito") === t) { t.className = "anim-idle"; t.innerHTML = titoSVG(S.tito, 150, { level:level(), mood: roomMood() }); } }, 2600); } }
   else if (k === "spin") spin();
   else if (k === "after-prize") { closeSheet(); if (dayCounter("wheel").n >= LIMITS.spins || view !== "ruleta") setView("home", { day:today() }); else render(false); }
   else if (k === "wear-now") { const [cat, key] = v.split(":"); wear(cat, key); save(); pushMember(); closeSheet(); setView("tito"); toast("¡Le queda genial!"); }
