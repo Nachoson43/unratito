@@ -1531,7 +1531,7 @@ const charOf = id => CHARS[id] || null;
 function charName(id){ return id && CHARS[id] ? CHARS[id].n : "Tito"; }
 /* Personajes secretos: solo con código (no salen en la caja misteriosa ni aparecen hasta tenerlos) */
 const CHAR_SECRET = ["hadita", "diablito"];
-CHARS.hadita = { n:"Hadita", d:"Un hada del bosque con vestido de hojas y polvo de estrellas.", secret:true,
+CHARS.hadita = { n:"Hadita", wide:true, d:"Un hada del bosque con vestido de hojas y polvo de estrellas.", secret:true,
   path:"M60 12 C86 12 102 52 102 84 C102 112 84 128 60 128 C36 128 18 112 18 84 C18 52 34 12 60 12 Z",
   defs:id => `<linearGradient id="${id}wg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E6FFF8" stop-opacity=".95"/><stop offset=".6" stop-color="#9DEBD8" stop-opacity=".75"/><stop offset="1" stop-color="#B9A8FF" stop-opacity=".7"/></linearGradient>
     <linearGradient id="${id}dg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4FCB6B"/><stop offset="1" stop-color="#1E8A3E"/></linearGradient>
@@ -1555,7 +1555,7 @@ CHARS.hadita = { n:"Hadita", d:"Un hada del bosque con vestido de hojas y polvo 
     ${[[36, 14, "#FF8FB8"], [50, 6, "#FFFFFF"], [64, 4, "#B9A8FF"], [78, 8, "#FF8FB8"], [90, 18, "#FFFFFF"]].map(([x, y, col]) => `<g transform="translate(${x} ${y})">${[0, 72, 144, 216, 288].map(a => `<circle cx="${Math.cos(a * Math.PI / 180) * 3.4}" cy="${Math.sin(a * Math.PI / 180) * 3.4}" r="2.6" fill="${col}" stroke="${IK}" stroke-width="1"/>`).join("")}<circle r="2" fill="#FFE27A" stroke="${IK}" stroke-width=".8"/></g>`).join("")}
     <path d="M28 14 q-4 -6 -10 -4 M92 14 q4 -6 10 -4" stroke="#3FAF4C" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="17" cy="9" rx="5" ry="2.6" fill="#4FCB6B" stroke="${IK}" stroke-width="1.4" transform="rotate(-25 17 9)"/><ellipse cx="103" cy="9" rx="5" ry="2.6" fill="#4FCB6B" stroke="${IK}" stroke-width="1.4" transform="rotate(25 103 9)"/>
     <path d="M106 96 L118 70" stroke="${IK}" stroke-width="4.5" stroke-linecap="round"/><path d="M106 96 L118 70" stroke="#F4C440" stroke-width="2.2" stroke-linecap="round"/><path d="M119 58 l2.6 5.4 6 .8 -4.3 4.1 1 5.9 -5.3 -2.8 -5.3 2.8 1 -5.9 -4.3 -4.1 6 -.8z" fill="#FFE27A" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/>` };
-CHARS.diablito = { n:"Diablito", d:"Llegó del infierno con cuernos, cola y muchas ganas de jugar.", secret:true,
+CHARS.diablito = { n:"Diablito", wide:true, d:"Llegó del infierno con cuernos, cola y muchas ganas de jugar.", secret:true,
   path:"M60 12 C88 12 104 52 104 84 C104 112 86 128 60 128 C34 128 16 112 16 84 C16 52 32 12 60 12 Z",
   defs:id => `<radialGradient id="${id}ch" cx=".42" cy=".35" r=".8"><stop offset="0" stop-color="#FF6A4D"/><stop offset=".55" stop-color="#D8231C"/><stop offset="1" stop-color="#7A0A10"/></radialGradient>
     <linearGradient id="${id}hn" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3A0E12"/><stop offset=".6" stop-color="#6E1A20"/><stop offset="1" stop-color="#F2E6D8"/></linearGradient>
@@ -1576,7 +1576,7 @@ CHARS.diablito = { n:"Diablito", d:"Llegó del infierno con cuernos, cola y much
     <path d="M104 50 L104 118" stroke="${IK}" stroke-width="5" stroke-linecap="round"/><path d="M104 50 L104 118" stroke="#3A3D4A" stroke-width="2.6" stroke-linecap="round"/>
     <path d="M94 54 V40 L96 44 M104 50 V32 L106 38 M114 54 V40 L112 44 M94 54 Q104 62 114 54" stroke="${IK}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M94 54 V40 M104 50 V32 M114 54 V40 M94 54 Q104 62 114 54" stroke="#C9D0DB" stroke-width="2.4" fill="none" stroke-linecap="round"/>` };
 /* Jefe de la Copa Tito (no se puede elegir como personaje) */
-CHARS.dinoboss = { n:"Dinito Malvado", d:"La versión malvada de Dinito.", secret:true, hidden:true,
+CHARS.dinoboss = { n:"Dinito Malvado", wide:true, d:"La versión malvada de Dinito.", secret:true, hidden:true,
   path:"M60 8 C90 8 106 54 106 84 C106 114 86 130 60 130 C34 130 14 114 14 84 C14 54 30 8 60 8 Z",
   defs:id => `<radialGradient id="${id}ch" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#5E8F3A"/><stop offset=".6" stop-color="#2F5A22"/><stop offset="1" stop-color="#172E14"/></radialGradient>
     <radialGradient id="${id}au" cx=".5" cy=".55" r=".55"><stop offset="0" stop-color="#C21D3A" stop-opacity=".9"/><stop offset="1" stop-color="#5A0A2A" stop-opacity="0"/></radialGradient>`,
@@ -5740,7 +5740,8 @@ function arcMount(){
   const show = h => { const b = $("#arcBig"); if (b) b.classList.toggle("hide", !!h && run.state !== "count"); ov.innerHTML = h; ov.classList.toggle("on", !!h); ov.classList.remove("compact", "full"); if (!h) return;
     const box = ov.querySelector(".arc-box"); if (!box) return;
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact");
-    if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full"); };
+    if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full");
+    [60, 400].forEach(ms => setTimeout(() => { if (!ov.classList.contains("on") || !box.isConnected) return; if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact"); if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full"); }, ms)); };
   const startNew = () => {
     if (typeof arcGroupOn === "function" && arcGroupOn(run.id) && !gArcTryUse()) { run.state = "ready"; run.showReady(); return; }
     const st = arcState(); st.runs[run.id] = (st.runs[run.id] || 0) + 1; run.practice = !!g.limit && st.runs[run.id] > g.limit; run.first = st.runs[run.id] === 1; save();
@@ -6706,7 +6707,7 @@ arcRegister("t2048", { noPause:true, noBig:true,
 const MEMO_ICONS = ["ball","cup","star","music","gift","crown","flag","shirt","flame","trivia","clock","arcade"];
 arcRegister("memo", { noBig:true,
   t:"Memotest", d:"Encuentra los pares lo más rápido que puedas.", col:"r", revive:false, noCount:true, ctlH:0,
-  ratio(){ return (arcState().opt || {}).memo === "dificil" ? 1.5 : 1; },
+  get fill(){ const hard = (typeof arcGroupOn === "function" && arcGroupOn("memo")) ? false : (arcState().opt || {}).memo === "dificil"; return hard ? [1.5, 1.95] : [1, 1.5]; },
   options:[{ k:"normal", l:"8 pares" }, { k:"dificil", l:"12 pares" }], onOpt:true,
   intro:"Da vuelta dos cartas por vez. Si son iguales, quedan. Menos movimientos y menos tiempo, más puntos.",
   help:"Toca las cartas para darlas vuelta",
@@ -10246,7 +10247,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 17:07";
+const APP_VER = "03/11 18:13";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10465,7 +10466,7 @@ function titoSVG(t, px, o){
   const BODY = CH ? CH.path : EGG;
   const id = "e"+(svgN++), K = IK, mood = o.mood || "normal", lvl = o.level || 1;
   const dark = CH ? !!CH.dark : DARK_SKINS.includes(t.skin);
-  let s = `<svg class="tito ${o.dance && !o.still ? "dance-"+o.dance : ""}" viewBox="0 -8 124 150" width="${px}" height="${Math.round(px*150/124)}" aria-hidden="true" focusable="false"><defs><clipPath id="${id}c"><path d="${BODY}"/></clipPath>${CH && CH.defs ? CH.defs(id) : ""}`;
+  let s = `<svg class="tito ${o.dance && !o.still ? "dance-"+o.dance : ""}" ${CH && CH.wide ? 'style="overflow:visible"' : ""} viewBox="0 -8 124 150" width="${px}" height="${Math.round(px*150/124)}" aria-hidden="true" focusable="false"><defs><clipPath id="${id}c"><path d="${BODY}"/></clipPath>${CH && CH.defs ? CH.defs(id) : ""}`;
   if (t.skin === "dorado") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".5" stop-color="#F4C440"/><stop offset="1" stop-color="#C98F00"/></linearGradient>`;
   if (t.skin === "galaxia") s += `<radialGradient id="${id}g" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#6B4FD8"/><stop offset=".6" stop-color="#2B1D5C"/><stop offset="1" stop-color="#120B2E"/></radialGradient>`;
   if (t.skin === "arcoiris") s += `<linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1">${["#FF9A9A","#FFC48A","#FFF08A","#A8EBA0","#9CC8FF","#C9A8FF"].map((c,i) => `<stop offset="${i/5}" stop-color="${c}"/>`).join("")}</linearGradient>`;
@@ -12182,10 +12183,11 @@ function rankHTML(list, code){
   const kinds = gKinds(code); if (!kinds.includes(rankTab)) rankTab = kinds[0];
   const kind = rankTab, mode = rankMode === "day" ? "day" : "month", rows = rankRows(list, code, kind, mode), T = today(), arcG = gArcOf(code, T);
   const unit = mode === "month" || kind === "gen" ? "pts" : "";
+  const brk = kind === "gen" && mode === "day" ? { a:placePts(list, code, T, "arc"), w:placePts(list, code, T, "word") } : null;
   const tabs = kinds.length > 1 ? `<div class="g-tabs" role="group" aria-label="Ranking" style="--n:${kinds.length};--k:${kinds.indexOf(kind)}"><span class="g-tabs-pill"></span>${kinds.map(k => `<button data-act="rtab:${k}" aria-pressed="${k === kind}">${KIND_L[k]}</button>`).join("")}</div>` : "";
   return `<section class="card g-rank g-in" style="--i:3"><div class="g-rank-top"><h2>Ranking</h2><div class="g-sw" role="group" aria-label="Período"><button data-act="rank:day" aria-pressed="${mode === "day"}">Hoy</button><button data-act="rank:month" aria-pressed="${mode === "month"}">Mes</button></div></div>${tabs}
-    <div class="rank g-rows" key="${kind + mode}">${rows.map((r, i) => `<div class="rank-row ${r.m.me ? "me" : ""}" style="--i:${i}"><span class="pos ${i < 3 && r.has ? "p" + (i + 1) : ""}">${i + 1}</span>${avatar(r.m, 38)}<span class="rname">${esc(r.m.name || "Jugador")}${r.m.me ? " <small>(tú)</small>" : ""}</span><span class="rpts">${!r.has ? `<span class="muted small">${mode === "day" ? "Falta" : "—"}</span>` : (kind === "arc" && mode === "day" ? fmtArc(arcG, r.v) : NUM.format(r.v)) + (unit ? ` <small>${unit}</small>` : "")}</span></div>`).join("")}</div>
-    ${mode === "month" ? `<p class="g-foot">Cada día: 1º 10 · 2º 8 · 3º 6 · 4º 5… · jugar 1</p>` : ""}</section>`;
+    <div class="rank g-rows" key="${kind + mode}">${rows.map((r, i) => `<div class="rank-row ${r.m.me ? "me" : ""}" style="--i:${i}"><span class="pos ${i < 3 && r.has ? "p" + (i + 1) : ""}">${i + 1}</span>${avatar(r.m, 38)}<span class="rname">${r.m.me && !S.profile.name ? "Tú" : esc(r.m.name || "Jugador") + (r.m.me ? " <small>(tú)</small>" : "")}${brk && r.has ? `<small class="rdays">🕹️ ${brk.a[r.m.id] || 0} + ❓ ${brk.w[r.m.id] || 0}</small>` : ""}</span><span class="rpts">${!r.has ? `<span class="muted small">${mode === "day" ? "Falta" : "—"}</span>` : (kind === "arc" && mode === "day" ? fmtArc(arcG, r.v) : NUM.format(r.v)) + (unit ? ` <small>${unit}</small>` : "")}</span></div>`).join("")}</div>
+    ${mode === "month" || kind === "gen" ? `<p class="g-foot">${kind === "gen" && mode === "day" ? "Suma los puestos de hoy en Arcade y Trivia. " : ""}Por puesto: 1º 10 · 2º 8 · 3º 6 · 4º 5… · jugar 1</p>` : ""}</section>`;
 }
 const dots = (used, max) => max === Infinity ? `<span class="g-inf">∞</span>` : `<span class="g-dots">${Array.from({ length:max }, (_, i) => `<i class="${i < used ? "" : "on"} ${i === 3 ? "prem" : ""}"></i>`).join("")}</span>`;
 function triTile(code, T, n, s, ready){
