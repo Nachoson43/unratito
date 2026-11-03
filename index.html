@@ -1200,6 +1200,18 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .g-inv span{font-size:2.6em;animation:gPop 1.2s ease-in-out infinite}
 .g-inv b{font-family:var(--display);font-size:1.35em}
 .g-inv small{color:var(--muted);font-weight:800;letter-spacing:.08em}
+/* Invitación abierta en el navegador */
+.inv-land{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.inv-land > b{font-family:var(--display);font-size:1.35em;line-height:1.15}
+.inv-pop{font-size:2.6em;animation:gPop 1.2s ease-in-out infinite}
+.inv-code{font-family:var(--cartoon);font-size:2em;letter-spacing:.14em;background:var(--y);color:#1B1640;border:var(--bw) solid var(--K);border-radius:14px;padding:4px 14px 0;box-shadow:var(--pop);margin-bottom:6px}
+.inv-opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:var(--surface-2);border-radius:14px;padding:10px 12px}
+.inv-opt > span:last-child{display:flex;flex-direction:column;gap:2px}.inv-opt small{color:var(--muted);font-weight:600;line-height:1.3}
+.inv-n{font-size:1.6em;line-height:1}
+.inv-or{width:100%;display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:800;margin:2px 0}.inv-or::before,.inv-or::after{content:"";flex:1;height:2px;background:var(--line)}
+.inapp-note{background:#FFF4D2;color:#4A3F10;border:2px solid #E8B400;border-radius:12px;padding:8px 10px;font-size:.88em;font-weight:700;text-align:left;margin:0 0 10px}
+.gf-paste{display:flex;gap:8px}.gf-paste .gf-name{flex:1;min-width:0}
+.g-tile .g-tt b{white-space:normal;line-height:1.15}
 
 </style>
 </head>
@@ -10234,7 +10246,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 16:53";
+const APP_VER = "03/11 17:01";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -11064,7 +11076,9 @@ async function onFbUser(u){
     else if (!hasProgress(cloud)) from = "local";
     else { from = await chooseProgress(S, cloud); closeSheet(); }
   }
+  const other = from === "cloud" ? S : cloud;
   if (from === "cloud") { const keepSet = S.settings; adoptState(cloud); if (!S.profile.done) S.profile.done = true; if (keepSet && keepSet.premium) S.settings.premium = true; }
+  if (other) mergeGroups(other);
   S.fbUid = u.uid;
   remote.db = db; remote.uid = u.uid; remoteMain.ref = ref; remoteMember.ref = db.doc("members/" + u.uid);
   await upgradeLocalGroups();
@@ -11075,6 +11089,13 @@ async function onFbUser(u){
   if (from === "cloud" && $("#profileForm")) { closeSheet(); render(false); }
   if (inviteCode && S.profile.done && !$("#splash")) setTimeout(handleInvite, 600);
   if (view === "more" || view === "groups" || view === "group") render(false);
+}
+/* Los grupos nunca se pierden al elegir progreso: se juntan los de los dos lados */
+function mergeGroups(o){
+  (o.groups || []).forEach(c => { const m = o.groupMeta && o.groupMeta[c]; if (!m || m.demo || S.groups.includes(c)) return; S.groups.push(c); S.groupMeta[c] = m; });
+  Object.entries(o.gscore || {}).forEach(([c, g]) => { const a = S.gscore[c]; if (!a) { S.gscore[c] = g; return; }
+    ["days","arc","tries","sl"].forEach(f => { if (!g[f]) return; a[f] = a[f] || {}; Object.entries(g[f]).forEach(([k, v]) => { if (a[f][k] == null || (typeof v === "number" && v > a[f][k])) a[f][k] = v; }); }); });
+  Object.entries(o.gpicks || {}).forEach(([c, v]) => { S.gpicks = S.gpicks || {}; if (!S.gpicks[c] || (v && v.d > S.gpicks[c].d)) S.gpicks[c] = v; });
 }
 async function fbPull(){
   if (!remote.uid || !remoteMain.ref || remoteMain.busy || remoteMain.pending) return;
@@ -11103,7 +11124,7 @@ function openLogin(why, after, top){
   openSheet("Entra con tu cuenta", `<div id="loginSheet" style="text-align:center">${top || `<span class="anim-idle">${titoSVG(S.tito, 90, { mood:"happy", level:level() })}</span>`}</div>
     <p style="margin:6px 0 10px">${esc(why || "Con tu cuenta de Google tu progreso queda guardado.")}</p>
     <ul class="acct-list"><li>Tu progreso queda guardado aunque cambies de celular</li><li>Juegas en grupo con familia y amigos</li><li>Los demás solo ven tu apodo y tu Tito, nunca tu mail</li></ul>
-    <button class="btn google block" data-act="login">${GOOGLE_G}Entrar con Google</button><button class="btn block" data-act="close-sheet" style="margin-top:8px">Ahora no</button>`);
+    ${inAppNote()}<button class="btn google block" data-act="login">${GOOGLE_G}Entrar con Google</button><button class="btn block" data-act="close-sheet" style="margin-top:8px">Ahora no</button>`);
 }
 const GOOGLE_G = `<svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.4 5.7c4.3-4 6.9-9.9 6.9-17.2z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>`;
 function acctCard(){
@@ -12199,7 +12220,7 @@ function groupFormMeta(f){
   if (v("gMode") === "solo") return $("#gKindV").value === "a" ? { mode:"solo", theme:"normal", game:v("gArc") || "flappy" } : { mode:"solo", theme:v("gCat") || "normal", game:"t" };
   return { mode:"mix", theme:"normal", game:"random" };
 }
-function openJoinGroup(){ if (CFG.fb && !remote.uid) { openLogin("Para sumarte a un grupo, entra con tu cuenta de Google.", openJoinGroup); return; } openSheet("Unirme a un grupo", `<form id="joinForm" class="gform"><input id="jCode" class="gf-name gf-code" maxlength="8" required placeholder="CÓDIGO" autocomplete="off"><button class="btn yellow block big-cta" type="submit">Unirme</button></form>`); }
+function openJoinGroup(){ if (CFG.fb && !remote.uid) { openLogin("Para sumarte a un grupo, entra con tu cuenta de Google.", openJoinGroup); return; } openSheet("Unirme a un grupo", `<form id="joinForm" class="gform"><div class="gf-paste"><input id="jCode" class="gf-name gf-code" maxlength="8" required placeholder="CÓDIGO" autocomplete="off"><button type="button" class="btn" data-act="join-paste">Pegar</button></div><button class="btn yellow block big-cta" type="submit">Unirme</button></form>`); }
 function genCode(){ const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; for (let i = 0; i < 6; i++) s += A[Math.floor(rnd()*A.length)]; return s; }
 async function createGroup(name, m){
   const code = genCode(), meta = { name, mode:m.mode, theme:m.theme, game:m.game, owner:remote.uid || "me", created:Date.now() };
@@ -12228,7 +12249,7 @@ function arcGroupReady(id){
 }
 /* ---------- Invitar: mensaje con ganas de jugar + link que te suma directo ---------- */
 function inviteText(code){
-  const g = S.groupMeta[code] || {}, gm = gModeOf(g), T = today(), arcG = gArcOf(code, T), url = SHARE_URL + "?g=" + code;
+  const g = S.groupMeta[code] || {}, gm = gModeOf(g), T = today(), arcG = gArcOf(code, T), url = SHARE_URL + "?g=" + code + "&n=" + encodeURIComponent((S.groupMeta[code] || {}).name || "").replace(/%20/g, "+");
   const list = membersFor(code), pos = myMonthPos(list, code), n = list.filter(m => !m.bot).length, e = id => (ARC_SHARE[id] || { e:"🕹️" }).e;
   let s = `🏆 ¡Te reto en unraTITO!\nÚnete a mi grupo «${g.name || "unraTITO"}»${n > 1 ? ` (ya somos ${n})` : ""} y competimos todos los días:\n\n`;
   if (gm.mode === "mix") s += `🕹️ 1 juego de Arcade distinto cada día\n❓ 3 trivias: una la elige el 1º y otra el último 😏\n📊 Ranking del día y del mes\n🎁 Premios cada mes: ropa, bailes y monedas\n`;
@@ -12241,7 +12262,21 @@ function inviteText(code){
   else s += `\n¿Te animas?`;
   return s + `\n\n👉 Toca y entras directo:\n${url}\n\nCódigo: ${code}`;
 }
-let inviteCode = (() => { try { const m = /[?&#]g=([A-Za-z0-9]{6})\b/.exec(location.href); if (m) { try { history.replaceState(null, "", location.pathname); } catch(e){} return m[1].toUpperCase(); } } catch(e){} return null; })();
+let inviteName = "";
+let inviteCode = (() => { try { const m = /[?&#]g=([A-Za-z0-9]{6})\b/.exec(location.href); if (m) { const n = /[?&#]n=([^&#]*)/.exec(location.href); if (n) try { inviteName = decodeURIComponent(n[1].replace(/\+/g, " ")).slice(0, 30); } catch(e){} try { history.replaceState(null, "", location.pathname); } catch(e){} return m[1].toUpperCase(); } } catch(e){} return null; })();
+const isStandalone = () => { try { return navigator.standalone === true || matchMedia("(display-mode: standalone)").matches; } catch(e){ return false; } };
+const inAppBrowser = () => /FBAN|FBAV|Instagram|WhatsApp|Line\/|MicroMessenger|TikTok|; wv\)/i.test(navigator.userAgent || "");
+/* Link abierto en el navegador sin progreso: puede que la persona ya juegue desde la app del inicio (que en iPhone guarda todo aparte) */
+function inviteLanding(){
+  const code = inviteCode, nm = inviteName;
+  openSheet("Te invitaron", `<div class="inv-land"><span class="inv-pop">🎉</span><b>Te invitaron a ${nm ? "«" + esc(nm) + "»" : "un grupo"}</b><span class="inv-code">${code}</span>
+    <div class="inv-opt"><span class="inv-n">📱</span><span><b>Ya juego desde el inicio del celu</b><small>Tu progreso está en esa app. Copia el código, ábrela desde tu pantalla de inicio y ve a <b>Grupos → Unirme</b>.</small></span></div>
+    <button class="btn yellow block" data-act="inv-copy">Copiar código</button>
+    <div class="inv-or"><span>o</span></div>
+    <div class="inv-opt"><span class="inv-n">✨</span><span><b>Es mi primera vez</b><small>Juega acá mismo y te sumamos al grupo.</small></span></div>
+    <button class="btn green block" data-act="inv-here">Empezar a jugar</button></div>`, { sticky:true });
+}
+function inAppNote(){ return inAppBrowser() ? `<p class="inapp-note">⚠️ Google no deja entrar desde el navegador de WhatsApp o Instagram. Toca los tres puntitos y elige <b>Abrir en Safari</b> o <b>Abrir en Chrome</b>.</p>` : ""; }
 function handleInvite(){
   const code = inviteCode; if (!code) return false; inviteCode = null; logEv("invite_open", {});
   if (S.groups.includes(code)) { closeSheet(); setView("group", { group:code }); return true; }
@@ -12519,6 +12554,9 @@ document.addEventListener("click", e => {
   else if (k === "rtab") { rankTab = v; render(false); }
   else if (k === "garc") playGroupArc(v);
   else if (k === "gpickopen") openPick(v);
+  else if (k === "inv-copy") { copy(inviteCode || "", "Código copiado. Ahora abre unraTITO desde tu inicio."); logEv("invite_copy", {}); }
+  else if (k === "inv-here") { closeSheet(); setTimeout(() => openProfile(true), 300); }
+  else if (k === "join-paste") { (async () => { try { const t = await navigator.clipboard.readText(); const m = /[A-Z0-9]{6}/i.exec(t || ""); if (m) { const i = $("#jCode"); if (i) i.value = m[0].toUpperCase(); } else toast("No encontramos un código copiado."); } catch(e){ toast("No pudimos leer lo copiado. Escríbelo a mano."); } })(); }
   else if (k === "gpick") { const [c, cat] = v.split("|"); gSetPick(c, cat); }
   else if (k === "gfkind") { const h = $("#gKindV"); if (h) { h.value = v; gFormSync(); } }
   else if (k === "gprizes") openPrizes(v);
@@ -12628,7 +12666,8 @@ function boot(){
   let stage = "intro";
   const leave = () => {
     if (stage === "gate" || sp.classList.contains("out")) return; sp.classList.add("out"); setTimeout(() => sp.remove(), 500);
-    if (!S.profile.done) openProfile(true);
+    if (!S.profile.done && inviteCode && !isStandalone() && !hasProgress(S)) inviteLanding();
+    else if (!S.profile.done) openProfile(true);
     else if (handleInvite()) {}
     else if (hwGiftDue()) hwGift(() => { if (dayCounter("wheel").n === 0) setView("ruleta"); });
     else if (dayCounter("wheel").n === 0) setView("ruleta");
