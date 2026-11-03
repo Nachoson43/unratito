@@ -309,8 +309,8 @@ nav.tabs button[aria-current="page"] .ti{background:var(--c);border:2px solid va
 .trophy-row{display:flex;align-items:center;gap:10px;background:var(--y-soft);border-radius:16px;padding:10px 12px;font-weight:700;border:2px solid var(--K)}
 .opt-chips{display:flex;flex-wrap:wrap;gap:8px}
 .opt-chips label{display:flex;align-items:center;gap:6px;border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer}
-.opt-chips input{accent-color:var(--b)}
-.opt-chips label:has(input:checked){border-color:var(--K);background:var(--y)}
+.opt-chips input{accent-color:var(--b);width:18px;height:18px;min-width:18px;margin:0;padding:0;border:0;flex:none}
+.opt-chips label:has(input:checked){border-color:var(--K);background:var(--y);color:var(--K)}
 
 /* Ruleta */
 .wheel-wrap{position:relative;width:min(88vw,330px);aspect-ratio:1/1;margin:8px auto 0;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
@@ -386,9 +386,9 @@ nav.tabs button[aria-current="page"] .ti{background:var(--c);border:2px solid va
 .switch input:focus-visible + span{outline:3px solid var(--b);outline-offset:2px}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:.78em;font-weight:800;color:var(--muted)}
-.field input,.field select{width:100%;border:2px solid var(--K);background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:16px;color:var(--ink)}
+.field input:not([type=radio]):not([type=checkbox]),.field select{width:100%;border:2px solid var(--K);background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:16px;color:var(--ink)}
 .owner-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.owner-grid .field input{padding:7px 9px}
+.owner-grid .field input:not([type=radio]){padding:7px 9px}
 .money{margin-top:12px;padding:12px;border-radius:12px;background:var(--g-soft)}
 .money b{font-family:var(--display);font-size:1.6em;color:var(--g);font-variant-numeric:tabular-nums}
 .arch-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
@@ -10082,7 +10082,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 13:29";
+const APP_VER = "03/11 13:55";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
