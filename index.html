@@ -22,7 +22,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-MGJQQY8CF5"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-MGJQQY8CF5',{anonymize_ip:true});</script>
-<script>window.UNRA_CFG={"form": {"url": "https://docs.google.com/forms/d/e/1FAIpQLSeKjPNMqGXqhwR35QPNVw0Avry2B3pgeAA6j7OOt-DaZBrjQw/formResponse", "entry": "entry.1717796376"}};</script>
+<script>window.UNRA_CFG={"form": {"url": "https://docs.google.com/forms/d/e/1FAIpQLSeKjPNMqGXqhwR35QPNVw0Avry2B3pgeAA6j7OOt-DaZBrjQw/formResponse", "entry": "entry.1717796376"}, "fb": {"config": {"apiKey": "AIzaSyD0X6xEGl-qRWi9g-_pIR49RP9J1VG_h9Y", "authDomain": "unratito-3c2a5.firebaseapp.com", "projectId": "unratito-3c2a5", "storageBucket": "unratito-3c2a5.firebasestorage.app", "messagingSenderId": "687280514292", "appId": "1:687280514292:web:2b78527aaf925b512d2aa1"}, "sdk": "fb.js?v=4380e7cc"}};</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1045,6 +1045,14 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .tut-head{display:flex;gap:10px;align-items:flex-start}.tut-tito{flex:none;margin-top:-2px}.tut-head b{font-family:var(--display);font-size:1.15em;display:block;margin-bottom:2px}.tut-head p{margin:0;font-size:.92em;line-height:1.35}
 .tut-foot{display:flex;align-items:center;gap:8px;margin-top:10px}.tut-dots{flex:1;display:flex;gap:4px;flex-wrap:wrap}.tut-dots i{width:7px;height:7px;border-radius:50%;background:var(--line,#D5D9E6)}.tut-dots i.done{background:#9CC8FF}.tut-dots i.on{background:var(--K);width:16px;border-radius:4px}
 .tut-link{display:block;margin:2px auto 0;background:none;border:0;color:rgba(255,255,255,.85);font:inherit;font-size:.88em;font-weight:700;padding:6px 10px;text-decoration:underline;text-underline-offset:3px}.tut-link b{color:#FFC425}
+/* Cuenta con Google */
+.btn.google{background:#fff;color:#1F1F1F;gap:10px}
+.btn.google svg{flex:none}
+.acct-list{margin:0 0 14px;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.acct-list li{position:relative;padding-left:26px;font-weight:700}
+.acct-list li::before{content:"✓";position:absolute;left:4px;top:0;color:var(--g);font-weight:900}
+.acct-pick{display:flex;flex-direction:column;gap:2px;padding:12px 14px;margin-top:8px;border-radius:14px;background:var(--surface-2);border:2.5px solid var(--K)}
+.acct-pick b{font-size:1.05em}
 
 </style>
 </head>
@@ -10074,7 +10082,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 00:51";
+const APP_VER = "03/11 13:29";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10804,15 +10812,15 @@ const roomMood = () => S.care.food < 30 ? "hungry" : S.care.mood < 30 ? "sad" : 
 /* ---------- Cuenta y datos compartidos (db) ---------- */
 const remote = { db:null, uid:null };
 function writer(){
-  const w = { ref:null, busy:false, pending:null, t:null };
-  w.schedule = fn => { if (!w.ref) return; w.pending = fn; clearTimeout(w.t); w.t = setTimeout(w.flush, 900); };
+  const w = { ref:null, busy:false, pending:null, t:null, delay:900 };
+  w.schedule = fn => { if (!w.ref) return; w.pending = fn; clearTimeout(w.t); w.t = setTimeout(w.flush, w.delay); };
   w.flush = async (retried) => {
     if (!w.ref || !w.pending) return; if (w.busy) { clearTimeout(w.t); w.t = setTimeout(w.flush, 600); return; }
     const fn = w.pending; w.pending = null; w.busy = true;
     try { await w.ref.set(fn()); }
     catch(e){
       if (e && e.code === "unavailable" && !retried) { w.pending = w.pending || fn; w.busy = false; setTimeout(() => w.flush(true), 1500 + Math.random()*1500); return; }
-      if (e && ["invalid_argument","revoked","not_granted","capability_disabled","capability_removed"].includes(e.code)) w.ref = null;
+      if (e && ["invalid_argument","revoked","not_granted","capability_disabled","capability_removed","permission-denied","unauthenticated"].includes(e.code)) w.ref = null;
     }
     w.busy = false; if (w.pending) w.flush();
   };
@@ -10825,7 +10833,7 @@ function memberDoc(){
   return { name:S.profile.name || "Jugador", country:S.profile.country, tito:S.tito, earned:S.earned, groups:real, scores, updated:Date.now() };
 }
 function pushMember(){ remoteMember.schedule(memberDoc); }
-async function initRemote(){
+async function initClaudeRemote(){
   try {
     if (!window.claude || !claude.use) return;
     const db = await claude.use("db"); if (!db) return;
@@ -10841,6 +10849,108 @@ async function initRemote(){
     pushMember();
     if (view === "groups" || view === "group") render();
   } catch(e){ remote.db = null; }
+}
+
+function initRemote(){
+  if (window.claude && claude.use) return initClaudeRemote();
+  if (CFG.fb) initFirebase();
+}
+
+/* ---------- Cuenta con Google (versión web, Firebase) ---------- */
+const acct = { fb:null, user:null, ready:false, busy:false };
+function loadFbSdk(){
+  return new Promise((ok, bad) => {
+    if (window.UNRA_FIREBASE) return ok();
+    const sc = document.createElement("script"); sc.src = CFG.fb.sdk || "fb.js"; sc.async = true; sc.onload = ok; sc.onerror = bad; document.head.appendChild(sc);
+  });
+}
+async function initFirebase(){
+  if (acct.fb) return;
+  try { await loadFbSdk(); acct.fb = window.UNRA_FIREBASE(CFG.fb.config); } catch(e){ acct.fb = null; return; }
+  remoteMain.delay = 6000; remoteMember.delay = 6000;
+  acct.fb.redirectDone.then(r => { if (r && r.error && r.error.code !== "auth/no-auth-event") toast("No se pudo entrar con Google. Prueba de nuevo."); });
+  acct.fb.onUser(u => { onFbUser(u).catch(() => {}); });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { remoteMain.flush(); remoteMember.flush(); } else fbPull(); });
+  addEventListener("pagehide", () => { remoteMain.flush(); remoteMember.flush(); });
+}
+const hasProgress = s => !!s && ((s.earned || 0) > 0 || ((s.stats && (s.stats.wPlayed + s.stats.sPlayed + s.stats.tPlayed)) || 0) > 0);
+function parseCloud(d){ try { const r = d && d.json ? JSON.parse(d.json) : null; return r && r.v === 4 ? r : null; } catch(e){ return null; } }
+function adoptState(r){
+  S = Object.assign(blank(), r); try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){}
+  applySettings(); renderHeader();
+  if (!$("#sheetRoot").classList.contains("open") && !view.startsWith("play")) render(false);
+}
+function chooseProgress(local, cloud){
+  const box = (t, s) => `<div class="acct-pick"><b>${t}</b><span>Nivel ${levelOf(s.earned || 0)} · ${coin}${NUM.format(s.coins || 0)}</span><span class="small muted">Racha de ${(s.streak && s.streak.count) || 0} días · ${(n => n + (n === 1 ? " juego" : " juegos"))((s.stats && (s.stats.wPlayed + s.stats.sPlayed + s.stats.tPlayed)) || 0)}</span></div>`;
+  return new Promise(res => {
+    acct.pick = res;
+    openSheet("¿Con qué progreso sigues?", `<p style="margin-top:0">Tu cuenta ya tiene progreso guardado y en este dispositivo también jugaste. Elige con cuál quieres seguir. El otro se reemplaza.</p>
+      ${box("Guardado en tu cuenta", cloud)}${box("En este dispositivo", local)}
+      <div class="btn-row" style="margin-top:12px"><button class="btn" data-act="acct-pick:local">Este dispositivo</button><button class="btn green" data-act="acct-pick:cloud">Mi cuenta</button></div>`, { sticky:true });
+  });
+}
+async function onFbUser(u){
+  acct.ready = true;
+  if (!u) {
+    acct.user = null; remote.db = null; remote.uid = null; remoteMain.ref = null; remoteMember.ref = null;
+    if (view === "more" || view === "groups" || view === "group") render(false); return;
+  }
+  acct.user = u;
+  const db = acct.fb.db, ref = db.doc("users/" + u.uid);
+  let snap; try { snap = await ref.get(); } catch(e){ toast("No pudimos conectar con tu cuenta. Revisa tu conexión."); return; }
+  const cloud = snap.exists ? parseCloud(snap.data()) : null, linked = S.fbUid === u.uid;
+  let from = "local";
+  if (cloud) {
+    if (linked) from = (cloud.updated || 0) > (S.updated || 0) ? "cloud" : "local";
+    else if (!hasProgress(S)) from = "cloud";
+    else if (!hasProgress(cloud)) from = "local";
+    else { from = await chooseProgress(S, cloud); closeSheet(); }
+  }
+  if (from === "cloud") { const keepSet = S.settings; adoptState(cloud); if (!S.profile.done) S.profile.done = true; if (keepSet && keepSet.premium) S.settings.premium = true; }
+  S.fbUid = u.uid;
+  remote.db = db; remote.uid = u.uid; remoteMain.ref = ref; remoteMember.ref = db.doc("members/" + u.uid);
+  await upgradeLocalGroups();
+  save(); pushMember();
+  const fromSheet = !!$("#loginSheet"), after = acct.after; acct.after = null;
+  if (fromSheet) { closeSheet(); if (after) setTimeout(after, 350); }
+  if (acct.welcome) { acct.welcome = false; toast(from === "cloud" && !linked ? "¡Listo! Recuperamos tu progreso." : "¡Listo! Tu progreso ya se guarda en tu cuenta.", "ok"); }
+  if (from === "cloud" && $("#profileForm")) { closeSheet(); render(false); }
+  if (view === "more" || view === "groups" || view === "group") render(false);
+}
+async function fbPull(){
+  if (!remote.uid || !remoteMain.ref || remoteMain.busy || remoteMain.pending) return;
+  try {
+    const snap = await remoteMain.ref.get(); if (!snap.exists) return;
+    const cloud = parseCloud(snap.data());
+    if (cloud && (cloud.updated || 0) > (S.updated || 0) + 1500 && !view.startsWith("play") && !arcRunning()) adoptState(cloud);
+  } catch(e){}
+}
+const arcRunning = () => { try { return !!arcRun; } catch(e){ return false; } };
+async function upgradeLocalGroups(){
+  for (const code of S.groups) {
+    const g = S.groupMeta[code];
+    if (!g || g.demo || !g.local || (g.owner !== "me" && g.owner !== remote.uid)) continue;
+    const meta = { name:g.name, theme:g.theme, game:g.game, owner:remote.uid, created:g.created || Date.now() };
+    try { await remote.db.doc("groups/" + code).set(meta); Object.assign(g, meta); delete g.local; } catch(e){}
+  }
+}
+function fbLogin(){
+  if (!acct.fb) { toast("Conectando… prueba de nuevo en unos segundos."); if (CFG.fb) initFirebase(); return; }
+  if (acct.busy) return; acct.busy = true; acct.welcome = true; logEv("login_start", {});
+  acct.fb.signIn().then(r => { acct.busy = false; if (!r.ok) { acct.welcome = false; if (!r.cancelled) toast("No se pudo entrar con Google. Prueba de nuevo."); } else logEv("login", { method:"google" }); });
+}
+function openLogin(why, after){
+  acct.after = after || null;
+  openSheet("Entra con tu cuenta", `<div id="loginSheet" style="text-align:center"><span class="anim-idle">${titoSVG(S.tito, 90, { mood:"happy", level:level() })}</span></div>
+    <p style="margin:6px 0 10px">${esc(why || "Con tu cuenta de Google tu progreso queda guardado.")}</p>
+    <ul class="acct-list"><li>Tu progreso queda guardado aunque cambies de celular</li><li>Juegas en grupo con familia y amigos</li><li>Los demás solo ven tu apodo y tu Tito, nunca tu mail</li></ul>
+    <button class="btn google block" data-act="login">${GOOGLE_G}Entrar con Google</button><button class="btn block" data-act="close-sheet" style="margin-top:8px">Ahora no</button>`);
+}
+const GOOGLE_G = `<svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.4 5.7c4.3-4 6.9-9.9 6.9-17.2z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>`;
+function acctCard(){
+  if (!CFG.fb) return "";
+  if (!acct.user) return `<section class="card acct-card"><div class="set-row"><span><b>Tu cuenta</b><br><span class="small muted">Guarda tu progreso en la nube y juega en grupo con tus amigos</span></span></div><button class="btn google block" data-act="login" style="margin-top:8px">${GOOGLE_G}Entrar con Google</button></section>`;
+  return `<section class="card acct-card"><div class="set-row"><span><b>Tu cuenta</b><br><span class="small muted">Conectada con Google${acct.user.email ? " · " + esc(acct.user.email) : ""}</span><br><span class="small" style="color:var(--g);font-weight:800">✓ Tu progreso se guarda solo</span></span></div><button class="btn block" data-act="logout" style="margin-top:8px">Cerrar sesión</button></section>`;
 }
 
 /* ---------- Anuncios simulados (PREMIUM: sin anuncios, mismos límites) ---------- */
@@ -11681,7 +11791,8 @@ const avatar = (m, px) => titoSVG(m.tito, px, { level:levelOf(m.earned), noFloat
 function renderGroups(){
   let h = `<div class="page-head"><span class="eyebrow">Juega con los tuyos</span><h1>Grupos</h1><p>Hasta 50 por grupo. Mismo desafío contra reloj para todos. En grupo, tus puntos valen doble.</p></div>
     <div class="btn-row"><button class="btn red" data-act="new-group">Crear grupo</button><button class="btn yellow" data-act="join-group">Unirme con código</button></div>`;
-  if (!window.claude) h += `<div class="card" style="text-align:center"><h2>Muy pronto</h2><p class="muted">En esta versión de prueba los grupos todavía no se comparten entre celulares. Ya puedes crear uno para practicar el desafío diario.</p></div>`;
+  if (CFG.fb && !remote.uid) h += `<div class="card" style="text-align:center"><h2>Entra para jugar con tus amigos</h2><p class="muted">Con tu cuenta de Google armas grupos de verdad: todos juegan el mismo desafío y compiten en el ranking.</p><button class="btn google block" data-act="login" style="margin-top:10px">${GOOGLE_G}Entrar con Google</button></div>`;
+  else if (!window.claude && !CFG.fb) h += `<div class="card" style="text-align:center"><h2>Muy pronto</h2><p class="muted">En esta versión de prueba los grupos todavía no se comparten entre celulares. Ya puedes crear uno para practicar el desafío diario.</p></div>`;
   if (!S.groups.length) h += `<div class="card" style="text-align:center"><h2>Todavía no estás en ningún grupo</h2><p class="muted">Crea uno para la familia o los amigos y pásales el código.</p></div>`;
   S.groups.forEach(code => {
     const g = S.groupMeta[code]; if (!g) return;
@@ -11708,11 +11819,12 @@ function renderGroup(){
   h += `<section class="card"><div class="seg" role="group" aria-label="Ranking"><button data-act="rank:day" aria-pressed="${rankMode==="day"}">Hoy</button><button data-act="rank:total" aria-pressed="${rankMode==="total"}">Total</button></div>
     <div class="rank" style="margin-top:8px">${sorted.map((m,i) => { const v = ptsOf(m, code, rankMode); return `<div class="rank-row ${m.me?"me":""}"><span class="pos ${i<3 && v ? "p"+(i+1) : ""}">${i+1}</span>${avatar(m, 40)}<span class="rname">${esc(m.name || "Jugador")}${m.me ? " (tú)" : ""} <span class="flag" title="${esc(countryName(m.country))}">${flag(m.country)}</span></span><span class="rpts">${rankMode==="day" && !v ? `<span class="muted small">Falta jugar</span>` : NUM.format(v)}</span></div>`; }).join("")}</div></section>
     <section class="card"><span class="eyebrow">Código para invitar</span><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px"><span class="code">${esc(code)}</span><button class="btn yellow" data-act="invite:${code}">Copiar invitación</button></div>
-    ${g.local ? `<p class="small muted" style="margin-top:8px">Este grupo quedó guardado solo en este dispositivo. En la app publicada se suma cualquiera con el código.</p>` : ""}
+    ${g.local ? `<p class="small muted" style="margin-top:8px">${CFG.fb ? "Este grupo está guardado solo en este celular. Entra con tu cuenta de Google y se activa para que tus amigos se sumen con el código." : "Este grupo quedó guardado solo en este dispositivo. En la app publicada se suma cualquiera con el código."}</p>` : ""}
     <button class="btn block" style="margin-top:12px;color:var(--r)" data-act="leave:${code}">Salir del grupo</button></section>`;
   return h;
 }
 function openNewGroup(){
+  if (CFG.fb && !remote.uid) { openLogin("Para crear un grupo y que tus amigos se sumen, entra con tu cuenta de Google.", openNewGroup); return; }
   const mine = S.groups.filter(c => S.groupMeta[c] && S.groupMeta[c].owner === (remote.uid || "me")).length;
   if (!isPrem() && mine >= 1) { openPremium("Con el plan gratis puedes crear 1 grupo. Con PREMIUM, hasta 5."); return; }
   openSheet("Crear grupo", `<form id="groupForm"><div class="field"><label for="gName">Nombre del grupo</label><input id="gName" maxlength="30" required placeholder="Ej.: Los González, Amigos del club"></div>
@@ -11720,7 +11832,7 @@ function openNewGroup(){
     <div class="field"><span class="eyebrow">Juego de cada día</span><div class="opt-chips"><label><input type="radio" name="gGame" value="t" checked> Trivia</label><label><input type="radio" name="gGame" value="w"> Palabra</label><label><input type="radio" name="gGame" value="s"> Sopa</label><label><input type="radio" name="gGame" value="random"> Aleatorio</label></div></div>
     <button class="btn red block" type="submit">Crear y obtener código</button></form>`);
 }
-function openJoinGroup(){ openSheet("Unirme a un grupo", `<form id="joinForm"><div class="field"><label for="jCode">Código del grupo</label><input id="jCode" maxlength="8" required placeholder="Ej.: K7MQ2P" style="text-transform:uppercase;letter-spacing:.1em;font-weight:800" autocomplete="off"></div><button class="btn yellow block" type="submit">Unirme</button><p class="small muted">Pídele el código a quien creó el grupo.</p></form>`); }
+function openJoinGroup(){ if (CFG.fb && !remote.uid) { openLogin("Para sumarte a un grupo, entra con tu cuenta de Google.", openJoinGroup); return; } openSheet("Unirme a un grupo", `<form id="joinForm"><div class="field"><label for="jCode">Código del grupo</label><input id="jCode" maxlength="8" required placeholder="Ej.: K7MQ2P" style="text-transform:uppercase;letter-spacing:.1em;font-weight:800" autocomplete="off"></div><button class="btn yellow block" type="submit">Unirme</button><p class="small muted">Pídele el código a quien creó el grupo.</p></form>`); }
 function genCode(){ const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; for (let i = 0; i < 6; i++) s += A[Math.floor(rnd()*A.length)]; return s; }
 async function createGroup(name, theme, game){
   const code = genCode(), meta = { name, theme, game, owner:remote.uid || "me", created:Date.now() };
@@ -11730,6 +11842,7 @@ async function createGroup(name, theme, game){
 async function joinGroup(code){
   code = code.toUpperCase().replace(/[^A-Z0-9]/g,"");
   if (S.groups.includes(code)) { closeSheet(); setView("group", { group:code }); return; }
+  if (!remote.db && CFG.fb) { openLogin("Para sumarte a un grupo, entra con tu cuenta de Google."); return; }
   if (!remote.db) { toast(window.claude ? "Para unirte a un grupo tienes que abrir la app con tu cuenta." : "Unirse a grupos llega en la próxima versión."); return; }
   try {
     const snap = await remote.db.doc("groups/"+code).get(); if (!snap.exists) { toast("No encontramos un grupo con ese código."); return; }
@@ -11809,7 +11922,7 @@ function renderSet(){
   const num = (id,l,v,step) => `<div class="field"><label for="${id}">${l}</label><input id="${id}" class="owner-in" type="number" inputmode="decimal" min="0" step="${step||"any"}" value="${v}"></div>`;
   const until = !s.premium && S.premUntil > Date.now() ? "PREMIUM de regalo hasta el "+fmtShort(ymd(new Date(S.premUntil)))+"." : "";
   return `<section class="card" style="text-align:center;background:linear-gradient(165deg,var(--bg1),var(--bg2) 60%,var(--bg3));color:#fff">${brandHTML("")}<div class="premium-word" style="font-size:1.8em;margin-top:8px">PREMIUM</div><p style="margin:6px 0 12px;opacity:.9">${isPrem() ? (until || "Ya tienes PREMIUM. ¡Gracias!") : "Sin anuncios y con algunas comodidades extra. Nada que te haga ganar más fácil."}</p><button class="btn gold block" data-act="premium">${isPrem() ? "Ver mis beneficios" : "Ver PREMIUM"}</button></section>
-  <section class="card"><div class="set-row"><span><b>Perfil</b><br><span class="small muted">${esc(S.profile.name || "Sin nombre")} ${flag(S.profile.country)} ${esc(countryName(S.profile.country))}</span></span><button class="btn" data-act="profile">Editar</button></div>
+  ${acctCard()}<section class="card"><div class="set-row"><span><b>Perfil</b><br><span class="small muted">${esc(S.profile.name || "Sin nombre")} ${flag(S.profile.country)} ${esc(countryName(S.profile.country))}</span></span><button class="btn" data-act="profile">Editar</button></div>
     <div class="set-row"><span><b>Sonidos</b><br><span class="small muted">Toques, aciertos y errores</span></span><label class="switch"><input type="checkbox" id="soundOn" ${s.sound !== false ?"checked":""} aria-label="Sonidos"><span></span></label></div>
     <div class="set-row"><span><b>Música de festejo</b><br><span class="small muted">Cuando ganas, pierdes o gira la ruleta</span></span><label class="switch"><input type="checkbox" id="musicOn" ${s.music !== false ?"checked":""} aria-label="Música de festejo"><span></span></label></div>
     <div class="set-row"><span><b>Letra grande</b><br><span class="small muted">Más fácil de leer</span></span><label class="switch"><input type="checkbox" id="bigOn" ${s.big?"checked":""} aria-label="Letra grande"><span></span></label></div>
@@ -11851,7 +11964,7 @@ function openProfile(first){
     <div style="display:flex;justify-content:center;background:linear-gradient(165deg,var(--bg1),var(--bg3));border-radius:18px;padding:14px;border:2.5px solid ${IK}"><span class="anim-enter"><span class="anim-idle">${titoSVG(S.tito, 120, { mood:"happy", level:level() })}</span></span></div>
     <div class="field"><label for="pfName">Tu nombre o apodo</label><input id="pfName" maxlength="20" value="${esc(S.profile.name)}" placeholder="Ej.: Nacho, Tía Bety" required></div>
     <div class="field"><label for="pfCountry">¿De dónde eres?</label><select id="pfCountry">${COUNTRIES.map(([cc,n]) => `<option value="${cc}" ${cc===S.profile.country?"selected":""}>${flag(cc)} ${n}</option>`).join("")}</select></div>
-    <button class="btn green block" type="submit">${first ? "¡A JUGAR!" : "Guardar"}</button></form>`);
+    <button class="btn green block" type="submit">${first ? "¡A JUGAR!" : "Guardar"}</button>${first && CFG.fb ? `<p class="small muted" style="text-align:center;margin:14px 0 6px">¿Ya jugaste en otro celular?</p><button class="btn google block" type="button" data-act="login">${GOOGLE_G}Recuperar con Google</button>` : ""}</form>`);
 }
 
 /* ---------- Avisos ---------- */
@@ -11940,6 +12053,9 @@ document.addEventListener("click", e => {
   else if (k === "more") { moreTab = v; setView("more"); }
   else if (k === "open-group") setView("group", { group:v });
   else if (k === "rank") { rankMode = v; render(false); }
+  else if (k === "login") fbLogin();
+  else if (k === "logout") { if (el.dataset.confirm) { remoteMain.flush(); remoteMember.flush(); acct.fb && acct.fb.signOut(); toast("Cerraste sesión. Tu progreso sigue guardado en tu cuenta."); } else { el.dataset.confirm = "1"; el.textContent = "Toca de nuevo para cerrar sesión"; } }
+  else if (k === "acct-pick") { const f = acct.pick; acct.pick = null; f && f(v); }
   else if (k === "new-group") openNewGroup();
   else if (k === "join-group") openJoinGroup();
   else if (k === "invite") { const g = S.groupMeta[v]; copy("¡Únete a mi grupo «"+g.name+"» en unraTITO! Todos los días jugamos contra reloj y competimos. Código: "+v, "Invitación copiada. Mándala por WhatsApp."); }
@@ -11972,7 +12088,7 @@ document.addEventListener("click", e => {
   else if (k === "close-sheet") { closeSheet(); if (!S.profile.done) { S.profile.done = true; save(); afterOnboarding(); } }
   else if (k === "test-notif") { const ns = notifMsgs(); liveNotify(ns[new Date().getHours() < 15 ? 0 : 1]); }
   else if (k === "open-notif") { $("#liveNotif").classList.remove("show"); showInterstitial("Anuncio al abrir la app desde un aviso", () => setView("home", { day:today() })); }
-  else if (k === "reset") { if (el.dataset.confirm) { const keep = S.settings, seen = S.seen, ra = S.recentAns; S = blank(); S.settings = keep; S.seen = seen || []; S.recentAns = ra || []; save(); setView("home", { day:today() }); openProfile(true); } else { el.dataset.confirm = "1"; el.textContent = "Toca de nuevo para borrar"; } }
+  else if (k === "reset") { if (el.dataset.confirm) { const keep = S.settings, seen = S.seen, ra = S.recentAns; const fu = S.fbUid; S = blank(); S.settings = keep; S.seen = seen || []; S.recentAns = ra || []; if (fu) S.fbUid = fu; save(); setView("home", { day:today() }); openProfile(true); } else { el.dataset.confirm = "1"; el.textContent = "Toca de nuevo para borrar"; } }
 });
 document.addEventListener("submit", e => {
   e.preventDefault(); const f = e.target;
