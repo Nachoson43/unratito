@@ -1093,6 +1093,103 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .prize-row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line);font-size:.92em}
 .prize-row span:last-child{text-align:right;font-weight:800}
 .prize-row span:first-child{white-space:nowrap}
+/* ===== Grupos v3: más limpio y animado ===== */
+[hidden]{display:none!important}
+@keyframes gUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes gPop{0%{transform:scale(.92)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes gPulse{0%,100%{box-shadow:0 0 0 0 rgba(238,59,43,.45)}50%{box-shadow:0 0 0 7px rgba(238,59,43,0)}}
+@keyframes gSpin{to{transform:rotate(360deg)}}
+.g-in{animation:gUp .38s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 45ms)}
+.g-rows .rank-row{animation:gUp .32s ease both;animation-delay:calc(var(--i,0) * 35ms)}
+@media (prefers-reduced-motion: reduce){.g-in,.g-rows .rank-row{animation:none}}
+/* Lista */
+.gp-head{margin-bottom:12px}.gp-head p{margin:4px 0 0}
+.gp-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.gp-act{display:flex;align-items:center;justify-content:center;gap:8px;border:var(--bw) solid var(--K);border-radius:18px;padding:14px;font:inherit;font-weight:800;font-size:1.05em;box-shadow:var(--pop);cursor:pointer}
+.gp-act.red{background:var(--r);color:#fff}.gp-act.yellow{background:var(--y);color:var(--K)}
+.gp-act i{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:rgba(255,255,255,.25)}.gp-act i svg{width:18px;height:18px}
+.gp-act:active{transform:translateY(3px);box-shadow:0 2px 0 var(--K)}
+.gp-login{display:flex;flex-direction:column;gap:10px;text-align:center}
+.gp-empty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 0;color:var(--on-bg,#fff)}
+.gp-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:var(--bw) solid var(--K);border-radius:20px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--pop);cursor:pointer}
+.gp-av{display:flex;flex:none}.gp-av span{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--surface-2);border:2px solid var(--K);margin-left:-12px;overflow:hidden}.gp-av span:first-child{margin-left:0}
+.gp-tx{flex:1;min-width:0;display:flex;flex-direction:column}.gp-tx b{font-family:var(--display);font-size:1.12em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gp-tx small{color:var(--muted);font-weight:700}.gp-tx em{font-style:normal;color:var(--r);font-weight:900}
+.gp-dot{flex:none;background:var(--r);color:#fff;font-weight:900;border-radius:999px;padding:7px 14px;border:2px solid var(--K);animation:gPulse 2s infinite}
+.gp-ok{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--g);color:#fff;border:2px solid var(--K)}.gp-ok svg{width:18px;height:18px}
+/* Grupo */
+.g-hero{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:#fff}
+.g-hero-tx{flex:1;min-width:0;display:flex;flex-direction:column;text-align:center}.g-hero-tx b{font-family:var(--display);font-size:1.45em;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-hero-tx small{opacity:.8;font-weight:700}
+.g-note{color:var(--on-bg-muted,rgba(255,255,255,.75));font-size:.9em;text-align:center;margin:-4px 0 10px}
+.g-sec{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}.g-sec h2{font-size:1.25em}.g-sec small{color:var(--muted);font-weight:800}
+.g-today{display:flex;flex-direction:column;gap:8px}
+.g-tile{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--surface-2);border:2px solid var(--K);border-radius:16px;padding:10px 12px;cursor:pointer;transition:transform .15s}
+.g-tile:active:not(:disabled){transform:scale(.98)}
+.g-tile:disabled{cursor:default}
+.g-tile.done{background:transparent;border-style:dashed;border-color:var(--line)}
+.g-ic{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:var(--c);border:2px solid var(--K);flex:none;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15)}.g-ic svg{width:28px;height:28px}
+.g-th{width:64px;flex:none}.g-th svg{display:block;width:100%;height:auto;border-radius:10px;border:2px solid var(--K)}
+.g-tt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.g-tt b{font-weight:800;font-size:1.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.g-tt small{color:var(--muted);font-weight:700;font-size:.86em}.g-tt em{font-style:normal;color:var(--ink);font-weight:900}
+.g-go{flex:none;background:var(--r);color:#fff;border:2px solid var(--K);border-radius:12px;padding:7px 14px;font-weight:900;box-shadow:0 3px 0 var(--K)}
+.g-pts{flex:none;display:flex;align-items:baseline;gap:3px;font-family:var(--display);font-size:1.2em;color:var(--g)}.g-pts small{font-size:.62em;color:var(--muted)}.g-pts svg{width:22px;height:22px}
+.g-wait{flex:none;width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--b);animation:gSpin .8s linear infinite}
+.g-dots{display:flex;gap:5px;margin-top:4px}.g-dots i{width:10px;height:10px;border-radius:50%;background:var(--line);border:1.5px solid var(--K);transition:background .2s}.g-dots i.on{background:var(--y)}.g-dots i.prem.on{background:linear-gradient(180deg,var(--gold1),var(--gold2))}
+.g-inf{font-weight:900;color:var(--muted)}
+.g-prem{align-self:center;background:none;border:0;color:var(--gold2);font-weight:900;font:inherit;font-weight:900;padding:2px;text-decoration:underline;cursor:pointer}
+.g-pick,.g-season{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:var(--bw) solid var(--K);border-radius:20px;padding:12px 14px;margin-bottom:12px;box-shadow:var(--pop);cursor:pointer}
+.g-pick{background:linear-gradient(135deg,var(--y),#FFE27A);color:#1B1640}.g-pick .g-tt small{color:#4A3F10}
+.g-pick-ic,.g-cup{font-size:1.9em;line-height:1;flex:none}
+.g-pick-ic{animation:gPop 1.6s ease-in-out infinite}
+.g-chev{flex:none;opacity:.6}.g-chev svg{width:20px;height:20px}
+.g-bar{display:block;height:7px;border-radius:99px;background:var(--surface-2);border:1.5px solid var(--K);margin-top:6px;overflow:hidden}.g-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--y),var(--r));border-radius:99px}
+.g-rank-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.g-rank-top h2{font-size:1.25em}
+.g-sw{display:flex;background:var(--surface-2);border:2px solid var(--K);border-radius:999px;padding:3px}
+.g-sw button{border:0;background:none;font:inherit;font-weight:800;color:var(--muted);padding:5px 14px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+.g-sw button[aria-pressed="true"]{background:var(--K);color:#fff}
+.g-tabs{position:relative;display:grid;grid-template-columns:repeat(var(--n),1fr);background:var(--surface-2);border:2px solid var(--K);border-radius:14px;padding:4px;margin-bottom:6px}
+.g-tabs-pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / var(--n));transform:translateX(calc(var(--k) * 100%));background:var(--y);border-radius:10px;border:2px solid var(--K);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.g-tabs button{position:relative;z-index:1;border:0;background:none;font:inherit;font-weight:800;color:var(--muted);padding:8px 4px;cursor:pointer}
+.g-tabs button[aria-pressed="true"]{color:#1B1640}
+.g-rank .rank-row{grid-template-columns:28px auto 1fr auto}
+.g-rank .rname small{color:var(--muted);font-weight:700}
+.g-foot{margin:8px 2px 0;font-size:.78em;color:var(--muted);text-align:center;font-weight:700}
+.g-code{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:var(--bw) solid var(--K);border-radius:20px;padding:10px 12px 10px 16px;box-shadow:var(--pop);margin-bottom:10px}
+.g-code small{display:block;color:var(--muted);font-weight:800;font-size:.75em;text-transform:uppercase;letter-spacing:.08em}.g-code b{font-family:var(--cartoon);font-size:1.5em;letter-spacing:.12em}
+.g-leave{display:block;margin:6px auto 0;background:none;border:0;font:inherit;font-weight:800;color:var(--on-bg-muted,rgba(255,255,255,.7));text-decoration:underline;padding:8px;cursor:pointer}
+/* Elegir trivia */
+.tpick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tpick-it{display:flex;align-items:center;gap:8px;text-align:left;font:inherit;font-weight:800;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:14px;padding:8px;cursor:pointer;animation:gUp .3s ease both;animation-delay:calc(var(--i) * 18ms)}
+.tpick-it.on{border-color:var(--K);background:var(--y);color:#1B1640}
+.tpick-ic{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--c);border:2px solid var(--K);flex:none}.tpick-ic svg{width:22px;height:22px}
+/* Formulario */
+.gform{display:flex;flex-direction:column;gap:12px}
+.gf-name{width:100%;border:2.5px solid var(--K);background:var(--surface-2);border-radius:16px;padding:14px 16px;font:inherit;font-size:1.1em;font-weight:800;color:var(--ink)}
+.gf-code{text-align:center;text-transform:uppercase;letter-spacing:.3em;font-family:var(--cartoon);font-size:1.6em}
+.gf-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gf-mode{position:relative;cursor:pointer}.gf-mode input{position:absolute;opacity:0;pointer-events:none}
+.gf-m{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;border:2.5px solid var(--line);border-radius:18px;padding:14px 8px;background:var(--surface-2);transition:transform .2s,border-color .2s,background .2s}
+.gf-m b{font-family:var(--display);font-size:1.15em}.gf-m small{color:var(--muted);font-weight:700}
+.gf-art{font-size:2em;line-height:1.1;position:relative}.gf-art i{font-style:normal;font-size:.6em;position:absolute;right:-14px;bottom:-4px}
+.gf-mode input:checked + .gf-m{border-color:var(--K);background:var(--y);color:#1B1640;animation:gPop .35s ease;box-shadow:0 4px 0 var(--K)}
+.gf-mode input:checked + .gf-m small{color:#4A3F10}
+.gf-mode input:focus-visible + .gf-m{outline:3px solid var(--b);outline-offset:2px}
+.gf-panel{animation:gUp .3s ease both}
+.gf-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gf-sum span{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;background:var(--surface-2);border-radius:14px;padding:10px 4px}
+.gf-sum i{font-style:normal;font-size:1.5em}.gf-sum b{font-size:.92em}.gf-sum small{color:var(--muted);font-weight:700;font-size:.78em}
+.gf-hint{margin:8px 0 0;text-align:center;color:var(--muted);font-weight:700;font-size:.84em}
+.gf-kind{margin-bottom:10px}.gf-sub{animation:gUp .28s ease both}
+.gf-chips{justify-content:center}
+.g-arc-ok{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;background:var(--g);color:#fff;border:2px solid var(--K);display:none;place-items:center}.g-arc-ok svg{width:13px;height:13px}
+.g-arc:has(input:checked) .g-arc-ok{display:grid;animation:gPop .3s ease}
+.g-arc{transition:transform .15s}.g-arc:active{transform:scale(.96)}
+/* Arcade en grupo */
+.g-ready-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin:4px 0 2px}
+.g-ready-row > span{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--surface-2);border-radius:12px;padding:8px}
+.g-ready-row > span > small{color:var(--muted);font-weight:800;font-size:.75em}.g-ready-row b{font-family:var(--display);font-size:1.3em}
+.g-sw button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.g-season .g-tt b,.g-pick .g-tt b{white-space:normal}
 
 </style>
 </head>
@@ -5623,6 +5720,7 @@ function arcMount(){
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact");
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full"); };
   const startNew = () => {
+    if (typeof arcGroupOn === "function" && arcGroupOn(run.id) && !gArcTryUse()) { run.state = "ready"; run.showReady(); return; }
     const st = arcState(); st.runs[run.id] = (st.runs[run.id] || 0) + 1; run.practice = !!g.limit && st.runs[run.id] > g.limit; run.first = st.runs[run.id] === 1; save();
     if (g._r) g._r = null; run.paused = false; run.score = 0; run.candyRoll = false; run.candy = false; run.revived = false; run.done = false; run.won = false; run.drawn = false; api.score(0); game.reset();
     /* Seguir una partida guardada (Rompe ladrillos): arranca desde el comienzo del nivel donde quedó */
@@ -5651,7 +5749,7 @@ function arcMount(){
       <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${gLine}${run.candy ? `<span class="arc-candy">${typeof CANDY_SVG !== "undefined" ? CANDY_SVG : ""}<b>+1 caramelo</b></span>` : ""}${g.overExtra ? g.overExtra() : ""}
       ${canRevive ? `<button class="btn reward block" data-act="arc-revive">${isPrem() ? "Seguir jugando (PREMIUM)" : "Revivir · ver video"}</button>` : ""}
       ${run.score > 0 || run.won || run.drawn ? `<button class="btn yellow share-btn block" data-act="arc-share">${typeof SHARE_ICO !== "undefined" ? SHARE_ICO : ""}Compartir resultado</button>` : ""}
-      <div class="btn-row"><button class="btn" data-act="arc-exit">Salir</button><button class="btn primary" data-act="arc-again">Otra vez</button></div></div>`);
+      <div class="btn-row"><button class="btn" data-act="arc-exit">Salir</button>${typeof arcGroupOn === "function" && arcGroupOn(run.id) && gTriesLeft(arcGroup.code, arcGroup.day) <= 0 ? `<button class="btn primary" data-act="arc-exit">Al grupo</button>` : `<button class="btn primary" data-act="arc-again">Otra vez${typeof arcGroupOn === "function" && arcGroupOn(run.id) && gTriesLeft(arcGroup.code, arcGroup.day) !== Infinity ? " (" + gTriesLeft(arcGroup.code, arcGroup.day) + ")" : ""}</button>`}</div></div>`);
   };
   const finalize = () => {
     if (run.done || run.state === "ready" || run.score == null) return; run.done = true; arcSnapClear(run.id);
@@ -10126,7 +10224,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 14:37";
+const APP_VER = "03/11 15:28";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10741,6 +10839,7 @@ function makeCtx(kind, a, day, n){
   if (kind === "d") return { key:"d:"+day, kind, day, word:ANS_ORDER[mod(i, ANS_ORDER.length)], soup:() => soupFor("d:"+day, 5000 + i*97, mod(i, THEMES.length)), pick:() => pickFresh(GENQ, 7), tlabel:"Trivia" };
   if (kind === "g") {
     const g = S.groupMeta[a] || {}, h = hashStr(a), gm = gModeOf(g);
+    if (gm.tri && n) { const cat = tcat(gSlotCat(a, day, n)) || tpool()[0]; return { key:"g:"+a+":"+day+":"+n, kind, code:a, day, n, game:"t", cat:cat.id, fixed:pickFixed(cat.bank(), 1000 + hashStr(a + cat.id) % 9000, i, 7), tlabel:cat.t }; }
     const game = gm.word === "random" ? ["t","w","s"][mod(h + i, 3)] : (gm.word || "t"), bank = gm.theme === "arg" ? ARGQ : gm.theme === "fut" ? FUTQ : GENQ;
     return { key:"g:"+a+":"+day, kind, code:a, day, game, word:ANS_ORDER[mod(i + 37 + h % 211, ANS_ORDER.length)], soup:() => soupFor("g:"+a+":"+day, (h % 100000) + i*131, mod(h + i, THEMES.length)), fixed:pickFixed(bank, 1000 + h % 9000, i, 7), tlabel: gm.theme === "arg" ? "Trivia argentina" : gm.theme === "fut" ? "Trivia de fútbol" : "Trivia" };
   }
@@ -10750,7 +10849,7 @@ function makeCtx(kind, a, day, n){
   const f = FGAMES[a];
   return { key:"f:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, style:f.style, pick:f.pick, tlabel:f.t };
 }
-function parseCtx(key){ const p = key.split(":"); return p[0] === "d" ? makeCtx("d", null, p[1]) : p[0] === "g" ? makeCtx("g", p[1], p[2]) : p[0] === "m" ? makeCtx("m", Number(p[1]), p[2]) : makeCtx(p[0], p[1], p[2], Number(p[3])); }
+function parseCtx(key){ const p = key.split(":"); return p[0] === "d" ? makeCtx("d", null, p[1]) : p[0] === "g" ? makeCtx("g", p[1], p[2], p[3] ? Number(p[3]) : undefined) : p[0] === "m" ? makeCtx("m", Number(p[1]), p[2]) : makeCtx(p[0], p[1], p[2], Number(p[3])); }
 function runCtx(kind, id){
   const day = today(), base = kind+":"+id+":"+day, n = S.runs[base] || 0;
   if (n > 0) { const p = S.plays[base+":"+n]; if (p && !p.t.done) return makeCtx(kind, id, day, n); }
@@ -10791,12 +10890,13 @@ function save(){
   Object.keys(S.plays).forEach(k => { const m = k.match(/\d{4}-\d{2}-\d{2}/); if (m && m[0] < keep) delete S.plays[k]; });
   Object.keys(S.runs).forEach(k => { if (k.slice(-10) < keep) delete S.runs[k]; });
   const keepG = addDays(today(), -70);
-  Object.values(S.gscore).forEach(g => { Object.keys(g.days || {}).forEach(d => { if (d < keepG) delete g.days[d]; }); Object.keys(g.arc || {}).forEach(d => { if (d < keepG) delete g.arc[d]; }); });
+  Object.values(S.gscore).forEach(g => { Object.keys(g.days || {}).forEach(d => { if (d < keepG) delete g.days[d]; }); ["arc","tries"].forEach(f => Object.keys(g[f] || {}).forEach(d => { if (d < keepG) delete g[f][d]; })); Object.keys(g.sl || {}).forEach(k => { if (k.slice(0, 10) < keepG) delete g.sl[k]; }); });
   try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){}
   remoteMain.schedule(() => ({ json:JSON.stringify(S), updated:S.updated }));
 }
 function play(c){
   if (!S.plays[c.key]) S.plays[c.key] = { w:{ g:[], done:false, won:false, extra:false, hints:[], t0:0, bonus:0, left:0 }, s:{ found:[], done:false, t0:0, bonus:0, time:0, left:0 }, t:{ ans:[], done:false, second:false, removed:{}, clues:{}, started:false, qt0:0, qi:-1 }, pts:{} };
+  if (c.cat && !S.plays[c.key].cat) S.plays[c.key].cat = c.cat;
   return S.plays[c.key];
 }
 const dailyDone = d => { const p = S.plays["d:"+d]; return !!(p && p.w.done && p.s.done && p.t.done); };
@@ -10875,7 +10975,10 @@ const remoteMain = writer(), remoteMember = writer();
 function memberDoc(){
   const real = S.groups.filter(c => S.groupMeta[c] && !S.groupMeta[c].demo && !S.groupMeta[c].local);
   const scores = {}; real.forEach(c => { if (S.gscore[c]) scores[c] = S.gscore[c]; });
-  return { name:S.profile.name || "Jugador", country:S.profile.country, tito:S.tito, earned:S.earned, groups:real, scores, updated:Date.now() };
+  const picks = {}; Object.entries(S.gpicks || {}).forEach(([c, v]) => { if (real.includes(c) && v && v.d >= today()) picks[c] = v; });
+  const doc = { name:S.profile.name || "Jugador", country:S.profile.country, tito:S.tito, earned:S.earned, groups:real, scores, updated:Date.now() };
+  if (Object.keys(picks).length) doc.picks = picks;
+  return doc;
 }
 function pushMember(){ remoteMember.schedule(memberDoc); }
 async function initClaudeRemote(){
@@ -11637,7 +11740,8 @@ function finishGame(kind){
   playCandy(ctx.kind === "d" ? 1 : .6);
   logEv("juego_terminado", { juego:{ w:"palabra", s:"sopa", t:"trivia" }[kind] || kind, modo:ctx.kind, puntos:base * mult, resultado:rr });
   if (ctx.kind === "m") dayCounter("snacks").n++;
-  if (isGroup()) { const gs = S.gscore[ctx.code] = S.gscore[ctx.code] || { total:0, days:{} }; if (gs.days[ctx.day] == null) { gs.days[ctx.day] = base; gs.total += base; } delete groupCache[ctx.code]; }
+  if (isGroup()) { const gs = S.gscore[ctx.code] = S.gscore[ctx.code] || { total:0, days:{} }; gs.sl = gs.sl || {}; const sk = ctx.day + ":" + (ctx.n || 0);
+    if (gs.sl[sk] == null && (ctx.n || gs.days[ctx.day] == null)) { gs.sl[sk] = base; gs.days[ctx.day] = (gs.days[ctx.day] || 0) + base; gs.total += base; } delete groupCache[ctx.code]; pushMember(); }
   let msg = "+"+(base*mult)+" puntos"+(mult > 1 ? (isGroup() ? " (×2 por jugar en grupo)" : " (×2 primera del día)") : "");
   if (ctx.kind === "m") msg = "¡Tito comió! +"+base+" puntos";
   let gift = false;
@@ -11812,11 +11916,29 @@ const GA_FORCE = { mines:"mediano", memo:"normal", cabezazo:"normal" };
 const GT_CATS = { normal:"Cultura general", arg:"Argentina", fut:"Fútbol" };
 const PP = [10, 8, 6, 5, 4, 3, 2];
 const MES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-let rankTab = "gen", arcGroup = null;
+let rankTab = "gen", arcGroup = null, gPickOpen = false;
+/* Trivias que pueden tocar en el Mixto (todas las categorías de la app) */
+const TPOOL = [];
+function tpool(){
+  if (TPOOL.length) return TPOOL;
+  GCATS.filter(c => c.cats && !c.hw).forEach(c => TPOOL.push({ id:"g-" + c.id, t:c.t, ico:c.ico, col:c.col, bank:() => GENQ.filter(q => c.cats.includes(q.cat)) }));
+  const AL = { musica:"Música argentina", famosos:"Famosos argentinos", lunfardo:"Lunfardo", futbol:"Fútbol argentino", provincias:"Provincias", historia:"Historia argentina" };
+  ARGC.forEach(c => TPOOL.push({ id:"a-" + c.id, t:AL[c.id] || c.t, ico:ARG_ICON[c.id] || "flag", col:c.col, bank:() => c.qs }));
+  ["mun","sel","int"].forEach(k => { const f = FGAMES[k]; TPOOL.push({ id:"f-" + k, t:f.t, ico:f.ico, col:f.col, bank:() => FUTQ.filter(q => q.cat === k) }); });
+  return TPOOL;
+}
+const tcat = id => tpool().find(c => c.id === id);
+const gTriesMax = code => gModeOf(S.groupMeta[code]).mode === "mix" ? (isPrem() ? 4 : 3) : Infinity;
+const gTriesUsed = (code, day) => { const g = S.gscore[code]; return (g && g.tries && g.tries[day]) || 0; };
+const gTriesLeft = (code, day) => gTriesMax(code) - gTriesUsed(code, day);
+function gArcTryUse(){
+  if (!arcGroupOn()) return true; const { code, day } = arcGroup; if (gTriesLeft(code, day) <= 0) return false;
+  const gs = S.gscore[code] = S.gscore[code] || { total:0, days:{} }; gs.tries = gs.tries || {}; gs.tries[day] = (gs.tries[day] || 0) + 1; save(); return true;
+}
 function gModeOf(g){
   g = g || {};
   if (g.mode === "solo") return g.game === "t" ? { mode:"solo", word:"t", arc:null, theme:GT_CATS[g.theme] ? g.theme : "normal" } : { mode:"solo", word:null, arc:GA_SOLO.includes(g.game) ? g.game : "flappy", theme:"normal" };
-  return { mode:"mix", word:["t","w","s"].includes(g.game) ? g.game : "random", arc:"rot", theme:g.theme === "arg" ? "arg" : "normal" };
+  return { mode:"mix", word:"t", tri:3, arc:"rot", theme:"normal" };
 }
 /* Juego de Arcade del día: recorre los 12 sin repetir (salto de 5 posiciones, coprimo con 12) */
 function gArcOf(code, day){
@@ -11824,6 +11946,7 @@ function gArcOf(code, day){
   return GA_ROT[mod(hashStr(code) + dayIndex(day) * 5, GA_ROT.length)];
 }
 const gWordOn = code => !!gModeOf(S.groupMeta[code]).word;
+const gTri = code => gModeOf(S.groupMeta[code]).tri || 0;
 const gPlayDays = n => { const T = today(), out = []; for (let k = 0; k < n; k++) out.push(addDays(T, -k)); return out; };
 const ymOf = d => d.slice(0, 7);
 function monthDays(ym, upto){ const out = []; let d = ym + "-01"; const end = upto || today(); while (ymOf(d) === ym && d <= end) { out.push(d); d = addDays(d, 1); } return out; }
@@ -11876,7 +11999,7 @@ function membersFor(code){
   const c = groupCache[code];
   if ((!c || Date.now() - c.t > 30000) && !(c && c.loading)) {
     groupCache[code] = Object.assign(c || { list:null }, { loading:true, t:Date.now() });
-    loadMembers(code).then(list => { if (!list) { groupCache[code] = { list:[meMember()], t:Date.now() - 20000, loading:false }; return; } groupCache[code] = { list, t:Date.now(), loading:false }; seasonCheck(code, list); if ((view === "group" && curGroup === code) || view === "groups") render(false); });
+    loadMembers(code).then(list => { if (!list) { groupCache[code] = { list:[meMember()], t:Date.now() - 20000, loading:false }; setTimeout(() => { if (view === "group" && curGroup === code) render(false); }, 10500); return; } groupCache[code] = { list, t:Date.now(), loading:false, ok:true }; seasonCheck(code, list); if ((view === "group" && curGroup === code) || view === "groups") render(false); });
   }
   const list = (groupCache[code] && groupCache[code].list) || (S.groupMeta[code] && S.groupMeta[code].demo ? BOTS.map(b => botMember(b, code)).concat([meMember()]) : [meMember()]);
   return list.map(m => m.me ? Object.assign({}, m, meMember()) : m);
@@ -11897,8 +12020,8 @@ function dayPts(list, code, d, kind){
   Object.keys(a).concat(Object.keys(w)).forEach(id => { out[id] = (a[id] || 0) + (w[id] || 0); });
   return out;
 }
-function monthTable(list, code, ym, kind){
-  const tot = {}, days = {}, upto = ym === ymOf(today()) ? today() : null;
+function monthTable(list, code, ym, kind, upto){
+  const tot = {}, days = {}; upto = upto || (ym === ymOf(today()) ? today() : null);
   monthDays(ym, upto || undefined).forEach(d => { const p = dayPts(list, code, d, kind); Object.entries(p).forEach(([id, v]) => { tot[id] = (tot[id] || 0) + v; days[id] = (days[id] || 0) + 1; }); });
   return { tot, days };
 }
@@ -11917,74 +12040,122 @@ function rankRows(list, code, kind, mode){
 function myMonthPos(list, code){ const k = gKinds(code)[0], rows = rankRows(list, code, k, "month"); const i = rows.findIndex(r => r.m.me); return i >= 0 && rows[i].has ? i + 1 : 0; }
 function gPending(code){
   const g = S.groupMeta[code]; if (!g) return false; const T = today();
-  if (gArcOf(code, T) && myArcBest(code, T) === undefined) return true;
+  if (gArcOf(code, T) && myArcBest(code, T) === undefined && gTriesLeft(code, T) > 0) return true;
+  if (gTri(code)) { for (let n = 1; n <= 3; n++) { const k = "g:" + code + ":" + T + ":" + n, p = S.plays[k]; if (!p || !p.t.done) return true; } return false; }
   if (gWordOn(code)) { const gc = makeCtx("g", code, T); return !play(gc)[gc.game].done; }
   return false;
 }
 
+/* ---------- Trivias del Mixto: una la elige el 1º, otra el último y otra sale al azar ---------- */
+/* Para el día X eligen el 1º y el último del ranking General con los días hasta X-2 (el día X-1 es cuando eligen) */
+function gPickers(list, code, forDay){
+  const basis = addDays(forDay, -2), t = monthTable(list, code, ymOf(basis), "gen", basis);
+  const rows = list.filter(m => t.tot[m.id]).map(m => ({ m, v:t.tot[m.id] })).sort((a, b) => b.v - a.v || String(a.m.id).localeCompare(String(b.m.id)));
+  return { top:rows[0] ? rows[0].m : null, low:rows.length > 1 ? rows[rows.length - 1].m : null };
+}
+function gPickOf(m, code, day){ const p = m && (m.me ? S.gpicks : m.picks); const x = p && p[code]; return x && x.d === day && tcat(x.c) ? x.c : null; }
+function gSlotCats(code, day){
+  const c = groupCache[code], list = (c && c.list) || [], who = gPickers(list, code, day), P = tpool(), r = rng(hashStr(code + day + "tri"));
+  const used = [], rand = () => { const free = P.filter(x => !used.includes(x.id)); return free[Math.floor(r() * free.length)].id; };
+  const a = gPickOf(who.top, code, day), b = gPickOf(who.low, code, day);
+  const s1 = a || rand(); used.push(s1); const s2 = b && !used.includes(b) ? b : rand(); used.push(s2); const s3 = rand();
+  return [{ c:s1, by:a ? who.top : null, k:"top" }, { c:s2, by:b && s2 === b ? who.low : null, k:"low" }, { c:s3, by:null, k:"rnd" }];
+}
+const gListReady = code => { const g = S.groupMeta[code], c = groupCache[code]; return !!(g && (g.demo || g.local || !remote.db || (c && c.ok))); };
+function gSlotCat(code, day, n){
+  const p = S.plays["g:" + code + ":" + day + ":" + n]; if (p && p.cat && tcat(p.cat)) return p.cat;
+  return gSlotCats(code, day)[n - 1].c;
+}
+/* ¿Me toca elegir la trivia de mañana? */
+function gMyPickTurn(list, code){
+  const tm = addDays(today(), 1), who = gPickers(list, code, tm);
+  if (who.top && who.top.me) return { k:"top", day:tm };
+  if (who.low && who.low.me) return { k:"low", day:tm };
+  return null;
+}
+function gSetPick(code, cat){
+  if (!tcat(cat)) return; S.gpicks = S.gpicks || {}; S.gpicks[code] = { d:addDays(today(), 1), c:cat }; save(); pushMember(); delete groupCache[code];
+  gPickOpen = false; closeSheet(); render(false); toast("¡Listo! Mañana todos juegan " + tcat(cat).t, "ok");
+}
+function openPick(code){
+  const cur = S.gpicks && S.gpicks[code] && S.gpicks[code].d === addDays(today(), 1) ? S.gpicks[code].c : null;
+  openSheet("Elige la trivia de mañana", `<div class="tpick">${tpool().map((c, i) => `<button class="tpick-it ${cur === c.id ? "on" : ""}" data-act="gpick:${code}|${c.id}" style="--c:${COL[c.col]};--i:${i}"><span class="tpick-ic">${icon(c.ico)}</span><span>${esc(c.t)}</span></button>`).join("")}</div>`);
+}
+
 /* ---------- Pantallas ---------- */
 const THEME_TAG = { normal:["Cultura general","b"], arg:["Argentina","y"], fut:["Fútbol","g"] };
-const GAME_TAG = { t:"Trivia", w:"Palabra", s:"Sopa", random:"Palabra · Sopa · Trivia" };
 const avatar = (m, px) => titoSVG(m.tito, px, { level:levelOf(m.earned), noFloat:true, still:true });
 function gTypeLabel(code){
   const gm = gModeOf(S.groupMeta[code]);
   if (gm.mode === "mix") return "Mixto";
-  return gm.word ? "Trivia " + GT_CATS[gm.theme].toLowerCase() : (ARC[gm.arc] ? ARC[gm.arc].t : "Arcade");
+  return gm.word ? "Trivia · " + GT_CATS[gm.theme] : (ARC[gm.arc] ? ARC[gm.arc].t : "Arcade");
 }
+const GI = {
+  share:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>`,
+  back:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>`,
+  chev:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>`,
+  check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`,
+  plus:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
+  key:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg>`
+};
 function renderGroups(){
-  let h = `<div class="page-head"><span class="eyebrow">Juega con los tuyos</span><h1>Grupos</h1><p>Hasta 50 por grupo. Todos los días hay desafío nuevo, ranking del día y temporada mensual con premios.</p></div>
-    <div class="btn-row"><button class="btn red" data-act="new-group">Crear grupo</button><button class="btn yellow" data-act="join-group">Unirme con código</button></div>`;
-  if (CFG.fb && !remote.uid) h += `<div class="card" style="text-align:center"><h2>Entra para jugar con tus amigos</h2><p class="muted">Para crear o sumarte a un grupo necesitas entrar con tu cuenta de Google. Así todos ven el mismo ranking.</p><button class="btn google block" data-act="login" style="margin-top:10px">${GOOGLE_G}Entrar con Google</button></div>`;
-  else if (!window.claude && !CFG.fb) h += `<div class="card" style="text-align:center"><h2>Muy pronto</h2><p class="muted">En esta versión de prueba los grupos todavía no se comparten entre celulares. Ya puedes crear uno para practicar el desafío diario.</p></div>`;
-  if (!S.groups.length) h += `<div class="card" style="text-align:center"><h2>Todavía no estás en ningún grupo</h2><p class="muted">Crea uno para la familia o los amigos y pásales el código.</p></div>`;
-  S.groups.forEach(code => {
+  let h = `<div class="page-head gp-head"><h1>Grupos</h1><p>Desafío diario, ranking y premios cada mes.</p></div>
+    <div class="gp-actions"><button class="gp-act red" data-act="new-group"><i>${GI.plus}</i><b>Crear</b></button><button class="gp-act yellow" data-act="join-group"><i>${GI.key}</i><b>Unirme</b></button></div>`;
+  if (CFG.fb && !remote.uid) h += `<div class="card gp-login g-in"><b>Entra con Google para jugar en grupo</b><button class="btn google block" data-act="login">${GOOGLE_G}Entrar con Google</button></div>`;
+  else if (!window.claude && !CFG.fb) h += `<div class="card g-in" style="text-align:center"><b>Muy pronto</b><p class="small muted">En esta versión los grupos todavía no se comparten entre celulares.</p></div>`;
+  if (!S.groups.length) h += `<div class="gp-empty g-in"><span class="anim-idle">${titoSVG(S.tito, 80, { mood:"happy", level:level() })}</span><b>Todavía no tienes grupos</b></div>`;
+  S.groups.forEach((code, i) => {
     const g = S.groupMeta[code]; if (!g) return;
     const list = membersFor(code), pend = gPending(code), pos = myMonthPos(list, code);
     const rows = rankRows(list, code, gKinds(code)[0], "month");
-    h += `<button class="card group-card press" data-act="open-group:${code}"><span class="avatars">${rows.slice(0,3).map(r => `<span>${avatar(r.m, 36)}</span>`).join("")}</span>
-      <span><h2 style="font-size:1.1em">${esc(g.name)}</h2><span class="tags"><span class="tag">${esc(gTypeLabel(code))}</span><span class="tag">${list.length}/50</span></span><span class="small muted" style="display:block;margin-top:3px">${pos ? "Vas " + pos + "º en " + mesName(ymOf(today())) : "Todavía no sumaste este mes"}</span></span>
-      <span class="go ${pend ? "" : "done"}" style="--c:var(--r)">${pend ? "Jugar" : "Hecho"}</span></button>`;
+    h += `<button class="gp-card press g-in" style="--i:${i}" data-act="open-group:${code}"><span class="gp-av">${rows.slice(0,3).map(r => `<span>${avatar(r.m, 34)}</span>`).join("")}</span>
+      <span class="gp-tx"><b>${esc(g.name)}</b><small>${esc(gTypeLabel(code))} · ${list.length} ${list.length === 1 ? "jugador" : "jugadores"}${pos ? ` · <em>${pos}º</em>` : ""}</small></span>
+      ${pend ? `<span class="gp-dot">Jugar</span>` : `<span class="gp-ok">${GI.check}</span>`}</button>`;
   });
   return h;
 }
 function rankHTML(list, code){
   const kinds = gKinds(code); if (!kinds.includes(rankTab)) rankTab = kinds[0];
   const kind = rankTab, mode = rankMode === "day" ? "day" : "month", rows = rankRows(list, code, kind, mode), T = today(), arcG = gArcOf(code, T);
-  const unit = mode === "month" || kind === "gen" ? "pts" : kind === "arc" && arcG === "cabezazo" ? "goles" : "";
-  const tabs = kinds.length > 1 ? `<div class="seg seg3 rank-tabs" role="group" aria-label="Ranking">${kinds.map(k => `<button data-act="rtab:${k}" aria-pressed="${k === kind}">${KIND_L[k]}</button>`).join("")}</div>` : "";
-  const note = mode === "month" ? `Puntos por posición de cada día: 1º 10, 2º 8, 3º 6, 4º 5… y 1 por jugar.${kind === "gen" ? " Suma Arcade y Trivia." : ""}` : kind === "gen" ? "Puntos por posición de hoy en Arcade y Trivia." : kind === "arc" ? (arcG ? "Mejor puntaje de hoy en " + esc(ARC[arcG].t) + "." : "") : "Puntos del desafío de hoy.";
-  return `<section class="card">${tabs}<div class="seg" role="group" aria-label="Período" style="margin-top:${tabs ? 8 : 0}px"><button data-act="rank:day" aria-pressed="${mode === "day"}">Hoy</button><button data-act="rank:month" aria-pressed="${mode === "month"}">Mes de ${mesName(ymOf(T))}</button></div>
-    <p class="small muted" style="margin:8px 2px 0">${note}</p>
-    <div class="rank" style="margin-top:6px">${rows.map((r, i) => `<div class="rank-row ${r.m.me ? "me" : ""}"><span class="pos ${i < 3 && r.has ? "p" + (i + 1) : ""}">${i + 1}</span>${avatar(r.m, 40)}<span class="rname">${esc(r.m.name || "Jugador")}${r.m.me ? " (tú)" : ""} <span class="flag" title="${esc(countryName(r.m.country))}">${flag(r.m.country)}</span>${mode === "month" && r.days ? `<small class="rdays">${r.days} ${r.days === 1 ? "día" : "días"}</small>` : ""}</span><span class="rpts">${!r.has ? `<span class="muted small">${mode === "day" ? "Falta jugar" : "—"}</span>` : (kind === "arc" && mode === "day" ? fmtArc(arcG, r.v) : NUM.format(r.v)) + (unit ? ` <small>${unit}</small>` : "")}</span></div>`).join("")}</div></section>`;
+  const unit = mode === "month" || kind === "gen" ? "pts" : "";
+  const tabs = kinds.length > 1 ? `<div class="g-tabs" role="group" aria-label="Ranking" style="--n:${kinds.length};--k:${kinds.indexOf(kind)}"><span class="g-tabs-pill"></span>${kinds.map(k => `<button data-act="rtab:${k}" aria-pressed="${k === kind}">${KIND_L[k]}</button>`).join("")}</div>` : "";
+  return `<section class="card g-rank g-in" style="--i:3"><div class="g-rank-top"><h2>Ranking</h2><div class="g-sw" role="group" aria-label="Período"><button data-act="rank:day" aria-pressed="${mode === "day"}">Hoy</button><button data-act="rank:month" aria-pressed="${mode === "month"}">Mes</button></div></div>${tabs}
+    <div class="rank g-rows" key="${kind + mode}">${rows.map((r, i) => `<div class="rank-row ${r.m.me ? "me" : ""}" style="--i:${i}"><span class="pos ${i < 3 && r.has ? "p" + (i + 1) : ""}">${i + 1}</span>${avatar(r.m, 38)}<span class="rname">${esc(r.m.name || "Jugador")}${r.m.me ? " <small>(tú)</small>" : ""}</span><span class="rpts">${!r.has ? `<span class="muted small">${mode === "day" ? "Falta" : "—"}</span>` : (kind === "arc" && mode === "day" ? fmtArc(arcG, r.v) : NUM.format(r.v)) + (unit ? ` <small>${unit}</small>` : "")}</span></div>`).join("")}</div>
+    ${mode === "month" ? `<p class="g-foot">Cada día: 1º 10 · 2º 8 · 3º 6 · 4º 5… · jugar 1</p>` : ""}</section>`;
+}
+const dots = (used, max) => max === Infinity ? `<span class="g-inf">∞</span>` : `<span class="g-dots">${Array.from({ length:max }, (_, i) => `<i class="${i < used ? "" : "on"} ${i === 3 ? "prem" : ""}"></i>`).join("")}</span>`;
+function triTile(code, T, n, s, ready){
+  const key = "g:" + code + ":" + T + ":" + n, p = S.plays[key], done = !!(p && p.t.done), c = tcat(p && p.cat || s.c);
+  const who = s.by ? `${s.k === "top" ? "👑" : "🐢"} ${esc(s.by.name || "Jugador")}` : "🎲 Sorpresa";
+  return `<button class="g-tile ${done ? "done" : ""}" ${ready || done ? `data-act="play:t:${key}"` : "disabled"} style="--c:${COL[c.col]}"><span class="g-ic">${icon(c.ico)}</span><span class="g-tt"><b>${esc(c.t)}</b><small>${who}</small></span>
+    ${done ? `<span class="g-pts">${NUM.format((p.pts && p.pts.t) || 0)}<small>pts</small></span>` : ready ? `<span class="g-go">Jugar</span>` : `<span class="g-wait"></span>`}</button>`;
 }
 function renderGroup(){
   const code = curGroup, g = S.groupMeta[code]; if (!g) return renderGroups();
-  const list = membersFor(code), T = today(), gm = gModeOf(g), arcG = gArcOf(code, T), kinds = gKinds(code);
-  let h = `<div class="note" style="justify-content:flex-start;gap:12px"><button class="icon-btn" data-act="tab:groups" aria-label="Volver a grupos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button><span style="flex:1;min-width:0"><span style="display:block;font-family:var(--display);font-size:1.3em">${esc(g.name)}</span><span class="small" style="opacity:.85">${esc(gTypeLabel(code))}${gm.mode === "mix" ? " · " + THEME_TAG[gm.theme][0] : ""} · ${list.length}/50</span></span></div>`;
-  if (g.demo) h += `<p class="small" style="color:var(--on-bg-muted)">Grupo de ejemplo con jugadores inventados para que veas cómo funciona.</p>`;
+  const list = membersFor(code), T = today(), gm = gModeOf(g), arcG = gArcOf(code, T), kinds = gKinds(code), ready = gListReady(code);
+  let h = `<div class="g-hero g-in"><button class="icon-btn" data-act="tab:groups" aria-label="Volver">${GI.back}</button><span class="g-hero-tx"><b>${esc(g.name)}</b><small>${esc(gTypeLabel(code))} · ${list.length}/50</small></span><button class="icon-btn" data-act="invite:${code}" aria-label="Invitar">${GI.share}</button></div>`;
+  if (g.demo) h += `<p class="g-note">Grupo de ejemplo con jugadores inventados.</p>`;
+  h += `<section class="card g-today g-in" style="--i:1"><div class="g-sec"><h2>Hoy</h2><small>${fmtShort(T)}</small></div>`;
   if (arcG) {
-    const best = myArcBest(code, T), a = ARC[arcG], det = gArcDetail(code, arcG, T);
-    h += `<section class="card g-chal"><div style="display:flex;align-items:center;gap:12px"><span class="arc-thumb g-thumb">${a.thumb()}</span><div style="flex:1;min-width:0"><span class="eyebrow">${gm.mode === "mix" ? "Arcade de hoy" : "Desafío de hoy"}</span><h2 style="font-size:1.15em">${esc(a.t)}</h2><span class="small muted">Intentos ilimitados: cuenta tu mejor partida de hoy.${det ? " " + det : ""}</span></div></div>
-      <div class="g-best"><span>Tu mejor de hoy</span><b>${best === undefined ? "Sin jugar" : fmtArc(arcG, best)}</b></div>
-      <button class="btn ${best === undefined ? "red" : "yellow"} block" style="margin-top:10px" data-act="garc:${code}">${best === undefined ? "Jugar el desafío" : "Mejorar mi puntaje"}</button></section>`;
+    const best = myArcBest(code, T), a = ARC[arcG], used = gTriesUsed(code, T), max = gTriesMax(code), left = max - used;
+    h += `<button class="g-tile arc ${left <= 0 ? "done" : ""}" ${left > 0 ? `data-act="garc:${code}"` : "disabled"}><span class="g-th">${a.thumb()}</span><span class="g-tt"><b>${esc(a.t)}</b><small>${best === undefined ? "Arcade" : "Mejor: <em>" + fmtArc(arcG, best) + "</em>"}</small>${dots(used, max)}</span>${left > 0 ? `<span class="g-go">${best === undefined ? "Jugar" : "Otra"}</span>` : `<span class="g-pts">${GI.check}</span>`}</button>`;
+    if (max !== Infinity && !isPrem() && left <= 0) h += `<button class="g-prem" data-act="premium">+1 intento con PREMIUM</button>`;
   }
-  if (gm.word) {
-    const gc = makeCtx("g", code, T), gp = play(gc), done = gp[gc.game].done, lim = { t:"7 preguntas · 15 s cada una", w:"2 minutos", s:"2 minutos" }[gc.game];
-    h += `<section class="card"><div style="display:flex;align-items:center;gap:12px"><span class="ico" style="--c:${COL[{t:"b",w:"g",s:"r"}[gc.game]]}">${icon({t:"trivia",w:"word",s:"soup"}[gc.game])}</span><div style="flex:1"><span class="eyebrow">${gm.mode === "mix" ? "Juego de palabras de hoy" : "Desafío de hoy"}</span><h2 style="font-size:1.15em">${gc.game === "t" ? gc.tlabel : GAME_NAME[gc.game]}</h2><span class="small muted">${done ? "Ya jugaste: " + (gp.pts[gc.game] || 0) + " puntos" : lim + ". Un solo intento, sin pistas."}</span></div></div>
-      <button class="btn ${done ? "" : "red"} block" style="margin-top:12px" data-act="play:${gc.game}:${gc.key}">${done ? "Ver mi resultado" : "Jugar el desafío"}</button></section>`;
+  if (gTri(code)) { const cats = gSlotCats(code, T); for (let n = 1; n <= 3; n++) h += triTile(code, T, n, cats[n - 1], ready); }
+  else if (gm.word) {
+    const gc = makeCtx("g", code, T), gp = play(gc), done = gp[gc.game].done;
+    h += `<button class="g-tile ${done ? "done" : ""}" data-act="play:${gc.game}:${gc.key}" style="--c:${COL[{ normal:"b", arg:"y", fut:"g" }[gm.theme]]}"><span class="g-ic">${icon({ normal:"trivia", arg:"flag", fut:"ball" }[gm.theme])}</span><span class="g-tt"><b>${esc(gc.tlabel)}</b><small>7 preguntas</small></span>${done ? `<span class="g-pts">${NUM.format(gp.pts.t || 0)}<small>pts</small></span>` : `<span class="g-go">Jugar</span>`}</button>`;
   }
-  /* Campeón del mes pasado y ganador de ayer */
-  const pm = prevYm(), pt = monthTable(list, code, pm, kinds[0]), champ = Object.entries(pt.tot).sort((a, b) => b[1] - a[1])[0];
-  if (champ && ymOf(T) !== pm) { const m = list.find(x => x.id === champ[0]); if (m) h += `<div class="trophy-row champ">${avatar(m, 42)}<span>🏆 Campeón de ${mesName(pm)}: <b>${esc(m.name)}</b> con ${NUM.format(champ[1])} pts</span></div>`; }
-  const y = addDays(T, -1), yp = dayPts(list, code, y, kinds[0]), yw = Object.entries(yp).sort((a, b) => b[1] - a[1])[0];
-  if (yw) { const m = list.find(x => x.id === yw[0]); if (m) h += `<div class="trophy-row">${avatar(m, 42)}<span>Ganó ayer: <b>${esc(m.name)}</b> ${flag(m.country)}</span></div>`; }
+  h += `</section>`;
+  if (gTri(code) && ready) { const turn = gMyPickTurn(list, code), mine = S.gpicks && S.gpicks[code] && S.gpicks[code].d === addDays(T, 1) ? tcat(S.gpicks[code].c) : null;
+    if (turn) h += `<button class="g-pick g-in" style="--i:2" data-act="gpickopen:${code}"><span class="g-pick-ic">${turn.k === "top" ? "👑" : "🐢"}</span><span class="g-tt"><b>${mine ? "Mañana: " + esc(mine.t) : "Elige la trivia de mañana"}</b><small>${turn.k === "top" ? "Vas primero" : "Vas último: te toca revancha"}</small></span><span class="g-chev">${GI.chev}</span></button>`; }
   h += rankHTML(list, code);
-  const dl = daysLeftMonth();
-  h += `<section class="card season"><div style="display:flex;align-items:center;gap:12px"><span class="season-ic">🏆</span><div style="flex:1"><span class="eyebrow">Temporada de ${mesName(ymOf(T))}</span><h2 style="font-size:1.1em">${dl ? "Termina en " + dl + (dl === 1 ? " día" : " días") : "¡Termina hoy!"}</h2><span class="small muted">Los primeros ganan ropa, bailes, cosas para la casa y monedas. Y todos los que jueguen se llevan un premio.</span></div></div>
-    <button class="btn block" style="margin-top:10px" data-act="gprizes:${code}">Ver premios</button></section>`;
-  h += `<section class="card"><span class="eyebrow">Código para invitar</span><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px"><span class="code">${esc(code)}</span><button class="btn yellow" data-act="invite:${code}">Copiar invitación</button></div>
-    ${g.local ? `<p class="small muted" style="margin-top:8px">${CFG.fb ? "Este grupo está guardado solo en este celular. Entra con tu cuenta de Google y se activa para que tus amigos se sumen con el código." : "Este grupo quedó guardado solo en este dispositivo. En la app publicada se suma cualquiera con el código."}</p>` : ""}
-    <button class="btn block" style="margin-top:12px;color:var(--r)" data-act="leave:${code}">Salir del grupo</button></section>`;
+  const pm = prevYm(), pt = monthTable(list, code, pm, kinds[0]), champ = Object.entries(pt.tot).sort((a, b) => b[1] - a[1])[0], champM = champ && list.find(x => x.id === champ[0]);
+  const md = monthDays(ymOf(T), T).length, mt = md + daysLeftMonth(), dl = daysLeftMonth();
+  h += `<button class="g-season g-in" style="--i:4" data-act="gprizes:${code}"><span class="g-cup">🏆</span><span class="g-tt"><b>Temporada de ${mesName(ymOf(T))}</b><small>${dl ? "Faltan " + dl + (dl === 1 ? " día" : " días") : "Termina hoy"}${champM ? ` · Campeón de ${mesName(pm)}: ${esc(champM.name)}` : ""}</small><span class="g-bar"><span style="width:${Math.round(100 * md / mt)}%"></span></span></span><span class="g-chev">${GI.chev}</span></button>`;
+  h += `<div class="g-code g-in" style="--i:5"><span><small>Código</small><b>${esc(code)}</b></span><button class="btn yellow" data-act="invite:${code}">Invitar</button></div>
+    ${g.local ? `<p class="g-note">${CFG.fb ? "Grupo guardado solo en este celular. Entra con Google para activarlo." : "Grupo guardado solo en este dispositivo."}</p>` : ""}
+    <button class="g-leave" data-act="leave:${code}">Salir del grupo</button>`;
   return h;
 }
 
@@ -11994,34 +12165,35 @@ function openNewGroup(){
   const mine = S.groups.filter(c => S.groupMeta[c] && S.groupMeta[c].owner === (remote.uid || "me")).length;
   if (!isPrem() && mine >= 1) { openPremium("Con el plan gratis puedes crear 1 grupo. Con PREMIUM, hasta 5."); return; }
   const chip = (name, v, l, on) => `<label><input type="radio" name="${name}" value="${v}" ${on ? "checked" : ""}> ${l}</label>`;
-  openSheet("Crear grupo", `<form id="groupForm"><div class="field"><label for="gName">Nombre del grupo</label><input id="gName" maxlength="30" required placeholder="Ej.: Los González, Amigos del club"></div>
-    <div class="field"><span class="eyebrow">Tipo de grupo</span><div class="g-types">
-      <label class="g-type"><input type="radio" name="gMode" value="mix" checked><span><b>Mixto <i class="g-rec">Recomendado</i></b><small>Cada día un juego de Arcade distinto y uno de palabras (sopa, palabra o trivia). Ranking general, de Arcade y de Trivia.</small></span></label>
-      <label class="g-type"><input type="radio" name="gMode" value="solo"><span><b>Un solo juego</b><small>Compiten siempre en lo mismo: una trivia o un juego de Arcade.</small></span></label></div></div>
-    <div id="gMix"><div class="field"><span class="eyebrow">Temática de la trivia</span><div class="opt-chips">${chip("gTheme", "normal", "Cultura general", true)}${chip("gTheme", "arg", "Argentina")}</div></div></div>
-    <div id="gSolo" hidden><div class="field"><span class="eyebrow">¿Trivia o Arcade?</span><div class="opt-chips">${chip("gKind", "t", "Trivia", true)}${chip("gKind", "a", "Arcade")}</div></div>
-      <div class="field" id="gSoloT"><span class="eyebrow">Categoría</span><div class="opt-chips">${Object.entries(GT_CATS).map(([k, l], i) => chip("gCat", k, l, !i)).join("")}</div></div>
-      <div class="field" id="gSoloA" hidden><span class="eyebrow">Juego</span><div class="g-arcs">${GA_SOLO.map((id, i) => `<label class="g-arc"><input type="radio" name="gArc" value="${id}" ${!i ? "checked" : ""}><span class="arc-thumb">${ARC[id].thumb()}</span><small>${esc(ARC[id].t)}</small></label>`).join("")}</div></div></div>
-    <p class="small muted" style="margin:0 0 10px">En el Arcade los intentos son ilimitados y cuenta tu mejor partida del día.</p>
-    <button class="btn red block" type="submit">Crear y obtener código</button></form>`);
+  openSheet("Nuevo grupo", `<form id="groupForm" class="gform"><input id="gName" class="gf-name" maxlength="30" required placeholder="Nombre del grupo" autocomplete="off">
+    <div class="gf-modes" role="radiogroup">
+      <label class="gf-mode"><input type="radio" name="gMode" value="mix" checked><span class="gf-m"><span class="gf-art">🕹️<i>❓</i></span><b>Mixto</b><small>Arcade + trivias</small></span></label>
+      <label class="gf-mode"><input type="radio" name="gMode" value="solo"><span class="gf-m"><span class="gf-art">🎯</span><b>Un juego</b><small>Siempre lo mismo</small></span></label></div>
+    <div class="gf-panel" id="gMix"><div class="gf-sum"><span><i>🕹️</i><b>1 Arcade</b><small>3 intentos${isPrem() ? " + 1" : ""}</small></span><span><i>❓</i><b>3 trivias</b><small>👑 · 🐢 · 🎲</small></span><span><i>🏆</i><b>Premios</b><small>cada mes</small></span></div>
+      <p class="gf-hint">👑 elige el 1º · 🐢 elige el último · 🎲 sorpresa</p></div>
+    <div class="gf-panel" id="gSolo" hidden><div class="g-tabs gf-kind" style="--n:2;--k:0"><span class="g-tabs-pill"></span><button type="button" data-act="gfkind:t" aria-pressed="true">Trivia</button><button type="button" data-act="gfkind:a" aria-pressed="false">Arcade</button></div><input type="hidden" name="gKindV" id="gKindV" value="t">
+      <div id="gSoloT" class="gf-sub"><div class="opt-chips gf-chips">${Object.entries(GT_CATS).map(([k, l], i) => chip("gCat", k, l, !i)).join("")}</div></div>
+      <div id="gSoloA" class="gf-sub" hidden><div class="g-arcs">${GA_SOLO.map((id, i) => `<label class="g-arc"><input type="radio" name="gArc" value="${id}" ${!i ? "checked" : ""}><span class="arc-thumb">${ARC[id].thumb()}</span><small>${esc(ARC[id].t)}</small><span class="g-arc-ok">${GI.check}</span></label>`).join("")}</div><p class="gf-hint">Intentos ilimitados · cuenta tu mejor partida</p></div></div>
+    <button class="btn red block big-cta" type="submit">Crear grupo</button></form>`);
 }
 function gFormSync(){
   const f = $("#groupForm"); if (!f) return; const v = n => (f.querySelector(`input[name="${n}"]:checked`) || {}).value;
-  const solo = v("gMode") === "solo", arc = v("gKind") === "a";
+  const solo = v("gMode") === "solo", arc = $("#gKindV").value === "a";
   $("#gMix").hidden = solo; $("#gSolo").hidden = !solo; $("#gSoloT").hidden = arc; $("#gSoloA").hidden = !arc;
+  const tb = f.querySelector(".gf-kind"); if (tb) { tb.style.setProperty("--k", arc ? 1 : 0); tb.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.act === "gfkind:a") === arc))); }
 }
 document.addEventListener("change", e => { if (e.target && e.target.closest && e.target.closest("#groupForm")) gFormSync(); });
 function groupFormMeta(f){
   const v = n => (f.querySelector(`input[name="${n}"]:checked`) || {}).value;
-  if (v("gMode") === "solo") return v("gKind") === "a" ? { mode:"solo", theme:"normal", game:v("gArc") || "flappy" } : { mode:"solo", theme:v("gCat") || "normal", game:"t" };
-  return { mode:"mix", theme:v("gTheme") || "normal", game:"random" };
+  if (v("gMode") === "solo") return $("#gKindV").value === "a" ? { mode:"solo", theme:"normal", game:v("gArc") || "flappy" } : { mode:"solo", theme:v("gCat") || "normal", game:"t" };
+  return { mode:"mix", theme:"normal", game:"random" };
 }
-function openJoinGroup(){ if (CFG.fb && !remote.uid) { openLogin("Para sumarte a un grupo, entra con tu cuenta de Google.", openJoinGroup); return; } openSheet("Unirme a un grupo", `<form id="joinForm"><div class="field"><label for="jCode">Código del grupo</label><input id="jCode" maxlength="8" required placeholder="Ej.: K7MQ2P" style="text-transform:uppercase;letter-spacing:.1em;font-weight:800" autocomplete="off"></div><button class="btn yellow block" type="submit">Unirme</button><p class="small muted">Pídele el código a quien creó el grupo.</p></form>`); }
+function openJoinGroup(){ if (CFG.fb && !remote.uid) { openLogin("Para sumarte a un grupo, entra con tu cuenta de Google.", openJoinGroup); return; } openSheet("Unirme a un grupo", `<form id="joinForm" class="gform"><input id="jCode" class="gf-name gf-code" maxlength="8" required placeholder="CÓDIGO" autocomplete="off"><button class="btn yellow block big-cta" type="submit">Unirme</button></form>`); }
 function genCode(){ const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; for (let i = 0; i < 6; i++) s += A[Math.floor(rnd()*A.length)]; return s; }
 async function createGroup(name, m){
   const code = genCode(), meta = { name, mode:m.mode, theme:m.theme, game:m.game, owner:remote.uid || "me", created:Date.now() };
   if (remote.db) { try { await remote.db.doc("groups/"+code).set(meta); } catch(e){ meta.local = true; } } else meta.local = true;
-  S.groupMeta[code] = meta; S.groups.unshift(code); save(); pushMember(); closeSheet(); rankTab = "gen"; setView("group", { group:code }); toast("Grupo creado. Pásales el código "+code);
+  S.groupMeta[code] = meta; S.groups.unshift(code); save(); pushMember(); closeSheet(); rankTab = "gen"; setView("group", { group:code }); toast("¡Grupo creado! Código: "+code, "ok"); confetti(40);
   logEv("grupo_creado", { tipo:m.mode, juego:m.game });
 }
 async function joinGroup(code){
@@ -12032,15 +12204,18 @@ async function joinGroup(code){
   try {
     const snap = await remote.db.doc("groups/"+code).get(); if (!snap.exists) { toast("No encontramos un grupo con ese código."); return; }
     const qs = await remote.db.collection("members").where("groups","array-contains",code).limit(60).get(); if (qs.size >= 50) { toast("Ese grupo ya tiene 50 personas."); return; }
-    S.groupMeta[code] = Object.assign({}, snap.data()); S.groups.unshift(code); save(); pushMember(); closeSheet(); rankTab = "gen"; setView("group", { group:code }); toast("¡Te sumaste a "+S.groupMeta[code].name+"!");
+    S.groupMeta[code] = Object.assign({}, snap.data()); S.groups.unshift(code); save(); pushMember(); closeSheet(); rankTab = "gen"; setView("group", { group:code }); toast("¡Te sumaste a "+S.groupMeta[code].name+"!", "ok");
   } catch(e){ toast("No se pudo entrar al grupo. Prueba de nuevo."); }
 }
 function arcGroupReady(id){
-  const a = ARC[id], gr = S.groupMeta[arcGroup.code] || {}, b = myArcBest(arcGroup.code, arcGroup.day), det = gArcDetail(arcGroup.code, id, arcGroup.day);
-  return `<div class="arc-box"><span class="arc-thumb big">${a.thumb()}</span><b>${esc(a.t)}</b><span class="small">Desafío de <b>${esc(gr.name || "tu grupo")}</b>. Intentos ilimitados: cuenta tu mejor partida de hoy.</span>${det ? `<span class="small">${det}</span>` : ""}<span class="small">${id === "cabezazo" ? "📱 Se juega con el celular acostado." : a.intro || ""}</span><span class="arc-gline">Tu mejor de hoy: <b>${fmtArc(id, b)}</b></span><button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`;
+  const a = ARC[id], gr = S.groupMeta[arcGroup.code] || {}, b = myArcBest(arcGroup.code, arcGroup.day), det = gArcDetail(arcGroup.code, id, arcGroup.day), used = gTriesUsed(arcGroup.code, arcGroup.day), max = gTriesMax(arcGroup.code), left = max - used;
+  return `<div class="arc-box g-ready"><span class="arc-thumb big">${a.thumb()}</span><b>${esc(a.t)}</b><span class="small">${esc(gr.name || "Tu grupo")}${det ? " · " + det : ""}</span>${id === "cabezazo" ? `<span class="small">📱 Con el celular acostado</span>` : ""}
+    <div class="g-ready-row"><span><small>Tu mejor</small><b>${fmtArc(id, b)}</b></span><span><small>${max === Infinity ? "Intentos" : "Te quedan"}</small>${max === Infinity ? "<b>∞</b>" : dots(used, max)}</span></div>
+    ${left > 0 ? `<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button>` : `<button class="btn block" data-act="arc-exit">Volver al grupo</button>`}</div>`;
 }
 function playGroupArc(code){
   const game = gArcOf(code, today()); if (!game || !ARC[game]) return;
+  if (gTriesLeft(code, today()) <= 0) { toast("Ya usaste tus intentos de hoy."); return; }
   arcGroup = { code, game, day:today(), riv:gCzRival(code, today()), song:gPnoSong(code, today()) };
   arcCur = game; setView("play-arc");
 }
@@ -12302,6 +12477,9 @@ document.addEventListener("click", e => {
   else if (k === "rank") { rankMode = v; render(false); }
   else if (k === "rtab") { rankTab = v; render(false); }
   else if (k === "garc") playGroupArc(v);
+  else if (k === "gpickopen") openPick(v);
+  else if (k === "gpick") { const [c, cat] = v.split("|"); gSetPick(c, cat); }
+  else if (k === "gfkind") { const h = $("#gKindV"); if (h) { h.value = v; gFormSync(); } }
   else if (k === "gprizes") openPrizes(v);
   else if (k === "login") fbLogin();
   else if (k === "logout") { if (el.dataset.confirm) { remoteMain.flush(); remoteMember.flush(); acct.fb && acct.fb.signOut(); toast("Cerraste sesión. Tu progreso sigue guardado en tu cuenta."); } else { el.dataset.confirm = "1"; el.textContent = "Toca de nuevo para cerrar sesión"; } }
