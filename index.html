@@ -998,6 +998,53 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .cz-node i{font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);border:2px solid var(--K);font-family:var(--cartoon);font-size:1.1em}
 .cz-node.boss i{background:#3A0A12;color:#FF5A6A}.cz-node small{font-size:.62em;font-weight:800;color:var(--muted);line-height:1.1}
 .cz-champ{font-weight:800;color:#B07A00}
+/* Ruleta nueva */
+.wheel{filter:drop-shadow(0 7px 0 var(--K)) drop-shadow(0 0 18px rgba(255,210,90,.35))}
+.wheel .wl.a{fill:#FFF6C8}.wheel .wl.b{fill:#FFB020}
+.wheel-wrap .wheel .wl{animation:wlb 1.2s steps(1) infinite}.wheel-wrap .wheel .wl.b{animation-delay:-.6s}
+.wheel-wrap.spinning .wheel .wl{animation-duration:.24s}.wheel-wrap.spinning .wheel .wl.b{animation-delay:-.12s}
+.wheel-wrap.won .wheel .wl{animation:wlw .18s steps(1) infinite}
+@keyframes wlb{0%{fill:#FFF6C8}50%{fill:#FF9A1F}}@keyframes wlw{0%{fill:#FFFFFF}50%{fill:#FF4FA0}}
+#wheelWin.on{animation:wwin .25s ease-in-out infinite alternate}@keyframes wwin{from{opacity:.05}to{opacity:.42}}
+.wheel-wrap.jack{animation:jackshake .35s ease-in-out 3}@keyframes jackshake{25%{transform:rotate(-2deg) scale(1.03)}75%{transform:rotate(2deg) scale(1.03)}}
+.wheel-pin{transform-origin:50% 12%;top:-18px;width:50px;margin-left:-25px}.wheel-pin.hit{animation:pinhit .14s ease-out}.wheel-wrap.spinning .wheel-pin{animation:none}.wheel-wrap.spinning .wheel-pin.hit{animation:pinhit .14s ease-out}
+@keyframes pinhit{0%{transform:rotate(0)}40%{transform:rotate(-22deg)}100%{transform:rotate(0)}}
+.wheel-hub{background:radial-gradient(circle at 40% 35%,#FFFFFF,#F1ECFF);box-shadow:0 0 0 5px #F4C440,0 0 0 8px var(--K),0 6px 0 4px rgba(0,0,0,.25)}
+/* Susto de Halloween y regalo de Calabacín */
+.scare{position:fixed;inset:0;z-index:200;background:radial-gradient(circle at 50% 45%,#2A1748 0,#0B0716 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .5s;overflow:hidden;color:#fff;text-align:center}
+.scare.in{opacity:1}.scare.out{opacity:0}
+.sc-fog{position:absolute;inset:auto -20% -10% -20%;height:40%;background:radial-gradient(ellipse at 30% 60%,rgba(160,140,210,.35),transparent 60%),radial-gradient(ellipse at 70% 70%,rgba(160,140,210,.3),transparent 60%);animation:fog 6s ease-in-out infinite alternate}
+@keyframes fog{to{transform:translateX(8%)}}
+.sc-txt{position:absolute;top:16%;left:0;right:0;font-family:var(--display);font-weight:700;font-size:1.25em;margin:0;padding:0 20px;text-shadow:0 2px 8px #000;min-height:1.4em}
+.sc-door{width:min(52vw,220px);transition:transform .4s,opacity .4s}.sc-door .door{width:100%;height:auto;overflow:visible}.sc-door.knock .door{animation:knock .3s ease-in-out 3}
+.sc-ghost{position:absolute;left:50%;top:50%;width:min(80vw,380px);margin-left:calc(min(80vw,380px)/-2);transform:translateY(-50%) scale(.05);opacity:0;pointer-events:none;filter:drop-shadow(0 0 30px rgba(255,255,255,.5))}
+.sc-ghost svg{width:100%;height:auto}.sc-ghost b{position:absolute;top:-12%;left:0;right:0;font-family:var(--cartoon);font-weight:400;font-size:3.4em;color:#fff;-webkit-text-stroke:5px var(--K);paint-order:stroke fill;text-shadow:0 5px 0 var(--K)}
+.scare.boo .sc-ghost{animation:gboo .55s cubic-bezier(.2,1.6,.4,1) forwards}.scare.boo{animation:scshake .5s linear 2}.scare.boo .sc-door{opacity:0;transform:scale(1.3)}
+@keyframes gboo{0%{opacity:0;transform:translateY(-50%) scale(.05) rotate(-10deg)}60%{opacity:1;transform:translateY(-50%) scale(1.5) rotate(6deg)}100%{opacity:1;transform:translateY(-50%) scale(1.25) rotate(0)}}
+@keyframes scshake{10%,50%,90%{transform:translate(-8px,4px)}30%,70%{transform:translate(8px,-4px)}}
+.sc-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.scare.boo .sc-flash{animation:scflash .6s ease-out}
+@keyframes scflash{0%{opacity:.95}100%{opacity:0}}
+.scare.laugh .sc-ghost{animation:glaugh .5s ease-in-out infinite alternate;opacity:1;transform:translateY(-50%) scale(.75)}
+@keyframes glaugh{from{transform:translateY(-50%) scale(.75) rotate(-6deg)}to{transform:translateY(-48%) scale(.78) rotate(6deg)}}
+.scare.reveal .sc-ghost{animation:gpoof .5s ease-in forwards}@keyframes gpoof{to{opacity:0;transform:translateY(-50%) scale(.1) rotate(180deg)}}
+.sc-gift{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:20px}
+.scare.reveal .sc-gift{display:flex;animation:gin .6s cubic-bezier(.2,1.4,.4,1) both .25s}@keyframes gin{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.sc-gift .eyebrow{color:#FFC425}.sc-gift p{max-width:320px;margin:0 0 10px;color:#E6E0FF;font-weight:700}
+.sc-name{font-family:var(--cartoon);font-weight:400;font-size:2.3em;color:#FF9A2E;-webkit-text-stroke:2px var(--K);paint-order:stroke fill;text-shadow:0 4px 0 var(--K);line-height:1}
+.sc-rays{position:absolute;left:50%;top:42%;width:640px;height:640px;margin:-320px 0 0 -320px;background:repeating-conic-gradient(from 0deg,rgba(255,154,46,.18) 0 10deg,transparent 10deg 22deg);border-radius:50%;animation:rays 12s linear infinite;pointer-events:none;-webkit-mask:radial-gradient(circle,#000 30%,transparent 70%);mask:radial-gradient(circle,#000 30%,transparent 70%)}
+@keyframes rays{to{transform:rotate(360deg)}}
+.sc-fig{position:relative;filter:drop-shadow(0 0 24px rgba(255,154,46,.6))}
+.sc-gift .btn-row{position:relative;width:min(320px,90vw)}
+/* Tutorial */
+.tut{position:fixed;inset:0;z-index:190;animation:tutin .3s ease both}.tut.out{opacity:0;transition:opacity .3s}@keyframes tutin{from{opacity:0}}
+.tut-spot{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(10,8,30,.74),0 0 0 4px #FFC425,0 0 24px 6px rgba(255,196,37,.6);transition:all .35s cubic-bezier(.3,1.2,.4,1);pointer-events:none;animation:spotpulse 1.4s ease-in-out infinite}
+.tut-spot.none{box-shadow:0 0 0 9999px rgba(10,8,30,.78)}
+@keyframes spotpulse{50%{box-shadow:0 0 0 9999px rgba(10,8,30,.74),0 0 0 6px #FFC425,0 0 34px 10px rgba(255,196,37,.7)}}
+.tut-card{position:fixed;left:12px;right:12px;max-width:440px;margin:0 auto;background:var(--surface,#fff);color:var(--ink);border:3px solid var(--K);border-radius:18px;box-shadow:0 6px 0 var(--K);padding:12px 12px 10px}
+.tut-card.pop{animation:tutpop .35s cubic-bezier(.2,1.4,.4,1)}@keyframes tutpop{from{transform:scale(.9);opacity:0}}
+.tut-head{display:flex;gap:10px;align-items:flex-start}.tut-tito{flex:none;margin-top:-2px}.tut-head b{font-family:var(--display);font-size:1.15em;display:block;margin-bottom:2px}.tut-head p{margin:0;font-size:.92em;line-height:1.35}
+.tut-foot{display:flex;align-items:center;gap:8px;margin-top:10px}.tut-dots{flex:1;display:flex;gap:4px;flex-wrap:wrap}.tut-dots i{width:7px;height:7px;border-radius:50%;background:var(--line,#D5D9E6)}.tut-dots i.done{background:#9CC8FF}.tut-dots i.on{background:var(--K);width:16px;border-radius:4px}
+.tut-link{display:block;margin:2px auto 0;background:none;border:0;color:rgba(255,255,255,.85);font:inherit;font-size:.88em;font-weight:700;padding:6px 10px;text-decoration:underline;text-underline-offset:3px}.tut-link b{color:#FFC425}
 
 </style>
 </head>
@@ -5308,6 +5355,9 @@ const SND = (() => {
       const F = {
         jump:() => tone(380, 0, .16, "square", .05, 820),
         /* Tito Rescate */
+        wtick:() => { tone(1800, 0, .025, "square", .04, 900); noise(0, .02, .06, 3500); },
+        scream:() => { tone(900, 0, .9, "sawtooth", .12, 260); tone(1240, 0, .7, "square", .05, 420); noise(0, .9, .28, 1600, null, "bandpass", .02); tone(70, 0, .8, "sine", .5, 38); },
+        laugh:() => { [0, .16, .32, .5].forEach((t, i) => tone(520 - i * 40, t, .12, "triangle", .1, 380 - i * 30)); },
         /* Tito Cabezazo */
         header:() => { tone(260, 0, .12, "sine", .5, 120); tone(520, 0, .08, "triangle", .06, 300); noise(0, .05, .12, 1400); },
         bump:() => { tone(140, 0, .08, "sine", .25, 90); noise(0, .04, .06, 700, null, "lowpass"); },
@@ -10024,7 +10074,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "30/10 23:44";
+const APP_VER = "03/11 00:43";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10935,6 +10985,7 @@ function renderHome(){
       <div class="who">${esc(S.profile.name || "Tu Tito")} <span>${flag(S.profile.country)}</span> </div>${lvlChip()}</section>
     ${wheelBanner}
     ${CFG.form ? `<button class="card fb-home press" data-act="feedback"><span class="fb-ic">${icon("chat")}</span><span class="fb-tx"><b>¿Algo para contarnos?</b><small>Un error, una idea o lo que te gusta. Lo leemos todo.</small></span><span class="go" style="--c:var(--g)">Opinar</span></button>` : ""}
+    <button class="tut-link" data-act="tutorial">¿Cómo se juega? <b>Ver tutorial</b></button>
     ${pendingGroup ? `<p class="status-line"><button data-act="open-group:${pendingGroup}" style="all:unset;cursor:pointer;text-decoration:underline">Tu grupo te espera</button></p>` : ""}`;
 }
 function gameCard(kind, c, opts){
@@ -10959,22 +11010,41 @@ function renderGames(){
 }
 
 /* ---------- Ruleta diaria ---------- */
+/* Ruleta: 9 gajos, todos dan algo (desde 150 puntos hasta el premio mayor de 1.000) */
 const WHEEL = [
-  { k:"pts", v:20, t:"20", col:"#22A447", w:22 }, { k:"none", t:"Nada", col:"#C9CEDE", w:16 },
-  { k:"pts", v:50, t:"50", col:"#2F7FE8", w:18 }, { k:"hint", v:1, t:"Pista", col:"#FFC425", w:14 },
-  { k:"pts", v:100, t:"100", col:"#EE3B2B", w:11 }, { k:"item", t:"Ropa", col:"#7A4FD9", w:9 },
-  { k:"pts", v:200, t:"200", col:"#0E9AA7", w:7 }, { k:"prem", v:3, t:"PREMIUM", col:"#F2B705", w:3 }
+  { k:"pts", v:150, t:"150", col:"#22A447", c2:"#58D36F", w:24, ic:"coin" }, { k:"hint", v:1, t:"PISTA", col:"#F2B705", c2:"#FFD95A", w:12, ic:"bulb" },
+  { k:"pts", v:250, t:"250", col:"#2F7FE8", c2:"#6FB0FF", w:14, ic:"coin" }, { k:"pts", v:1000, t:"1000", col:"#1B1640", c2:"#4A3A9A", w:2, ic:"star", jack:true },
+  { k:"pts", v:200, t:"200", col:"#F47B20", c2:"#FFA95C", w:18, ic:"coin" }, { k:"item", t:"ROPA", col:"#7A4FD9", c2:"#A887F2", w:9, ic:"shirt" },
+  { k:"pts", v:500, t:"500", col:"#E8412C", c2:"#FF7A66", w:7, ic:"coin" }, { k:"prem", v:3, t:"PREMIUM", col:"#C98F00", c2:"#FFD34D", w:4, ic:"crown" },
+  { k:"pts", v:300, t:"300", col:"#0E9AA7", c2:"#4FD1D9", w:10, ic:"coin" }
 ];
+const WSEG = 360 / WHEEL.length;
+function wheelIcon(ic){
+  if (ic === "coin") return `<circle r="8" fill="#FFD34D" stroke="${IK}" stroke-width="2"/><circle r="5" fill="none" stroke="#C98F00" stroke-width="1.4"/><path d="M-1.5 -3 v6" stroke="#C98F00" stroke-width="1.6" stroke-linecap="round"/>`;
+  if (ic === "bulb") return `<path d="M0 -9 a6.5 6.5 0 0 1 4 11.6 v2.4 h-8 v-2.4 A6.5 6.5 0 0 1 0 -9z" fill="#FFF6B0" stroke="${IK}" stroke-width="2"/><rect x="-3.6" y="5" width="7.2" height="3.4" rx="1" fill="#B9C0CC" stroke="${IK}" stroke-width="1.4"/>`;
+  if (ic === "shirt") return `<path d="M-4 -8 L-10 -5 L-8 0 L-6 -1 V8 H6 V-1 L8 0 L10 -5 L4 -8 Q0 -4 -4 -8z" fill="#fff" stroke="${IK}" stroke-width="1.8" stroke-linejoin="round"/>`;
+  if (ic === "crown") return `<path d="M-9 5 L-10 -6 L-4 -1 L0 -9 L4 -1 L10 -6 L9 5 Z" fill="#FFE27A" stroke="${IK}" stroke-width="1.8" stroke-linejoin="round"/><rect x="-9" y="5" width="18" height="3" rx="1" fill="#FFE27A" stroke="${IK}" stroke-width="1.5"/>`;
+  return `<path d="M0 -10 L2.9 -3.6 L9.8 -3.1 L4.6 1.4 L6.2 8.1 L0 4.5 L-6.2 8.1 L-4.6 1.4 L-9.8 -3.1 L-2.9 -3.6Z" fill="#FFE27A" stroke="${IK}" stroke-width="1.8" stroke-linejoin="round"/>`;
+}
 function wheelSVG(){
-  const R = 100; let s = `<svg class="wheel" id="wheel" viewBox="-110 -110 220 220" style="transform:rotate(${wheelRot}deg)" aria-hidden="true"><circle r="106" fill="#fff" stroke="${IK}" stroke-width="5"/>`;
-  WHEEL.forEach((w,i) => {
-    const a0 = (i*45 - 90) * Math.PI/180, a1 = ((i+1)*45 - 90) * Math.PI/180, mid = i*45 + 22.5;
-    s += `<path d="M0 0 L${(R*Math.cos(a0)).toFixed(2)} ${(R*Math.sin(a0)).toFixed(2)} A${R} ${R} 0 0 1 ${(R*Math.cos(a1)).toFixed(2)} ${(R*Math.sin(a1)).toFixed(2)} Z" fill="${w.col}" stroke="${IK}" stroke-width="3"/>`;
-    const lbl = w.k === "pts" ? `<circle cx="0" cy="-74" r="9" fill="#FFD34D" stroke="${IK}" stroke-width="2.5"/><text y="-50" text-anchor="middle" font-family="Luckiest Guy, Impact" font-size="19" fill="#fff" stroke="${IK}" stroke-width="4" paint-order="stroke">${w.t}</text>`
-      : `<text y="${w.k === "prem" ? -62 : -60}" text-anchor="middle" font-family="Luckiest Guy, Impact" font-size="${w.k === "prem" ? 12 : 16}" fill="${w.k === "none" ? IK : "#fff"}" stroke="${w.k === "none" ? "none" : IK}" stroke-width="3.5" paint-order="stroke">${w.t}</text>`;
-    s += `<g transform="rotate(${mid})">${lbl}</g>`;
+  const R = 96, n = WHEEL.length, P = (r, a) => [(r * Math.cos((a - 90) * Math.PI / 180)).toFixed(2), (r * Math.sin((a - 90) * Math.PI / 180)).toFixed(2)];
+  let s = `<svg class="wheel" id="wheel" viewBox="-112 -112 224 224" style="transform:rotate(${wheelRot}deg)" aria-hidden="true"><defs>
+    <linearGradient id="wrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".35" stop-color="#F4C440"/><stop offset=".7" stop-color="#C98F00"/><stop offset="1" stop-color="#FFE27A"/></linearGradient>
+    <radialGradient id="wshade" cx="0" cy="0" r="1" gradientUnits="objectBoundingBox" fx=".5" fy=".5"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></radialGradient>
+    ${WHEEL.map((w, i) => `<radialGradient id="wg${i}" cx="0" cy="0" r="${R}" gradientUnits="userSpaceOnUse"><stop offset=".25" stop-color="${w.c2}"/><stop offset="1" stop-color="${w.col}"/></radialGradient>`).join("")}</defs>
+    <circle r="110" fill="url(#wrim)" stroke="${IK}" stroke-width="4"/><circle r="99" fill="${IK}"/>`;
+  WHEEL.forEach((w, i) => {
+    const a0 = i * WSEG, a1 = (i + 1) * WSEG, mid = a0 + WSEG / 2, [x0, y0] = P(R, a0), [x1, y1] = P(R, a1);
+    s += `<path d="M0 0 L${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} Z" fill="url(#wg${i})" stroke="${IK}" stroke-width="2.5"/>`;
+    const L = w.t.length, fs = Math.min(w.k === "pts" ? 19 : 15, 38 / (L * .64)), light = w.k === "hint";
+    s += `<g transform="rotate(${mid})"><g transform="translate(0 -80)">${wheelIcon(w.ic)}</g>
+      <text transform="translate(0 -54) rotate(-90)" text-anchor="middle" dominant-baseline="central" font-family="Luckiest Guy, Impact, sans-serif" font-size="${fs.toFixed(1)}" fill="${light ? IK : w.jack ? "#FFE27A" : "#fff"}" stroke="${light ? "#fff" : IK}" stroke-width="${light ? 2.5 : 4}" paint-order="stroke" letter-spacing=".5">${w.t}</text>
+</g>`;
   });
-  [0,45,90,135,180,225,270,315].forEach(a => s += `<circle cx="${(103*Math.cos((a-90)*Math.PI/180)).toFixed(1)}" cy="${(103*Math.sin((a-90)*Math.PI/180)).toFixed(1)}" r="4" fill="#FFE27A" stroke="${IK}" stroke-width="1.5"/>`);
+  s += `<circle r="${R}" fill="url(#wshade)" pointer-events="none"/><path d="M-70 -62 A94 94 0 0 1 40 -86" stroke="#fff" stroke-width="7" fill="none" opacity=".18" stroke-linecap="round"/>`;
+  for (let i = 0; i < n; i++) { const [px, py] = P(R - 3, i * WSEG); s += `<circle cx="${px}" cy="${py}" r="3.6" fill="#F4F6FA" stroke="${IK}" stroke-width="1.6"/>`; }
+  for (let i = 0; i < 18; i++) { const [px, py] = P(104.5, i * 20 + 10); s += `<circle class="wl ${i % 2 ? "b" : "a"}" cx="${px}" cy="${py}" r="3.3" stroke="${IK}" stroke-width="1.2"/>`; }
+  s += `<path id="wheelWin" d="" fill="#fff" opacity="0" pointer-events="none"/>`;
   return s + `</svg>`;
 }
 function wheelMini(){ const cols = ["#22A447","#EE3B2B","#FFC425","#2F7FE8","#7A4FD9","#FF8A2B"]; return `<svg viewBox="-22 -22 44 44" width="40" height="40" aria-hidden="true">${cols.map((c,i) => { const a0 = i*Math.PI/3, a1 = a0 + Math.PI/3; return `<path d="M0 0 L${(20*Math.cos(a0)).toFixed(2)} ${(20*Math.sin(a0)).toFixed(2)} A20 20 0 0 1 ${(20*Math.cos(a1)).toFixed(2)} ${(20*Math.sin(a1)).toFixed(2)} Z" fill="${c}"/>`; }).join("")}<circle r="20" fill="none" stroke="${IK}" stroke-width="3"/><circle r="5" fill="#fff" stroke="${IK}" stroke-width="2.4"/></svg>`; }
@@ -10983,7 +11053,7 @@ function renderWheel(){
   const btn = left <= 0 ? `<button class="btn block" disabled>Vuelve mañana para girar de nuevo</button>`
     : w.n === 0 ? `<button class="btn big-cta block" data-act="spin">¡GIRAR GRATIS!</button>`
     : `<button class="btn reward block" data-act="spin">${isPrem() ? "Girar otra vez (PREMIUM)" : "Girar otra vez · ver video"}</button>`;
-  return `<div class="page-head" style="text-align:center;align-items:center"><span class="eyebrow">Una tirada gratis por día</span><h1>Ruleta de Tito</h1><p>Puntos, pistas, ropa para Tito y hasta PREMIUM por 3 días.</p></div>
+  return `<div class="page-head" style="text-align:center;align-items:center"><span class="eyebrow">Una tirada gratis por día</span><h1>Ruleta de Tito</h1><p>Siempre ganas algo: de 150 a 1.000 puntos, pistas, ropa y hasta PREMIUM.</p></div>
     <div class="wheel-wrap" id="wheelWrap"><svg class="wheel-pin" viewBox="0 0 46 50" aria-hidden="true"><path d="M4 6 Q23 -4 42 6 L23 46 Z" fill="#EE3B2B" stroke="${IK}" stroke-width="3.5" stroke-linejoin="round"/><circle cx="23" cy="14" r="5" fill="#fff" stroke="${IK}" stroke-width="2"/></svg>${wheelSVG()}<div class="wheel-hub">${titoSVG(S.tito, 50, { noFloat:true, still:true, level:level() })}</div></div>
     ${btn}<p class="status-line">${left > 0 ? "Gírala con el dedo o tócala · te quedan "+left+(left === 1 ? " tirada" : " tiradas") : "Ya usaste tus 2 tiradas de hoy"}</p>
     <button class="btn ghost block" data-act="home">Ir al inicio</button>`;
@@ -10994,12 +11064,29 @@ function spin(dir, power){ logEv("ruleta");
   const go = () => {
     const total = WHEEL.reduce((s,x) => s + x.w, 0); let r = rnd()*total, idx = 0; for (; idx < WHEEL.length; idx++) { r -= WHEEL[idx].w; if (r < 0) break; } idx = Math.min(idx, WHEEL.length-1);
     dayCounter("wheel").n++; const prize = grantPrize(WHEEL[idx]); save();
-    const center = idx*45 + 22.5, jitter = (rnd()-.5)*28;
-    const target = mod(360 - center + jitter, 360), turns = Math.round(clamp(5 + power*4, 5, 10));
-    wheelRot = dir > 0 ? wheelRot + 360*turns + mod(target - wheelRot, 360) : wheelRot - 360*turns - mod(wheelRot - target, 360);
-    spinning = true; SND.spin(4600); const wrap = $("#wheelWrap"), wh = $("#wheel"); if (wrap) wrap.classList.add("spinning"); if (wh) wh.style.transform = `rotate(${wheelRot}deg)`;
+    const center = idx * WSEG + WSEG / 2, jitter = (rnd() - .5) * WSEG * .6;
+    const target = mod(360 - center + jitter, 360), turns = Math.round(clamp(6 + power * 4, 6, 11));
+    const from = wheelRot, to = dir > 0 ? wheelRot + 360 * turns + mod(target - wheelRot, 360) : wheelRot - 360 * turns - mod(wheelRot - target, 360);
+    wheelRot = to; spinning = true; const wrap = $("#wheelWrap"), wh = $("#wheel"), pin = wrap && wrap.querySelector(".wheel-pin");
+    if (wrap) wrap.classList.add("spinning"); if (wh) wh.style.transition = "none";
     document.querySelectorAll("[data-act='spin']").forEach(b => b.disabled = true);
-    setTimeout(() => { spinning = false; if (wrap) wrap.classList.remove("spinning"); showPrize(prize); }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 200 : 4800);
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, D = reduce ? 300 : 5600, over = (to - from) > 0 ? 2.6 : -2.6, t0 = performance.now();
+    let lastPeg = Math.floor(from / WSEG), lastTick = 0;
+    const frame = now => {
+      const k = Math.min(1, (now - t0) / D);
+      const ang = k < .9 ? from + (to + over - from) * (1 - Math.pow(1 - k / .9, 4)) : to + over * (1 - ((k - .9) / .1) * ((k - .9) / .1) * (3 - 2 * (k - .9) / .1));
+      if (wh) wh.style.transform = `rotate(${ang}deg)`;
+      const peg = Math.floor(ang / WSEG); if (peg !== lastPeg) { lastPeg = peg; if (pin) { pin.classList.remove("hit"); void pin.offsetWidth; pin.classList.add("hit"); } if (now - lastTick > 45) { lastTick = now; SND.fx("wtick"); } }
+      if (k < 1) requestAnimationFrame(frame); else done();
+    };
+    const done = () => {
+      if (wh) { wh.style.transform = `rotate(${wheelRot}deg)`; void wh.offsetWidth; wh.style.transition = ""; }
+      const hl = $("#wheelWin"); if (hl) { const R = 96, a0 = (idx * WSEG - 90) * Math.PI / 180, a1 = ((idx + 1) * WSEG - 90) * Math.PI / 180; hl.setAttribute("d", `M0 0 L${(R * Math.cos(a0)).toFixed(2)} ${(R * Math.sin(a0)).toFixed(2)} A${R} ${R} 0 0 1 ${(R * Math.cos(a1)).toFixed(2)} ${(R * Math.sin(a1)).toFixed(2)} Z`); hl.classList.add("on"); }
+      if (wrap) { wrap.classList.remove("spinning"); wrap.classList.add("won"); if (WHEEL[idx].jack) wrap.classList.add("jack"); }
+      SND.fx(WHEEL[idx].jack ? "victory" : "bonus"); if (WHEEL[idx].jack) confetti(140);
+      setTimeout(() => { spinning = false; if (wrap) wrap.classList.remove("won", "jack"); if (hl) hl.classList.remove("on"); showPrize(prize); }, reduce ? 200 : 1100);
+    };
+    requestAnimationFrame(frame);
   };
   if (w.n === 0) go(); else showRewarded("otra tirada", go, () => toast("Saliste antes de terminar el video."));
 }
@@ -11033,7 +11120,7 @@ function randomItem(maxPrice){
   return pool.length ? pool[Math.floor(rnd()*pool.length)] : null;
 }
 function grantPrize(w){
-  if (w.k === "pts") { addCoins(w.v, true); return { title:"+"+w.v+" puntos", sub:"Ya están en tu billetera.", mood:"star" }; }
+  if (w.k === "pts") { addCoins(w.v, true); return { title:(w.jack ? "¡PREMIO MAYOR! " : "") + "+" + NUM.format(w.v) + " puntos", sub:"Ya están en tu billetera.", mood:"star" }; }
   if (w.k === "hint") { S.hints += 1; return { title:"+1 pista", sub:"Úsala cuando te trabes.", mood:"happy" }; }
   if (w.k === "prem") { S.premUntil = Math.max(Date.now(), S.premUntil || 0) + 3*864e5; return { title:"¡PREMIUM 3 días!", sub:"Sin anuncios y con todos los beneficios hasta el "+fmtShort(ymd(new Date(S.premUntil)))+".", mood:"star", prem:true }; }
   if (w.k === "item") { const it = randomItem(1000); if (!it) { addCoins(150, true); return { title:"+150 puntos", sub:"Ya tenías toda la ropa de ese nivel, así que te damos puntos.", mood:"star" }; } (S.owned[it.cat] = S.owned[it.cat] || []).push(it.k); return { title:it.n, sub:"¡Nuevo para Tito! Ya está en tu ropero.", mood:"star", item:it }; }
@@ -11737,6 +11824,7 @@ function renderSet(){
     <div class="money"><span class="small">Ingreso estimado por mes</span><br><b id="ownerTotal">${USD.format(ads+subs)}</b><div class="small muted" id="ownerSplit">Anuncios ${USD.format(ads)} · PREMIUM ${USD.format(subs)}</div></div>
     <p class="small muted" style="margin-top:8px">Los eCPM son de ejemplo. Cámbialos por los que te muestre AdMob cuando tengas tráfico real.</p></section>${DEV ? "" : "-->"}
   <section class="card"><div class="set-row"><span><b>Canjear código</b><br><span class="small muted">Puntos, ropa o personajes de regalo</span></span><button class="btn yellow" data-act="redeem">Canjear</button></div></section>
+  <section class="card"><div class="set-row"><span><b>¿Cómo se juega?</b><br><span class="small muted">Tito te muestra todo lo que puedes hacer</span></span><button class="btn" data-act="tutorial">Ver tutorial</button></div></section>
   ${CFG.form ? `<section class="card"><div class="set-row"><span><b>Mandar opinión</b><br><span class="small muted">Un error, una idea o lo que te gusta</span></span><button class="btn green" data-act="feedback">Escribir</button></div></section>` : ""}
   <section class="card"><button class="btn block" data-act="reset" style="color:var(--r)">Borrar mi progreso</button></section>
   <p class="small muted" style="text-align:center;margin:4px 0 0">Versión ${APP_VER}</p>`;
@@ -11789,7 +11877,7 @@ function exitGame(){
   tPicked = null; tResolved = false; sTap = null; wInput = "";
   if (finished) showInterstitial("Aparece al salir de un juego terminado", backFromGame); else backFromGame();
 }
-function afterOnboarding(){ if (dayCounter("wheel").n === 0) setView("ruleta"); }
+function afterOnboarding(){ const goWheel = () => { if (dayCounter("wheel").n === 0) setView("ruleta"); }; setTimeout(() => startTutorial(() => hwGift(goWheel)), 2700); }
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act],[data-key]");
   if (!el) { const b = e.target.closest("button, a, summary, input[type=radio]"); if (b) { SND.unlock(); SND.tap(); } return; }
@@ -11814,6 +11902,7 @@ document.addEventListener("click", e => {
   else if (k === "hw-door-info") { if (isHalloween()) { setView("home"); toast(`Junta ${HW_GOAL} caramelos en Truco o trato y jugando`, "candy"); } else toast("Calabacín solo se consiguió en Halloween"); }
   else if (k === "fbtype") { fbType = v; document.querySelectorAll('[data-act^="fbtype:"]').forEach(b => b.setAttribute("aria-pressed", b.dataset.act === "fbtype:" + v)); }
   else if (k === "redeem") openRedeem();
+  else if (k === "tutorial") startTutorial();
   else if (k === "mbox") openMBox();
   else if (k === "need") { SND.bad(); toast(`Te faltan ${NUM.format(+v - S.coins)} puntos`, "money", { have:S.coins, need:+v }); }
   else if (k === "char-use") { if (!ownedChars().includes(v)) return; S.tito.char = v === "tito" ? undefined : v; if (v === "tito") delete S.tito.char; save(); pushMember(); closeSheet(); render(false); SND.pop(); toast("¡Ahora juegas con " + charName(v === "tito" ? null : v) + "!"); }
@@ -11955,6 +12044,7 @@ function boot(){
   const leave = () => {
     if (stage === "gate" || sp.classList.contains("out")) return; sp.classList.add("out"); setTimeout(() => sp.remove(), 500);
     if (!S.profile.done) openProfile(true);
+    else if (hwGiftDue()) hwGift(() => { if (dayCounter("wheel").n === 0) setView("ruleta"); });
     else if (dayCounter("wheel").n === 0) setView("ruleta");
     else if (returning && !isPrem() && away > 4*3600e3) showInterstitial("Anuncio de apertura: sale si vuelves después de 4 horas");
   };
@@ -11969,6 +12059,81 @@ function boot(){
   setInterval(() => checkSlots(true), 30000);
   initRemote();
 }
+
+/* ---------- Regalo para los primeros jugadores: Calabacín, con susto de Truco o trato (hasta el 11/11) ---------- */
+const HWGIFT_END = "2026-11-11";
+const hwGiftDue = () => S.profile.done && !S.giftHw && today() <= HWGIFT_END;
+const GHOST_SVG = `<svg viewBox="0 0 200 230" aria-hidden="true"><defs><radialGradient id="ghg" cx=".45" cy=".35" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#E4E9F7"/><stop offset="1" stop-color="#B8C1DA"/></radialGradient></defs>
+  <path d="M100 8 C156 8 186 54 186 112 V210 L166 192 L146 214 L124 194 L100 218 L76 194 L54 214 L34 192 L14 210 V112 C14 54 44 8 100 8Z" fill="url(#ghg)" stroke="#0B0F24" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M54 96 C54 74 86 74 86 98 C86 118 54 120 54 96Z M114 98 C114 74 146 74 146 96 C146 120 114 118 114 98Z" fill="#0B0F24"/><circle cx="72" cy="96" r="5" fill="#FF3B3B"/><circle cx="128" cy="96" r="5" fill="#FF3B3B"/>
+  <path d="M76 140 C76 124 124 124 124 140 C124 172 112 186 100 186 C88 186 76 172 76 140Z" fill="#0B0F24"/><path d="M84 146 Q100 136 116 146" stroke="#3A0A12" stroke-width="5" fill="none"/>
+  <path d="M30 120 Q8 132 4 158 M170 120 Q192 132 196 158" stroke="#0B0F24" stroke-width="7" fill="none" stroke-linecap="round"/></svg>`;
+function hwGift(then){
+  if (!hwGiftDue()) { then && then(); return; }
+  const has = ownedChars().includes("calabacin");
+  const ov = document.createElement("div"); ov.className = "scare"; document.body.appendChild(ov);
+  ov.innerHTML = `<div class="sc-fog"></div><p class="sc-txt" id="scTxt">Alguien golpea tu puerta…</p><div class="sc-door">${doorSVG(false)}</div><div class="sc-ghost">${GHOST_SVG}<b>¡BUUU!</b></div><div class="sc-flash"></div><div class="sc-gift"></div>`;
+  const door = ov.querySelector(".sc-door"), txt = ov.querySelector("#scTxt"), T = (ms, f) => setTimeout(f, ms);
+  SND.unlock(); logEv("regalo_calabacin");
+  requestAnimationFrame(() => ov.classList.add("in"));
+  T(700, () => { SND.fx("knock"); door.classList.add("knock"); txt.textContent = "Toc, toc… ¿truco o trato?"; });
+  T(1500, () => { SND.fx("knock"); });
+  T(2300, () => { SND.fx("creak"); door.classList.remove("knock"); door.querySelector(".door").classList.add("open"); txt.textContent = "La puerta se abre sola…"; });
+  T(3500, () => { txt.textContent = ""; ov.classList.add("boo"); SND.fx("scream"); SND.fx("boo"); if (navigator.vibrate) try { navigator.vibrate([90, 40, 160]); } catch(e){} });
+  T(4700, () => { ov.classList.add("laugh"); SND.fx("laugh"); txt.textContent = "¡Jajaja, te asusté!"; });
+  T(6000, () => {
+    S.giftHw = 1; if (!has) ownedChars().push("calabacin"); else addCoins(2000, true); save(); pushMember(); renderHeader();
+    const fig = titoSVG(Object.assign({}, S.tito, { char:"calabacin" }), 160, { mood:"star", level:level(), noFloat:true, dance:myDance() });
+    ov.classList.add("reveal"); txt.textContent = "";
+    ov.querySelector(".sc-gift").innerHTML = `<span class="sc-rays"></span><span class="eyebrow">Regalo para los primeros jugadores</span><div class="sc-fig">${fig}</div>
+      <b class="sc-name">${has ? "+2.000 puntos" : "¡Calabacín es tuyo!"}</b><p>${has ? "Ya tenías a Calabacín, así que te regalamos puntos. ¡Gracias por jugar desde el principio!" : "Gracias por ser de los primeros en jugar unraTITO. Este personaje de Halloween ya no se consigue de otra forma."}</p>
+      <div class="btn-row">${has ? "" : `<button class="btn yellow" id="scUse">¡Usarlo ahora!</button>`}<button class="btn" id="scOk">¡Gracias!</button></div>`;
+    confetti(120); SND.fx("treat"); if (typeof celebrate === "function") celebrate(2);
+    const close = use => { if (use) { S.tito.char = "calabacin"; save(); pushMember(); render(false); toast("¡Ahora juegas con Calabacín!", "ok"); } ov.classList.add("out"); setTimeout(() => { ov.remove(); then && then(); }, 400); };
+    const u = ov.querySelector("#scUse"); if (u) u.onclick = () => close(true); ov.querySelector("#scOk").onclick = () => close(false);
+  });
+}
+/* ---------- Tutorial: Tito explica cada parte de la app iluminándola ---------- */
+const TUT = [
+  { t:"¡Hola! Soy Tito", d:"Te muestro todo lo que puedes hacer en un ratito. Puedes saltarlo cuando quieras y volver a verlo desde Ajustes.", el:null },
+  { t:"El juego del día", d:"Una palabra para adivinar, una sopa de letras y una trivia. Cambian todos los días y son iguales para todos.", el:".daily-card" },
+  { t:"Tu racha", d:"Si juegas todos los días suma fuego. Cada 7 días seguidos te llevas un regalo.", el:".streak-mini" },
+  { t:"La ruleta", d:"Un giro gratis por día. Siempre ganas: de 150 a 1.000 puntos, pistas, ropa o PREMIUM.", el:".wheel-banner" },
+  { t:"Trivias", d:"Preguntas de cultura general, de Argentina y de fútbol: penales, ¿quién soy?, camisetas y más.", el:'#tabs [data-act="tab:trivias"]' },
+  { t:"Arcade", d:"Más de 15 juegos: Tito Rescate, Cabezazo, Ruta, Piano y muchos más. Con el botón de pausa frenas cuando quieras.", el:'#tabs [data-act="tab:arcade"]' },
+  { t:"Grupos", d:"Crea un grupo, pasa el código a tu familia o amigos y compitan con el mismo desafío cada día.", el:'#tabs [data-act="tab:groups"]' },
+  { t:"Tu Tito", d:"Con tus puntos le compras ropa, cosas para su casa, bailes y personajes nuevos.", el:'#tabs [data-act="tab:tito"]' },
+  { t:"Puntos y nivel", d:"Los puntos se ganan jugando y en la ruleta, y se gastan en la tienda. El nivel sube con experiencia, que solo se gana jugando.", el:"#coinPill" },
+  { t:"Mándanos tu opinión", d:"¿Algo anda mal o tienes una idea? Toca acá y escríbenos. Lo leemos todo.", el:"#fbBtn" },
+  { t:"Ajustes", d:"Activa PREMIUM gratis para jugar sin anuncios, canjea códigos, juega días anteriores y ajusta el sonido.", el:"#gearBtn" },
+  { t:"Un último truco", d:"Ánclalo al inicio del celular para tenerlo como app.<br><b>iPhone:</b> Compartir → «Agregar a inicio».<br><b>Android:</b> los tres puntitos → «Agregar a la pantalla principal».", el:null, last:true }
+];
+function startTutorial(then){
+  if (document.querySelector(".tut")) return;
+  closeSheet(); if (view !== "home") setView("home", { day:today() });
+  const steps = TUT.filter(s => !s.el || document.querySelector(s.el));
+  const ov = document.createElement("div"); ov.className = "tut"; ov.innerHTML = `<div class="tut-spot"></div><div class="tut-card"></div>`; document.body.appendChild(ov);
+  const spot = ov.querySelector(".tut-spot"), card = ov.querySelector(".tut-card"); let i = 0;
+  logEv("tutorial", { paso:"inicio" });
+  const end = done => { S.tutDone = 1; save(); logEv("tutorial", { paso:done ? "completo" : "saltado", visto:i + 1 }); ov.classList.add("out"); setTimeout(() => { ov.remove(); then && then(); }, 300); };
+  const show = () => {
+    const st = steps[i], el = st.el && document.querySelector(st.el);
+    if (el && el.closest("#main")) el.scrollIntoView({ block:"center", behavior:"instant" });
+    requestAnimationFrame(() => {
+      const H = innerHeight, mood = st.last ? "star" : i === 0 ? "happy" : "normal";
+      if (el) { const r = el.getBoundingClientRect(), pad = 6; Object.assign(spot.style, { left:(r.left - pad) + "px", top:(r.top - pad) + "px", width:(r.width + pad * 2) + "px", height:(r.height + pad * 2) + "px", borderRadius:getComputedStyle(el).borderRadius || "14px", opacity:1 }); spot.classList.remove("none");
+        const below = r.top + r.height / 2 < H / 2; card.style.top = below ? Math.min(H - 260, r.bottom + 16) + "px" : ""; card.style.bottom = below ? "" : Math.min(H - 120, H - r.top + 16) + "px"; card.classList.toggle("up", !below); }
+      else { spot.classList.add("none"); Object.assign(spot.style, { left:"50%", top:"50%", width:"0px", height:"0px" }); card.style.top = Math.round(H * .26) + "px"; card.style.bottom = ""; }
+      card.innerHTML = `<div class="tut-head"><span class="tut-tito">${titoSVG(S.tito, st.el ? 52 : 74, { mood, still:true, noFloat:true, level:level() })}</span><div><b>${st.t}</b><p>${st.d}</p></div></div>
+        <div class="tut-foot"><span class="tut-dots">${steps.map((_, k) => `<i class="${k === i ? "on" : k < i ? "done" : ""}"></i>`).join("")}</span>${st.last ? "" : `<button class="btn ghost sm" data-tut="skip">Saltar</button>`}<button class="btn yellow sm" data-tut="next">${st.last ? "¡A jugar!" : i === 0 ? "¡Dale!" : "Siguiente"}</button></div>`;
+      card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
+    });
+  };
+  ov.addEventListener("click", e => { const b = e.target.closest("[data-tut]"); if (!b) return; SND.tap(); if (b.dataset.tut === "skip") return end(false); if (i >= steps.length - 1) return end(true); i++; show(); });
+  addEventListener("resize", () => { if (ov.isConnected) show(); });
+  show();
+}
+
 boot();
 
 </script>
