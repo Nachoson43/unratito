@@ -1053,6 +1053,46 @@ body.hw .sc-card{background:linear-gradient(160deg,#2A1840,#4A1F6E 60%,#8A3A0E)}
 .acct-list li::before{content:"✓";position:absolute;left:4px;top:0;color:var(--g);font-weight:900}
 .acct-pick{display:flex;flex-direction:column;gap:2px;padding:12px 14px;margin-top:8px;border-radius:14px;background:var(--surface-2);border:2.5px solid var(--K)}
 .acct-pick b{font-size:1.05em}
+/* Grupos v2 */
+.g-types{display:flex;flex-direction:column;gap:8px}
+.g-type{display:flex;gap:10px;align-items:flex-start;border:2.5px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer}
+.g-type input{accent-color:var(--b);width:20px;height:20px;min-width:20px;margin:2px 0 0;padding:0;border:0;flex:none}
+.g-type span{display:flex;flex-direction:column;gap:2px}
+.g-type small{color:var(--muted);font-weight:600;line-height:1.3}
+.g-type:has(input:checked){border-color:var(--K);background:var(--y)}
+.g-type:has(input:checked) small,.g-type:has(input:checked) b{color:var(--K)}
+.g-rec{font-style:normal;font-size:.72em;background:var(--g);color:#fff;border-radius:999px;padding:2px 8px;margin-left:4px;vertical-align:2px}
+.g-arcs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g-arc{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid var(--line);border-radius:12px;padding:6px 4px;cursor:pointer;text-align:center;position:relative}
+.g-arc input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.g-arc .arc-thumb{width:100%;max-width:84px}
+.g-arc .arc-thumb svg{width:100%;height:auto;display:block;border-radius:8px}
+.g-arc small{font-weight:800;line-height:1.15;font-size:.78em}
+.g-arc:has(input:checked){border-color:var(--K);background:var(--y);color:var(--K)}
+.g-thumb{width:72px;flex:none}.g-thumb svg{width:100%;height:auto;display:block;border-radius:10px;border:2px solid var(--K)}
+.g-best{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 12px;border-radius:12px;background:var(--surface-2);font-weight:800}
+.g-best b{font-family:var(--display);font-size:1.25em}
+.rank-tabs{margin-bottom:0}
+.rdays{display:block;font-size:.72em;color:var(--muted);font-weight:700}
+.rpts small{font-size:.7em;color:var(--muted);font-weight:700}
+.trophy-row.champ{background:var(--y-soft)}
+.season-ic{font-size:2em;line-height:1}
+.arc-gline{display:block;margin-top:6px;font-weight:800}
+.prize-box{border:2.5px solid var(--K);border-radius:14px;padding:10px 12px;margin-top:10px;background:var(--surface-2)}
+.prize-box.pod.p1{background:linear-gradient(160deg,#FFF3C4,#FFD34D)}.prize-box.pod.p2{background:linear-gradient(160deg,#F2F4F8,#C9D1DE)}.prize-box.pod.p3{background:linear-gradient(160deg,#FFE3CC,#E9A877)}
+.prize-box.pod,.prize-box.pod small{color:#1B1640}
+.prize-head{display:flex;gap:10px;align-items:center}.prize-head span:last-child{display:flex;flex-direction:column}
+.prize-medal{font-size:1.8em;line-height:1}
+.prize-items{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.prize-it{display:flex;flex-direction:column;align-items:center;gap:2px;width:70px;text-align:center}
+.prize-it small{font-weight:800;font-size:.72em;line-height:1.1}
+.prize-it .thumb{display:block;width:56px;height:56px;border-radius:12px;background:#fff;border:2px solid var(--K);overflow:hidden}
+.prize-coin{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:12px;background:#fff;border:2px solid var(--K)}
+.prize-coin .coin{transform:scale(1.7)}
+.prize-tbl{border:2px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0}
+.prize-row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line);font-size:.92em}
+.prize-row span:last-child{text-align:right;font-weight:800}
+.prize-row span:first-child{white-space:nowrap}
 
 </style>
 </head>
@@ -5560,7 +5600,7 @@ function arcMount(){
       clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 2400); },
     over(){ if (run.state !== "play") return; run.state = "over"; overScreen(); },
     info(h){ const e = $("#arcInfo"); if (e && e._h !== h) { e._h = h; e.innerHTML = h; } },
-    opt(){ const st = arcState(); st.opt = st.opt || {}; return st.opt[arcCur] || (g.options ? g.options[0].k : null); },
+    opt(){ if (typeof arcGroupOn === "function" && arcGroupOn(arcCur) && GA_FORCE[arcCur]) return GA_FORCE[arcCur]; const st = arcState(); st.opt = st.opt || {}; return st.opt[arcCur] || (g.options ? g.options[0].k : null); },
     win(){ run.won = true; },
     draw(){ run.drawn = true; },
     on(el, ev, fn, opt){ el.addEventListener(ev, fn, opt); run.listeners.push([el, ev, fn, opt]); },
@@ -5584,7 +5624,7 @@ function arcMount(){
     if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full"); };
   const startNew = () => {
     const st = arcState(); st.runs[run.id] = (st.runs[run.id] || 0) + 1; run.practice = !!g.limit && st.runs[run.id] > g.limit; run.first = st.runs[run.id] === 1; save();
-    run.paused = false; run.score = 0; run.candyRoll = false; run.candy = false; run.revived = false; run.done = false; run.won = false; run.drawn = false; api.score(0); game.reset();
+    if (g._r) g._r = null; run.paused = false; run.score = 0; run.candyRoll = false; run.candy = false; run.revived = false; run.done = false; run.won = false; run.drawn = false; api.score(0); game.reset();
     /* Seguir una partida guardada (Rompe ladrillos): arranca desde el comienzo del nivel donde quedó */
     if (run.resumeSnap && game.load) { game.load(run.resumeSnap); run.score = run.resumeSnap.sc || 0; api.score(run.score); } run.resumeSnap = null;
     g.noCount ? (show(""), run.state = "play", run.last = 0) : countdown();
@@ -5604,8 +5644,11 @@ function arcMount(){
     const canRevive = g.revive && !run.revived && !run.won && run.score > 0;
     if (!run.candyRoll && run.score > 0 && typeof playCandy === "function") { run.candyRoll = true; run.candy = playCandy(run.practice ? .3 : .55, true); }
     const pts = ptsFor(); run.res = { score:run.score, rec:isRec && prev != null && run.score > 0, won:!!run.won, drawn:!!run.drawn };
+    let gLine = "";
+    if (typeof arcGroupOn === "function" && arcGroupOn(run.id)) { const gv = run.id === "cabezazo" ? (g._r ? g._r.gf - g._r.ga : null) : run.score, nb = gArcRecord(arcGroup.code, arcGroup.day, gv), b = myArcBest(arcGroup.code, arcGroup.day);
+      gLine = `<span class="arc-gline">${nb ? "¡Tu mejor de hoy en el grupo!" : "Tu mejor de hoy en el grupo:"} <b>${fmtArc(run.id, b)}</b></span>`; }
     show(`<div class="arc-box">${party && typeof danceHTML === "function" ? danceHTML(64, "in-box") : ""}${run.score ? `<span class="arc-big">${NUM.format(run.score)}</span>` : ""}<b>${isRec && prev != null ? "¡Nuevo récord!" : run.won ? "¡Ganaste!" : run.drawn ? "¡Empate!" : g.overText || "¡Uh, se terminó!"}</b>
-      <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${run.candy ? `<span class="arc-candy">${typeof CANDY_SVG !== "undefined" ? CANDY_SVG : ""}<b>+1 caramelo</b></span>` : ""}${g.overExtra ? g.overExtra() : ""}
+      <span class="small">${run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${gLine}${run.candy ? `<span class="arc-candy">${typeof CANDY_SVG !== "undefined" ? CANDY_SVG : ""}<b>+1 caramelo</b></span>` : ""}${g.overExtra ? g.overExtra() : ""}
       ${canRevive ? `<button class="btn reward block" data-act="arc-revive">${isPrem() ? "Seguir jugando (PREMIUM)" : "Revivir · ver video"}</button>` : ""}
       ${run.score > 0 || run.won || run.drawn ? `<button class="btn yellow share-btn block" data-act="arc-share">${typeof SHARE_ICO !== "undefined" ? SHARE_ICO : ""}Compartir resultado</button>` : ""}
       <div class="btn-row"><button class="btn" data-act="arc-exit">Salir</button><button class="btn primary" data-act="arc-again">Otra vez</button></div></div>`);
@@ -5627,14 +5670,14 @@ function arcMount(){
   /* Volver al menú del juego (capítulos, canciones, rivales…) o al arcade si el juego no tiene menú propio */
   run.hasMenu = !!(g.readyBox || g.options || g.readyHTML || g.saveable);
   run.toMenu = () => { run.state = "ready"; run.paused = false; game.reset(); run.showReady(); };
-  run.showReady = () => { if (g.readyBox) { show(g.readyBox()); return; } const o = api.opt(); show(`<div class="arc-box"><span class="arc-thumb big">${g.thumb()}</span><b>${esc(g.t)}</b><span class="small">${g.intro}</span>${g.readyHTML ? g.readyHTML() : g.options ? `<div class="seg arc-opts">${g.options.map(x => `<button data-act="arc-opt:${x.k}" aria-pressed="${x.k === o}">${esc(x.l)}</button>`).join("")}</div>` : ""}${arcSnap(run.id) ? `<button class="btn primary big-cta block" data-act="arc-continue">Seguir desde el nivel ${arcSnap(run.id).lv + 1}</button><button class="btn block" data-act="arc-start">Empezar de cero</button>` : `<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button>`}</div>`); };
+  run.showReady = () => { if (typeof arcGroupOn === "function" && arcGroupOn(run.id)) { show(arcGroupReady(run.id)); return; } if (g.readyBox) { show(g.readyBox()); return; } const o = api.opt(); show(`<div class="arc-box"><span class="arc-thumb big">${g.thumb()}</span><b>${esc(g.t)}</b><span class="small">${g.intro}</span>${g.readyHTML ? g.readyHTML() : g.options ? `<div class="seg arc-opts">${g.options.map(x => `<button data-act="arc-opt:${x.k}" aria-pressed="${x.k === o}">${esc(x.l)}</button>`).join("")}</div>` : ""}${arcSnap(run.id) ? `<button class="btn primary big-cta block" data-act="arc-continue">Seguir desde el nivel ${arcSnap(run.id).lv + 1}</button><button class="btn block" data-act="arc-start">Empezar de cero</button>` : `<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button>`}</div>`); };
   run.showReady();
   game.draw("ready");
 }
 /* Partidas guardadas para seguir después aunque se cierre la app (solo juegos largos: Rompe ladrillos) */
 function arcSnap(id){ const st = arcState(); return st.snap && st.snap[id] || null; }
-function arcSnapSave(id, o){ const st = arcState(); st.snap = st.snap || {}; st.snap[id] = o; save(); }
-function arcSnapClear(id){ const st = arcState(); if (st.snap && st.snap[id]) { delete st.snap[id]; save(); } }
+function arcSnapSave(id, o){ if (typeof arcGroupOn === "function" && arcGroupOn(id)) return; const st = arcState(); st.snap = st.snap || {}; st.snap[id] = o; save(); }
+function arcSnapClear(id){ if (typeof arcGroupOn === "function" && arcGroupOn(id)) return; const st = arcState(); if (st.snap && st.snap[id]) { delete st.snap[id]; save(); } }
 function arcStop(){
   const run = arcRun; if (!run) return;
   if (run.state === "over" || run.state === "play" || run.state === "count") { run.state = "over"; run.finalize(); }
@@ -5646,18 +5689,19 @@ function arcAction(k, v){
   if (k === "arc-exit") {
     /* En plena partida, la flechita abre la pausa en vez de perder todo */
     if (run && !ARC[run.id].noPause && (run.state === "play" || run.state === "count")) { if (run.paused) run.unpause(); else run.pause(); return true; }
-    const toArcade = () => { arcStop(); setView("arcade"); };
-    if (run && run.state === "over") { run.finalize(); const go = run.hasMenu ? run.toMenu : toArcade, n = arcState().games; if (n % 3 === 0) { showInterstitial("Aparece cada 3 partidas de arcade", go); return true; } go(); return true; }
+    const gcode = typeof arcGroupOn === "function" && arcGroupOn() ? arcGroup.code : null;
+    const toArcade = () => { arcStop(); if (gcode) setView("group", { group:gcode }); else setView("arcade"); };
+    if (run && run.state === "over") { run.finalize(); const go = run.hasMenu && !gcode ? run.toMenu : toArcade, n = arcState().games; if (n % 3 === 0) { showInterstitial("Aparece cada 3 partidas de arcade", go); return true; } go(); return true; }
     toArcade(); return true; }
   if (!run) return k.startsWith("arc-");
   if (ARC[run.id].act && ARC[run.id].act(k, v, run)) return true;
-  if (k === "arc-start") { if (ARC[run.id].saveable) arcSnapClear(run.id); run.startNew(); return true; }
-  if (k === "arc-continue") { run.resumeSnap = arcSnap(run.id); run.startNew(); return true; }
+  if (k === "arc-start") { if (ARC[run.id].saveable && !(typeof arcGroupOn === "function" && arcGroupOn(run.id))) arcSnapClear(run.id); run.startNew(); return true; }
+  if (k === "arc-continue") { if (typeof arcGroupOn === "function" && arcGroupOn(run.id)) { run.startNew(); return true; } run.resumeSnap = arcSnap(run.id); run.startNew(); return true; }
   if (k === "arc-pause") { run.pause(); return true; }
   if (k === "arc-unpause") { run.unpause(); return true; }
   if (k === "arc-restart") { run.state = "over"; run.finalize(); run.state = "ready"; run.paused = false; run.startNew(); return true; }
   if (k === "arc-quit") { run.paused = false; run.state = "over"; run.finalize(); if (run.hasMenu) run.toMenu(); else { arcStop(); setView("arcade"); } return true; }
-  if (k === "arc-opt") { const st = arcState(); st.opt = st.opt || {}; st.opt[run.id] = v; save(); if (ARC[run.id].onOpt) arcMount(); else run.showReady(); if (ARC[run.id].recKey) { const rv = st.rec[arcRecKey(run.id)], e = $("#arcRec"); if (e) e.textContent = rv != null ? NUM.format(rv) : "—"; } return true; }
+  if (k === "arc-opt") { if (typeof arcGroupOn === "function" && arcGroupOn(run.id)) return true; const st = arcState(); st.opt = st.opt || {}; st.opt[run.id] = v; save(); if (ARC[run.id].onOpt) arcMount(); else run.showReady(); if (ARC[run.id].recKey) { const rv = st.rec[arcRecKey(run.id)], e = $("#arcRec"); if (e) e.textContent = rv != null ? NUM.format(rv) : "—"; } return true; }
   if (k === "arc-again") { run.finalize(); const go = () => { run.state = "ready"; run.startNew(); }; if (arcState().games % 3 === 0) showInterstitial("Aparece cada 3 partidas de arcade", go); else go(); return true; }
   if (k === "arc-share") { if (run.res && typeof shareOut === "function") shareOut(arcShareText(run.id, run.res)); return true; }
   if (k === "arc-revive") { showRewarded("seguir jugando", () => { run.revived = true; run.game.revive(); run.countdown(); }, () => toast("Saliste antes de terminar el video.")); return true; }
@@ -7902,7 +7946,7 @@ function pnoParse(song){
   const avg = out.reduce((a, n) => a + n.m, 0) / out.length, sh = song.shift != null ? song.shift : 12 * Math.round((74 - avg) / 12); out.forEach(n => n.m += sh);
   return song._seq = out;
 }
-function pnoState(){ const st = arcState(); st.pno = st.pno || { sel:"estrellita", own:[], stars:{} }; return st.pno; }
+function pnoState(){ const st = arcState(); st.pno = st.pno || { sel:"estrellita", own:[], stars:{} }; if (typeof arcGroupOn === "function" && arcGroupOn("piano")) return Object.assign({}, st.pno, { sel:arcGroup.song }); return st.pno; }
 const pnoOwns = id => { const s = PNO_SONGS.find(x => x.id === id); return !!s && (PNO_GROUPS[s.g][1] === 0 || pnoState().own.includes(id)); };
 arcRegister("piano", {
   t:"Tito Piano", d:"Toca las teclas negras a tiempo y la canción suena entera.", col:"y", revive:true, fill:[1.4, 1.8], ctlH:0, noCount:true,
@@ -9313,9 +9357,9 @@ const CZ_BOSS = { k:"dinoboss", n:"Dinito Malvado", tag:"Súper final", col:"#C2
 const CZ_SUP = { fuego:"Bola de fuego", bombilla:"Bombilla turbo", rebote:"Rebote loco", hielo:"Tiro helado", carozo:"Carozo", fantasma:"Tiro fantasma", laser:"Láser", rugido:"Rugido", estrella:"Polvo de hada", infierno:"Tiro infernal" };
 const CZ_MYSUP = { matecito:"bombilla", pelotita:"rebote", pingui:"hielo", palti:"carozo", carpi:"carozo", fantasmin:"fantasma", robotin:"laser", hadita:"estrella", diablito:"infierno" };
 const CZ_ROUNDS = ["Octavos de final", "Cuartos de final", "Semifinal", "Final", "Súper final"];
-function czState(){ const st = arcState(); st.cz = st.cz || { riv:"matecito", dur:90, mode:"q" }; st.cz.cup = st.cz.cup || {}; return st.cz; }
+function czState(){ const st = arcState(); st.cz = st.cz || { riv:"matecito", dur:90, mode:"q" }; st.cz.cup = st.cz.cup || {}; if (typeof arcGroupOn === "function" && arcGroupOn("cabezazo")) return Object.assign({}, st.cz, { mode:"q", dur:90, riv:arcGroup.riv }); return st.cz; }
 const czRiv = () => CZ_RIV.find(r => r.k === czState().riv) || CZ_RIV[0];
-const czLvl = () => (arcState().opt && arcState().opt.cabezazo) || "facil";
+const czLvl = () => (typeof arcGroupOn === "function" && arcGroupOn("cabezazo")) ? "normal" : (arcState().opt && arcState().opt.cabezazo) || "facil";
 arcRegister("cabezazo", {
   t:"Tito Cabezazo", d:"Fútbol de cabezones 1 contra 1, con súper tiros y la Copa Tito.", col:"g", revive:false, fill:[1.3, 1.78], ctlH:0, noBig:true, noCount:true,
   options:[{ k:"facil", l:"Fácil" }, { k:"normal", l:"Normal" }, { k:"crack", l:"Crack" }],
@@ -10082,7 +10126,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 13:55";
+const APP_VER = "03/11 14:37";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10696,9 +10740,9 @@ function makeCtx(kind, a, day, n){
   const i = dayIndex(day);
   if (kind === "d") return { key:"d:"+day, kind, day, word:ANS_ORDER[mod(i, ANS_ORDER.length)], soup:() => soupFor("d:"+day, 5000 + i*97, mod(i, THEMES.length)), pick:() => pickFresh(GENQ, 7), tlabel:"Trivia" };
   if (kind === "g") {
-    const g = S.groupMeta[a] || {}, h = hashStr(a);
-    const game = g.game === "random" ? ["t","w","s"][mod(h + i, 3)] : (g.game || "t");
-    return { key:"g:"+a+":"+day, kind, code:a, day, game, word:ANS_ORDER[mod(i + 37 + h % 211, ANS_ORDER.length)], soup:() => soupFor("g:"+a+":"+day, (h % 100000) + i*131, mod(h + i, THEMES.length)), fixed:pickFixed(g.theme === "arg" ? ARGQ : GENQ, 1000 + h % 9000, i, 7), tlabel: g.theme === "arg" ? "Trivia argentina" : "Trivia" };
+    const g = S.groupMeta[a] || {}, h = hashStr(a), gm = gModeOf(g);
+    const game = gm.word === "random" ? ["t","w","s"][mod(h + i, 3)] : (gm.word || "t"), bank = gm.theme === "arg" ? ARGQ : gm.theme === "fut" ? FUTQ : GENQ;
+    return { key:"g:"+a+":"+day, kind, code:a, day, game, word:ANS_ORDER[mod(i + 37 + h % 211, ANS_ORDER.length)], soup:() => soupFor("g:"+a+":"+day, (h % 100000) + i*131, mod(h + i, THEMES.length)), fixed:pickFixed(bank, 1000 + h % 9000, i, 7), tlabel: gm.theme === "arg" ? "Trivia argentina" : gm.theme === "fut" ? "Trivia de fútbol" : "Trivia" };
   }
   if (kind === "m") return { key:"m:"+a+":"+day, kind, n:a, day, pick:() => pickFresh(GENQ.concat(ARGQ, FUTQ), 3), tlabel:"Merienda de Tito" };
   if (kind === "a") { const c = ARGC.find(x => x.id === a); return { key:"a:"+a+":"+day+":"+n, kind, cat:a, day, n, practice:false, pick:() => pickFresh(a === "mix" ? ARGQ : c.qs, 7), tlabel: a === "mix" ? "Mezcla argentina" : c.t }; }
@@ -10746,7 +10790,8 @@ function save(){
   const keep = addDays(today(), -31);
   Object.keys(S.plays).forEach(k => { const m = k.match(/\d{4}-\d{2}-\d{2}/); if (m && m[0] < keep) delete S.plays[k]; });
   Object.keys(S.runs).forEach(k => { if (k.slice(-10) < keep) delete S.runs[k]; });
-  Object.values(S.gscore).forEach(g => Object.keys(g.days || {}).forEach(d => { if (d < keep) delete g.days[d]; }));
+  const keepG = addDays(today(), -70);
+  Object.values(S.gscore).forEach(g => { Object.keys(g.days || {}).forEach(d => { if (d < keepG) delete g.days[d]; }); Object.keys(g.arc || {}).forEach(d => { if (d < keepG) delete g.arc[d]; }); });
   try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){}
   remoteMain.schedule(() => ({ json:JSON.stringify(S), updated:S.updated }));
 }
@@ -11020,6 +11065,7 @@ function setView(v, opt){
   if (opt.day !== undefined) curDay = opt.day;
   if (opt.group !== undefined) curGroup = opt.group;
   if (v !== "tito") tryOn = null;
+  if (v !== "play-arc") arcGroup = null;
   if (v !== view) SND.stopAll();
   view = v;
   if (!v.startsWith("play") && !isPrem()) { S.ads.banner++; save(); }
@@ -11081,7 +11127,7 @@ function renderHome(){
   const p = play(makeCtx("d", null, today())), doneN = [p.w.done, p.s.done, p.t.done].filter(Boolean).length;
   const c = S.streak.count && S.streak.last >= addDays(today(),-1) ? S.streak.count : 0;
   const toGift = 7 - (((c - 1) % 7 + 7) % 7 + 1) || 7;
-  const pendingGroup = S.groups.find(code => { const g = S.groupMeta[code]; if (!g) return false; const gc = makeCtx("g", code, today()); return !play(gc)[gc.game].done; });
+  const pendingGroup = S.groups.find(code => gPending(code));
   const wl = LIMITS.spins - dayCounter("wheel").n;
   const wheelBanner = `<button class="card wheel-banner press ${wl <= 0 ? "used" : ""}" data-act="tab:ruleta"><span class="wb-wheel">${wheelMini()}</span><span class="wb-txt"><b>Ruleta del día</b><small>${wl <= 0 ? "Mañana tienes otro giro" : dayCounter("wheel").n === 0 ? "Tienes 1 giro gratis" : "Otro giro con " + videoWord()}</small></span><span class="go ${wl <= 0 ? "done" : "y"}" style="--c:var(--y)">${wl <= 0 ? "Listo" : "Girar"}</span></button>`;
   const games = [["word", p.w.done, "Palabra", "g"], ["soup", p.s.done, "Sopa", "r"], ["trivia", p.t.done, "Trivia", "b"]];
@@ -11758,10 +11804,60 @@ function renderFutbol(){
 }
 
 /* ---------- Grupos ---------- */
+/* Dos tipos: Mixto (Arcade del día + Palabra/Sopa/Trivia del día) y Un solo juego (una trivia o un juego de Arcade).
+   Ranking de Hoy con el puntaje real y del Mes con puntos por posición (10, 8, 6, 5, 4, 3, 2 y 1 por jugar). */
+const GA_ROT = ["runner","snake","bricks","t2048","memo","flappy","ruta","piano","cross","penal","tower","mines"];
+const GA_SOLO = GA_ROT.concat(["cabezazo"]);
+const GA_FORCE = { mines:"mediano", memo:"normal", cabezazo:"normal" };
+const GT_CATS = { normal:"Cultura general", arg:"Argentina", fut:"Fútbol" };
+const PP = [10, 8, 6, 5, 4, 3, 2];
+const MES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+let rankTab = "gen", arcGroup = null;
+function gModeOf(g){
+  g = g || {};
+  if (g.mode === "solo") return g.game === "t" ? { mode:"solo", word:"t", arc:null, theme:GT_CATS[g.theme] ? g.theme : "normal" } : { mode:"solo", word:null, arc:GA_SOLO.includes(g.game) ? g.game : "flappy", theme:"normal" };
+  return { mode:"mix", word:["t","w","s"].includes(g.game) ? g.game : "random", arc:"rot", theme:g.theme === "arg" ? "arg" : "normal" };
+}
+/* Juego de Arcade del día: recorre los 12 sin repetir (salto de 5 posiciones, coprimo con 12) */
+function gArcOf(code, day){
+  const gm = gModeOf(S.groupMeta[code]); if (!gm.arc) return null; if (gm.arc !== "rot") return gm.arc;
+  return GA_ROT[mod(hashStr(code) + dayIndex(day) * 5, GA_ROT.length)];
+}
+const gWordOn = code => !!gModeOf(S.groupMeta[code]).word;
+const gPlayDays = n => { const T = today(), out = []; for (let k = 0; k < n; k++) out.push(addDays(T, -k)); return out; };
+const ymOf = d => d.slice(0, 7);
+function monthDays(ym, upto){ const out = []; let d = ym + "-01"; const end = upto || today(); while (ymOf(d) === ym && d <= end) { out.push(d); d = addDays(d, 1); } return out; }
+const prevYm = () => ymOf(addDays(ymOf(today()) + "-01", -1));
+const mesName = ym => MES[Number(ym.slice(5, 7)) - 1];
+function daysLeftMonth(){ const T = today(); let d = T, n = 0; while (ymOf(addDays(d, 1)) === ymOf(T)) { d = addDays(d, 1); n++; } return n; }
+/* Datos del Cabezazo del día para todo el grupo: rival y canción del piano iguales para todos */
+const gCzRival = (code, day) => CZ_RIV[mod(hashStr(code + "cz") + dayIndex(day), CZ_RIV.length)].k;
+function gPnoSong(code, day){ const free = PNO_SONGS.filter(s => PNO_GROUPS[s.g][1] === 0); return free[mod(hashStr(code + "pn") + dayIndex(day), free.length)].id; }
+const arcGroupOn = id => !!(arcGroup && arcGroup.day === today() && (!id || arcGroup.game === id));
+const fmtArc = (game, v) => v == null ? "—" : game === "cabezazo" ? (v > 0 ? "+" : "") + v : NUM.format(v);
+function gArcDetail(code, game, day){
+  if (game === "cabezazo") { const r = CZ_RIV.find(x => x.k === gCzRival(code, day)); return `Partido rápido vs <b>${esc(r.n)}</b> · Normal · 90 s. Cuenta la diferencia de gol.`; }
+  if (game === "piano") { const s = PNO_SONGS.find(x => x.id === gPnoSong(code, day)); return `Canción de hoy: <b>${esc(s.n)}</b>`; }
+  if (game === "mines") return "Tablero mediano";
+  if (game === "memo") return "8 pares";
+  return "";
+}
+function gArcRecord(code, day, v){
+  if (v == null || !isFinite(v)) return false;
+  const gs = S.gscore[code] = S.gscore[code] || { total:0, days:{} }; gs.arc = gs.arc || {};
+  const prev = gs.arc[day], best = prev == null || v > prev;
+  if (best) { gs.arc[day] = v; delete groupCache[code]; save(); pushMember(); }
+  return best;
+}
+const myArcBest = (code, day) => { const g = S.gscore[code]; return g && g.arc ? g.arc[day] : undefined; };
+
+/* ---------- Miembros ---------- */
 function meMember(){ return { id:remote.uid || "me", me:true, name:S.profile.name || "Tú", country:S.profile.country, tito:S.tito, earned:S.earned, scores:S.gscore }; }
 function botMember(b, code){
-  const scores = { [code]:{ total:0, days:{} } }, T = today();
-  for (let k = 0; k < 14; k++) { const d = addDays(T, -k), r = rng(hashStr(b.n + code + d)); if (k > 0 ? r() < 0.85 : r() < 0.6) { scores[code].days[d] = 20 * (1 + Math.floor(r()*5)); scores[code].total += scores[code].days[d]; } }
+  const scores = { [code]:{ total:0, days:{}, arc:{} } }, T = today();
+  for (let k = 0; k < 40; k++) { const d = addDays(T, -k), r = rng(hashStr(b.n + code + d));
+    if (k > 0 ? r() < 0.85 : r() < 0.6) { scores[code].days[d] = 20 * (1 + Math.floor(r()*5)); scores[code].total += scores[code].days[d]; }
+    if (k > 0 ? r() < 0.8 : r() < 0.5) scores[code].arc[d] = gArcOf(code, d) === "cabezazo" ? Math.floor(r()*7) - 2 : Math.floor(20 + r() * r() * 900); }
   return { id:"bot-"+b.n, bot:true, name:b.n, country:b.c, tito:b.t, earned:b.lv*10, scores };
 }
 async function loadMembers(code){
@@ -11774,70 +11870,159 @@ async function loadMembers(code){
     const mine = list.findIndex(m => m.id === remote.uid);
     if (mine >= 0) list[mine] = Object.assign(list[mine], meMember()); else list.push(meMember());
     return list;
-  } catch(e){ return [meMember()]; }
+  } catch(e){ return null; }
 }
 function membersFor(code){
   const c = groupCache[code];
   if ((!c || Date.now() - c.t > 30000) && !(c && c.loading)) {
     groupCache[code] = Object.assign(c || { list:null }, { loading:true, t:Date.now() });
-    loadMembers(code).then(list => { groupCache[code] = { list, t:Date.now(), loading:false }; if ((view === "group" && curGroup === code) || view === "groups") render(false); });
+    loadMembers(code).then(list => { if (!list) { groupCache[code] = { list:[meMember()], t:Date.now() - 20000, loading:false }; return; } groupCache[code] = { list, t:Date.now(), loading:false }; seasonCheck(code, list); if ((view === "group" && curGroup === code) || view === "groups") render(false); });
   }
-  return (groupCache[code] && groupCache[code].list) || (S.groupMeta[code] && S.groupMeta[code].demo ? BOTS.map(b => botMember(b, code)).concat([meMember()]) : [meMember()]);
+  const list = (groupCache[code] && groupCache[code].list) || (S.groupMeta[code] && S.groupMeta[code].demo ? BOTS.map(b => botMember(b, code)).concat([meMember()]) : [meMember()]);
+  return list.map(m => m.me ? Object.assign({}, m, meMember()) : m);
 }
-const ptsOf = (m, code, mode) => { const s = m.scores && m.scores[code]; if (!s) return 0; return mode === "day" ? (s.days && s.days[today()]) || 0 : s.total || 0; };
-const THEME_TAG = { normal:["Trivia normal","b"], arg:["Trivia argentina","y"] };
-const GAME_TAG = { t:"Trivia", w:"Palabra", s:"Sopa", random:"Aleatorio" };
+
+/* ---------- Puntajes y rankings ---------- */
+const valOf = (m, code, d, kind) => { const s = m.scores && m.scores[code]; if (!s) return undefined; const v = kind === "arc" ? (s.arc || {})[d] : (s.days || {})[d]; return typeof v === "number" ? v : undefined; };
+function placePts(list, code, d, kind){
+  const e = list.map(m => ({ id:m.id, v:valOf(m, code, d, kind) })).filter(x => x.v !== undefined).sort((a, b) => b.v - a.v);
+  const out = {}; let pv = null, pp = 0;
+  e.forEach((x, i) => { const p = pv !== null && x.v === pv ? pp : (PP[i] != null ? PP[i] : 1); out[x.id] = p; pv = x.v; pp = p; });
+  return out;
+}
+/* kind: "arc", "word" o "gen" (Arcade + juego de palabras, por posición) */
+function dayPts(list, code, d, kind){
+  if (kind !== "gen") return placePts(list, code, d, kind);
+  const a = placePts(list, code, d, "arc"), w = placePts(list, code, d, "word"), out = {};
+  Object.keys(a).concat(Object.keys(w)).forEach(id => { out[id] = (a[id] || 0) + (w[id] || 0); });
+  return out;
+}
+function monthTable(list, code, ym, kind){
+  const tot = {}, days = {}, upto = ym === ymOf(today()) ? today() : null;
+  monthDays(ym, upto || undefined).forEach(d => { const p = dayPts(list, code, d, kind); Object.entries(p).forEach(([id, v]) => { tot[id] = (tot[id] || 0) + v; days[id] = (days[id] || 0) + 1; }); });
+  return { tot, days };
+}
+const gKinds = code => { const gm = gModeOf(S.groupMeta[code]); return gm.mode === "mix" ? ["gen","arc","word"] : [gm.arc ? "arc" : "word"]; };
+const KIND_L = { gen:"General", arc:"Arcade", word:"Trivia" };
+function rankRows(list, code, kind, mode){
+  const T = today();
+  if (mode === "day") {
+    const pts = kind === "gen" ? dayPts(list, code, T, "gen") : null;
+    return list.map(m => { const v = kind === "gen" ? pts[m.id] : valOf(m, code, T, kind); return { m, v, has:v !== undefined }; })
+      .sort((a, b) => (b.has - a.has) || ((b.v || 0) - (a.v || 0)) || (a.m.name || "").localeCompare(b.m.name || ""));
+  }
+  const t = monthTable(list, code, ymOf(T), kind);
+  return list.map(m => ({ m, v:t.tot[m.id] || 0, has:!!t.tot[m.id], days:t.days[m.id] || 0 })).sort((a, b) => b.v - a.v || (a.m.name || "").localeCompare(b.m.name || ""));
+}
+function myMonthPos(list, code){ const k = gKinds(code)[0], rows = rankRows(list, code, k, "month"); const i = rows.findIndex(r => r.m.me); return i >= 0 && rows[i].has ? i + 1 : 0; }
+function gPending(code){
+  const g = S.groupMeta[code]; if (!g) return false; const T = today();
+  if (gArcOf(code, T) && myArcBest(code, T) === undefined) return true;
+  if (gWordOn(code)) { const gc = makeCtx("g", code, T); return !play(gc)[gc.game].done; }
+  return false;
+}
+
+/* ---------- Pantallas ---------- */
+const THEME_TAG = { normal:["Cultura general","b"], arg:["Argentina","y"], fut:["Fútbol","g"] };
+const GAME_TAG = { t:"Trivia", w:"Palabra", s:"Sopa", random:"Palabra · Sopa · Trivia" };
 const avatar = (m, px) => titoSVG(m.tito, px, { level:levelOf(m.earned), noFloat:true, still:true });
+function gTypeLabel(code){
+  const gm = gModeOf(S.groupMeta[code]);
+  if (gm.mode === "mix") return "Mixto";
+  return gm.word ? "Trivia " + GT_CATS[gm.theme].toLowerCase() : (ARC[gm.arc] ? ARC[gm.arc].t : "Arcade");
+}
 function renderGroups(){
-  let h = `<div class="page-head"><span class="eyebrow">Juega con los tuyos</span><h1>Grupos</h1><p>Hasta 50 por grupo. Mismo desafío contra reloj para todos. En grupo, tus puntos valen doble.</p></div>
+  let h = `<div class="page-head"><span class="eyebrow">Juega con los tuyos</span><h1>Grupos</h1><p>Hasta 50 por grupo. Todos los días hay desafío nuevo, ranking del día y temporada mensual con premios.</p></div>
     <div class="btn-row"><button class="btn red" data-act="new-group">Crear grupo</button><button class="btn yellow" data-act="join-group">Unirme con código</button></div>`;
-  if (CFG.fb && !remote.uid) h += `<div class="card" style="text-align:center"><h2>Entra para jugar con tus amigos</h2><p class="muted">Con tu cuenta de Google armas grupos de verdad: todos juegan el mismo desafío y compiten en el ranking.</p><button class="btn google block" data-act="login" style="margin-top:10px">${GOOGLE_G}Entrar con Google</button></div>`;
+  if (CFG.fb && !remote.uid) h += `<div class="card" style="text-align:center"><h2>Entra para jugar con tus amigos</h2><p class="muted">Para crear o sumarte a un grupo necesitas entrar con tu cuenta de Google. Así todos ven el mismo ranking.</p><button class="btn google block" data-act="login" style="margin-top:10px">${GOOGLE_G}Entrar con Google</button></div>`;
   else if (!window.claude && !CFG.fb) h += `<div class="card" style="text-align:center"><h2>Muy pronto</h2><p class="muted">En esta versión de prueba los grupos todavía no se comparten entre celulares. Ya puedes crear uno para practicar el desafío diario.</p></div>`;
   if (!S.groups.length) h += `<div class="card" style="text-align:center"><h2>Todavía no estás en ningún grupo</h2><p class="muted">Crea uno para la familia o los amigos y pásales el código.</p></div>`;
   S.groups.forEach(code => {
     const g = S.groupMeta[code]; if (!g) return;
-    const list = membersFor(code), gc = makeCtx("g", code, today()), done = play(gc)[gc.game].done;
-    const sorted = list.slice().sort((a,b) => ptsOf(b,code,"total") - ptsOf(a,code,"total")), pos = sorted.findIndex(m => m.me) + 1, th = THEME_TAG[g.theme] || THEME_TAG.normal;
-    h += `<button class="card group-card press" data-act="open-group:${code}"><span class="avatars">${sorted.slice(0,3).map(m => `<span>${avatar(m, 36)}</span>`).join("")}</span>
-      <span><h2 style="font-size:1.1em">${esc(g.name)}</h2><span class="tags"><span class="tag" style="--c:${th[1]==="y"?IK:COL[th[1]]};--c-soft:${SOFT[th[1]]}">${th[0]}</span><span class="tag">${GAME_TAG[g.game]}</span><span class="tag">${list.length}/50</span></span><span class="small muted" style="display:block;margin-top:3px">Vas ${pos}º en el total</span></span>
-      <span class="go ${done ? "done" : ""}" style="--c:var(--r)">${done ? "Hecho" : "Jugar"}</span></button>`;
+    const list = membersFor(code), pend = gPending(code), pos = myMonthPos(list, code);
+    const rows = rankRows(list, code, gKinds(code)[0], "month");
+    h += `<button class="card group-card press" data-act="open-group:${code}"><span class="avatars">${rows.slice(0,3).map(r => `<span>${avatar(r.m, 36)}</span>`).join("")}</span>
+      <span><h2 style="font-size:1.1em">${esc(g.name)}</h2><span class="tags"><span class="tag">${esc(gTypeLabel(code))}</span><span class="tag">${list.length}/50</span></span><span class="small muted" style="display:block;margin-top:3px">${pos ? "Vas " + pos + "º en " + mesName(ymOf(today())) : "Todavía no sumaste este mes"}</span></span>
+      <span class="go ${pend ? "" : "done"}" style="--c:var(--r)">${pend ? "Jugar" : "Hecho"}</span></button>`;
   });
   return h;
 }
+function rankHTML(list, code){
+  const kinds = gKinds(code); if (!kinds.includes(rankTab)) rankTab = kinds[0];
+  const kind = rankTab, mode = rankMode === "day" ? "day" : "month", rows = rankRows(list, code, kind, mode), T = today(), arcG = gArcOf(code, T);
+  const unit = mode === "month" || kind === "gen" ? "pts" : kind === "arc" && arcG === "cabezazo" ? "goles" : "";
+  const tabs = kinds.length > 1 ? `<div class="seg seg3 rank-tabs" role="group" aria-label="Ranking">${kinds.map(k => `<button data-act="rtab:${k}" aria-pressed="${k === kind}">${KIND_L[k]}</button>`).join("")}</div>` : "";
+  const note = mode === "month" ? `Puntos por posición de cada día: 1º 10, 2º 8, 3º 6, 4º 5… y 1 por jugar.${kind === "gen" ? " Suma Arcade y Trivia." : ""}` : kind === "gen" ? "Puntos por posición de hoy en Arcade y Trivia." : kind === "arc" ? (arcG ? "Mejor puntaje de hoy en " + esc(ARC[arcG].t) + "." : "") : "Puntos del desafío de hoy.";
+  return `<section class="card">${tabs}<div class="seg" role="group" aria-label="Período" style="margin-top:${tabs ? 8 : 0}px"><button data-act="rank:day" aria-pressed="${mode === "day"}">Hoy</button><button data-act="rank:month" aria-pressed="${mode === "month"}">Mes de ${mesName(ymOf(T))}</button></div>
+    <p class="small muted" style="margin:8px 2px 0">${note}</p>
+    <div class="rank" style="margin-top:6px">${rows.map((r, i) => `<div class="rank-row ${r.m.me ? "me" : ""}"><span class="pos ${i < 3 && r.has ? "p" + (i + 1) : ""}">${i + 1}</span>${avatar(r.m, 40)}<span class="rname">${esc(r.m.name || "Jugador")}${r.m.me ? " (tú)" : ""} <span class="flag" title="${esc(countryName(r.m.country))}">${flag(r.m.country)}</span>${mode === "month" && r.days ? `<small class="rdays">${r.days} ${r.days === 1 ? "día" : "días"}</small>` : ""}</span><span class="rpts">${!r.has ? `<span class="muted small">${mode === "day" ? "Falta jugar" : "—"}</span>` : (kind === "arc" && mode === "day" ? fmtArc(arcG, r.v) : NUM.format(r.v)) + (unit ? ` <small>${unit}</small>` : "")}</span></div>`).join("")}</div></section>`;
+}
 function renderGroup(){
   const code = curGroup, g = S.groupMeta[code]; if (!g) return renderGroups();
-  const list = membersFor(code), gc = makeCtx("g", code, today()), gp = play(gc), done = gp[gc.game].done;
-  const sorted = list.slice().sort((a,b) => ptsOf(b,code,rankMode) - ptsOf(a,code,rankMode) || (a.name||"").localeCompare(b.name||""));
-  const y = addDays(today(), -1); let winner = null, wp = 0;
-  list.forEach(m => { const v = (m.scores && m.scores[code] && m.scores[code].days && m.scores[code].days[y]) || 0; if (v > wp) { wp = v; winner = m; } });
-  const th = THEME_TAG[g.theme] || THEME_TAG.normal, lim = { t:"7 preguntas · 15 s cada una", w:"2 minutos", s:"2 minutos" }[gc.game];
-  let h = `<div class="note" style="justify-content:flex-start;gap:12px"><button class="icon-btn" data-act="tab:groups" aria-label="Volver a grupos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button><span style="flex:1;min-width:0"><span style="display:block;font-family:var(--display);font-size:1.3em">${esc(g.name)}</span><span class="small" style="opacity:.85">${th[0]} · ${GAME_TAG[g.game]} · ${list.length}/50</span></span></div>`;
+  const list = membersFor(code), T = today(), gm = gModeOf(g), arcG = gArcOf(code, T), kinds = gKinds(code);
+  let h = `<div class="note" style="justify-content:flex-start;gap:12px"><button class="icon-btn" data-act="tab:groups" aria-label="Volver a grupos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button><span style="flex:1;min-width:0"><span style="display:block;font-family:var(--display);font-size:1.3em">${esc(g.name)}</span><span class="small" style="opacity:.85">${esc(gTypeLabel(code))}${gm.mode === "mix" ? " · " + THEME_TAG[gm.theme][0] : ""} · ${list.length}/50</span></span></div>`;
   if (g.demo) h += `<p class="small" style="color:var(--on-bg-muted)">Grupo de ejemplo con jugadores inventados para que veas cómo funciona.</p>`;
-  h += `<section class="card"><div style="display:flex;align-items:center;gap:12px"><span class="ico" style="--c:${COL[{t:"b",w:"g",s:"r"}[gc.game]]}">${icon({t:"trivia",w:"word",s:"soup"}[gc.game])}</span><div style="flex:1"><span class="eyebrow">Desafío de hoy</span><h2 style="font-size:1.15em">${gc.game === "t" ? gc.tlabel : GAME_NAME[gc.game]}</h2><span class="small muted">${done ? "Ya jugaste: "+(gp.pts[gc.game]||0)+" puntos para el grupo" : lim+". Sin pistas."}</span></div></div>
-    <button class="btn ${done ? "" : "red"} block" style="margin-top:12px" data-act="play:${gc.game}:${gc.key}">${done ? "Ver mi resultado" : "Jugar el desafío"}</button></section>`;
-  if (winner) h += `<div class="trophy-row">${avatar(winner, 42)}<span>Ganó ayer: <b>${esc(winner.name)}</b> ${flag(winner.country)} con ${wp} puntos</span></div>`;
-  h += `<section class="card"><div class="seg" role="group" aria-label="Ranking"><button data-act="rank:day" aria-pressed="${rankMode==="day"}">Hoy</button><button data-act="rank:total" aria-pressed="${rankMode==="total"}">Total</button></div>
-    <div class="rank" style="margin-top:8px">${sorted.map((m,i) => { const v = ptsOf(m, code, rankMode); return `<div class="rank-row ${m.me?"me":""}"><span class="pos ${i<3 && v ? "p"+(i+1) : ""}">${i+1}</span>${avatar(m, 40)}<span class="rname">${esc(m.name || "Jugador")}${m.me ? " (tú)" : ""} <span class="flag" title="${esc(countryName(m.country))}">${flag(m.country)}</span></span><span class="rpts">${rankMode==="day" && !v ? `<span class="muted small">Falta jugar</span>` : NUM.format(v)}</span></div>`; }).join("")}</div></section>
-    <section class="card"><span class="eyebrow">Código para invitar</span><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px"><span class="code">${esc(code)}</span><button class="btn yellow" data-act="invite:${code}">Copiar invitación</button></div>
+  if (arcG) {
+    const best = myArcBest(code, T), a = ARC[arcG], det = gArcDetail(code, arcG, T);
+    h += `<section class="card g-chal"><div style="display:flex;align-items:center;gap:12px"><span class="arc-thumb g-thumb">${a.thumb()}</span><div style="flex:1;min-width:0"><span class="eyebrow">${gm.mode === "mix" ? "Arcade de hoy" : "Desafío de hoy"}</span><h2 style="font-size:1.15em">${esc(a.t)}</h2><span class="small muted">Intentos ilimitados: cuenta tu mejor partida de hoy.${det ? " " + det : ""}</span></div></div>
+      <div class="g-best"><span>Tu mejor de hoy</span><b>${best === undefined ? "Sin jugar" : fmtArc(arcG, best)}</b></div>
+      <button class="btn ${best === undefined ? "red" : "yellow"} block" style="margin-top:10px" data-act="garc:${code}">${best === undefined ? "Jugar el desafío" : "Mejorar mi puntaje"}</button></section>`;
+  }
+  if (gm.word) {
+    const gc = makeCtx("g", code, T), gp = play(gc), done = gp[gc.game].done, lim = { t:"7 preguntas · 15 s cada una", w:"2 minutos", s:"2 minutos" }[gc.game];
+    h += `<section class="card"><div style="display:flex;align-items:center;gap:12px"><span class="ico" style="--c:${COL[{t:"b",w:"g",s:"r"}[gc.game]]}">${icon({t:"trivia",w:"word",s:"soup"}[gc.game])}</span><div style="flex:1"><span class="eyebrow">${gm.mode === "mix" ? "Juego de palabras de hoy" : "Desafío de hoy"}</span><h2 style="font-size:1.15em">${gc.game === "t" ? gc.tlabel : GAME_NAME[gc.game]}</h2><span class="small muted">${done ? "Ya jugaste: " + (gp.pts[gc.game] || 0) + " puntos" : lim + ". Un solo intento, sin pistas."}</span></div></div>
+      <button class="btn ${done ? "" : "red"} block" style="margin-top:12px" data-act="play:${gc.game}:${gc.key}">${done ? "Ver mi resultado" : "Jugar el desafío"}</button></section>`;
+  }
+  /* Campeón del mes pasado y ganador de ayer */
+  const pm = prevYm(), pt = monthTable(list, code, pm, kinds[0]), champ = Object.entries(pt.tot).sort((a, b) => b[1] - a[1])[0];
+  if (champ && ymOf(T) !== pm) { const m = list.find(x => x.id === champ[0]); if (m) h += `<div class="trophy-row champ">${avatar(m, 42)}<span>🏆 Campeón de ${mesName(pm)}: <b>${esc(m.name)}</b> con ${NUM.format(champ[1])} pts</span></div>`; }
+  const y = addDays(T, -1), yp = dayPts(list, code, y, kinds[0]), yw = Object.entries(yp).sort((a, b) => b[1] - a[1])[0];
+  if (yw) { const m = list.find(x => x.id === yw[0]); if (m) h += `<div class="trophy-row">${avatar(m, 42)}<span>Ganó ayer: <b>${esc(m.name)}</b> ${flag(m.country)}</span></div>`; }
+  h += rankHTML(list, code);
+  const dl = daysLeftMonth();
+  h += `<section class="card season"><div style="display:flex;align-items:center;gap:12px"><span class="season-ic">🏆</span><div style="flex:1"><span class="eyebrow">Temporada de ${mesName(ymOf(T))}</span><h2 style="font-size:1.1em">${dl ? "Termina en " + dl + (dl === 1 ? " día" : " días") : "¡Termina hoy!"}</h2><span class="small muted">Los primeros ganan ropa, bailes, cosas para la casa y monedas. Y todos los que jueguen se llevan un premio.</span></div></div>
+    <button class="btn block" style="margin-top:10px" data-act="gprizes:${code}">Ver premios</button></section>`;
+  h += `<section class="card"><span class="eyebrow">Código para invitar</span><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px"><span class="code">${esc(code)}</span><button class="btn yellow" data-act="invite:${code}">Copiar invitación</button></div>
     ${g.local ? `<p class="small muted" style="margin-top:8px">${CFG.fb ? "Este grupo está guardado solo en este celular. Entra con tu cuenta de Google y se activa para que tus amigos se sumen con el código." : "Este grupo quedó guardado solo en este dispositivo. En la app publicada se suma cualquiera con el código."}</p>` : ""}
     <button class="btn block" style="margin-top:12px;color:var(--r)" data-act="leave:${code}">Salir del grupo</button></section>`;
   return h;
 }
+
+/* ---------- Crear y unirse ---------- */
 function openNewGroup(){
   if (CFG.fb && !remote.uid) { openLogin("Para crear un grupo y que tus amigos se sumen, entra con tu cuenta de Google.", openNewGroup); return; }
   const mine = S.groups.filter(c => S.groupMeta[c] && S.groupMeta[c].owner === (remote.uid || "me")).length;
   if (!isPrem() && mine >= 1) { openPremium("Con el plan gratis puedes crear 1 grupo. Con PREMIUM, hasta 5."); return; }
+  const chip = (name, v, l, on) => `<label><input type="radio" name="${name}" value="${v}" ${on ? "checked" : ""}> ${l}</label>`;
   openSheet("Crear grupo", `<form id="groupForm"><div class="field"><label for="gName">Nombre del grupo</label><input id="gName" maxlength="30" required placeholder="Ej.: Los González, Amigos del club"></div>
-    <div class="field"><span class="eyebrow">Temática de la trivia</span><div class="opt-chips"><label><input type="radio" name="gTheme" value="normal" checked> Normal</label><label><input type="radio" name="gTheme" value="arg"> Argentina</label></div></div>
-    <div class="field"><span class="eyebrow">Juego de cada día</span><div class="opt-chips"><label><input type="radio" name="gGame" value="t" checked> Trivia</label><label><input type="radio" name="gGame" value="w"> Palabra</label><label><input type="radio" name="gGame" value="s"> Sopa</label><label><input type="radio" name="gGame" value="random"> Aleatorio</label></div></div>
+    <div class="field"><span class="eyebrow">Tipo de grupo</span><div class="g-types">
+      <label class="g-type"><input type="radio" name="gMode" value="mix" checked><span><b>Mixto <i class="g-rec">Recomendado</i></b><small>Cada día un juego de Arcade distinto y uno de palabras (sopa, palabra o trivia). Ranking general, de Arcade y de Trivia.</small></span></label>
+      <label class="g-type"><input type="radio" name="gMode" value="solo"><span><b>Un solo juego</b><small>Compiten siempre en lo mismo: una trivia o un juego de Arcade.</small></span></label></div></div>
+    <div id="gMix"><div class="field"><span class="eyebrow">Temática de la trivia</span><div class="opt-chips">${chip("gTheme", "normal", "Cultura general", true)}${chip("gTheme", "arg", "Argentina")}</div></div></div>
+    <div id="gSolo" hidden><div class="field"><span class="eyebrow">¿Trivia o Arcade?</span><div class="opt-chips">${chip("gKind", "t", "Trivia", true)}${chip("gKind", "a", "Arcade")}</div></div>
+      <div class="field" id="gSoloT"><span class="eyebrow">Categoría</span><div class="opt-chips">${Object.entries(GT_CATS).map(([k, l], i) => chip("gCat", k, l, !i)).join("")}</div></div>
+      <div class="field" id="gSoloA" hidden><span class="eyebrow">Juego</span><div class="g-arcs">${GA_SOLO.map((id, i) => `<label class="g-arc"><input type="radio" name="gArc" value="${id}" ${!i ? "checked" : ""}><span class="arc-thumb">${ARC[id].thumb()}</span><small>${esc(ARC[id].t)}</small></label>`).join("")}</div></div></div>
+    <p class="small muted" style="margin:0 0 10px">En el Arcade los intentos son ilimitados y cuenta tu mejor partida del día.</p>
     <button class="btn red block" type="submit">Crear y obtener código</button></form>`);
+}
+function gFormSync(){
+  const f = $("#groupForm"); if (!f) return; const v = n => (f.querySelector(`input[name="${n}"]:checked`) || {}).value;
+  const solo = v("gMode") === "solo", arc = v("gKind") === "a";
+  $("#gMix").hidden = solo; $("#gSolo").hidden = !solo; $("#gSoloT").hidden = arc; $("#gSoloA").hidden = !arc;
+}
+document.addEventListener("change", e => { if (e.target && e.target.closest && e.target.closest("#groupForm")) gFormSync(); });
+function groupFormMeta(f){
+  const v = n => (f.querySelector(`input[name="${n}"]:checked`) || {}).value;
+  if (v("gMode") === "solo") return v("gKind") === "a" ? { mode:"solo", theme:"normal", game:v("gArc") || "flappy" } : { mode:"solo", theme:v("gCat") || "normal", game:"t" };
+  return { mode:"mix", theme:v("gTheme") || "normal", game:"random" };
 }
 function openJoinGroup(){ if (CFG.fb && !remote.uid) { openLogin("Para sumarte a un grupo, entra con tu cuenta de Google.", openJoinGroup); return; } openSheet("Unirme a un grupo", `<form id="joinForm"><div class="field"><label for="jCode">Código del grupo</label><input id="jCode" maxlength="8" required placeholder="Ej.: K7MQ2P" style="text-transform:uppercase;letter-spacing:.1em;font-weight:800" autocomplete="off"></div><button class="btn yellow block" type="submit">Unirme</button><p class="small muted">Pídele el código a quien creó el grupo.</p></form>`); }
 function genCode(){ const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; for (let i = 0; i < 6; i++) s += A[Math.floor(rnd()*A.length)]; return s; }
-async function createGroup(name, theme, game){
-  const code = genCode(), meta = { name, theme, game, owner:remote.uid || "me", created:Date.now() };
+async function createGroup(name, m){
+  const code = genCode(), meta = { name, mode:m.mode, theme:m.theme, game:m.game, owner:remote.uid || "me", created:Date.now() };
   if (remote.db) { try { await remote.db.doc("groups/"+code).set(meta); } catch(e){ meta.local = true; } } else meta.local = true;
-  S.groupMeta[code] = meta; S.groups.unshift(code); save(); pushMember(); closeSheet(); setView("group", { group:code }); toast("Grupo creado. Pásales el código "+code);
+  S.groupMeta[code] = meta; S.groups.unshift(code); save(); pushMember(); closeSheet(); rankTab = "gen"; setView("group", { group:code }); toast("Grupo creado. Pásales el código "+code);
+  logEv("grupo_creado", { tipo:m.mode, juego:m.game });
 }
 async function joinGroup(code){
   code = code.toUpperCase().replace(/[^A-Z0-9]/g,"");
@@ -11847,8 +12032,70 @@ async function joinGroup(code){
   try {
     const snap = await remote.db.doc("groups/"+code).get(); if (!snap.exists) { toast("No encontramos un grupo con ese código."); return; }
     const qs = await remote.db.collection("members").where("groups","array-contains",code).limit(60).get(); if (qs.size >= 50) { toast("Ese grupo ya tiene 50 personas."); return; }
-    S.groupMeta[code] = Object.assign({}, snap.data()); S.groups.unshift(code); save(); pushMember(); closeSheet(); setView("group", { group:code }); toast("¡Te sumaste a "+S.groupMeta[code].name+"!");
+    S.groupMeta[code] = Object.assign({}, snap.data()); S.groups.unshift(code); save(); pushMember(); closeSheet(); rankTab = "gen"; setView("group", { group:code }); toast("¡Te sumaste a "+S.groupMeta[code].name+"!");
   } catch(e){ toast("No se pudo entrar al grupo. Prueba de nuevo."); }
+}
+function arcGroupReady(id){
+  const a = ARC[id], gr = S.groupMeta[arcGroup.code] || {}, b = myArcBest(arcGroup.code, arcGroup.day), det = gArcDetail(arcGroup.code, id, arcGroup.day);
+  return `<div class="arc-box"><span class="arc-thumb big">${a.thumb()}</span><b>${esc(a.t)}</b><span class="small">Desafío de <b>${esc(gr.name || "tu grupo")}</b>. Intentos ilimitados: cuenta tu mejor partida de hoy.</span>${det ? `<span class="small">${det}</span>` : ""}<span class="small">${id === "cabezazo" ? "📱 Se juega con el celular acostado." : a.intro || ""}</span><span class="arc-gline">Tu mejor de hoy: <b>${fmtArc(id, b)}</b></span><button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`;
+}
+function playGroupArc(code){
+  const game = gArcOf(code, today()); if (!game || !ARC[game]) return;
+  arcGroup = { code, game, day:today(), riv:gCzRival(code, today()), song:gPnoSong(code, today()) };
+  arcCur = game; setView("play-arc");
+}
+
+/* ---------- Temporada mensual: premios ---------- */
+const PRIZE_CLOTH = ["skin","hat","clothes","glasses","feet","float"];
+const PRIZES = {
+  main:[ { c:3000, it:[["ropa",0],["baile",0],["casa",0]] }, { c:1500, it:[["ropa",1],["casa",1]] }, { c:800, it:[["ropa",2],["baile",2]] }, { c:250, it:[["mix",3]] } ],
+  sub:[ { c:1500, it:[["ropa",0],["baile",1]] }, { c:800, it:[["ropa",1],["casa",2]] }, { c:400, it:[["casa",2]] }, { c:120, it:[["mix",3]] } ]
+};
+const PRIZE_L = ["1º puesto", "2º puesto", "3º puesto", "Premio por jugar"];
+function prizeItem(kind, tier, taken){
+  const cats = kind === "ropa" ? PRIZE_CLOTH : kind === "casa" ? CASA_CATS : kind === "baile" ? ["dance"] : PRIZE_CLOTH.concat(CASA_CATS);
+  const pool = []; cats.forEach(c => SHOP[c] && SHOP[c].items.forEach(it => { const p = it[2]; if (typeof p !== "number" || p <= 0 || isSeasonal(c, it[0]) || owns(c, it[0]) || taken.includes(c + ":" + it[0])) return; pool.push({ c, k:it[0], n:it[1], p }); }));
+  if (!pool.length) return null;
+  pool.sort((a, b) => b.p - a.p); const q = Math.max(1, Math.ceil(pool.length / 4)), from = Math.min(pool.length - 1, tier * q), part = pool.slice(from, Math.min(pool.length, from + q));
+  return part[Math.floor(rnd() * part.length)];
+}
+/* Puesto que corresponde: con 2 jugadores solo hay 1º; con 3, 1º y 2º; desde 4, podio completo. Consuelo: jugar 3 días o más */
+function prizeTier(rows, me){ const n = rows.filter(r => r.has).length, i = rows.findIndex(r => r.m.me); if (i < 0 || !rows[i].has) return -1; if (i < Math.min(3, n - 1)) return i; return rows[i].days >= 3 ? 3 : -1; }
+function seasonCheck(code, list){
+  const g = S.groupMeta[code]; if (!g || g.demo || !list) return;
+  const pm = prevYm(); S.gprize = S.gprize || {}; const done = S.gprize[code] = S.gprize[code] || {}; if (done[pm]) return;
+  if (S.groups.indexOf(code) < 0) return;
+  const kinds = gKinds(code), res = [], taken = [];
+  kinds.forEach((kind, ki) => {
+    const t = monthTable(list, code, pm, kind);
+    const rows = list.map(m => ({ m, v:t.tot[m.id] || 0, has:!!t.tot[m.id], days:t.days[m.id] || 0 })).sort((a, b) => b.v - a.v);
+    const tier = prizeTier(rows, true); if (tier < 0) return;
+    const P = (ki === 0 ? PRIZES.main : PRIZES.sub)[tier], items = [];
+    let coins = P.c;
+    P.it.forEach(([k, t2]) => { const it = prizeItem(k, t2, taken); if (it) { items.push(it); taken.push(it.c + ":" + it.k); } else coins += 300; });
+    res.push({ kind, tier, pos:rows.findIndex(r => r.m.me) + 1, coins, items });
+  });
+  done[pm] = res.length ? 1 : 2;
+  if (!res.length) { save(); return; }
+  res.forEach(r => { addCoins(r.coins, true); r.items.forEach(it => { const o = S.owned[it.c] = S.owned[it.c] || []; if (!o.includes(it.k)) o.push(it.k); }); });
+  save(); pushMember(); renderHeader(); logEv("premio_temporada", { grupo:code, puestos:res.map(r => r.pos).join(",") });
+  const show = () => {
+    if ($("#sheetRoot").classList.contains("open") || view.startsWith("play")) { setTimeout(show, 1500); return; }
+    openSheet("¡Terminó la temporada!", `<div style="text-align:center">${danceHTML(96)}<p style="margin:4px 0 2px">Temporada de <b>${mesName(pm)}</b> en <b>${esc(g.name)}</b></p></div>
+      ${res.map(r => `<div class="prize-box ${r.tier < 3 ? "pod p" + (r.tier + 1) : ""}"><div class="prize-head"><span class="prize-medal">${["🥇","🥈","🥉","🎁"][r.tier]}</span><span><b>${kinds.length > 1 ? "Ranking " + KIND_L[r.kind] : "Ranking del mes"}</b><small>${r.tier < 3 ? PRIZE_L[r.tier] : "Terminaste " + r.pos + "º · " + PRIZE_L[3]}</small></span></div>
+        <div class="prize-items"><span class="prize-it"><span class="prize-coin">${coin}</span><small>${NUM.format(r.coins)}</small></span>${r.items.map(it => `<span class="prize-it"><span class="thumb">${thumb(it.c, it.k)}</span><small>${esc(it.n)}</small></span>`).join("")}</div></div>`).join("")}
+      <p class="small muted" style="text-align:center">Ya está todo en tu tienda para ponértelo. ¡Arranca una temporada nueva!</p>
+      <div class="btn-row"><button class="btn" data-act="tab:tito">Ir a la tienda</button><button class="btn primary" data-act="close-sheet">¡Genial!</button></div>`, { center:true });
+    confetti(80); if (typeof celebrate === "function") celebrate(2);
+  };
+  show();
+}
+function openPrizes(code){
+  const kinds = gKinds(code), tbl = (P, title) => `<div class="prize-tbl"><b>${title}</b>${P.map((p, i) => `<div class="prize-row"><span>${["🥇","🥈","🥉","🎁"][i]} ${PRIZE_L[i]}</span><span>${coin}${NUM.format(p.c)}${p.it.map(([k]) => " + " + ({ ropa:"ropa", baile:"baile", casa:"casa", mix:"ropa o casa" })[k]).join("")}</span></div>`).join("")}</div>`;
+  openSheet("Premios de la temporada", `<p style="margin-top:0">Cada mes es una temporada. El día 1 se reparten los premios según el ranking del mes y arranca de cero.</p>
+    ${tbl(PRIZES.main, kinds.length > 1 ? "Ranking General" : "Ranking del mes")}${kinds.length > 1 ? tbl(PRIZES.sub, "Rankings de Arcade y de Trivia (cada uno)") : ""}
+    <p class="small muted">La ropa, los bailes y las cosas para la casa salen de la tienda, siempre algo que todavía no tienes. Con 2 jugadores se premia el 1º, con 3 el 1º y el 2º, y desde 4 el podio completo. El premio por jugar es para los que jugaron 3 días o más en el mes.</p>
+    <button class="btn primary block" data-act="close-sheet">Entendido</button>`);
 }
 
 /* ---------- Tito: casa, cuidado y tienda ---------- */
@@ -12053,6 +12300,9 @@ document.addEventListener("click", e => {
   else if (k === "more") { moreTab = v; setView("more"); }
   else if (k === "open-group") setView("group", { group:v });
   else if (k === "rank") { rankMode = v; render(false); }
+  else if (k === "rtab") { rankTab = v; render(false); }
+  else if (k === "garc") playGroupArc(v);
+  else if (k === "gprizes") openPrizes(v);
   else if (k === "login") fbLogin();
   else if (k === "logout") { if (el.dataset.confirm) { remoteMain.flush(); remoteMember.flush(); acct.fb && acct.fb.signOut(); toast("Cerraste sesión. Tu progreso sigue guardado en tu cuenta."); } else { el.dataset.confirm = "1"; el.textContent = "Toca de nuevo para cerrar sesión"; } }
   else if (k === "acct-pick") { const f = acct.pick; acct.pick = null; f && f(v); }
@@ -12092,7 +12342,7 @@ document.addEventListener("click", e => {
 });
 document.addEventListener("submit", e => {
   e.preventDefault(); const f = e.target;
-  if (f.id === "groupForm") { const name = f.querySelector("#gName").value.trim(); if (!name) return; createGroup(name, f.querySelector('input[name="gTheme"]:checked').value, f.querySelector('input[name="gGame"]:checked').value); }
+  if (f.id === "groupForm") { const name = f.querySelector("#gName").value.trim(); if (!name) return; createGroup(name, groupFormMeta(f)); }
   if (f.id === "joinForm") joinGroup(f.querySelector("#jCode").value);
   if (f.id === "redeemForm") redeemCode(f.querySelector("#rCode").value);
   if (f.id === "fbForm") { const t = f.querySelector("#fbText").value.trim(); if (t.length < 3) { toast("Escribe un poquito más"); return; } sendFeedback(t); return; }
