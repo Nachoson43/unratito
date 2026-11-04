@@ -1610,6 +1610,7 @@ CHARS.calabacin = { n:"Calabacín", d:"Una calabaza de Halloween que solo se con
 const charOf = id => CHARS[id] || null;
 function charName(id){ return id && CHARS[id] ? CHARS[id].n : "Tito"; }
 /* Personajes secretos: solo con código (no salen en la caja misteriosa ni aparecen hasta tenerlos) */
+/* Regla: lo que el personaje tiene en la mano (varita, tridente, etc.) va a la IZQUIERDA; la derecha queda libre para los flotantes */
 const CHAR_SECRET = ["hadita", "diablito"];
 CHARS.hadita = { n:"Hadita", wide:true, d:"Un hada del bosque con vestido de hojas y polvo de estrellas.", secret:true,
   path:"M60 12 C86 12 102 52 102 84 C102 112 84 128 60 128 C36 128 18 112 18 84 C18 52 34 12 60 12 Z",
@@ -1634,7 +1635,7 @@ CHARS.hadita = { n:"Hadita", wide:true, d:"Un hada del bosque con vestido de hoj
     <path d="M40 16 C46 22 48 30 46 38 M60 10 C62 18 62 26 60 34 M78 16 C74 22 72 30 74 38" stroke="#E0951A" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/><path d="M44 12 q8 -4 16 -2" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
     ${[[36, 14, "#FF8FB8"], [50, 6, "#FFFFFF"], [64, 4, "#B9A8FF"], [78, 8, "#FF8FB8"], [90, 18, "#FFFFFF"]].map(([x, y, col]) => `<g transform="translate(${x} ${y})">${[0, 72, 144, 216, 288].map(a => `<circle cx="${Math.cos(a * Math.PI / 180) * 3.4}" cy="${Math.sin(a * Math.PI / 180) * 3.4}" r="2.6" fill="${col}" stroke="${IK}" stroke-width="1"/>`).join("")}<circle r="2" fill="#FFE27A" stroke="${IK}" stroke-width=".8"/></g>`).join("")}
     <path d="M28 14 q-4 -6 -10 -4 M92 14 q4 -6 10 -4" stroke="#3FAF4C" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="17" cy="9" rx="5" ry="2.6" fill="#4FCB6B" stroke="${IK}" stroke-width="1.4" transform="rotate(-25 17 9)"/><ellipse cx="103" cy="9" rx="5" ry="2.6" fill="#4FCB6B" stroke="${IK}" stroke-width="1.4" transform="rotate(25 103 9)"/>
-    <path d="M106 96 L118 70" stroke="${IK}" stroke-width="4.5" stroke-linecap="round"/><path d="M106 96 L118 70" stroke="#F4C440" stroke-width="2.2" stroke-linecap="round"/><path d="M119 58 l2.6 5.4 6 .8 -4.3 4.1 1 5.9 -5.3 -2.8 -5.3 2.8 1 -5.9 -4.3 -4.1 6 -.8z" fill="#FFE27A" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/>` };
+    <g transform="translate(120 0) scale(-1 1)"><path d="M106 96 L118 70" stroke="${IK}" stroke-width="4.5" stroke-linecap="round"/><path d="M106 96 L118 70" stroke="#F4C440" stroke-width="2.2" stroke-linecap="round"/><path d="M119 58 l2.6 5.4 6 .8 -4.3 4.1 1 5.9 -5.3 -2.8 -5.3 2.8 1 -5.9 -4.3 -4.1 6 -.8z" fill="#FFE27A" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/></g>` };
 CHARS.diablito = { n:"Diablito", wide:true, d:"Llegó del infierno con cuernos, cola y muchas ganas de jugar.", secret:true,
   path:"M60 12 C88 12 104 52 104 84 C104 112 86 128 60 128 C34 128 16 112 16 84 C16 52 32 12 60 12 Z",
   defs:id => `<radialGradient id="${id}ch" cx=".42" cy=".35" r=".8"><stop offset="0" stop-color="#FF6A4D"/><stop offset=".55" stop-color="#D8231C"/><stop offset="1" stop-color="#7A0A10"/></radialGradient>
@@ -1653,8 +1654,8 @@ CHARS.diablito = { n:"Diablito", wide:true, d:"Llegó del infierno con cuernos, 
     <path d="M30 14 l6 3 M28 6 l5 2 M90 14 l-6 3 M92 6 l-5 2" stroke="#2A0A0E" stroke-width="1.6"/>
     <path d="M34 56 L54 64 L53 69 L33 61 Z M86 56 L66 64 L67 69 L87 61 Z" fill="#2A0A0E" stroke="${IK}" stroke-width="1.6" stroke-linejoin="round"/>
     <path d="M54 102 L60 116 L66 102 Q60 106 54 102 Z" fill="#2A0A0E" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/>
-    <path d="M104 50 L104 118" stroke="${IK}" stroke-width="5" stroke-linecap="round"/><path d="M104 50 L104 118" stroke="#3A3D4A" stroke-width="2.6" stroke-linecap="round"/>
-    <path d="M94 54 V40 L96 44 M104 50 V32 L106 38 M114 54 V40 L112 44 M94 54 Q104 62 114 54" stroke="${IK}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M94 54 V40 M104 50 V32 M114 54 V40 M94 54 Q104 62 114 54" stroke="#C9D0DB" stroke-width="2.4" fill="none" stroke-linecap="round"/>` };
+    <g transform="translate(120 0) scale(-1 1)"><path d="M104 50 L104 118" stroke="${IK}" stroke-width="5" stroke-linecap="round"/><path d="M104 50 L104 118" stroke="#3A3D4A" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M94 54 V40 L96 44 M104 50 V32 L106 38 M114 54 V40 L112 44 M94 54 Q104 62 114 54" stroke="${IK}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M94 54 V40 M104 50 V32 M114 54 V40 M94 54 Q104 62 114 54" stroke="#C9D0DB" stroke-width="2.4" fill="none" stroke-linecap="round"/></g>` };
 /* Jefe de la Copa Tito (no se puede elegir como personaje) */
 CHARS.dinoboss = { n:"Dinito Malvado", wide:true, d:"La versión malvada de Dinito.", secret:true, hidden:true,
   path:"M60 8 C90 8 106 54 106 84 C106 114 86 130 60 130 C34 130 14 114 14 84 C14 54 30 8 60 8 Z",
@@ -10327,7 +10328,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "04/11 01:01";
+const APP_VER = "04/11 01:09";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
