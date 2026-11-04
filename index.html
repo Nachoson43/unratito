@@ -334,8 +334,8 @@ nav.tabs button[aria-current="page"] .ti{background:var(--c);border:2px solid va
 @keyframes shiver{0%,100%{transform:translateX(0)}50%{transform:translateX(1.6px)}}
 .anim-enter{animation:enter .7s cubic-bezier(.2,.9,.3,1.5) both;display:inline-block;transform-origin:50% 100%}
 @keyframes enter{0%{transform:translateY(40px) scale(.4);opacity:0}70%{transform:translateY(-8px) scale(1.05);opacity:1}100%{transform:none}}
-.blink{animation:blink 4.6s infinite;transform-box:fill-box;transform-origin:center}
-@keyframes blink{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.blink{animation:blink 5.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 55%}
+@keyframes blink{0%,90%,96.5%,100%{transform:scaleY(1)}93%{transform:scaleY(.08)}}
 .flt{animation:flt 2.4s ease-in-out infinite}
 @keyframes flt{50%{transform:translateY(-5px)}}
 
@@ -1255,7 +1255,7 @@ svg .notes path{transform-box:fill-box;animation:note 2.4s ease-in-out infinite}
 svg .spinlbl{transform-box:fill-box;transform-origin:center;animation:spinlbl .9s linear infinite}svg .spinlbl.s2{animation-delay:-.45s}
 svg .dball{transform-box:fill-box;transform-origin:center;animation:dball 2s ease-in-out infinite}
 svg .chomp{transform-box:fill-box;transform-origin:center;animation:chomp 4s ease-in-out infinite}
-svg .blink{animation:twk 1s steps(2) infinite}
+svg .led{animation:twk 1s steps(2) infinite}
 .room.d-robot .r-deco{animation:roam 12s ease-in-out infinite}
 .room.w-mar .wall{animation:marMove 7s linear infinite}
 .room.w-nubes .wall{animation:nubes 30s linear infinite}
@@ -1275,7 +1275,7 @@ svg .blink{animation:twk 1s steps(2) infinite}
 @keyframes dball{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
 @keyframes chomp{0%,85%,100%{transform:scaleY(1)}90%{transform:scaleY(.4)}}
 @keyframes chompFast{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.35)}}
-@keyframes roam{0%,100%{transform:translateX(0)}45%,55%{transform:translateX(-180px) scaleX(-1)}}
+@keyframes roam{0%,100%{transform:translateX(0)}42%,58%{transform:translateX(-180px)}}
 @keyframes marMove{from{background-position:0 0,0 0,0 100%,0 0}to{background-position:0 -90px,260px 0,0 100%,0 0}}
 @keyframes nubes{from{background-position:0 20%,0 0}to{background-position:220px 20%,0 0}}
 @keyframes lava{0%,100%{filter:brightness(1) saturate(1)}50%{filter:brightness(1.25) saturate(1.3)}}
@@ -1288,6 +1288,10 @@ svg .blink{animation:twk 1s steps(2) infinite}
 @media (prefers-reduced-motion: reduce){.room *,.room .wall,.room .floor{animation:none!important}}
 .visit-wrap .room{height:300px}
 .g-rows .rank-row{cursor:pointer}
+.room .r-frame2{position:absolute;right:18px;top:98px;width:64px;z-index:1}
+svg .pump{transform-box:fill-box;transform-origin:center;animation:pump .46s ease-in-out infinite}
+svg .djl{animation:twk 1.2s ease-in-out infinite}
+@keyframes pump{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 
 </style>
 </head>
@@ -10323,7 +10327,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "03/11 19:06";
+const APP_VER = "04/11 01:01";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -10658,7 +10662,7 @@ function titoSVG(t, px, o){
   else if (mood === "meh") s += [47,73].map(x => `<ellipse cx="${x}" cy="72" rx="7.5" ry="5" fill="${eyeC}"/><path d="M${x-10} 67 H${x+10}" stroke="${eyeC}" stroke-width="4" stroke-linecap="round"/>`).join("");
   else if (mood === "cry") s += [47,73].map(x => `<path d="M${x-8} 72 Q${x} 64 ${x+8} 72" stroke="${eyeC}" stroke-width="4.5" fill="none" stroke-linecap="round"/><rect x="${x-3.5}" y="74" width="7" height="22" rx="3.5" fill="#7CC8F2" opacity=".85"/><path class="tear" d="M${x} 92 q-4 7 0 10 q4 -3 0 -10z" fill="#5BB6EE" stroke="${K}" stroke-width="1.2" style="animation-delay:${x === 47 ? 0 : -.5}s"/>`).join("");
   else if (mood === "hungry" || mood === "sad") s += [47,73].map(x => `<path d="M${x-8} 70 Q${x} 76 ${x+8} 70" stroke="${eyeC}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`).join("");
-  else { const ry = mood === "nervous" ? 8 : 11; s += `<g class="${o.still ? "" : "blink"}">` + [47,73].map(x => `<ellipse cx="${x}" cy="70" rx="8" ry="${ry}" fill="${K}" ${dark ? `stroke="#fff" stroke-width="2"` : ""}/><circle cx="${x+2.6}" cy="${70-ry/2.4}" r="2.8" fill="#fff"/><circle cx="${x-2.4}" cy="${70+ry/2.6}" r="1.3" fill="#fff"/>`).join("") + `</g>`; }
+  else { const ry = mood === "nervous" ? 8 : 11; s += `<g class="${o.still ? "" : "blink"}" ${o.still ? "" : `style="animation-delay:-${(Math.random() * 5).toFixed(2)}s"`}>` + [47,73].map(x => `<ellipse cx="${x}" cy="70" rx="8" ry="${ry}" fill="${K}" ${dark ? `stroke="#fff" stroke-width="2"` : ""}/><circle cx="${x+2.6}" cy="${70-ry/2.4}" r="2.8" fill="#fff"/><circle cx="${x-2.4}" cy="${70+ry/2.6}" r="1.3" fill="#fff"/>`).join("") + `</g>`; }
   s += `<circle cx="34" cy="84" r="5.5" fill="#FF7D96" opacity=".5"/><circle cx="86" cy="84" r="5.5" fill="#FF7D96" opacity=".5"/>`;
   const mc = dark ? "#fff" : K;
   if (mood === "happy" || mood === "star") s += `<path d="M50 85 Q60 99 70 85 Z" fill="#7A1F2B" stroke="${mc}" stroke-width="3" stroke-linejoin="round"/>`;
@@ -10844,6 +10848,10 @@ const FRAME2 = {
     <circle cx="22" cy="32" r="10" fill="#F6E9C8" stroke="${IK}" stroke-width="2"/><path d="M22 32 V25 M22 32 l5 3" stroke="${IK}" stroke-width="1.8" stroke-linecap="round"/><g class="pend"><path d="M22 46 V56" stroke="#C99A2E" stroke-width="1.6"/><circle cx="22" cy="57" r="3.4" fill="#F4C440" stroke="${IK}" stroke-width="1.4"/></g></g>`
 };
 const FURNI2 = {
+  dj:`<g class="djl"><path d="M30 0 L18 30 H42z" fill="#FF5FA2" opacity=".35"/><path d="M90 0 L78 30 H102z" fill="#5CE1E6" opacity=".35"/></g><rect x="4" y="22" width="18" height="44" rx="3" fill="#26283A" stroke="${IK}" stroke-width="2.4"/><circle cx="13" cy="36" r="6" fill="#3A3D5A" stroke="${IK}" stroke-width="1.6"/><circle class="pump" cx="13" cy="54" r="8" fill="#3A3D5A" stroke="${IK}" stroke-width="1.6"/><circle cx="13" cy="54" r="3" fill="#1B1640"/>
+    <rect x="98" y="22" width="18" height="44" rx="3" fill="#26283A" stroke="${IK}" stroke-width="2.4"/><circle cx="107" cy="36" r="6" fill="#3A3D5A" stroke="${IK}" stroke-width="1.6"/><circle class="pump" cx="107" cy="54" r="8" fill="#3A3D5A" stroke="${IK}" stroke-width="1.6"/><circle cx="107" cy="54" r="3" fill="#1B1640"/>
+    <path d="M26 44 H94 L90 78 H30z" fill="#1B1640" stroke="${IK}" stroke-width="2.4" stroke-linejoin="round"/><rect class="rgb" x="30" y="58" width="60" height="4" fill="#FF5FA2"/><text x="60" y="73" text-anchor="middle" font-family="Arial Black,Impact,sans-serif" font-size="7" fill="#FFE27A">DJ TITO</text>
+    <rect x="24" y="36" width="72" height="9" rx="2" fill="#3A3D4A" stroke="${IK}" stroke-width="2"/><ellipse cx="38" cy="36" rx="11" ry="3.6" fill="#0B0F24" stroke="${IK}" stroke-width="1.4"/><ellipse class="spinlbl" cx="38" cy="36" rx="3" ry="1.2" fill="#FF5FA2"/><ellipse cx="82" cy="36" rx="11" ry="3.6" fill="#0B0F24" stroke="${IK}" stroke-width="1.4"/><ellipse class="spinlbl s2" cx="82" cy="36" rx="3" ry="1.2" fill="#5CE1E6"/><rect x="54" y="33" width="12" height="5" rx="1" fill="#7CFF6B" stroke="${IK}" stroke-width="1"/>`,
   hamaca:`<path d="M8 8 V78 M112 8 V78" stroke="#6E4520" stroke-width="6" stroke-linecap="round"/><path d="M8 8 V78 M112 8 V78" stroke="${IK}" stroke-width="1.6" opacity=".4"/><g class="sway"><path d="M10 20 L24 34 M110 20 L96 34" stroke="#C9B48A" stroke-width="2"/><path d="M24 34 Q60 66 96 34 L96 40 Q60 74 24 40z" fill="#EE3B2B" stroke="${IK}" stroke-width="2.4"/><path d="M24 37 Q60 69 96 37" stroke="#FFC425" stroke-width="3" fill="none"/><path d="M26 40 Q60 72 94 40" stroke="#22A447" stroke-width="2" fill="none"/><path d="M30 46 v6 M40 53 v6 M50 57 v6 M60 58 v6 M70 57 v6 M80 53 v6 M90 46 v6" stroke="#FFC425" stroke-width="2" stroke-linecap="round"/></g>`,
   gamer:`<rect x="14" y="44" width="92" height="7" rx="2" fill="#26283A" stroke="${IK}" stroke-width="2.4"/><path d="M22 51 V78 M98 51 V78" stroke="${IK}" stroke-width="4"/><rect class="rgb" x="16" y="51" width="88" height="3" fill="#FF5FA2"/><rect class="rgb" x="30" y="6" width="60" height="36" rx="4" fill="#0B0F24" stroke="#5CE1E6" stroke-width="3"/><rect x="34" y="10" width="52" height="28" rx="2" fill="#2B1D5C"/><path d="M40 32 l8 -10 6 6 8 -12 8 16z" fill="#7CFF6B"/><circle cx="74" cy="16" r="3" fill="#FFE27A"/><rect x="56" y="40" width="8" height="4" fill="#26283A"/><rect x="36" y="38" width="30" height="5" rx="1.6" fill="#3A3D4A" stroke="${IK}" stroke-width="1.4" transform="translate(-6 0)"/><ellipse cx="80" cy="41" rx="5" ry="3" fill="#3A3D4A" stroke="${IK}" stroke-width="1.4"/>`,
   parrilla:`<g class="smoke"><circle cx="40" cy="14" r="6" fill="#E8E8F0" opacity=".7"/><circle cx="58" cy="8" r="8" fill="#E8E8F0" opacity=".6"/><circle cx="76" cy="16" r="5" fill="#E8E8F0" opacity=".7"/></g><path d="M24 54 L16 78 M96 54 L104 78 M60 56 V78" stroke="${IK}" stroke-width="4" stroke-linecap="round"/><path d="M14 34 H106 L98 56 H22z" fill="#26283A" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M16 34 H104" stroke="#9AA1B0" stroke-width="3"/>${[24,34,44,54,64,74,84,94].map(x => `<path d="M${x} 30 V36" stroke="#9AA1B0" stroke-width="1.6"/>`).join("")}<rect x="22" y="24" width="26" height="9" rx="4.5" fill="#B5452A" stroke="${IK}" stroke-width="1.8"/><rect x="50" y="26" width="22" height="8" rx="4" fill="#9C3B22" stroke="${IK}" stroke-width="1.8"/><path d="M76 24 q14 -4 20 4 q-4 6 -20 4z" fill="#C2533A" stroke="${IK}" stroke-width="1.8"/><path d="M28 40 q4 8 8 0 q4 8 8 0 M66 42 q4 8 8 0" stroke="#FF7A1A" stroke-width="2" fill="none"/>`,
@@ -10856,7 +10864,7 @@ const DECO2 = {
   tocadiscos:`<g class="notes"><path d="M14 10 v12 a3 3 0 1 1 -2 -3 V10 l8 -2 v4z" fill="#7A4FD9"/><path d="M48 4 v10 a3 3 0 1 1 -2 -3 V4z" fill="#FF5FA2"/></g><rect x="4" y="40" width="56" height="26" rx="4" fill="#A87444" stroke="${IK}" stroke-width="2.6"/><ellipse cx="28" cy="40" rx="20" ry="7" fill="#1B1640"/><ellipse cx="28" cy="40" rx="13" ry="4.4" fill="none" stroke="#3A3D5A" stroke-width="1"/><ellipse class="spinlbl" cx="28" cy="40" rx="5" ry="1.8" fill="#EE3B2B"/><path class="spinlbl s2" d="M12 39 q4 -3 9 -3" stroke="#6A6E8E" stroke-width="1.2" fill="none"/><path d="M54 30 L50 40 L40 41" stroke="#C9CED8" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="54" cy="30" r="3" fill="#C9CED8" stroke="${IK}" stroke-width="1.4"/><circle cx="14" cy="58" r="3" fill="#F4C440" stroke="${IK}" stroke-width="1.2"/>`,
   disco:`<path d="M32 30 V64" stroke="${IK}" stroke-width="4"/><ellipse cx="32" cy="66" rx="14" ry="4" fill="#26315A" stroke="${IK}" stroke-width="2.4"/><g class="dball"><circle cx="32" cy="18" r="16" fill="#C9D1E8" stroke="${IK}" stroke-width="2.4"/><path d="M16 18 H48 M18 10 H46 M18 26 H46 M32 2 V34 M24 3 Q20 18 24 33 M40 3 Q44 18 40 33" stroke="#7E88A8" stroke-width="1.2" fill="none"/><path d="M22 8 l5 0 0 5 -5 0z M38 20 l5 0 0 5 -5 0z" fill="#fff"/><path d="M28 22 l4 0 0 4 -4 0z" fill="#5CE1E6"/><path d="M40 10 l4 0 0 4 -4 0z" fill="#FF5FA2"/></g>`,
   carnivora:`<path d="M20 50 H44 L40 70 H24z" fill="#E2622B" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 50 q-4 -14 0 -24" stroke="#2E8B47" stroke-width="4" fill="none"/><path d="M28 42 q-12 -2 -14 -10 q10 0 14 10z M36 44 q12 -2 14 -10 q-10 0 -14 10z" fill="#3FAF4C" stroke="${IK}" stroke-width="1.6"/><g class="chomp" style="transform-origin:32px 22px"><path d="M14 20 Q32 2 50 20 Q32 14 14 20z" fill="#D8233A" stroke="${IK}" stroke-width="2"/><path d="M14 22 Q32 40 50 22 Q32 28 14 22z" fill="#D8233A" stroke="${IK}" stroke-width="2"/><path d="M18 19 l2 4 2 -4 2 4 2 -4 2 4 2 -4 2 4 2 -4 2 4 2 -4 2 4 2 -4" stroke="#fff" stroke-width="1.6" fill="none"/><circle cx="26" cy="12" r="1.6" fill="${IK}"/><circle cx="38" cy="12" r="1.6" fill="${IK}"/></g>`,
-  robot:`<ellipse cx="32" cy="64" rx="26" ry="5" fill="rgba(0,0,0,.18)"/><path d="M8 52 q0 -14 24 -14 q24 0 24 14 v6 q0 6 -24 6 q-24 0 -24 -6z" fill="#3A3D4A" stroke="${IK}" stroke-width="2.6"/><ellipse cx="32" cy="50" rx="22" ry="8" fill="#C9D1E8" stroke="${IK}" stroke-width="2"/><circle cx="25" cy="50" r="3" fill="#fff" stroke="${IK}" stroke-width="1.4"/><circle cx="39" cy="50" r="3" fill="#fff" stroke="${IK}" stroke-width="1.4"/><circle cx="25.6" cy="50" r="1.4" fill="${IK}"/><circle cx="39.6" cy="50" r="1.4" fill="${IK}"/><circle class="blink" cx="32" cy="44" r="1.8" fill="#22A447"/>`,
+  robot:`<ellipse cx="32" cy="64" rx="26" ry="5" fill="rgba(0,0,0,.18)"/><path d="M8 52 q0 -14 24 -14 q24 0 24 14 v6 q0 6 -24 6 q-24 0 -24 -6z" fill="#3A3D4A" stroke="${IK}" stroke-width="2.6"/><ellipse cx="32" cy="50" rx="22" ry="8" fill="#C9D1E8" stroke="${IK}" stroke-width="2"/><circle cx="25" cy="50" r="3" fill="#fff" stroke="${IK}" stroke-width="1.4"/><circle cx="39" cy="50" r="3" fill="#fff" stroke="${IK}" stroke-width="1.4"/><circle cx="25.6" cy="50" r="1.4" fill="${IK}"/><circle cx="39.6" cy="50" r="1.4" fill="${IK}"/><circle class="led" cx="32" cy="44" r="1.8" fill="#22A447"/>`,
   patito:`<path d="M10 52 q0 -18 20 -18 q2 -18 16 -18 q12 0 12 12 q0 8 -8 10 q14 4 10 16 q-4 12 -24 12 q-26 0 -26 -14z" fill="#FFD23F" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M56 26 l8 2 -8 4z" fill="#FF8A3D" stroke="${IK}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="48" cy="24" r="2.4" fill="${IK}"/><circle cx="48.8" cy="23.2" r=".8" fill="#fff"/><path d="M20 48 q10 8 22 0" stroke="#F2A81E" stroke-width="3" fill="none" stroke-linecap="round"/>`
 };
 const _frameSVG = frameSVG, _furniSVG = furniSVG, _decoSVG = decoSVG;
@@ -10865,15 +10873,16 @@ furniSVG = k => FURNI2[k] ? svgWrap(FURNI2[k], "0 0 120 80") : _furniSVG(k);
 decoSVG = k => DECO2[k] ? svgWrap(DECO2[k], "0 0 64 72") : _decoSVG(k);
 SHOP.window = { l:"Ventana", g:"casa", items:[["none","Nada",0],["clasica","Ventana al jardín",800],["ciudad","Vista a la ciudad",1600],["playa","Vista a la playa",2200],["montana","Vista a la montaña",2600],["espacio","Vista al espacio",5500]] };
 SHOP.wall.items.splice(SHOP.wall.items.findIndex(i => i[0] === "oro"), 0, ["nubes","Nubes",650],["pizarron","Pizarrón",900],["grafiti","Grafiti",1400],["bosque","Bosque encantado",2200],["mar","Fondo de mar",2800],["espacio","Espacio",3500]);
-SHOP.floor.items.push(["espiga","Parquet en espiga",600],["calcareas","Baldosas calcáreas",1200],["arena","Arena de playa",1600],["tablero","Tablero de juego",1900],["hielo","Hielo",2400],["lava","Lava con pasarela",3200]);
-SHOP.frame.items.push(["diploma","Diploma en Trivias",700],["huevosfritos","Póster de Los Huevos Fritos",1300],["cucu","Reloj cucú",2400],["titolisa","Tito Lisa",4800]);
-SHOP.furni.items.push(["hamaca","Hamaca paraguaya",1800],["banera","Bañadera con patitos",2600],["parrilla","Parrilla",3000],["metegol","Metegol",3400],["gamer","Escritorio gamer",4200],["trono","Trono",6500],["inodoro","Inodoro de oro","P"]);
+SHOP.floor.items.push(["espiga","Parquet en espiga",600],["calcareas","Baldosas calcáreas",1200],["arena","Arena de playa",1600],["hielo","Hielo",2400]);
+SHOP.frame.items.push(["diploma","Diploma en Trivias",700],["huevosfritos","Póster de Los Huevos Fritos",1300],["cucu","Reloj cucú",2400]);
+SHOP.furni.items.push(["hamaca","Hamaca paraguaya",1800],["banera","Bañadera con patitos",2600],["parrilla","Parrilla",3000],["metegol","Metegol",3400],["gamer","Escritorio gamer",4200],["dj","Set de DJ",4800],["trono","Trono",6500],["inodoro","Inodoro de oro","P"]);
 SHOP.deco.items.push(["patito","Patito gigante",600],["carnivora","Planta carnívora",1400],["tocadiscos","Tocadiscos",1900],["robot","Robot aspiradora",2800],["disco","Bola de boliche",3600]);
 
 /* Qué hace Tito con cada cosa */
 const ROOM_USE = {
   furni:{ sillon:{ pos:"sit", say:["¡Qué cómodo! 😌", "Un ratito de sillón y vuelvo"] }, biblio:{ say:["Hoy leo un capítulo 📚", "Acá guardo mis respuestas 🤓"] }, tele:{ fx:"tv", say:["Pongo los dibujitos 📺", "¿Qué dan hoy en la tele?"] }, arco:{ fx:"goal", say:["¡Atajé! 🧤", "¡Qué atajada!"] },
     hamaca:{ pos:"hammock", say:["Siesta paraguaya 😴", "Esto es vida 🌴"], ms:5000 }, gamer:{ pos:"sit", fx:"gamer", say:["¡GG! 🎮", "Una partidita más y salgo"] }, parrilla:{ fx:"smoke", say:["¡Sale asadito! 🥩", "Vuelta y vuelta 🔥"] },
+    dj:{ dance:true, fx:"disco", say:["¡DJ Tito en la casa! 🎧", "¡Que suba ese bajo! 🔊", "Pido manos arriba 🙌"] },
     banera:{ pos:"bath", fx:"bubbles", say:["Patito, pásame el jabón 🛁", "Agua tibia, ¡qué placer!"] }, metegol:{ fx:"goal", say:["¡Gooool! ⚽", "¡Al ángulo! ⚽"] }, trono:{ pos:"sit", say:["Ahora mando yo 👑", "Inclínense ante Tito 😎"] }, inodoro:{ pos:"sit", say:["Ocupado ✨🚽", "Lujo total ✨"] }, caldero:{ fx:"bubbles", say:["Abracadabra 🧪"] } },
   deco:{ tocadiscos:{ dance:true, say:["¡Temazo! 🎶", "Esta me la sé 🎵"] }, disco:{ dance:true, fx:"disco", say:["¡A bailar! 🪩", "Esto es un boliche 🕺"] }, carnivora:{ mood:"sad", fx:"chomp", say:["¡Casi me come! 😱", "¡No soy comida! 🥚"] },
     robot:{ fx:"robot", say:["¡Limpia bien, robot! 🤖", "Robot, ¡por ahí no!"] }, patito:{ say:["Cuac 🦆", "Mi patito favorito 💛"] }, planta:{ say:["La riego todos los días 🌱"] }, lampara:{ say:["Luz para leer 💡"] }, globo:{ say:["¿A dónde viajamos? 🌍"] }, trofeo:{ say:["Mi orgullo 🏆"] }, trofeooro:{ say:["Brilla como yo ✨"] }, calabazas:{ say:["Buuu 🎃"] } },
@@ -10887,11 +10896,11 @@ function windowSay(k){
   return h >= 20 || h < 6 ? "Qué linda noche 🌙" : h < 8 ? "Amaneció 🌅" : h >= 18 ? "Mira ese atardecer 🌇" : "Qué lindo día ☀️";
 }
 function roomHTML(house, tito, o){
-  o = o || {}; const h = Object.assign({ wall:"lisa", floor:"gris", frame:"none", window:"none", furni:"none", deco:"none" }, house || {});
+  o = o || {}; const h = Object.assign({ wall:"lisa", floor:"gris", frame:"none", frame2:"none", window:"none", furni:"none", deco:"none" }, house || {});
   const use = (cat, inner, cls) => o.visit || o.static ? `<div class="${cls}">${inner}</div>` : `<button class="${cls} r-use" data-act="room-use:${cat}" aria-label="Usar">${inner}</button>`;
   return `<section class="room ${o.visit ? "visit" : "mine"} w-${h.wall} fl-${h.floor} ${h.window !== "none" ? "has-win" : ""} d-${h.deco} f-${h.furni}" aria-label="Casa"><div class="wall" style="${WALL[h.wall] || WALL.lisa}"></div>${o.visit || o.static ? `<div class="floor" style="${FLOOR[h.floor] || FLOOR.gris}"></div>` : `<button class="floor r-use" data-act="room-use:floor" aria-label="Piso" style="${FLOOR[h.floor] || FLOOR.gris}"></button>`}
     <div class="r-fx"></div>
-    ${h.frame !== "none" ? use("frame", frameSVG(h.frame), "r-frame") : ""}${h.window !== "none" ? use("window", winSVG(h.window), "r-win") : ""}${h.furni !== "none" ? use("furni", furniSVG(h.furni), "r-furni") : ""}${h.deco !== "none" ? use("deco", decoSVG(h.deco), "r-deco") : ""}
+    ${h.frame !== "none" ? use("frame", frameSVG(h.frame), "r-frame") : ""}${h.frame2 && h.frame2 !== "none" && h.frame2 !== h.frame ? use("frame2", frameSVG(h.frame2), "r-frame2") : ""}${h.window !== "none" ? use("window", winSVG(h.window), "r-win") : ""}${h.furni !== "none" ? use("furni", furniSVG(h.furni), "r-furni") : ""}${h.deco !== "none" ? use("deco", decoSVG(h.deco), "r-deco") : ""}
     ${o.bubble ? `<div class="bubble r-bubble">${esc(o.bubble)}</div>` : ""}
     <div class="r-tito"><span class="${o.dance ? "" : (o.anim || "anim-idle")}">${titoSVG(tito, 128, { mood:o.mood, level:o.level, dance:o.dance })}</span></div>
     ${o.visit ? `<div class="r-tags"><span class="group-tag">Nivel ${o.level || 1}</span></div>` : `<div class="r-tags"><button class="group-tag" data-act="level" style="border:0;cursor:pointer;font:inherit;font-weight:800">Nivel ${o.level || 1}</button><span class="group-tag" style="background:#fff">${coin}${NUM.format(S.coins)}</span></div>`}</section>`;
@@ -10899,7 +10908,7 @@ function roomHTML(house, tito, o){
 let roomAuto = null;
 function roomUse(cat, auto){
   const room = document.querySelector(".room.mine"); if (!room || room._busy || tryOn) return false;
-  const key = S.house[cat] || "none", U = cat === "window" ? (key !== "none" ? { say:[windowSay(key)] } : null) : (ROOM_USE[cat] || {})[key];
+  const key = S.house[cat] || "none", U = cat === "window" ? (key !== "none" ? { say:[windowSay(key)] } : null) : (ROOM_USE[cat === "frame2" ? "frame" : cat] || {})[key];
   if (!U) return false;
   room._busy = true;
   const tEl = room.querySelector(".r-tito"), b = room.querySelector(".r-bubble"), cls = [];
@@ -10916,7 +10925,7 @@ function roomAutoStart(){
   clearInterval(roomAuto);
   roomAuto = setInterval(() => {
     if (view !== "tito" || document.hidden || $("#sheetRoot").classList.contains("open")) return;
-    const cats = ["furni","deco","frame","window"].filter(c => S.house[c] && S.house[c] !== "none" && (c === "window" || (ROOM_USE[c] || {})[S.house[c]]));
+    const cats = ["furni","deco","frame","frame2","window"].filter(c => S.house[c] && S.house[c] !== "none" && (c === "window" || (ROOM_USE[c === "frame2" ? "frame" : c] || {})[S.house[c]]));
     if (cats.length) roomUse(cats[Math.floor(Math.random() * cats.length)], true);
   }, 14000);
 }
@@ -10951,7 +10960,13 @@ function priceOf(cat, key){
   return Math.round(it[2] * parts.filter(p => !p.own).reduce((x, p) => x + p.v, 0) / tot / 10) * 10;
 }
 const worn = cat => cat === "kit" ? (Object.keys(KITS).find(k => kitParts(k).every(([c, v]) => S.tito[c] === v)) || "") : TITO_CATS.includes(cat) ? S.tito[cat] : S.house[cat];
-function wear(cat, key){ if (cat === "kit") { kitParts(key).forEach(([c, k]) => { S.tito[c] = k; }); return; } if (TITO_CATS.includes(cat)) S.tito[cat] = key; else S.house[cat] = key; }
+function wear(cat, key){
+  if (cat === "frame") { const h = S.house;
+    if (key === "none") { h.frame = "none"; h.frame2 = "none"; return; }
+    if (h.frame === key) { h.frame = h.frame2 || "none"; h.frame2 = "none"; return; }
+    if (h.frame2 === key) { h.frame2 = "none"; return; }
+    if (!h.frame || h.frame === "none") h.frame = key; else if (!h.frame2 || h.frame2 === "none") h.frame2 = key; else { h.frame2 = h.frame; h.frame = key; } return; }
+  if (cat === "kit") { kitParts(key).forEach(([c, k]) => { S.tito[c] = k; }); return; } if (TITO_CATS.includes(cat)) S.tito[cat] = key; else S.house[cat] = key; }
 const withTry = (base, cat, key) => cat === "kit" ? Object.assign({}, base, KITS[key]) : Object.assign({}, base, { [cat]:key });
 function thumb(cat, key){
   if (cat === "dance") return titoSVG(S.tito, 56, { level:level(), noFloat:true, mood:"happy", dance:key });
@@ -11099,7 +11114,7 @@ function blank(){
   return { v:4, updated:0, plays:{}, runs:{}, seen:[], unlocked:[], hints:3, coins:0, earned:0, premUntil:0,
     profile:{ name:"", country:"AR", done:false },
     tito:{ skin:"hueso", hat:"none", clothes:"none", glasses:"none", feet:"none", float:"none", dance:"funk" },
-    house:{ wall:"lisa", floor:"gris", frame:"none", window:"none", furni:"none", deco:"none" },
+    house:{ wall:"lisa", floor:"gris", frame:"none", frame2:"none", window:"none", furni:"none", deco:"none" },
     owned:{}, care:{ food:70, mood:70, last:"" }, snacks:{ day:"", n:0 }, vh:{ day:"", n:0 }, wheel:{ day:"", n:0 },
     streak:{ count:0, best:0, last:"" }, gifts:[],
     stats:{ wPlayed:0, wWon:0, dist:[0,0,0,0,0,0,0], sPlayed:0, sBest:null, tPlayed:0, tRight:0 },
@@ -11148,7 +11163,7 @@ const CAT_ONE = { skin:"Cáscara", hat:"Gorro", clothes:"Ropa", glasses:"Lentes"
 function lvGiftRow(g, L){
   const got = L >= g.l, on = got && S.tito[g.cat] === g.k, rar = rarityOf("L" + g.l);
   return `<li class="${got ? "ok" : "lock"}"><span class="lv-n">${g.l}</span><span class="lv-th">${thumb(g.cat, g.k)}</span><span class="lv-tx"><b>${esc(g.t)}</b><small><span class="rar ${rar}" style="--rc:${RAR[rar][1]}">${RAR[rar][0].replace("Nivel · ", "")}</span> ${CAT_ONE[g.cat]}${g.cat === "skin" ? " · solo Tito" : ""}</small></span>
-    ${got ? `<button class="btn sm ${on ? "" : "green"}" data-act="lvwear:${g.cat}:${on ? "off" : g.k}">${on ? "Sacar" : "Ponerlo"}</button>` : `<span class="lv-lock">${NUM.format(Math.max(0, lvlNeed(g.l) - S.earned))}<small>exp.</small></span>`}</li>`;
+    ${got && g.cat === "skin" && S.tito.char ? `<span class="lv-lock"><small>Solo Tito</small></span>` : got ? `<button class="btn sm ${on ? "" : "green"}" data-act="lvwear:${g.cat}:${on ? "off" : g.k}">${on ? "Sacar" : "Ponerlo"}</button>` : `<span class="lv-lock">${NUM.format(Math.max(0, lvlNeed(g.l) - S.earned))}<small>exp.</small></span>`}</li>`;
 }
 function levelHTML(){
   const L = level(), now = S.earned, max = L >= LV_MAX, a0 = lvlNeed(L), a1 = lvlNeed(L + 1), pc = max ? 100 : Math.round(100 * (now - a0) / (a1 - a0));
@@ -12616,10 +12631,10 @@ function renderTito(){
     <div class="btn-row" style="margin-top:12px"><button class="btn green" data-act="snack">${icon("croissant").replace("<svg","<svg width='24' height='24'")}Merienda${snacksUsed >= LIMITS.freeSnacks ? " · "+videoWord() : ""}</button><button class="btn reward" data-act="bonus" ${bonusLeft <= 0 ? "disabled" : ""}>+30 pts · ${videoWord()} (${Math.max(0,bonusLeft)})</button></div>
     <p class="small muted" style="margin-top:10px">La panza se llena respondiendo bien y el ánimo jugando. Si no juegas, bajan un poco cada día. ${lv < LV_MAX ? "En el nivel "+(Math.floor(lv / 5) + 1) * 5+" ganas un premio exclusivo." : ""}</p></section>`;
   h += charsSection();
-  const cats = shopCatsOf(shopGroup); if (!cats.includes(shopCat)) shopCat = cats[0];
+  const cats = shopCatsOf(shopGroup).filter(c => !(c === "skin" && S.tito.char)); if (!cats.includes(shopCat)) shopCat = cats[0];
   let secHead = false;
   const items = SHOP[shopCat].items.filter(([key, , p]) => (!isSeasonal(shopCat, key) || isHalloween() || owns(shopCat, key)) && (p !== "C" || owns(shopCat, key))).map(([key, name, base, sec]) => {
-    const own = owns(shopCat, key), on = worn(shopCat) === key, trying = tryOn && tryOn.cat === shopCat && tryOn.key === key, rar = rarityOf(base), price = priceOf(shopCat, key);
+    const own = owns(shopCat, key), on = shopCat === "frame" ? (key === "none" ? S.house.frame === "none" && (S.house.frame2 || "none") === "none" : [S.house.frame, S.house.frame2].includes(key)) : worn(shopCat) === key, trying = tryOn && tryOn.cat === shopCat && tryOn.key === key, rar = rarityOf(base), price = priceOf(shopCat, key);
     if (base === "C" && !secHead) { secHead = true; sec = "Secretas"; } else if (base === "C") sec = undefined;
     const head = sec ? `<div class="shop-sec ${sec === "Halloween" ? "hw-sec" : ""}">${sec === "Halloween" ? "Halloween · solo hasta el 2 de noviembre" : esc(sec)}</div>` : "";
     const label = own ? (on ? "Puesto" : "Usar") : lockLv(price) ? `<span class="price-l">Nivel ${lockLv(price)}</span>` : price === "P" ? `<span class="price-l">PREMIUM</span>` : `<span class="price-l ${S.coins < price ? "no" : ""}">${coin}${NUM.format(price)}</span>`;
@@ -12628,7 +12643,7 @@ function renderTito(){
   h += `<section class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="font-size:1.25em">Tienda</h2><span class="group-tag" style="background:var(--y-soft)">${coin}${NUM.format(S.coins)}</span></div>
     <div class="seg seg3" style="margin-top:10px"><button data-act="shopgroup:tito" aria-pressed="${shopGroup === "tito"}">Personaje</button><button data-act="shopgroup:baile" aria-pressed="${shopGroup === "baile"}">Bailes</button><button data-act="shopgroup:casa" aria-pressed="${shopGroup === "casa"}">Casa</button></div>
     ${cats.length > 1 ? `<div class="cat-tabs" style="margin-top:10px">${cats.map(k => `<button data-act="shopcat:${k}" aria-pressed="${k===shopCat}">${SHOP[k].l}</button>`).join("")}</div>` : `<p class="small muted" style="margin:10px 0 0">Toca un baile para verlo con su música.</p>`}
-    ${shopCat === "skin" ? `<p class="skin-note">Las pieles son solo para Tito. Los otros personajes tienen su propio color.</p>` : ""}<div class="shop">${items}</div>
+    ${shopCat === "frame" ? `<p class="skin-note">Puedes colgar hasta 2 cuadros. Toca uno puesto para sacarlo.</p>` : ""}${shopCat === "skin" ? `<p class="skin-note">Las pieles son solo para Tito. Los otros personajes tienen su propio color.</p>` : ""}<div class="shop">${items}</div>
     <p class="small muted" style="margin-top:10px">Toca algo para probarlo. Lo que ya es tuyo se pone al toque.</p></section>
     <button class="btn ghost block" data-act="profile">Cambiar nombre o país</button>`;
   return h;
@@ -12906,7 +12921,7 @@ function boot(){
   if ((S.xpFix || 0) < 2) { const was = S.xpFix || 0; S.xpFix = 2; const GONE = { 1223714602:50000 }, gift = (S.codes || []).reduce((a, h) => a + (was < 1 ? (CODES[h] && CODES[h].pts) || GONE[h] || 0 : 0) + (OLD_CODES[h] || 0), 0);
     if (gift) { S.earned = Math.max(0, (S.earned || 0) - gift); const L = level(); if (S.lvlSeen != null) S.lvlSeen = Math.min(S.lvlSeen, L);
       lvGifts().forEach(g => { if (g.l > L && S.tito[g.cat] === g.k) S.tito[g.cat] = "none"; }); } }
-  S.house = Object.assign({ window:"none" }, S.house); roomAutoStart();
+  S.house = Object.assign({ window:"none", frame2:"none" }, S.house); roomAutoStart();
   if (S.settings.sound == null) S.settings.sound = true; if (S.settings.music == null) S.settings.music = true;
   if (S.streak.last && S.streak.last < addDays(today(), -1)) S.streak.count = 0;
   decayCare();
