@@ -1292,6 +1292,7 @@ svg .led{animation:twk 1s steps(2) infinite}
 svg .pump{transform-box:fill-box;transform-origin:center;animation:pump .46s ease-in-out infinite}
 svg .djl{animation:twk 1.2s ease-in-out infinite}
 @keyframes pump{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.upd-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:80;background:var(--y);color:#1B1640;border:var(--bw) solid var(--K);border-radius:999px;padding:10px 18px;font:inherit;font-weight:800;box-shadow:var(--pop);animation:gUp .4s ease both;white-space:nowrap}
 
 </style>
 </head>
@@ -10328,7 +10329,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "04/11 01:09";
+const APP_VER = "04/11 01:16";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -11253,6 +11254,16 @@ function initRemote(){
   if (window.claude && claude.use) return initClaudeRemote();
   if (CFG.fb) initFirebase();
 }
+
+/* ---------- Avisar cuando hay una versión nueva publicada (solo web) ---------- */
+let updShown = false;
+async function checkUpdate(){
+  if (!CFG.fb || updShown || location.protocol !== "https:") return;
+  try { const t = await (await fetch("index.html?v=" + Date.now(), { cache:"no-store" })).text(), m = /const APP_VER = "([^"]+)"/.exec(t);
+    if (m && m[1] !== APP_VER) { updShown = true; const b = document.createElement("button"); b.className = "upd-bar"; b.innerHTML = "✨ Hay una versión nueva · <b>Actualizar</b>"; b.onclick = () => location.reload(); document.body.appendChild(b); } } catch(e){}
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) checkUpdate(); });
+setTimeout(checkUpdate, 4000); setInterval(checkUpdate, 10 * 60e3);
 
 /* ---------- Cuenta con Google (versión web, Firebase) ---------- */
 const acct = { fb:null, user:null, ready:false, busy:false };
