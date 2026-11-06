@@ -9090,17 +9090,16 @@ arcRegister("rescate", {
         box(cx + .75, 4.2, cx - .75, 4.35, "#EDE2CC", "rgba(60,40,30,.5)"); c.strokeStyle = "#17151C"; c.lineWidth = Math.max(1, s * .025); c.beginPath(); c.moveTo(X(cx + .75), Y(5.15)); c.lineTo(X(cx - .75), Y(5.15)); for (let x = cx + .72; x > cx - .75; x -= .12) { c.moveTo(X(x), Y(4.35)); c.lineTo(X(x), Y(5.15)); } c.stroke(); });
       /* el local de la inmobiliaria */
       box(-3.28, .45, -6.55, 2.8, "#1A1A1E", IK);
-      const ig = c.createLinearGradient(0, Y(2.7), 0, Y(.55)); ig.addColorStop(0, "#FFFFFF"); ig.addColorStop(1, "#DDE3EE"); c.fillStyle = ig; c.fillRect(X(-3.38), Y(2.7), 3.07 * s, 2.15 * s);
-      c.fillStyle = "rgba(60,70,90,.18)"; c.fillRect(X(-3.38), Y(1.1), 3.07 * s, .55 * s);
-      const LB = [[-3.5, 2.05], [-4.05, 2.05], [-5.7, 2.05], [-6.2, 2.05], [-3.5, 1.38], [-4.05, 1.38], [-5.7, 1.38], [-6.2, 1.38]];
-      LB.forEach(([lx, ly], i) => { const x0 = X(lx), y0 = Y(ly + .52), w = .44 * s, h = .52 * s; c.save(); c.shadowColor = "rgba(160,200,255,.9)"; c.shadowBlur = Math.max(2, s * .12); c.fillStyle = "#FFFFFF"; c.fillRect(x0, y0, w, h); c.restore(); c.strokeStyle = "#B9C3D4"; c.lineWidth = 1; c.strokeRect(x0, y0, w, h);
+      const ig = c.createLinearGradient(0, Y(2.7), 0, Y(.55)); ig.addColorStop(0, "#FFFFFF"); ig.addColorStop(1, "#DDE3EE"); c.fillStyle = ig; c.fillRect(X(-6.45), Y(2.7), 3.07 * s, 2.15 * s);
+      c.fillStyle = "rgba(60,70,90,.18)"; c.fillRect(X(-6.45), Y(1.1), 3.07 * s, .55 * s);
+      const LB = []; [-4.48, -4.0, -5.52, -5.06, -6.41, -5.99].forEach(lx => [2.05, 1.38].forEach(ly => LB.push([lx, ly])));
+      LB.forEach(([lx, ly], i) => { const x0 = X(lx), y0 = Y(ly + .52), w = .4 * s, h = .52 * s; c.save(); c.shadowColor = "rgba(160,200,255,.9)"; c.shadowBlur = Math.max(2, s * .12); c.fillStyle = "#FFFFFF"; c.fillRect(x0, y0, w, h); c.restore(); c.strokeStyle = "#B9C3D4"; c.lineWidth = 1; c.strokeRect(x0, y0, w, h);
         const ph = c.createLinearGradient(0, y0, 0, y0 + h * .62); ph.addColorStop(0, ["#7CC3F2", "#9AD0F5", "#F2C9A0", "#86C5EE"][i % 4]); ph.addColorStop(1, "#E9F4F8"); c.fillStyle = ph; c.fillRect(x0 + w * .08, y0 + h * .07, w * .84, h * .55);
         c.fillStyle = ["#D9B38C", "#E8E2D2", "#B9C3D4", "#E9B7A4"][i % 4]; c.fillRect(x0 + w * (.15 + (i % 3) * .1), y0 + h * (.25 - (i % 2) * .08), w * .4, h * (.37 + (i % 2) * .08)); c.fillStyle = "#3A8445"; c.fillRect(x0 + w * .08, y0 + h * .55, w * .84, h * .07);
         c.fillStyle = "#4A2C82"; c.fillRect(x0 + w * .08, y0 + h * .68, w * .84, h * .08); c.fillStyle = "#9AA3B5"; c.fillRect(x0 + w * .08, y0 + h * .82, w * .6, h * .05); });
-      const mx = X(-4.62), my = Y(2.2), mw = .95 * s, mh = .55 * s; c.fillStyle = "#4A2C82"; c.fillRect(mx, my, mw, mh); c.strokeStyle = "#1A1A1E"; c.lineWidth = Math.max(1, s * .03); c.strokeRect(mx, my, mw, mh);
-      c.fillStyle = "#FFFFFF"; c.font = `bold ${Math.max(5, mw * .17)}px Fredoka, sans-serif`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("DE PIÑERA", mx + mw / 2, my + mh / 2);
       c.strokeStyle = "#1A1A1E"; c.lineWidth = Math.max(1, s * .05); c.beginPath(); [-4.55, -5.6].forEach(x => { c.moveTo(X(x), Y(.45)); c.lineTo(X(x), Y(2.8)); }); c.stroke();
       c.strokeStyle = "rgba(20,20,26,.55)"; c.lineWidth = 1; c.beginPath(); for (let y = .55; y < .95; y += .1) { c.moveTo(X(-3.38), Y(y)); c.lineTo(X(-6.45), Y(y)); } c.stroke();
+      c.fillStyle = "#C9A87A"; c.fillRect(X(-6.3), Y(.95), 2.8 * s, .05 * s);
       c.fillStyle = "rgba(255,255,255,.28)"; c.beginPath(); c.moveTo(X(-3.5), Y(2.7)); c.lineTo(X(-3.9), Y(2.7)); c.lineTo(X(-3.45), Y(1.4)); c.closePath(); c.fill();
       /* puerta de vidrio */
       box(-6.6, 0, -7.7, 2.8, "#1A1A1E", IK); c.fillStyle = "rgba(225,232,242,.95)"; c.fillRect(X(-6.7), Y(2.7), .9 * s, 2.6 * s); c.fillStyle = "#C9CED8"; c.fillRect(X(-6.82), Y(1.6), .05 * s, .5 * s);
@@ -11096,7 +11095,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "06/11 13:36";
+const APP_VER = "06/11 13:54";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
