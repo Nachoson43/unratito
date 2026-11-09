@@ -1335,6 +1335,15 @@ html.arc-fs .arc-stage{border-radius:14px}
 .resc-prog{display:block;width:100%;height:5px;border-radius:9px;background:rgba(255,255,255,.3);margin-top:3px;overflow:hidden}
 .resc-prog i{display:block;height:100%;background:var(--y);border-radius:9px}
 main.arc-mode .play-head h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* flechas grandes (viborita) aprovechando el espacio de abajo */
+.arc-btns.pad{grid-template-columns:repeat(3,min(27vw,108px));grid-template-rows:repeat(2,72px);gap:10px}
+.arc-btns.pad .arc-btn{font-size:1.5em;border-radius:18px}
+.arc-btns.pad .arc-btn svg{width:34px;height:34px}
+.arc-ctl:empty{display:none}
+/* la fila de arriba del juego siempre en una sola línea: si no, empuja el juego y la pantalla se desplaza */
+main.arc-mode .arc-hud{flex-wrap:nowrap;min-height:29px}
+main.arc-mode .arc-info{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+main.arc-mode .arc-hud .arc-pill{flex:none;white-space:nowrap}
 
 </style>
 </head>
@@ -5861,10 +5870,11 @@ function arcMount(){
   const noSel = e => { if (!e.target.closest("button, a, input, select, textarea, [data-act]")) e.preventDefault(); };
   stage.addEventListener("touchend", noSel, { passive:false }); stage.addEventListener("dblclick", noSel);
   const main = $("#main"), full = Math.round(stage.clientWidth);
-  if (!main._arcCov) { main._arcCov = 1; main.addEventListener("scroll", () => { try { if (arcRun && arcRun.cover) arcRun.cover(); } catch(e){} }, { passive:true }); }
   const top = stage.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop;
-  const avail = Math.max(260, main.clientHeight - top - (g.ctlH || 0) - 22);
+  const mcs = getComputedStyle(main), extra = (parseFloat(mcs.paddingBottom) || 0) + (g.ctlH ? (parseFloat(mcs.rowGap) || 0) + 12 : 0) + 4;
+  const avail = Math.max(260, main.clientHeight - top - (g.ctlH || 0) - extra);
   let W = full, H;
+  if (g.fill && W * g.fill[0] > avail) W = Math.round(Math.max(full * .84, avail / g.fill[0]));
   if (g.fill) H = Math.round(Math.max(W * g.fill[0], Math.min(W * g.fill[1] * (arcFsOn() ? (g.fsMax || 1.22) : 1), avail)));
   else { const r = typeof g.ratio === "function" ? g.ratio() : g.ratio || 1; if (W * r > avail) W = Math.round(Math.max(full * .78, avail / r)); H = Math.round(W * r); }
   const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -5899,15 +5909,15 @@ function arcMount(){
     if (pbtn) { const want = !g.noPause && !run.paused && (run.state === "play" || run.state === "count"); if (pbtn.hidden === want) pbtn.hidden = !want; }
   };
   run.raf = requestAnimationFrame(loop);
-  const show = h => { const b = $("#arcBig"); if (b) b.classList.toggle("hide", !!h && run.state !== "count"); ov.innerHTML = h; ov.classList.toggle("on", !!h); ov.classList.remove("compact", "full"); ov.style.cssText = ""; if (!h) return;
+  /* El cartel va dentro del recuadro del juego. Si no entra (o es el final y el recuadro no se ve entero), se muestra centrado
+     sobre toda la pantalla: se mueve al <body> para que ningún contenedor con scroll o animación lo desplace */
+  const home = () => { if (ov.parentNode !== stage) stage.appendChild(ov); };
+  const show = h => { const b = $("#arcBig"); if (b) b.classList.toggle("hide", !!h && run.state !== "count"); home(); ov.innerHTML = h; ov.classList.toggle("on", !!h); ov.classList.remove("compact", "full"); if (!h) return;
     const box = ov.querySelector(".arc-box"); if (!box) return;
-    /* El cartel nunca queda recortado: si no entra en el recuadro del juego, o el recuadro no se ve entero, o es el final de la partida, va centrado sobre toda la pantalla */
-    /* a pantalla completa de verdad: se corrige la posición por si algún contenedor desplaza el "fixed" */
-    const cover = () => { if (!ov.classList.contains("full")) return; ov.style.cssText = "top:0;left:0;right:auto;bottom:auto;width:" + window.innerWidth + "px;height:" + window.innerHeight + "px"; const r = ov.getBoundingClientRect(); ov.style.top = (-r.top) + "px"; ov.style.left = (-r.left) + "px"; };
-    run.cover = cover;
-    const fit = () => { const sr = stage.getBoundingClientRect(), vh = window.innerHeight; const cut = sr.top < 0 || sr.bottom > vh + 2;
-      if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact");
-      if (run.state === "over" || cut || box.offsetHeight > stage.clientHeight - 16 || box.offsetWidth > stage.clientWidth - 8) ov.classList.add("full"); cover(); };
+    const fit = () => { if (ov.classList.contains("full")) return; const big = () => box.offsetHeight > stage.clientHeight - 16 || box.offsetWidth > stage.clientWidth - 8;
+      if (big()) ov.classList.add("compact");
+      const sr = stage.getBoundingClientRect(), cut = sr.top < 0 || sr.bottom > window.innerHeight + 2;
+      if (big() || (run.state === "over" && cut)) { ov.classList.add("full"); document.body.appendChild(ov); } };
     fit(); [60, 400].forEach(ms => setTimeout(() => { if (ov.classList.contains("on") && box.isConnected) fit(); }, ms)); };
   const startNew = () => {
     if (typeof arcGroupOn === "function" && arcGroupOn(run.id) && !gArcTryUse()) { run.state = "ready"; run.showReady(); return; }
@@ -5967,6 +5977,7 @@ function arcSnap(id){ const st = arcState(); return st.snap && st.snap[id] || nu
 function arcSnapSave(id, o){ if (typeof arcGroupOn === "function" && arcGroupOn(id)) return; const st = arcState(); st.snap = st.snap || {}; st.snap[id] = o; save(); }
 function arcSnapClear(id){ if (typeof arcGroupOn === "function" && arcGroupOn(id)) return; const st = arcState(); if (st.snap && st.snap[id]) { delete st.snap[id]; save(); } }
 function arcStop(){
+  document.querySelectorAll("body > .arc-ov").forEach(o => o.remove());
   const run = arcRun; if (!run) return;
   if (run.state === "over" || run.state === "play" || run.state === "count") { run.state = "over"; run.finalize(); }
   cancelAnimationFrame(run.raf); run.listeners.forEach(([el, ev, fn, opt]) => el.removeEventListener(ev, fn, opt)); run.game.destroy && run.game.destroy(); arcRun = null;
@@ -6221,7 +6232,7 @@ arcRegister("runner", {
 
 /* =================== LA VIBORITA =================== */
 arcRegister("snake", {
-  t:"La viborita", d:"Come frutas, crece y no te choques.", col:"r", revive:true, fill:[1, 1.45], ctlH:136,
+  t:"La viborita", d:"Come frutas, crece y no te choques.", col:"r", revive:true, fill:[1, 1.45], ctlH:176, fsMax:1,
   intro:"Desliza el dedo (o usa las flechas) para doblar. Cada fruta suma y la estrellita vale triple.",
   help:"Desliza sobre el tablero o usa las flechas de abajo",
   points: s => s * 1.7,
@@ -11142,7 +11153,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "09/11 19:02";
+const APP_VER = "09/11 19:48";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
