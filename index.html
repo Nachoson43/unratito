@@ -728,7 +728,8 @@ p.report-line{text-decoration:none}
 .cele-dance{display:inline-block}
 .arc-box .cele-dance.in-box{display:block;margin:-4px auto 0;line-height:0}
 .arc-ov.compact .cele-dance.in-box svg{width:48px;height:48px}
-.arc-ov.full .cele-dance.in-box{display:none}
+.arc-ov.full .cele-dance.in-box svg{width:64px;height:64px}
+.arc-ov.full .arc-box{max-height:calc(var(--appH,100vh) - 36px);overflow-y:auto}
 .pts-pop{display:inline-block;font-family:var(--cartoon);font-weight:400;font-size:1.7em;color:var(--y);-webkit-text-stroke:3px var(--K);paint-order:stroke fill;text-shadow:0 3px 0 var(--K);vertical-align:-.12em;margin-left:4px;animation:ppop .6s cubic-bezier(.3,1.8,.5,1) both}
 @keyframes ppop{0%{transform:scale(.2) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
 /* ---- Juego diario: íconos con color ---- */
@@ -1305,6 +1306,21 @@ svg .djl{animation:twk 1.2s ease-in-out infinite}
 html.arc-on, html.arc-on *{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
 html.arc-on body{touch-action:manipulation}
 .arc-stage canvas{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:none}
+
+/* Cómo se juega */
+.howto{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.howto .arc-thumb.big{width:84px}
+.how-k{font-size:.72em;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.howto h2{margin:0;font-size:1.5em;line-height:1.05}
+.how-goal{margin:0;font-weight:800;font-size:1em;line-height:1.3}
+.how-steps{list-style:none;margin:6px 0 4px;padding:0;display:flex;flex-direction:column;gap:8px;text-align:left;width:100%}
+.how-steps li{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border:2px solid var(--line);border-radius:14px;padding:9px 11px}
+.how-steps i{flex:none;width:28px;height:28px;border-radius:50%;background:var(--y);border:2.5px solid var(--K);color:var(--K);font-style:normal;font-family:var(--cartoon);font-size:1em;display:flex;align-items:center;justify-content:center}
+.how-steps span{font-size:.88em;line-height:1.3;font-weight:700;color:var(--ink)}
+.how-steps b{display:block;font-size:1.06em;font-weight:900}
+.how-link{margin-top:2px}
+.play-head .how-btn{flex:none}
+.sheet.center:has(.howto){max-height:calc(var(--appH,100vh) - 32px);overflow-y:auto}
 
 </style>
 </head>
@@ -5811,7 +5827,7 @@ function renderArcade(){
 const arcRecKey = id => ARC[id] && ARC[id].recKey ? id + ":" + ARC[id].recKey() : id;
 function renderArcPlay(){
   const g = ARC[arcCur], rec = arcState().rec[arcRecKey(arcCur)];
-  return `<div class="play-head"><button class="icon-btn" data-act="arc-exit" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1>${esc(g.t)}</h1><button class="icon-btn arc-pbtn" id="arcPause" data-act="arc-pause" aria-label="Pausa" hidden><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4.2" height="14" rx="1.4"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.4"/></svg></button></div>
+  return `<div class="play-head"><button class="icon-btn" data-act="arc-exit" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1>${esc(g.t)}</h1>${typeof howBtn === "function" && HOWTO[arcCur] ? howBtn(arcCur) : ""}<button class="icon-btn arc-pbtn" id="arcPause" data-act="arc-pause" aria-label="Pausa" hidden><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4.2" height="14" rx="1.4"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.4"/></svg></button></div>
     <div class="arc-hud"><span class="arc-info" id="arcInfo"></span>${g.noBig ? `<span class="arc-pill">Puntos <b id="arcScore">0</b></span>` : ""}<span class="arc-pill dim">Récord <b id="arcRec">${rec != null ? NUM.format(rec) : "—"}</b></span></div>
     <div class="arc-stage ${g.stageClass || ""}" id="arcStage"><canvas id="arcCv"></canvas>${g.noBig ? "" : `<div class="arc-live" id="arcBig">0</div>`}<div class="arc-cele" id="arcCele"></div><div class="arc-ov" id="arcOv"></div></div>
     <div class="arc-ctl" id="arcCtl"></div>`;
@@ -5828,6 +5844,7 @@ function arcMount(){
   const noSel = e => { if (!e.target.closest("button, a, input, select, textarea, [data-act]")) e.preventDefault(); };
   stage.addEventListener("touchend", noSel, { passive:false }); stage.addEventListener("dblclick", noSel);
   const main = $("#main"), full = Math.round(stage.clientWidth);
+  if (!main._arcCov) { main._arcCov = 1; main.addEventListener("scroll", () => { try { if (arcRun && arcRun.cover) arcRun.cover(); } catch(e){} }, { passive:true }); }
   const top = stage.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop;
   const avail = Math.max(260, main.clientHeight - top - (g.ctlH || 0) - 22);
   let W = full, H;
@@ -5865,11 +5882,16 @@ function arcMount(){
     if (pbtn) { const want = !g.noPause && !run.paused && (run.state === "play" || run.state === "count"); if (pbtn.hidden === want) pbtn.hidden = !want; }
   };
   run.raf = requestAnimationFrame(loop);
-  const show = h => { const b = $("#arcBig"); if (b) b.classList.toggle("hide", !!h && run.state !== "count"); ov.innerHTML = h; ov.classList.toggle("on", !!h); ov.classList.remove("compact", "full"); if (!h) return;
+  const show = h => { const b = $("#arcBig"); if (b) b.classList.toggle("hide", !!h && run.state !== "count"); ov.innerHTML = h; ov.classList.toggle("on", !!h); ov.classList.remove("compact", "full"); ov.style.cssText = ""; if (!h) return;
     const box = ov.querySelector(".arc-box"); if (!box) return;
-    if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact");
-    if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full");
-    [60, 400].forEach(ms => setTimeout(() => { if (!ov.classList.contains("on") || !box.isConnected) return; if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact"); if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("full"); }, ms)); };
+    /* El cartel nunca queda recortado: si no entra en el recuadro del juego, o el recuadro no se ve entero, o es el final de la partida, va centrado sobre toda la pantalla */
+    /* a pantalla completa de verdad: se corrige la posición por si algún contenedor desplaza el "fixed" */
+    const cover = () => { if (!ov.classList.contains("full")) return; ov.style.cssText = "top:0;left:0;right:auto;bottom:auto;width:" + window.innerWidth + "px;height:" + window.innerHeight + "px"; const r = ov.getBoundingClientRect(); ov.style.top = (-r.top) + "px"; ov.style.left = (-r.left) + "px"; };
+    run.cover = cover;
+    const fit = () => { const sr = stage.getBoundingClientRect(), vh = window.innerHeight; const cut = sr.top < 0 || sr.bottom > vh + 2;
+      if (box.offsetHeight > stage.clientHeight - 16) ov.classList.add("compact");
+      if (run.state === "over" || cut || box.offsetHeight > stage.clientHeight - 16 || box.offsetWidth > stage.clientWidth - 8) ov.classList.add("full"); cover(); };
+    fit(); [60, 400].forEach(ms => setTimeout(() => { if (ov.classList.contains("on") && box.isConnected) fit(); }, ms)); };
   const startNew = () => {
     if (typeof arcGroupOn === "function" && arcGroupOn(run.id) && !gArcTryUse()) { run.state = "ready"; run.showReady(); return; }
     const st = arcState(); st.runs[run.id] = (st.runs[run.id] || 0) + 1; run.practice = !!g.limit && st.runs[run.id] > g.limit; run.first = st.runs[run.id] === 1; save();
@@ -5908,7 +5930,7 @@ function arcMount(){
     const st = arcState(); st.games = (st.games || 0) + 1; save(); pushMember && pushMember();
     if (typeof logEv === "function") logEv("arcade_terminado", { juego:run.id, puntaje:run.score, puntos:pts, gano:!!run.won });
   };
-  run.api = api; run.show = show; run.startNew = startNew; run.finalize = finalize; run.countdown = countdown;
+  run.api = api; run.show = show; run.startNew = (...a) => typeof howGate === "function" ? howGate(run.id, () => startNew(...a)) : startNew(...a); run.finalize = finalize; run.countdown = countdown;
   arcRun = run;
   /* Pausa: menú con Seguir / Reiniciar / Salir */
   run.pause = () => { if (g.noPause || run.paused || (run.state !== "play" && run.state !== "count")) return; run.paused = true; SND.tap && SND.tap();
@@ -8273,15 +8295,21 @@ arcRegister("piano", {
       api.score(tapped + bonus);
     }
     const toCanvas = e => { const r = api.cv.getBoundingClientRect(); return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height]; };
+    /* Toques: tolerancia generosa en los bordes de la tecla; tocar sobre el teclado de abajo cuenta como tocar el borde inferior;
+       y si con dos dedos llega primero el toque de la tecla de arriba, se guarda un instante y se marca apenas cae la de abajo */
+    const downs = new Set(); let pend = null;
+    const tapIn = (tl, x, y) => Math.abs(x - (tl.col + .5) * colW) <= colW * .62 && y >= topOf(tl) - rowH * .45 && y <= bottomOf(tl) + rowH * .45;
+    const release = e => { downs.delete(e.pointerId); const tl = holds[e.pointerId]; if (!tl) return; delete holds[e.pointerId]; if (tl.hold && tl.prog < 1) { const b = Math.floor(tl.prog * 3); bonus += b; tl.hold.done = true; api.score(tapped + bonus); } };
     api.on(api.stage, "pointerdown", e => {
-      e.preventDefault(); if (!api.playing() || fail) return; const [x, y] = toCanvas(e); if (y > PH) return; const col = Math.floor(x / colW);
-      const n = nextTile(); if (!n) return; const nb = bottomOf(n), nt = topOf(n), tol = rowH * .3;
-      if (n.col === col && y >= nt - tol && y <= nb + tol) { hitTile(n, y, e.pointerId); return; }
-      /* teclas siguientes ya tocables: deja tocar la de arriba si la de abajo ya casi pasó */
-      const n2 = tiles.find(tl => !tl.hit && tl !== n); if (n2 && n2.col === col && y >= topOf(n2) - tol && y <= bottomOf(n2) + tol) return;
-      if (y >= nt - rowH * .15 && y <= nb + rowH * .1) doFail("white", col, y);
+      e.preventDefault(); if (!api.playing() || fail) return; let [x, y] = toCanvas(e); if (y > PH + KBH + 4) return; y = Math.min(y, PH - 2); downs.add(e.pointerId);
+      const n = nextTile(); if (!n) return;
+      if (tapIn(n, x, y)) { hitTile(n, y, e.pointerId);
+        if (pend && performance.now() - pend.t < 350 && nextTile() === pend.tl && !fail) { const q = pend; pend = null; hitTile(q.tl, Math.min(q.y, PH - 2), q.pid); if (!downs.has(q.pid)) release({ pointerId:q.pid }); }
+        pend = null; return; }
+      const n2 = tiles.find(tl => !tl.hit && tl !== n); if (n2 && tapIn(n2, x, y)) { pend = { tl:n2, y, pid:e.pointerId, t:performance.now() }; return; }
+      const col = Math.floor(x / colW), nb = bottomOf(n), nt = topOf(n);
+      if (col !== n.col && y >= nt - rowH * .15 && y <= nb + rowH * .1) doFail("white", col, y);
     }, { passive:false });
-    const release = e => { const tl = holds[e.pointerId]; if (!tl) return; delete holds[e.pointerId]; if (tl.hold && tl.prog < 1) { const b = Math.floor(tl.prog * 3); bonus += b; tl.hold.done = true; api.score(tapped + bonus); } };
     api.on(api.stage, "pointerup", release); api.on(api.stage, "pointercancel", release);
     api.ctl.innerHTML = "";
     function keyboard(){
@@ -11095,7 +11123,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "06/11 13:54";
+const APP_VER = "09/11 18:30";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -12485,7 +12513,7 @@ function setReact(m, ms){ react = { mood:m, until:Date.now() + ms }; miniShown =
 function startCard(kind){
   const n = kind === "t" ? qsOf(ctx).length : 0, quien = kind === "t" && qsOf(ctx)[0] && qsOf(ctx)[0].clues;
   const txt = { w:["2:00","Adivina la palabra de 5 letras antes de que se termine el tiempo."], s:["2:00","Encuentra las 8 palabras. Hay en diagonal, en vertical y una al revés."], t: quien ? [n+"×20 s","Te damos pistas de a una. Cuanto antes adivines, más puntos."] : [n+"×15 s", ctx.style === "pen" ? "Cada respuesta correcta es un gol. ¡Que no te ataje el arquero!" : "Tienes 15 segundos por pregunta. Cuanto más rápido, más puntos."] }[kind];
-  return `<section class="card start-card"><span class="anim-enter"><span class="anim-idle">${titoSVG(S.tito, 120, { mood:"happy", level:level() })}</span></span><span class="big">${txt[0]}</span><p>${txt[1]}</p>${ctx.kind !== "m" && ctx.n === 1 ? `<p class="small" style="font-weight:800">Primera partida del día: puntos ×2</p>` : ""}<button class="btn ${kind==="w"?"green":kind==="s"?"red":"primary"} block" data-act="start:${kind}">¡EMPEZAR!</button></section>`;
+  return `<section class="card start-card"><span class="anim-enter"><span class="anim-idle">${titoSVG(S.tito, 120, { mood:"happy", level:level() })}</span></span><span class="big">${txt[0]}</span><p>${txt[1]}</p>${ctx.kind !== "m" && ctx.n === 1 ? `<p class="small" style="font-weight:800">Primera partida del día: puntos ×2</p>` : ""}<button class="btn ${kind==="w"?"green":kind==="s"?"red":"primary"} block" data-act="start:${kind}">¡EMPEZAR!</button><button class="btn ghost block how-link" data-act="howto:${howId(kind)}">¿Cómo se juega?</button></section>`;
 }
 let lastTickSec = -1;
 function tick(){
@@ -13298,7 +13326,7 @@ function arcGroupReady(id){
   const a = ARC[id], gr = S.groupMeta[arcGroup.code] || {}, b = myArcBest(arcGroup.code, arcGroup.day), det = gArcDetail(arcGroup.code, id, arcGroup.day), used = gTriesUsed(arcGroup.code, arcGroup.day), max = gTriesMax(arcGroup.code), left = max - used;
   return `<div class="arc-box g-ready"><span class="arc-thumb big">${a.thumb()}</span><b>${esc(a.t)}</b><span class="small">${esc(gr.name || "Tu grupo")}${det ? " · " + det : ""}</span>${id === "cabezazo" ? `<span class="small">📱 Con el celular acostado</span>` : ""}
     <div class="g-ready-row"><span><small>Tu mejor</small><b>${fmtArc(id, b)}</b></span><span><small>${max === Infinity ? "Intentos" : "Te quedan"}</small>${max === Infinity ? "<b>∞</b>" : dots(used, max)}</span></div>
-    ${left > 0 ? `<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button>` : `<button class="btn block" data-act="arc-exit">Volver al grupo</button>`}</div>`;
+    ${left > 0 ? `<button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button>` : `<button class="btn block" data-act="arc-exit">Volver al grupo</button>`}${typeof HOWTO !== "undefined" && HOWTO[id] ? `<button class="btn ghost block how-link" data-act="howto:${id}">¿Cómo se juega?</button>` : ""}</div>`;
 }
 /* ---------- Invitar: mensaje con ganas de jugar + link que te suma directo ---------- */
 function inviteText(code){
@@ -13495,6 +13523,45 @@ function renderSet(){
 }
 
 /* ---------- Sheets ---------- */
+
+/* ---------- Cómo se juega: pop-up la primera vez de cada juego y botón de información siempre a mano ---------- */
+const HOWTO = {
+  w:{ t:"Palabra del día", goal:"Adivina la palabra de 5 letras antes de que se acabe el tiempo.", steps:[["Escribe una palabra", "Usa el teclado de abajo y toca Enviar. Tiene que ser una palabra de 5 letras."], ["Mira los colores", "Verde: la letra está en su lugar. Amarillo: está en la palabra, pero en otro lugar. Gris: no está."], ["Sigue probando", "Con esas pistas prueba otra palabra. Tienes 2 minutos; el botón Pista te ayuda si te trabas."]] },
+  s:{ t:"Sopa de letras", goal:"Encuentra las 8 palabras escondidas en 2 minutos.", steps:[["Busca en la lista", "Abajo ves las palabras que tienes que encontrar."], ["Arrastra el dedo", "Apoya el dedo en la primera letra y arrástralo hasta la última, sin soltar."], ["Mira en todas las direcciones", "Hay palabras en horizontal, en vertical, en diagonal y una escrita al revés."]] },
+  t:{ t:"Trivia", goal:"Responde bien y rápido: cuanto antes contestes, más puntos.", steps:[["Lee la pregunta", "Tienes 15 segundos para cada una."], ["Toca una respuesta", "Solo una es correcta. Verde es acierto, rojo es error."], ["Suma puntos", "Las respuestas rápidas valen más. Al final ves cuántas acertaste."]] },
+  tq:{ t:"¿Quién es?", goal:"Adivina de quién se trata con la menor cantidad de pistas.", steps:[["Lee la pista", "Empiezas con una sola pista."], ["Responde o pide otra", "Si no lo sabes, toca «Otra pista»: te ayuda, pero vale menos puntos."], ["Menos pistas, más puntos", "Cuanto antes adivines, más puntos te llevas."]] },
+  tp:{ t:"Penales", goal:"Cada respuesta correcta es un gol.", steps:[["Lee la pregunta", "Tienes 15 segundos para cada una."], ["Toca una respuesta", "Si aciertas, Tito patea y es gol. Si fallas, ataja el arquero."], ["Mete todos los que puedas", "Al final ves cuántos goles hiciste."]] },
+  runner:{ goal:"Corre lo más lejos que puedas sin chocar.", steps:[["Toca para saltar", "Un toque corto es un saltito. Si mantienes apretado, salta más alto."], ["Desliza hacia abajo para agacharte", "La cámara de TV que cuelga solo se esquiva agachado. También puedes usar el botón."], ["Esquiva todo", "Barridas, conos y el árbitro: si te chocas, se termina."]] },
+  snake:{ goal:"Come frutas y crece sin chocarte.", steps:[["Desliza para doblar", "Desliza el dedo hacia donde quieres ir, o usa las flechas de abajo."], ["Come las frutas", "Cada fruta suma y te hace más largo. La estrellita vale triple."], ["No te choques", "Si tocas la pared o tu propia cola, se termina."]] },
+  bricks:{ goal:"Rompe todos los ladrillos de cada nivel.", steps:[["Arrastra el dedo", "Así mueves la barra. Toca para lanzar la pelota."], ["Que no se caiga la pelota", "Hazla rebotar en la barra para romper ladrillos."], ["Atrapa los premios", "Barra larga, triple pelota, fuego, imán, escudo y vida. Esquiva los malos: barra chica y pelota rápida."]] },
+  mines:{ goal:"Abre todas las casillas sin pisar un huevo podrido.", steps:[["Toca para abrir", "Toca una casilla para ver qué hay."], ["Lee los números", "Cada número dice cuántos huevos podridos hay en las casillas de alrededor."], ["Marca con banderita", "Mantén apretado (o activa la banderita) para marcar donde crees que hay uno."]] },
+  chess:{ goal:"Dale jaque mate a Tito. Juegas con las blancas.", steps:[["Toca una pieza", "Se marcan las casillas a las que puede ir."], ["Toca la casilla", "La pieza se mueve ahí. Después juega Tito."], ["Reglas completas", "Hay enroque, captura al paso y coronación. Puedes elegir entre tres niveles."]] },
+  t2048:{ goal:"Junta fichas iguales hasta llegar a 2048.", steps:[["Desliza", "Hacia cualquier lado: todas las fichas se mueven juntas."], ["Suma las iguales", "Dos fichas con el mismo número se unen en una del doble."], ["No llenes el tablero", "Si no queda lugar ni movimientos, se termina."]] },
+  memo:{ goal:"Encuentra todos los pares.", steps:[["Toca dos cartas", "Se dan vuelta de a dos."], ["Si son iguales, quedan", "Si no, se vuelven a tapar: recuerda dónde estaban."], ["Hazlo rápido", "Menos movimientos y menos tiempo dan más puntos."]] },
+  flappy:{ goal:"Pasa entre las columnas todo lo que puedas.", steps:[["Toca para subir", "Cada toque le da un impulso a Tito. Si no tocas, cae."], ["Pasa por el hueco", "Cada columna que pasas es un punto."], ["No toques nada", "Si chocas una columna o el piso, se termina."]] },
+  connect:{ goal:"Junta cuatro fichas seguidas antes que Tito.", steps:[["Toca una columna", "Tu ficha roja cae hasta el fondo de esa columna."], ["Cuatro en línea", "Vale en fila, en columna o en diagonal."], ["Bloquea a Tito", "Si él tiene tres seguidas, tápale el lugar."]] },
+  cross:{ goal:"Cruza calles, vías y ríos lo más lejos que puedas.", steps:[["Toca para avanzar", "Cada toque es un salto hacia adelante."], ["Desliza para moverte", "A los costados o hacia atrás, para esquivar."], ["Cuidado con todo", "Autos, colectivos, motos y trenes te pisan. En el río, salta sobre los troncos. Junta tapitas."]] },
+  penal:{ goal:"Mete todos los goles que puedas. Con 3 fallos se termina.", steps:[["Primer toque: dirección", "Frena la flecha donde quieres apuntar."], ["Segundo toque: altura", "Elige si va abajo, al medio o arriba."], ["Tercer toque: potencia", "Un gol vale 1 y al ángulo vale 3."]] },
+  tower:{ goal:"Apila tapitas lo más alto que puedas.", steps:[["Toca para soltar", "La tapita se mueve sola: tócala cuando esté justo encima."], ["Lo que sobra se cae", "La siguiente tapita queda más chica."], ["Busca el ¡Perfecto!", "Si la dejas justo encima no pierdes nada, y con tres seguidas vuelve a crecer."]] },
+  ruta:{ goal:"Maneja lo más lejos que puedas sin chocar ni quedarte sin nafta.", steps:[["Toca a los costados", "Izquierda o derecha para cambiar de carril. También puedes deslizar."], ["Junta cosas", "Nafta, monedas, turbo y misiles. El botón del cohete rompe el auto de adelante."], ["Peajes", "Pasa por la cabina que tiene luz verde."]] },
+  piano:{ goal:"Toca todas las teclas negras y suena la canción.", steps:[["Toca las negras", "Siempre la de más abajo primero. Puedes tocar un poco antes o después: hay margen."], ["Mantén las largas", "Las teclas altas se mantienen apretadas hasta que se llenan."], ["No toques el blanco", "Si tocas una parte blanca o se te escapa una tecla, se termina."]] },
+  rescate:{ goal:"Pinta a todos los robots y derrota al jefe de cada nivel.", steps:[["Toca para disparar", "Toca a los robots para pintarlos."], ["Mantén CUBRIRSE", "Cuando ves un círculo rojo te van a atacar: cúbrete. Cubrirte también recarga la pintura."], ["No les dispares a los vecinos", "Vecinos, turistas y manifestantes te restan puntos y una vida. Rompe los cajones con estrella: tienen armas."]] },
+  cabezazo:{ goal:"Mete más goles que tu rival antes de que termine el tiempo.", steps:[["Gira el celular", "Se juega con el celular acostado."], ["Muévete y salta", "Con las flechas te mueves y con SALTO cabeceas."], ["Patea y usa el SÚPER", "PATEAR le pega a la pelota. Cuando se carga, el SÚPER es un tiro especial."]] }
+};
+let howAfter = null;
+const howState = () => (S.how = S.how || {});
+const howId = kind => kind !== "t" ? kind : (ctx && ctx.style === "pen") ? "tp" : (ctx && qsOf(ctx)[0] && qsOf(ctx)[0].clues) ? "tq" : "t";
+function openHowto(id, after){
+  const h = HOWTO[id]; if (!h) { if (after) after(); return; }
+  const a = typeof ARC !== "undefined" && ARC[id], title = h.t || (a && a.t) || "Cómo se juega"; howAfter = after || null;
+  openSheet(title, `<div class="howto">${a ? `<span class="arc-thumb big">${a.thumb()}</span>` : ""}<span class="how-k">Cómo se juega</span><h2>${esc(title)}</h2><p class="how-goal">${esc(h.goal)}</p>
+    <ol class="how-steps">${h.steps.map(([b, tx], i) => `<li><i>${i + 1}</i><span><b>${esc(b)}</b>${esc(tx)}</span></li>`).join("")}</ol>
+    <button class="btn primary block big-cta" data-act="howto-ok">${after ? "¡A jugar!" : "Entendido"}</button></div>`, { center:true, sticky:true });
+  howState()[id] = 1; save();
+}
+/* Primera vez de cada juego: muestra las reglas antes de empezar */
+function howGate(id, fn){ if (!HOWTO[id] || howState()[id]) return fn(); openHowto(id, fn); }
+const howBtn = id => `<button class="icon-btn how-btn" data-act="howto:${id}" aria-label="Cómo se juega"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v6"/><circle cx="12" cy="7.4" r=".6" fill="currentColor"/></svg></button>`;
 function openSheet(title, body, o){
   o = o || {}; const r = $("#sheetRoot"), x = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
   r.innerHTML = `<div class="backdrop" ${o.sticky ? "" : 'data-act="close-sheet"'}></div><div class="sheet ${o.center ? "center" : ""}" role="dialog" aria-modal="true" aria-label="${esc(title)}">${o.bare ? `<button class="icon-btn close-float" data-act="close-sheet" aria-label="Cerrar">${x}</button>` : o.center ? "" : `<div class="sheet-head"><h2 style="font-size:1.3em">${esc(title)}</h2>${o.sticky ? "" : `<button class="icon-btn" data-act="close-sheet" aria-label="Cerrar">${x}</button>`}</div>`}${body}</div>`;
@@ -13573,7 +13640,9 @@ document.addEventListener("click", e => {
   else if (k === "play") { const j = v.indexOf(":"); startGame(parseCtx(v.slice(j+1)), v.slice(0, j)); }
   else if (k === "run") { const [kind, id] = v.split(":"); startGame(runCtx(kind, id), "t"); }
   else if (k === "again") { const c = ctx; showInterstitial("Aparece entre partidas", () => startGame(runCtx(c.kind, c.cat), "t")); }
-  else if (k === "start") { const p = play(ctx); if (v === "t") { qsOf(ctx); p.t.started = true; p.t.qi = -1; } else p[v].t0 = Date.now(); save(); render(true); }
+  else if (k === "start") howGate(howId(v), () => { const p = play(ctx); if (v === "t") { qsOf(ctx); p.t.started = true; p.t.qi = -1; } else p[v].t0 = Date.now(); save(); render(true); });
+  else if (k === "howto") openHowto(v);
+  else if (k === "howto-ok") { const f = howAfter; howAfter = null; closeSheet(); if (f) f(); }
   else if (k === "exit-game") exitGame();
   else if (k === "back-today") setView("games", { day:today() });
   else if (k === "tito-tap") { phraseI++; phTaps.push(Date.now()); const b = $("#heroBubble"); if (b) { b.textContent = phrase(); b.style.animation = "none"; void b.offsetWidth; b.style.animation = ""; } const t = $("#heroTito"); if (t) { SND.groove(); t.className = ""; t.innerHTML = titoSVG(S.tito, 150, { mood:"happy", level:level(), dance:S.tito.dance || "funk" }); clearTimeout(t._d); t._d = setTimeout(() => { if ($("#heroTito") === t) { t.className = "anim-idle"; t.innerHTML = titoSVG(S.tito, 150, { level:level(), mood: roomMood() }); } }, 2600); } }
