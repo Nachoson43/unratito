@@ -1437,7 +1437,7 @@ nav.tabs button:active .ti{transform:scale(.92)}
 .daily-card{min-width:0}
 @media (max-width:380px){.dc-txt b{font-size:1.12em}.dc-txt small{font-size:.72em}.dc-go{padding:8px 8px;font-size:.86em}.streak-mini{width:56px}.daily-card{padding-left:12px;gap:6px}.dc-g.ico{width:30px;height:30px}.dc-games{gap:5px}}
 /* Barra de abajo: azul oscuro en los dos modos, íconos siempre a color */
-nav.tabs{background:linear-gradient(180deg,#262B66 0%,#1C2050 100%);border-top-color:var(--K);box-shadow:0 -8px 20px -8px rgba(5,8,36,.5),inset 0 2px 0 rgba(255,255,255,.08),0 80px 0 #1C2050}
+nav.tabs{background:#1C2050 linear-gradient(180deg,#262B66 0%,#1C2050 100%);border-top-color:var(--K);box-shadow:0 -8px 20px -8px rgba(5,8,36,.5),inset 0 2px 0 rgba(255,255,255,.08),0 80px 0 #1C2050}
 nav.tabs button{color:#AEB4DE}
 nav.tabs button[aria-current="page"],nav.tabs button[aria-current="page"] .tl{color:#fff}
 nav.tabs .ti svg.tbi{width:36px;height:36px;overflow:visible;transition:transform .25s cubic-bezier(.2,.9,.3,1.5),filter .2s}
@@ -11473,7 +11473,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "10/11 17:27";
+const APP_VER = "10/11 17:33";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -12607,7 +12607,8 @@ const trivSeg = on => `<div class="seg triv-seg" role="group" aria-label="Trivia
 function render(anímate){
   const app = $("#app"), playing = view.startsWith("play"), hw = isHalloween();
   /* La franja de abajo que reserva el iPhone se pinta del color que hay abajo: barra blanca o fondo del juego */
-  try { const cs = getComputedStyle(document.body), nav = $("#tabs"), col = playing ? cs.getPropertyValue("--bg3").trim() : (nav ? getComputedStyle(nav).backgroundColor : "");
+  try { const cs = getComputedStyle(document.body), nav = $("#tabs"); let col = playing ? cs.getPropertyValue("--bg3").trim() : (nav ? getComputedStyle(nav).backgroundColor : "");
+    if (!col || /rgba\(0, 0, 0, 0\)|transparent/.test(col)) col = "#1C2050";
     document.documentElement.style.backgroundColor = col; document.body.style.backgroundColor = col; const tc = document.querySelector('meta[name="theme-color"]'); if (tc && col) tc.setAttribute("content", col); } catch(e){}
   if (document.body.classList.contains("hw") !== hw) { document.body.classList.toggle("hw", hw); const fx = $("#hwfx"); if (hw && !fx) document.body.insertAdjacentHTML("beforeend", `<div id="hwfx" aria-hidden="true">${[0,1,2].map(i => `<span class="bat b${i}"><svg viewBox="0 0 60 30"><path d="M30 12 q-8 -12 -26 -8 q6 4 5 10 q-6 -2 -9 3 q10 1 14 8 q8 -6 16 -3 q8 -3 16 3 q4 -7 14 -8 q-3 -5 -9 -3 q-1 -6 5 -10 q-18 -4 -26 8z" fill="#140A22"/><circle cx="27" cy="13" r="1.3" fill="#FFE27A"/><circle cx="33" cy="13" r="1.3" fill="#FFE27A"/></svg></span>`).join("")}</div>`); else if (!hw && fx) fx.remove(); }
   app.classList.toggle("noads", isPrem()); app.classList.toggle("playing", playing);
