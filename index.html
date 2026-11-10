@@ -1507,6 +1507,10 @@ nav.tabs [data-act="tab:tito"] .tl{font-size:.88em;letter-spacing:-.02em}
 .set-row.set-col{flex-direction:column;align-items:stretch;gap:8px}
 .theme-seg button{font-size:.9em}
 .pno-pv-btn.playing{background:var(--r-soft);border-color:var(--r)}
+/* iPhone con franja reservada abajo: la barra se apoya justo sobre la franja, sin aire extra */
+html.ios-gap nav.tabs{padding-bottom:1px;padding-top:6px}
+html.ios-gap nav.tabs button{padding-bottom:0;gap:1px}
+html.ios-gap .app.playing main{padding-bottom:8px}
 
 </style>
 </head>
@@ -11473,7 +11477,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "10/11 17:33";
+const APP_VER = "10/11 17:37";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -11488,7 +11492,7 @@ const APP_VER = "10/11 17:33";
       const standalone = navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
       de.style.setProperty("--appH", innerHeight + "px");
       const gap = ios && standalone && port ? Math.max(screen.height, screen.width) - innerHeight : 0, envT = probe("height:env(safe-area-inset-top,0px)");
-      if (gap > envT + 8) de.style.setProperty("--sab", "6px"); else de.style.removeProperty("--sab");
+      if (gap > envT + 8) de.style.setProperty("--sab", "0px"); else de.style.removeProperty("--sab"); de.classList.toggle("ios-gap", gap > envT + 8);
       de.classList.toggle("ios-app", ios && standalone); };
     fit(); addEventListener("resize", fit); addEventListener("orientationchange", () => setTimeout(fit, 300));
   } catch(e){}
