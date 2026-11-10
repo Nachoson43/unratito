@@ -1495,6 +1495,18 @@ nav.tabs .tl{white-space:nowrap}
 nav.tabs .tl-s{display:none}
 nav.tabs [data-act="tab:tito"] .tl{font-size:.88em;letter-spacing:-.02em}
 @media (max-width:380px){nav.tabs .tl-l{display:none}nav.tabs .tl-s{display:inline}nav.tabs [data-act="tab:tito"] .tl{font-size:1em;letter-spacing:0}}
+/* Preescucha del piano */
+.pno-row{display:flex;gap:6px;align-items:stretch;flex:none}
+.pno-row .pno-song{flex:1;width:auto}
+.pno-pv{flex:none;width:44px;border-radius:12px;border:2px solid var(--K);background:var(--y);box-shadow:0 2px 0 var(--K),inset 0 2px 0 rgba(255,255,255,.45);display:grid;place-items:center;font-size:1.05em;color:var(--K);padding:0}
+.pno-pv i,.pno-pv-btn i{font-style:normal}
+.pno-pv:active{transform:translateY(2px);box-shadow:0 0 0 var(--K)}
+.pno-pv.playing{background:var(--r);color:#fff;animation:pvPulse 1s ease-in-out infinite}
+@keyframes pvPulse{50%{box-shadow:0 2px 0 var(--K),0 0 0 4px color-mix(in srgb,var(--r) 35%,transparent)}}
+/* Apariencia */
+.set-row.set-col{flex-direction:column;align-items:stretch;gap:8px}
+.theme-seg button{font-size:.9em}
+.pno-pv-btn.playing{background:var(--r-soft);border-color:var(--r)}
 
 </style>
 </head>
@@ -6128,6 +6140,7 @@ function arcSnap(id){ const st = arcState(); return st.snap && st.snap[id] || nu
 function arcSnapSave(id, o){ if (typeof arcGroupOn === "function" && arcGroupOn(id)) return; const st = arcState(); st.snap = st.snap || {}; st.snap[id] = o; save(); }
 function arcSnapClear(id){ if (typeof arcGroupOn === "function" && arcGroupOn(id)) return; const st = arcState(); if (st.snap && st.snap[id]) { delete st.snap[id]; save(); } }
 function arcStop(){
+  if (typeof pnoPvStop === "function") pnoPvStop();
   document.querySelectorAll("body > .arc-ov").forEach(o => o.remove());
   const run = arcRun; if (!run) return;
   if (run.state === "over" || run.state === "play" || run.state === "count") { run.state = "over"; run.finalize(); }
@@ -8533,6 +8546,22 @@ function pnoParse(song){
   const avg = out.reduce((a, n) => a + n.m, 0) / out.length, sh = song.shift != null ? song.shift : 12 * Math.round((74 - avg) / 12); out.forEach(n => n.m += sh);
   return song._seq = out;
 }
+/* Preescucha: unos segundos de la parte más conocida (pv = número de frase donde arranca) */
+const PNO_PV = { jingle:7, susana:4 }, PNO_PV_DT = { facil:.34, media:.28, dificil:.2, tango:.3 }, PNO_PV_SONG = { moscardon:.12, tell:.15, turca:.17, cancan:.17 };
+let pnoPv = { id:null, timers:[] };
+function pnoPvIcon(id){ document.querySelectorAll(".pno-pv, .pno-pv-btn").forEach(b => { const on = b.dataset.act === "arc-pv:" + pnoPv.id; b.classList.toggle("playing", on); const i = b.querySelector("i"); if (i) i.textContent = on ? "■" : "🎧"; }); }
+function pnoPvStop(){ pnoPv.timers.forEach(clearTimeout); pnoPv = { id:null, timers:[] }; pnoPvIcon(); }
+function pnoPvPlay(id){
+  const s = PNO_SONGS.find(x => x.id === id); if (!s) return;
+  if (pnoPv.id === id) { pnoPvStop(); return; } pnoPvStop();
+  if (S.settings.sound === false) { toast("Activa los sonidos en Ajustes para escuchar", "info"); return; }
+  const seq = pnoParse(s); let st = 0, ph = PNO_PV[id] || 0; for (let i = 0; i < seq.length && ph > 0; i++) if (seq[i].long) { ph--; st = i + 1; }
+  const dt = PNO_PV_SONG[id] || PNO_PV_DT[s.g] || .3, LIM = 7.5; let t = 0;
+  pnoPv.id = id;
+  for (let i = st; i < seq.length && t < LIM; i++) { const n = seq[i], d = n.long ? dt * 2.2 : dt;
+    pnoPv.timers.push(setTimeout(() => { if (!document.querySelector(".pno-box")) { pnoPvStop(); return; } SND.piano(n.m, n.long ? .9 : Math.max(.35, dt * 1.6), .9); }, t * 1000)); t += d; }
+  pnoPv.timers.push(setTimeout(pnoPvStop, t * 1000 + 300)); pnoPvIcon();
+}
 function pnoState(){ const st = arcState(); st.pno = st.pno || { sel:"estrellita", own:[], stars:{} }; if (typeof arcGroupOn === "function" && arcGroupOn("piano")) return Object.assign({}, st.pno, { sel:arcGroup.song }); return st.pno; }
 const pnoOwns = id => { const s = PNO_SONGS.find(x => x.id === id); return !!s && (PNO_GROUPS[s.g][1] === 0 || pnoState().own.includes(id)); };
 arcRegister("piano", {
@@ -8545,17 +8574,21 @@ arcRegister("piano", {
     Object.entries(PNO_GROUPS).forEach(([g, [label, price]]) => {
       h += `<div class="pno-gh">${label}${price ? ` <small>${coin}${NUM.format(price)} c/u</small>` : ` <small>gratis</small>`}</div>`;
       PNO_SONGS.filter(s => s.g === g).forEach(s => { const own = pnoOwns(s.id), stars = p.stars[s.id] || 0, on = p.sel === s.id;
-        h += `<button class="pno-song ${on ? "on" : ""} ${own ? "" : "lock"} ${g === "tango" ? "tango" : ""}" data-act="arc-song:${s.id}" aria-pressed="${on}"><span class="pno-ic">${on ? "▶" : own ? "♪" : "🔒"}</span><span class="pno-tx"><b>${esc(s.n)}</b><small>${esc(s.by)}</small></span><span class="pno-st">${own ? [1, 2, 3].map(k => `<i class="${k <= stars ? "on" : ""}">★</i>`).join("") : `<em>${NUM.format(price)}</em>`}</span></button>`; });
+        const pv = pnoPv.id === s.id;
+        h += `<div class="pno-row"><button class="pno-song ${on ? "on" : ""} ${own ? "" : "lock"} ${g === "tango" ? "tango" : ""}" data-act="arc-song:${s.id}" aria-pressed="${on}"><span class="pno-ic">${on ? "▶" : own ? "♪" : "🔒"}</span><span class="pno-tx"><b>${esc(s.n)}</b><small>${esc(s.by)}</small></span><span class="pno-st">${own ? [1, 2, 3].map(k => `<i class="${k <= stars ? "on" : ""}">★</i>`).join("") : `<em>${NUM.format(price)}</em>`}</span></button><button class="pno-pv ${pv ? "playing" : ""}" data-act="arc-pv:${s.id}" aria-label="Escuchar ${esc(s.n)}"><i>${pv ? "■" : "🎧"}</i></button></div>`; });
     });
     return `<div class="arc-box pno-box"><div class="pno-head"><span class="arc-thumb">${ARC.piano.thumb()}</span><span><b>Elige una canción</b><small>Toca las negras de abajo hacia arriba. Las largas, mantenlas apretadas.</small></span></div>
       <div class="pno-list">${h}</div>
       <button class="btn big-cta block pno-go" data-act="arc-start">¡JUGAR! <small>${esc(sel.n)}</small></button></div>`;
   },
   act(k, v){
+    if (k === "arc-pv") { pnoPvPlay(v); return true; }
+    if (pnoPv.id && k !== "arc-song" && k !== "close-sheet") pnoPvStop();
     if (k === "arc-song") { const s = PNO_SONGS.find(x => x.id === v); if (!s) return true;
       if (pnoOwns(v)) { const l = document.querySelector(".pno-list"), sc = l ? l.scrollTop : 0; pnoState().sel = v; save(); SND.tap(); arcMount(); const l2 = document.querySelector(".pno-list"); if (l2) l2.scrollTop = sc; return true; }
       const price = PNO_GROUPS[s.g][1];
       openSheet("Desbloquear canción", `<div style="text-align:center"><p style="margin:0 0 6px"><b>${esc(s.n)}</b><br><span class="small muted">${esc(s.by)}${s.g === "tango" ? " · Tango" : ""}</span></p><p class="small">Queda tuya para siempre.</p>
+        <button class="btn block pno-pv-btn ${pnoPv.id === v ? "playing" : ""}" data-act="arc-pv:${v}" style="margin-bottom:10px"><i>${pnoPv.id === v ? "■" : "🎧"}</i> Escuchar un adelanto</button>
         <div class="btn-row"><button class="btn" data-act="close-sheet">Ahora no</button>${S.coins >= price ? `<button class="btn green" data-act="arc-songbuy:${v}">${coin}${NUM.format(price)} · Comprar</button>` : `<button class="btn" data-act="need:${price}">Faltan ${NUM.format(price - S.coins)}</button>`}</div></div>`, { center:true });
       return true; }
     if (k === "arc-songbuy") { const s = PNO_SONGS.find(x => x.id === v), price = s ? PNO_GROUPS[s.g][1] : 0; if (!s || S.coins < price) return true;
@@ -11440,7 +11473,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("cabezazo"), 1); ARC_ORDER.splice(1, 0, "cabe
   if (ARC.rescate) ARC.rescate.thumb = rescate; if (ARC.ruta) ARC.ruta.thumb = ruta; if (ARC.piano) ARC.piano.thumb = piano;
 })();
 
-const APP_VER = "10/11 16:56";
+const APP_VER = "10/11 17:27";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -13842,6 +13875,8 @@ function renderSet(){
   const until = !s.premium && S.premUntil > Date.now() ? "PREMIUM de regalo hasta el "+fmtShort(ymd(new Date(S.premUntil)))+"." : "";
   return `<section class="card" style="text-align:center;background:linear-gradient(165deg,var(--bg1),var(--bg2) 60%,var(--bg3));color:#fff">${brandHTML("")}<div class="premium-word" style="font-size:1.8em;margin-top:8px">PREMIUM</div><p style="margin:6px 0 12px;opacity:.9">${isPrem() ? (until || "Ya tienes PREMIUM. ¡Gracias!") : "Sin anuncios y con algunas comodidades extra. Nada que te haga ganar más fácil."}</p><button class="btn gold block" data-act="premium">${isPrem() ? "Ver mis beneficios" : "Ver PREMIUM"}</button></section>
   ${acctCard()}<section class="card"><div class="set-row"><span><b>Perfil</b><br><span class="small muted">${esc(S.profile.name || "Sin nombre")} ${flag(S.profile.country)} ${esc(countryName(S.profile.country))}</span></span><button class="btn" data-act="profile">Editar</button></div>
+    <div class="set-row set-col"><span><b>Apariencia</b><br><span class="small muted">Automático usa el modo de tu celular</span></span>
+      <div class="seg seg3 theme-seg">${[["auto","Automático"],["light","Claro"],["dark","Oscuro"]].map(([k, l]) => `<button data-act="theme:${k}" aria-pressed="${(s.theme || "auto") === k}">${l}</button>`).join("")}</div></div>
     <div class="set-row"><span><b>Sonidos</b><br><span class="small muted">Toques, aciertos y errores</span></span><label class="switch"><input type="checkbox" id="soundOn" ${s.sound !== false ?"checked":""} aria-label="Sonidos"><span></span></label></div>
     <div class="set-row"><span><b>Arcade en pantalla completa</b><br><span class="small muted">El juego ocupa toda la pantalla</span></span><label class="switch"><input type="checkbox" id="arcFsOn" ${s.arcFs !== false ?"checked":""} aria-label="Arcade en pantalla completa"><span></span></label></div>
     <div class="set-row"><span><b>Música de festejo</b><br><span class="small muted">Cuando ganas, pierdes o gira la ruleta</span></span><label class="switch"><input type="checkbox" id="musicOn" ${s.music !== false ?"checked":""} aria-label="Música de festejo"><span></span></label></div>
@@ -14032,6 +14067,7 @@ document.addEventListener("click", e => {
   else if (k === "join-group") openJoinGroup();
   else if (k === "invite") { if (S.groupMeta[v]) { shareOut(inviteText(v)); logEv("invite_share", { tipo:gModeOf(S.groupMeta[v]).mode }); } }
   else if (k === "leave") { if (el.dataset.confirm) { S.groups = S.groups.filter(c => c !== v); save(); pushMember(); setView("groups"); toast("Saliste del grupo"); } else { el.dataset.confirm = "1"; el.textContent = "Toca de nuevo para salir"; } }
+  else if (k === "theme") { S.settings.theme = v === "auto" ? undefined : v; applySettings(); save(); SND.tap(); render(false); }
   else if (k === "shopgroup") { shopGroup = v; shopCat = shopCatsOf(v)[0]; tryOn = null; render(false); }
   else if (k === "shopcat") { shopCat = v; render(false); }
   else if (k === "pick") { const [cat, key] = v.split(":"); if (cat === "dance" && owns(cat, key)) { wear(cat, key); tryOn = { cat, key }; save(); render(false); setTimeout(() => { if (tryOn && tryOn.key === key && owns(cat, key)) { tryOn = null; if (view === "tito") render(false); } }, 3000); return; } if (owns(cat, key)) { wear(cat, key); tryOn = null; save(); pushMember(); render(false); } else { tryOn = { cat, key }; render(false); $("#main").scrollTo({ top:0, behavior:"smooth" }); } }
@@ -14099,7 +14135,8 @@ document.addEventListener("keydown", e => {
   else if (e.key === "Backspace") wKey("back");
   else if (/^[a-zñA-ZÑ]$/.test(e.key)) wKey(e.key.toLowerCase());
 });
-function applySettings(){ document.documentElement.classList.toggle("big", !!S.settings.big); }
+function applySettings(){ const r = document.documentElement, th = S.settings.theme; r.classList.toggle("big", !!S.settings.big);
+  if (th === "light" || th === "dark") r.setAttribute("data-theme", th); else r.removeAttribute("data-theme"); }
 
 /* ---------- Tabs con íconos ---------- */
 /* Íconos de la barra: los dibujos originales (mismas formas y colores), con volumen: sombra lateral, brillo y contorno parejo */
