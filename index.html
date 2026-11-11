@@ -1562,6 +1562,34 @@ html.ios-gap .app.playing main{padding-bottom:8px}
 .av-dot{position:absolute;top:-5px;right:-5px;width:12px;height:12px;border-radius:50%;background:#22A447;border:2.5px solid var(--K);animation:avPulse 1s ease-in-out infinite}
 @keyframes avPulse{50%{transform:scale(1.25)}}
 .arc-ovav{display:block;margin:0 auto 2px}.arc-ovav svg{height:78px;width:auto;display:block;margin:0 auto;animation:ovHop .9s ease-in-out infinite}@keyframes ovHop{50%{transform:translateY(-6px) rotate(3deg)}}
+/* Selector de tableros de ajedrez */
+.chb{width:100%;text-align:left}
+.chb-t{display:block;font-weight:800;font-size:.8em;color:var(--muted);margin:2px 2px 4px}
+.chb-row{display:flex;gap:7px;overflow-x:auto;padding:3px 2px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chb-row::-webkit-scrollbar{display:none}
+.chb-it{flex:none;width:70px;display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 3px 6px;border:2.5px solid var(--K);border-radius:14px;background:var(--surface-2);color:var(--ink);box-shadow:0 3px 0 var(--K);font:inherit;scroll-snap-align:start}
+.chb-it svg{display:block}
+.chb-it b{font-size:.72em;line-height:1.1;margin-top:2px}
+.chb-it small{font-size:.64em;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:2px}
+.chb-it small .coin{width:11px;height:11px}
+.chb-it.on{background:var(--y);color:#1B1D2A;transform:translateY(-2px);box-shadow:0 5px 0 var(--K)}.chb-it.on small{color:#6A5200}
+.chb-it.lock svg{filter:saturate(.75) brightness(.92)}
+.chb-big svg{filter:drop-shadow(0 6px 0 rgba(11,15,36,.35))}
+/* Novedades */
+.news{text-align:center}
+.nw-hero{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:2px 0 6px}
+.nw-hero svg{height:66px;width:auto;display:block}.nw-a{animation:ovHop 1s ease-in-out infinite}.nw-a+.nw-vs+.nw-a{animation-delay:.5s}
+.nw-vs{font-family:var(--cartoon);font-size:1.3em;color:var(--r);margin-bottom:18px}
+.nw-bot{position:absolute;right:8%;top:-4px;transform:rotate(10deg)}.nw-bot svg{height:46px}
+.nw-list{list-style:none;padding:0;margin:10px 0 14px;display:flex;flex-direction:column;gap:7px;text-align:left}
+.nw-list li{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:14px;background:var(--surface-2);border:2px solid rgba(11,15,36,.12)}
+.nw-list li:first-child{background:var(--y);border-color:var(--K);color:#1B1D2A}
+.nw-list b{display:block;font-size:.95em}.nw-list span:last-child{font-size:.84em;line-height:1.3}
+.nw-ic{font-size:1.45em;line-height:1;flex:none;width:30px;text-align:center}
+.news .btn.ghost{margin-top:6px}
+.nw-strip{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 14px;padding:10px 12px;text-align:left;background:linear-gradient(100deg,var(--y),#FFE27A);color:#1B1D2A;border:2.5px solid var(--K);box-shadow:0 4px 0 var(--K);font:inherit;border-radius:18px}
+.nw-strip b{display:block;font-size:.98em}.nw-strip small{display:block;font-size:.78em;font-weight:700;opacity:.85;line-height:1.25}.nw-strip i{font-style:normal;font-size:1.6em;font-weight:800;margin-left:auto}
+.arc-new.duo{background:#7A4FD9;font-size:.7em}
 
 </style>
 </head>
@@ -6096,8 +6124,8 @@ function arcModeHTML(id){
   return h;
 }
 /* Pantalla de inicio estándar de los juegos con modos (ajedrez, 4 en línea…) */
-function arcModesBox(id, intro){ const g = ARC[id], m = arcModeOf(id);
-  return `<div class="arc-box golf-box"><div class="pno-head"><span class="arc-thumb">${g.thumb()}</span><span><b>${esc(g.t)}</b><small>${intro || g.intro}</small></span></div>${arcModeHTML(id)}
+function arcModesBox(id, intro, extra){ const g = ARC[id], m = arcModeOf(id);
+  return `<div class="arc-box golf-box"><div class="pno-head"><span class="arc-thumb">${g.thumb()}</span><span><b>${esc(g.t)}</b><small>${intro || g.intro}</small></span></div>${arcModeHTML(id)}${extra || ""}
     <button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`; }
 /* Barra de jugadores para juegos de tablero: quién juega con qué color y a quién le toca */
 function arcVsBar(ps, cur, subs, done){
@@ -6125,9 +6153,10 @@ function sprite(img, w, h){
 function renderArcade(){
   const st = arcState();
   return `<div class="page-head"><span class="eyebrow">Para jugar un ratito más</span><h1>Arcade</h1><p>Todas las partidas suman puntos y la primera del día de cada juego vale doble. Si bates tu récord, ganas un extra.</p></div>
+    ${typeof newsOn === "function" && newsOn() ? `<button class="card nw-strip press" data-act="news-open"><span class="nw-ic">👥</span><span><b>¡Nuevo! Juega con un amigo</b><small>Modo 2 jugadores en el mismo celu en Tito Golf, Ajedrez y 4 en línea. ¡Vienen más!</small></span><i>›</i></button>` : ""}
     <div class="arc-grid">${ARC_ORDER.map(id => { const g = ARC[id], r = st.runs[id] || 0, rec = st.rec[arcRecKey(id)], meta = g.limit ? (r >= g.limit ? "Práctica" : r === 0 ? "×2 hoy" : (g.limit - r) + " con puntos") : (r === 0 ? "×2 hoy" : "Suma puntos");
       return `<button class="card arc-card press" data-act="arc-open:${id}" style="--c:${COL[g.col]}"><span class="arc-thumb">${g.thumb()}</span><h2>${esc(g.t)}</h2><p>${esc(g.d)}</p>
-        ${g.isNew ? `<span class="arc-new">¡NUEVO!</span>` : ""}<span class="arc-meta"><span>${rec != null ? "Récord: <b>"+NUM.format(rec)+"</b>" : "Sin récord"}</span><span class="${r === 0 ? "x2" : ""}">${meta}</span></span></button>`; }).join("")}</div>`;
+        ${g.isNew ? `<span class="arc-new">¡NUEVO!</span>` : g.modes && g.modes.includes("duo") && typeof newsOn === "function" && newsOn() ? `<span class="arc-new duo">2 JUGADORES</span>` : ""}<span class="arc-meta"><span>${rec != null ? "Récord: <b>"+NUM.format(rec)+"</b>" : "Sin récord"}</span><span class="${r === 0 ? "x2" : ""}">${meta}</span></span></button>`; }).join("")}</div>`;
 }
 /* Récord por juego; algunos juegos (Tito Rescate) guardan uno por dificultad */
 const arcRecKey = id => ARC[id] && ARC[id].recKey ? id + ":" + ARC[id].recKey() : id;
@@ -7013,6 +7042,35 @@ function arcPanel(c, W, y0, h, p, o){
   if (o.chip) { c.beginPath(); c.arc(x0 + w0 - 17, cy + 17, 8, 0, 7); c.fillStyle = o.chip; c.fill(); c.lineWidth = 2; c.strokeStyle = IK; c.stroke(); c.fillStyle = "rgba(255,255,255,.6)"; c.beginPath(); c.arc(x0 + w0 - 19.5, cy + 14.5, 2.4, 0, 7); c.fill(); }
   if (on) { c.fillStyle = "#22A447"; c.beginPath(); c.arc(x0 + 6, cy + 6, 6 + Math.sin(t * 7) * 1.2, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke(); }
   c.restore(); return { tx, cy, ch, x0, w0 }; }
+/* Tableros de ajedrez: escenarios que se desbloquean con puntos */
+const CH_THEMES = [
+  { k:"clasico", n:"Clásico", p:0, L:"#EEF1F7", D:"#7E8FC4", f:["#4A4F8C", "#2C3066"], line:"#FFD45A", bg:["#2A2F66", "#191C44"], co:"rgba(230,234,255,.75)", deco:"glyph" },
+  { k:"madera", n:"Madera", p:300, L:"#F0D9B5", D:"#B07D52", f:["#6B4226", "#3E2414"], line:"#E8C37A", bg:["#4A2E1C", "#24150C"], co:"rgba(255,236,205,.8)", deco:"glyph", tex:"wood" },
+  { k:"plaza", n:"Plaza", p:400, L:"#EEEED2", D:"#769656", f:["#8A5A30", "#5A3818"], line:"#FFF4BE", bg:["#3F7A34", "#24501F"], co:"rgba(255,255,230,.85)", deco:"leaf", tex:"grass" },
+  { k:"marmol", n:"Mármol", p:500, L:"#F6F6F8", D:"#A3ABBD", f:["#E9E4D8", "#B9AF98"], line:"#C9A14A", bg:["#3B4152", "#1F232E"], co:"rgba(60,55,45,.85)", deco:"glyph", tex:"marble" },
+  { k:"glaciar", n:"Glaciar", p:600, L:"#EAF7FF", D:"#86BEE6", f:["#FFFFFF", "#BFE3F7"], line:"#5CC6F0", bg:["#4C8CCB", "#1E4F8A"], co:"rgba(30,70,120,.85)", deco:"snow", tex:"ice" },
+  { k:"neon", n:"Neón", p:800, L:"#D6CCFF", D:"#6B4FD8", f:["#2A1550", "#140A2E"], line:"#FF4FD8", bg:["#1A0B38", "#07031A"], co:"rgba(255,140,240,.9)", deco:"grid", glow:"#FF4FD8" },
+  { k:"espacio", n:"Espacio", p:1000, L:"#C9C4E8", D:"#4C428C", f:["#9AA0B8", "#5A607A"], line:"#FFFFFF", bg:["#120C36", "#04030F"], co:"rgba(230,230,255,.8)", deco:"stars" },
+  { k:"real", n:"Real", p:1500, L:"#FFF4D6", D:"#C49A44", f:["#9E1B2F", "#5C0B19"], line:"#FFD45A", bg:["#5C0B19", "#2A0510"], co:"rgba(255,228,170,.9)", deco:"crown", tex:"velvet" }
+];
+const chbState = () => { const st = arcState(); st.chb = st.chb || { sel:"clasico", own:["clasico"] }; if (!CH_THEMES.some(t => t.k === st.chb.sel)) st.chb.sel = "clasico"; return st.chb; };
+const chTheme = () => CH_THEMES.find(t => t.k === chbState().sel) || CH_THEMES[0];
+/* Muestra chiquita del tablero para el selector */
+const chSwatch = (th, px) => { let sq = ""; for (let r = 0; r < 4; r++) for (let q = 0; q < 4; q++) sq += `<rect x="${6 + q * 9}" y="${6 + r * 9}" width="9" height="9" fill="${(q + r) % 2 ? th.D : th.L}"/>`;
+  return `<svg viewBox="0 0 48 48" width="${px}" height="${px}" aria-hidden="true"><defs><linearGradient id="sw${th.k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${th.f[0]}"/><stop offset="1" stop-color="${th.f[1]}"/></linearGradient></defs><rect x="1.5" y="1.5" width="45" height="45" rx="8" fill="url(#sw${th.k})" stroke="${IK}" stroke-width="3"/>${sq}<rect x="5.5" y="5.5" width="37" height="37" fill="none" stroke="${th.line}" stroke-width="1.2"/></svg>`; };
+function chBoardsHTML(){ const b = chbState();
+  return `<div class="chb"><span class="chb-t">Tablero</span><div class="chb-row">${CH_THEMES.map(th => { const own = b.own.includes(th.k), on = b.sel === th.k;
+    return `<button class="chb-it ${on ? "on" : ""} ${own ? "" : "lock"}" data-act="arc-chb:${th.k}" aria-pressed="${on}">${chSwatch(th, 46)}<b>${esc(th.n)}</b><small>${own ? (on ? "En uso" : "Usar") : `${coin}${NUM.format(th.p)}`}</small></button>`; }).join("")}</div></div>`; }
+function chBoardsAct(k, v, run){
+  if (k === "arc-chb") { const th = CH_THEMES.find(x => x.k === v), b = chbState(); if (!th) return true;
+    if (b.own.includes(v)) { b.sel = v; save(); SND.tap(); const sc = document.querySelector(".chb-row"), x = sc ? sc.scrollLeft : 0; if (run.game) run.game.reset(); run.showReady(); const s2 = document.querySelector(".chb-row"); if (s2) s2.scrollLeft = x; return true; }
+    openSheet("Nuevo tablero", `<div style="text-align:center"><div class="chb-big">${chSwatch(th, 132)}</div><p style="margin:8px 0 2px"><b>${esc(th.n)}</b></p><p class="small">Queda tuyo para siempre y lo puedes cambiar cuando quieras.</p>
+      <div class="btn-row"><button class="btn" data-act="close-sheet">Ahora no</button>${S.coins >= th.p ? `<button class="btn green" data-act="arc-chbuy:${v}">${coin}${NUM.format(th.p)} · Comprar</button>` : `<button class="btn" data-act="need:${th.p}">Faltan ${NUM.format(th.p - S.coins)}</button>`}</div></div>`, { center:true });
+    return true; }
+  if (k === "arc-chbuy") { const th = CH_THEMES.find(x => x.k === v), b = chbState(); if (!th || S.coins < th.p || b.own.includes(v)) return true;
+    S.coins -= th.p; b.own.push(v); b.sel = v; save(); renderHeader(); closeSheet(); SND.buy(); toast(`¡Nuevo tablero: ${th.n}!`, "ok"); if (typeof logEv === "function") logEv("spend_virtual_currency", { item_name:"tablero:" + v, virtual_currency_name:"puntos", value:th.p });
+    if (run.game) run.game.reset(); run.showReady(); return true; }
+  return false; }
 let chessLast = null;
 arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
   t:"Ajedrez", d:"Contra el robot o con un amigo en el mismo celu.", col:"b", revive:false, noCount:true, fill:[1.28, 1.62], ctlH:60,
@@ -7021,7 +7079,8 @@ arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
   overText:"Ganó el robot",
   duo: () => arcModeOf("chess").m === "duo",
   overAv: () => chessLast && chessLast.wp && chessLast.wp.kind === "p2" ? arcAvatar(chessLast.wp, 70, "happy") : "",
-  readyBox: () => arcModesBox("chess", "Toca una pieza para ver a dónde puede ir. Contra el robot juegas con las blancas; con un amigo, los colores se turnan cada partida."),
+  readyBox: () => arcModesBox("chess", "Toca una pieza para ver a dónde puede ir. Contra el robot juegas con las blancas; con un amigo, los colores se turnan cada partida.", chBoardsHTML()),
+  act: (k, v, run) => chBoardsAct(k, v, run),
   overTitle(){ const r = chessLast; if (!r) return "Partida terminada"; if (r.res === "draw") return "¡Tablas!"; if (r.duo) return "¡Jaque mate! Ganó " + esc(r.win); return r.res === "win" ? (r.resign ? "¡Ganaste!" : "¡Jaque mate! Le ganaste al robot") : r.resign ? "Te rendiste" : "Ganó el robot"; },
   points: s => s / 6,
   thumb: () => { const cols = 6, rows = 3, Y0 = 27, Y1 = 47, L0 = 9, R0 = 55, L1 = -2, R1 = 66; let sq = "";
@@ -7029,17 +7088,43 @@ arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
       const xa = k => la + (ra - la) * k / cols, xb = k => lb + (rb - lb) * k / cols; sq += `<path d="M${xa(q).toFixed(1)} ${ya.toFixed(1)} L${xa(q + 1).toFixed(1)} ${ya.toFixed(1)} L${xb(q + 1).toFixed(1)} ${yb.toFixed(1)} L${xb(q).toFixed(1)} ${yb.toFixed(1)}Z" fill="${(q + r) % 2 ? "#7E8FC4" : "#EEF1F7"}"/>`; }
     return `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><linearGradient id="chBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3F86"/><stop offset="1" stop-color="#1C2050"/></linearGradient><linearGradient id="chW" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#FFF3DC"/><stop offset="1" stop-color="#D2B98F"/></linearGradient><linearGradient id="chB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6A7198"/><stop offset=".45" stop-color="#363B57"/><stop offset="1" stop-color="#14151F"/></linearGradient><clipPath id="chCl"><rect width="64" height="48" rx="8"/></clipPath></defs>
     <g clip-path="url(#chCl)"><rect width="64" height="48" fill="url(#chBg)"/><circle cx="44" cy="6" r=".9" fill="#fff" opacity=".7"/><circle cx="58" cy="12" r=".7" fill="#fff" opacity=".6"/><circle cx="31" cy="4" r=".6" fill="#fff" opacity=".5"/>${sq}<path d="M9 27 H55" stroke="#FFD95A" stroke-width="1" opacity=".8"/>
-    <ellipse cx="22" cy="43.5" rx="11" ry="2.2" fill="rgba(0,0,0,.3)"/><ellipse cx="45" cy="40" rx="9" ry="2" fill="rgba(0,0,0,.3)"/>
-    <g transform="translate(34 7) scale(.62)"><path d="M10 52 C6 40 9 30 18 30 C27 30 30 40 26 52 Z" fill="url(#chB)" stroke="${IK}" stroke-width="3"/><rect x="5" y="50" width="26" height="6" rx="3" fill="url(#chB)" stroke="${IK}" stroke-width="3"/><rect x="15.5" y="4" width="5" height="22" fill="#FFC425" stroke="${IK}" stroke-width="2.4"/><rect x="10" y="9" width="16" height="5" fill="#FFC425" stroke="${IK}" stroke-width="2.4"/><ellipse cx="18" cy="29" rx="10" ry="3" fill="url(#chB)" stroke="${IK}" stroke-width="3"/><circle cx="18" cy="41" r="2.6" fill="#EE3B2B" stroke="${IK}" stroke-width="1.4"/><path d="M12 36 q-1 6 1 11" stroke="rgba(170,185,255,.6)" stroke-width="2" fill="none" stroke-linecap="round"/></g>
-    <path d="M12 44 C12 34 15 30 21 27 C17 27 12 29 9 26 C7 24 8 20 11 18 L19 10 C20 6 23 4 24 7 C26 5 29 6 30 9 C37 15 38 30 34 44 Z" fill="url(#chW)" stroke="${IK}" stroke-width="2.2" stroke-linejoin="round"/><path d="M27 9 C32 13 34 20 34 27" stroke="#E8B04A" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="20" cy="14" r="1.5" fill="${IK}"/><path d="M15 33 q-1 4 0 8" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <ellipse cx="22" cy="43.5" rx="11" ry="2.2" fill="rgba(0,0,0,.3)"/><ellipse cx="48" cy="41" rx="11" ry="2" fill="rgba(0,0,0,.3)"/>
+    <g transform="translate(36 9)"><rect x="1.5" y="27.5" width="21" height="4.5" rx="2.2" fill="url(#chB)" stroke="${IK}" stroke-width="1.8"/><path d="M5 27.5 L6 13 H18 L19 27.5 Z" fill="url(#chB)" stroke="${IK}" stroke-width="1.8" stroke-linejoin="round"/><path d="M3.5 13 V4 H7.5 V7 H10 V4 H14 V7 H16.5 V4 H20.5 V13 Z" fill="url(#chB)" stroke="${IK}" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 18 H17 M6.6 22.5 H17.4" stroke="#7A82A8" stroke-width="1"/><path d="M8 15 V26" stroke="rgba(170,185,255,.55)" stroke-width="1.4" stroke-linecap="round"/><path d="M5.2 6 V11" stroke="rgba(170,185,255,.55)" stroke-width="1.1" stroke-linecap="round"/></g>
+    <path d="M12 44 C12 34 15 30 21 27 C17 27 12 29 9 26 C7 24 8 20 11 18 L19 10 C20 6 23 4 24 7 C26 5 29 6 30 9 C37 15 38 30 34 44 Z" fill="url(#chW)" stroke="${IK}" stroke-width="2.2" stroke-linejoin="round"/><path d="M27 9 C32 13 34 20 34 27" stroke="#E8B04A" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="20" cy="14" r="1.5" fill="${IK}"/><path d="M22 12 q2 -3.5 5 -3.6" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".95"/><path d="M19.5 31 q-2.6 4.5 -2.8 10" stroke="rgba(255,255,255,.85)" stroke-width="1.7" fill="none" stroke-linecap="round"/>
     <rect x="8" y="42" width="30" height="4.5" rx="2.2" fill="url(#chW)" stroke="${IK}" stroke-width="1.8"/>
     <path d="M55 20 l1 2.4 2.4 1 -2.4 1 -1 2.4 -1 -2.4 -2.4 -1 2.4 -1z" fill="#FFE27A"/><path d="M6 8 l.7 1.6 1.6 .7 -1.6 .7 -.7 1.6 -.7 -1.6 -1.6 -.7 1.6 -.7z" fill="#fff" opacity=".8"/></g><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`; },
   make(api){
     const { W, H, c } = api, LV = { facil:"facil", normal:"medio", dificil:"dificil" }; let lvl = "medio", duo = false, ps = [], wIdx = 0, games = 0;
     const fm = Math.round(W * .03), bs = W - fm * 2, cs = bs / 8, PH = Math.max(52, (H - bs - fm * 2) / 2), FY = PH, bx = fm, by = PH + fm;
-    let st, sel, moves, last, over, thinking, promo, undoUsed, hist, t, anims = [], fx = [], capT = {}, chkT = 0;
+    let st, sel, moves, last, over, thinking, promo, undoUsed, hist, t, anims = [], fx = [], capT = {}, chkT = 0, layer = null, layerK = "";
+    /* Capa fija del escenario: fondo, marco, casillas con textura y coordenadas */
+    function buildLayer(){ const th = chTheme(); if (layer && layerK === th.k) return; layerK = th.k; const dpr = Math.min(2, window.devicePixelRatio || 1);
+      layer = document.createElement("canvas"); layer.width = Math.ceil(W * dpr); layer.height = Math.ceil(H * dpr); const x = layer.getContext("2d"); x.scale(dpr, dpr);
+      let sd = 7; const R = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+      const bg = x.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, th.bg[0]); bg.addColorStop(1, th.bg[1]); x.fillStyle = bg; x.fillRect(0, 0, W, H);
+      if (th.deco === "glyph") { x.fillStyle = "rgba(255,255,255,.05)"; for (let i = 0; i < 18; i++) { x.save(); x.translate((i * 97) % W, (i * 53) % H); x.rotate(i); x.font = `${14 + (i % 3) * 6}px serif`; x.fillText("♞♝♜♛♟♚"[i % 6], 0, 0); x.restore(); } }
+      else if (th.deco === "leaf") { for (let i = 0; i < 40; i++) { x.save(); x.translate(R() * W, R() * H); x.rotate(R() * 6); x.fillStyle = ["rgba(140,210,90,.28)", "rgba(30,90,30,.3)", "rgba(255,210,90,.18)"][i % 3]; x.beginPath(); x.ellipse(0, 0, 7 + R() * 6, 3 + R() * 2, 0, 0, 7); x.fill(); x.restore(); } }
+      else if (th.deco === "snow") { x.strokeStyle = "rgba(255,255,255,.5)"; x.lineCap = "round"; for (let i = 0; i < 34; i++) { const cx = R() * W, cy = R() * H, r2 = 2 + R() * 5; x.lineWidth = r2 > 5 ? 1.6 : 1; for (let k = 0; k < 3; k++) { const a = k * 1.047; x.beginPath(); x.moveTo(cx - Math.cos(a) * r2, cy - Math.sin(a) * r2); x.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2); x.stroke(); } } }
+      else if (th.deco === "grid") { x.strokeStyle = "rgba(255,79,216,.22)"; x.lineWidth = 1; for (let i = -10; i <= 10; i++) { x.beginPath(); x.moveTo(W / 2 + i * 12, H * .45); x.lineTo(W / 2 + i * 70, H + 10); x.stroke(); } for (let k = 0; k < 9; k++) { const y = H * .45 + Math.pow(k / 8, 1.8) * H * .6; x.strokeStyle = `rgba(92,225,230,${.12 + k * .02})`; x.beginPath(); x.moveTo(0, y); x.lineTo(W, y); x.stroke(); } for (let k = 0; k < 9; k++) { const y = H * .55 - Math.pow(k / 8, 1.8) * H * .6; x.strokeStyle = `rgba(92,225,230,${.12 + k * .02})`; x.beginPath(); x.moveTo(0, y); x.lineTo(W, y); x.stroke(); } }
+      else if (th.deco === "stars") { for (let i = 0; i < 110; i++) { x.fillStyle = `rgba(255,255,255,${.25 + R() * .6})`; x.beginPath(); x.arc(R() * W, R() * H, R() < .9 ? .7 : 1.5, 0, 7); x.fill(); } const pg = x.createRadialGradient(W * .82, H * .09, 2, W * .85, H * .1, 36); pg.addColorStop(0, "#FFB0D8"); pg.addColorStop(1, "#7A4FD9"); x.fillStyle = pg; x.beginPath(); x.arc(W * .85, H * .1, 30, 0, 7); x.fill(); x.strokeStyle = "rgba(255,220,250,.6)"; x.lineWidth = 2.5; x.beginPath(); x.ellipse(W * .85, H * .1, 46, 9, -.3, 0, 7); x.stroke(); }
+      else if (th.deco === "crown") { x.fillStyle = "rgba(255,212,90,.1)"; for (let i = 0; i < 14; i++) { const cx = (i * 71 + 30) % W, cy = (i * 113 + 20) % H; x.beginPath(); x.moveTo(cx - 9, cy + 5); x.lineTo(cx - 9, cy - 5); x.lineTo(cx - 4, cy); x.lineTo(cx, cy - 7); x.lineTo(cx + 4, cy); x.lineTo(cx + 9, cy - 5); x.lineTo(cx + 9, cy + 5); x.closePath(); x.fill(); } }
+      x.fillStyle = "rgba(0,0,0,.35)"; rr(x, 3, FY + 5, W - 6, bs + fm * 2, 14); x.fill();
+      const fg = x.createLinearGradient(0, FY, 0, FY + bs + fm * 2); fg.addColorStop(0, th.f[0]); fg.addColorStop(1, th.f[1]); x.fillStyle = fg; if (th.glow) { x.save(); x.shadowColor = th.glow; x.shadowBlur = 18; } rr(x, 2, FY, W - 4, bs + fm * 2, 14); x.fill(); if (th.glow) x.restore(); x.lineWidth = 3; x.strokeStyle = IK; x.stroke();
+      if (th.tex === "wood" || th.k === "plaza") { x.save(); rr(x, 2, FY, W - 4, bs + fm * 2, 14); x.clip(); x.strokeStyle = "rgba(0,0,0,.18)"; x.lineWidth = 1; for (let i = 0; i < 12; i++) { const y = FY + R() * (bs + fm * 2); x.beginPath(); x.moveTo(0, y); x.bezierCurveTo(W * .3, y + 3, W * .6, y - 3, W, y + 1); x.stroke(); } x.restore(); }
+      if (th.k === "real") { x.save(); rr(x, 2, FY, W - 4, bs + fm * 2, 14); x.clip(); x.fillStyle = "rgba(255,212,90,.25)"; for (let i = 0; i < 40; i++) { x.beginPath(); x.arc(4 + i * (W / 40), FY + fm / 2, 1.3, 0, 7); x.arc(4 + i * (W / 40), FY + bs + fm * 1.5, 1.3, 0, 7); x.fill(); } x.restore(); }
+      for (let s2 = 0; s2 < 64; s2++) { const qx = bx + (s2 & 7) * cs, qy = by + (s2 >> 3) * cs, dark = ((s2 & 7) + (s2 >> 3)) % 2; x.fillStyle = dark ? th.D : th.L; x.fillRect(qx, qy, cs + .5, cs + .5);
+        if (th.tex === "wood") { x.strokeStyle = dark ? "rgba(70,35,10,.22)" : "rgba(150,100,50,.18)"; x.lineWidth = .8; for (let k = 0; k < 4; k++) { const o = R() * cs; x.beginPath(); if ((s2 >> 3) % 2) { x.moveTo(qx, qy + o); x.bezierCurveTo(qx + cs * .3, qy + o + 2, qx + cs * .7, qy + o - 2, qx + cs, qy + o); } else { x.moveTo(qx + o, qy); x.bezierCurveTo(qx + o + 2, qy + cs * .3, qx + o - 2, qy + cs * .7, qx + o, qy + cs); } x.stroke(); } }
+        else if (th.tex === "grass") { x.strokeStyle = dark ? "rgba(30,70,20,.28)" : "rgba(150,160,90,.3)"; x.lineWidth = .9; for (let k = 0; k < 7; k++) { const gx = qx + R() * cs, gy = qy + R() * cs; x.beginPath(); x.moveTo(gx, gy); x.lineTo(gx + (R() - .5) * 2, gy - 3); x.stroke(); } }
+        else if (th.tex === "ice") { x.strokeStyle = "rgba(255,255,255,.45)"; x.lineWidth = 1; x.beginPath(); x.moveTo(qx + cs * .15, qy + cs * .55); x.lineTo(qx + cs * .5, qy + cs * .2); x.stroke(); }
+        else if (th.tex === "velvet" && dark) { const vg = x.createRadialGradient(qx + cs * .35, qy + cs * .3, 1, qx + cs / 2, qy + cs / 2, cs * .75); vg.addColorStop(0, "rgba(255,240,190,.35)"); vg.addColorStop(1, "rgba(120,70,0,.15)"); x.fillStyle = vg; x.fillRect(qx, qy, cs, cs); } }
+      if (th.tex === "marble") { x.save(); x.beginPath(); x.rect(bx, by, bs, bs); x.clip(); for (let i = 0; i < 9; i++) { x.strokeStyle = i % 3 ? "rgba(120,125,140,.22)" : "rgba(255,255,255,.55)"; x.lineWidth = .6 + R() * 1.4; let px = bx + R() * bs, py = by - 5; x.beginPath(); x.moveTo(px, py); for (let k = 0; k < 8; k++) { px += (R() - .4) * cs * 1.2; py += cs * 1.1; x.quadraticCurveTo(px + (R() - .5) * cs, py - cs * .5, px, py); } x.stroke(); } x.restore(); }
+      x.strokeStyle = th.line; x.globalAlpha = .8; x.lineWidth = 1.5; x.strokeRect(bx - 2.5, by - 2.5, bs + 5, bs + 5); x.globalAlpha = 1;
+      if (th.glow) { x.save(); x.shadowColor = th.glow; x.shadowBlur = 10; x.strokeStyle = th.glow; x.lineWidth = 2; x.strokeRect(bx - 1, by - 1, bs + 2, bs + 2); x.restore(); }
+      const sh = x.createLinearGradient(bx, by, bx + bs, by + bs); sh.addColorStop(0, "rgba(255,255,255,.12)"); sh.addColorStop(.5, "rgba(255,255,255,0)"); sh.addColorStop(1, "rgba(0,0,30,.12)"); x.fillStyle = sh; x.fillRect(bx, by, bs, bs);
+      x.font = `700 ${Math.max(8, Math.round(fm * .62))}px Fredoka, sans-serif`; x.textAlign = "center"; x.fillStyle = th.co;
+      for (let i = 0; i < 8; i++) { x.fillText("abcdefgh"[i], bx + i * cs + cs / 2, by + bs + fm * .78); x.fillText(8 - i, fm / 2, by + i * cs + cs / 2 + fm * .22); } }
     const sideOf = w => w ? wIdx : 1 - wIdx, myTurn = () => duo || st.w;
-    const reset = () => { const m = arcModeOf("chess"); duo = m.m === "duo"; lvl = LV[m.lvl] || "medio"; ps = arcPlayers("chess"); wIdx = duo ? games % 2 : 0; chessLast = null; st = CH.start(); sel = -1; moves = []; last = null; over = false; thinking = false; promo = null; undoUsed = false; hist = []; t = 0; anims = []; fx = []; capT = {}; st.reps = {}; st.reps[CH.key(st)] = 1; status(); ctl(); };
+    const reset = () => { const m = arcModeOf("chess"); duo = m.m === "duo"; lvl = LV[m.lvl] || "medio"; ps = arcPlayers("chess"); wIdx = duo ? games % 2 : 0; chessLast = null; layer = null; buildLayer(); st = CH.start(); sel = -1; moves = []; last = null; over = false; thinking = false; promo = null; undoUsed = false; hist = []; t = 0; anims = []; fx = []; capT = {}; st.reps = {}; st.reps[CH.key(st)] = 1; status(); ctl(); };
     const status = (txt) => { if (txt) return api.info(txt); if (over) return api.info(""); const chk = CH.inCheck(st, st.w);
       if (duo) return api.info(`${chk ? "¡Jaque! " : ""}Turno de ${esc(ps[sideOf(st.w)].name)} · ${st.w ? "blancas" : "negras"}`);
       api.info(thinking ? "El robot está pensando…" : chk ? "¡Jaque! Te toca" : "Te toca mover"); };
@@ -7153,26 +7238,16 @@ arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
       revive(){},
       step(dt){ t += dt; anims.forEach(an => { an.k = Math.min(1, an.k + dt / .2); }); anims = anims.filter(an => an.k < 1); fx = fx.filter(f => t - f.t0 < (f.life || .6)); },
       draw(){
-        const bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, "#2A2F66"); bg.addColorStop(1, "#191C44"); c.fillStyle = bg; c.fillRect(0, 0, W, H);
-        c.fillStyle = "rgba(255,255,255,.05)"; for (let i = 0; i < 18; i++) { const x = (i * 97) % W, y = (i * 53) % H; c.save(); c.translate(x, y); c.rotate(i); c.font = `${14 + (i % 3) * 6}px serif`; c.fillText("♞♝♜♛♟♚"[i % 6], 0, 0); c.restore(); }
+        buildLayer(); c.drawImage(layer, 0, 0, W, H);
         const cap = captured();
         panel(false, 0, PH, cap); panel(true, H - PH, PH, cap);
-        /* marco del tablero */
-        c.fillStyle = "rgba(0,0,0,.35)"; rr(c, 3, FY + 5, W - 6, bs + fm * 2, 14); c.fill();
-        const fg = c.createLinearGradient(0, FY, 0, FY + bs + fm * 2); fg.addColorStop(0, "#4A4F8C"); fg.addColorStop(1, "#2C3066"); c.fillStyle = fg; rr(c, 2, FY, W - 4, bs + fm * 2, 14); c.fill(); c.lineWidth = 3; c.strokeStyle = IK; c.stroke();
-        c.strokeStyle = "rgba(255,212,90,.7)"; c.lineWidth = 1.5; c.strokeRect(bx - 2.5, by - 2.5, bs + 5, bs + 5);
         const chk = !over && CH.inCheck(st, st.w) ? st.b.indexOf(st.w ? "K" : "k") : -1;
         for (let s = 0; s < 64; s++) {
-          const [x, y] = sqXY(s), dark = ((s & 7) + (s >> 3)) % 2;
-          c.fillStyle = dark ? "#7E8FC4" : "#EEF1F7"; c.fillRect(x, y, cs + .5, cs + .5);
+          const [x, y] = sqXY(s);
           if (last && (s === last.f || s === last.t)) { c.fillStyle = "rgba(255,196,37,.5)"; c.fillRect(x, y, cs, cs); }
           if (s === sel) { c.fillStyle = "rgba(34,164,71,.55)"; c.fillRect(x, y, cs, cs); c.strokeStyle = "#1E8F3E"; c.lineWidth = 3; c.strokeRect(x + 1.5, y + 1.5, cs - 3, cs - 3); }
           if (s === chk) { const k2 = .75 + Math.sin(t * 8) * .25, g = c.createRadialGradient(x + cs / 2, y + cs / 2, 2, x + cs / 2, y + cs / 2, cs * .72); g.addColorStop(0, `rgba(238,59,43,${k2})`); g.addColorStop(1, "rgba(238,59,43,0)"); c.fillStyle = g; c.fillRect(x, y, cs, cs); }
         }
-        const sh = c.createLinearGradient(bx, by, bx + bs, by + bs); sh.addColorStop(0, "rgba(255,255,255,.12)"); sh.addColorStop(.5, "rgba(255,255,255,0)"); sh.addColorStop(1, "rgba(0,0,30,.12)"); c.fillStyle = sh; c.fillRect(bx, by, bs, bs);
-        c.font = FB(Math.max(8, Math.round(fm * .62))); c.textAlign = "center"; c.fillStyle = "rgba(230,234,255,.75)";
-        for (let i = 0; i < 8; i++) { c.fillText("abcdefgh"[i], bx + i * cs + cs / 2, by + bs + fm * .78); c.fillText(8 - i, fm / 2, by + i * cs + cs / 2 + fm * .22); }
-        c.textAlign = "left";
         const moving = new Set(anims.map(an => an.t));
         for (let s = 0; s < 64; s++) if (st.b[s] && !moving.has(s)) { const [x, y] = sqXY(s); piece(st.b[s], x, y, cs, s === sel ? .08 + Math.sin(t * 6) * .02 : 0); }
         fx.forEach(f => { const k = (t - f.t0) / (f.life || .6); if (k < 0) return;
@@ -12139,7 +12214,7 @@ const golfLabel = (s, par, picked) => picked ? "Se levantó" : s === 1 ? "¡HOYO
 const golfPts = (s, par, picked) => picked ? 3 : s === 1 ? 100 : s - par <= -2 ? 70 : s - par === -1 ? 50 : s === par ? 35 : s - par === 1 ? 20 : s - par === 2 ? 10 : 5;
 let golfLast = null;
 arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot", "duo"],
-  t:"Tito Golf", d:"Minigolf en 5 canchas. Solo, contra el robot o con un amigo en el mismo celu.", col:"g", revive:false, fill:[1.42, 1.72], fsMax:1.08, ctlH:0,
+  t:"Tito Golf", d:"Minigolf en 9 canchas. Solo, contra el robot o con un amigo en el mismo celu.", col:"g", revive:false, fill:[1.42, 1.72], fsMax:1.08, ctlH:0,
   intro:"Arrastra hacia atrás para apuntar y elegir la fuerza, como una gomera. Suelta para pegar.",
   help:"Arrastra hacia atrás y suelta para pegar",
   points: s => s / 5,
@@ -12437,7 +12512,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("golf"), 1); ARC_ORDER.unshift("golf");
 ARC_SHARE.golf = { e:"⛳", f:(n, r) => { const g = golfLast; if (!g) return `Terminé un recorrido de Tito Golf`; const me = g.ps[0], dif = me.tot - g.par, rel = dif === 0 ? "al par" : dif < 0 ? dif + " bajo par" : "+" + dif + " sobre el par";
   return g.mode === "duo" ? (g.win < 0 ? `Empatamos en ${g.holes.length} hoyos de Tito Golf` : `${g.ps[g.win].name} ganó en ${g.holes.length} hoyos de Tito Golf`) : `Hice ${me.tot} golpes en ${g.holes.length} hoyos (${rel})${g.mode === "bot" ? (g.win === 0 ? " y le gané al robot" : g.win < 0 ? " y empaté con el robot" : "") : ""}`; } };
 
-const APP_VER = "10/11 23:50";
+const APP_VER = "11/11 00:00";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -14985,6 +15060,9 @@ document.addEventListener("click", e => {
   else if (k === "redeem") openRedeem();
   else if (k === "tutorial") startTutorial();
   else if (k === "mbox") openMBox();
+  else if (k === "news-open") { openNews(); }
+  else if (k === "news-go") { closeSheet(); SND.tap(); setView("arcade"); }
+  else if (k === "news-later") { closeSheet(); if (dayCounter("wheel").n === 0) setView("ruleta"); }
   else if (k === "need") { SND.bad(); toast(`Te faltan ${NUM.format(+v - S.coins)} puntos`, "money", { have:S.coins, need:+v }); }
   else if (k === "char-use") { if (!ownedChars().includes(v)) return; S.tito.char = v === "tito" ? undefined : v; if (v === "tito") delete S.tito.char; save(); pushMember(); closeSheet(); render(false); SND.pop(); toast("¡Ahora juegas con " + charName(v === "tito" ? null : v) + "!"); }
   else if (k === "play") { const j = v.indexOf(":"); startGame(parseCtx(v.slice(j+1)), v.slice(0, j)); }
@@ -15155,6 +15233,21 @@ function buildTabs(){
 }
 
 /* ---------- Inicio de la app: logo, perfil, ruleta ---------- */
+/* Novedades: se muestran una vez a quien ya jugaba, hasta la fecha de NEWS.until */
+const NEWS = { id:"n1-duo-golf", until:"2026-11-30" };
+const newsOn = () => today() <= NEWS.until;
+const newsDue = () => newsOn() && S.newsSeen !== NEWS.id && S.profile && S.profile.done;
+function openNews(){ S.newsSeen = NEWS.id; save(); SND.fx("milestone");
+  const it = (ic, b, tx) => `<li><span class="nw-ic">${ic}</span><span><b>${b}</b>${tx}</span></li>`, av = (p, px) => typeof arcAvatar === "function" ? arcAvatar(p, px, "happy") : "";
+  openSheet("Novedades", `<div class="news"><div class="nw-hero"><span class="nw-a">${av({ kind:"me", tito:S.tito }, 62)}</span><span class="nw-vs">VS</span><span class="nw-a">${av({ kind:"p2", tito:typeof arcP2Tito === "function" ? arcP2Tito() : {} }, 62)}</span><span class="nw-bot">${av({ kind:"bot" }, 44)}</span></div>
+    <span class="how-k">¡Hay cosas nuevas!</span><h2>Juega con un amigo</h2>
+    <ul class="nw-list">${it("👥", "Nuevo modo 2 jugadores", "Juega con un amigo en el mismo celu, por turnos. Ya está en Tito Golf, Ajedrez y 4 en línea.")}
+      ${it("⛳", "Nuevo juego: Tito Golf", "Minigolf con 9 canchas: lava, agujeros negros, un castillo, una feria y mucho más.")}
+      ${it("🤖", "Contra el robot", "Elige si lo quieres Fácil, Normal o Difícil.")}
+      ${it("♟️", "Tableros de ajedrez", "Desbloquea escenarios nuevos con tus puntos.")}
+      ${it("✨", "¡Y vienen más!", "Más juegos y más modos para jugar con amigos están en camino.")}</ul>
+    <button class="btn primary block big-cta" data-act="news-go">¡Quiero jugar!</button><button class="btn ghost block" data-act="news-later">Después</button></div>`, { center:true });
+}
 function boot(){
   S = load() || blank(); curDay = today();
   if (!S.tito.dance) S.tito.dance = "funk";
@@ -15182,6 +15275,7 @@ function boot(){
     if (!S.profile.done && inviteCode && !isStandalone() && !hasProgress(S)) inviteLanding();
     else if (!S.profile.done) openProfile(true);
     else if (handleInvite()) {}
+    else if (returning && newsDue()) openNews();
     else if (hwGiftDue()) hwGift(() => { if (dayCounter("wheel").n === 0) setView("ruleta"); });
     else if (dayCounter("wheel").n === 0) setView("ruleta");
     else if (returning && !isPrem() && away > 4*3600e3) showInterstitial("Anuncio de apertura: sale si vuelves después de 4 horas");
