@@ -1660,6 +1660,7 @@ html.ios-gap .app.playing main{padding-bottom:8px}
 .pf-art{position:absolute;inset:0;width:100%;height:100%;z-index:1}
 .pc-chip.duo svg{width:27px;height:27px;transform:translateY(-1.5px)}
 .pc-chip.x2,.pc-chip.x2 svg{width:31px;height:31px}
+.pc-chip.duo{width:31px;height:31px;border-width:2px}.pc-chip.duo svg{width:23px;height:23px;transform:translateY(-1px)}
 
 </style>
 </head>
@@ -13006,7 +13007,7 @@ const posterMini = id => POSTER[id] ? `<span class="pc-mini" style="--c1:${poste
 const X2_SVG = (() => { let t = ""; for (let i = 0; i < 32; i++) { const a = i * Math.PI / 16, c2 = i % 2 ? "#C98408" : "#FFE27A"; t += `<path d="M${(32 + 25.5 * Math.cos(a)).toFixed(2)} ${(31 + 25.5 * Math.sin(a)).toFixed(2)} L${(32 + 28 * Math.cos(a)).toFixed(2)} ${(31 + 28 * Math.sin(a)).toFixed(2)}" stroke="${c2}" stroke-width="2.4"/>`; }
   return `<svg viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="x2f" cx=".36" cy=".32" r=".75"><stop offset="0" stop-color="#FFF4B0"/><stop offset=".5" stop-color="#FFCC2E"/><stop offset="1" stop-color="#E0920A"/></radialGradient><radialGradient id="x2i" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#FFE57A"/><stop offset="1" stop-color="#F0AC16"/></radialGradient></defs>
     <circle cx="32" cy="34" r="29" fill="#A8650A" stroke="#1B1D2A" stroke-width="3"/><circle cx="32" cy="31" r="29" fill="url(#x2f)" stroke="#1B1D2A" stroke-width="3"/>${t}<circle cx="32" cy="31" r="20.5" fill="url(#x2i)" stroke="#C98408" stroke-width="2.6"/><path d="M14.5 22 A20 20 0 0 1 26 12.2" stroke="#FFFBE0" stroke-width="3.4" fill="none" stroke-linecap="round" opacity=".9"/>
-    <g transform="translate(31.5 32.6)"><path d="M-14.5 -6.5 L-5.5 6.5 M-5.5 -6.5 L-14.5 6.5" stroke="#FFF6D0" stroke-width="7" stroke-linecap="round"/><path d="M-14.5 -6.5 L-5.5 6.5 M-5.5 -6.5 L-14.5 6.5" stroke="#5A3300" stroke-width="3.6" stroke-linecap="round"/>
+    <g transform="translate(31.5 32.4) scale(.85)"><path d="M-14.5 -6.5 L-5.5 6.5 M-5.5 -6.5 L-14.5 6.5" stroke="#FFF6D0" stroke-width="7" stroke-linecap="round"/><path d="M-14.5 -6.5 L-5.5 6.5 M-5.5 -6.5 L-14.5 6.5" stroke="#5A3300" stroke-width="3.6" stroke-linecap="round"/>
       <path d="M1.5 -6 Q2.5 -11.5 8.5 -11.5 Q15 -11.5 15 -5.8 Q15 -1.5 8.5 3.5 L3 8 H15.5" fill="none" stroke="#FFF6D0" stroke-width="8.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.5 -6 Q2.5 -11.5 8.5 -11.5 Q15 -11.5 15 -5.8 Q15 -1.5 8.5 3.5 L3 8 H15.5" fill="none" stroke="#5A3300" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`; })();
 const posterBg = id => (POSTER[id] && POSTER[id].bg) || POSTER_BG[id] || ["#7A84B8", "#3A3F86"];
 const posterLine = id => (POSTER[id] && POSTER[id].line) || "#FFFFFF";
@@ -13144,7 +13145,7 @@ Object.assign(POSTER, {
     <rect x="132" y="252" width="34" height="9" rx="3" fill="#F2F6F0" stroke="${PK}" stroke-width="2"/>${pSpark(176, 90, 6)}` }
 });
 
-const APP_VER = "11/11 14:32";
+const APP_VER = "11/11 14:34";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
