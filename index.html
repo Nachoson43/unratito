@@ -12095,56 +12095,101 @@ const GOLF = (() => {
   const FR = { grass:[32, .55], sand:[150, 2.4], ice:[6, .1], rough:[78, 1.4] };
   const R4 = (x, y, w, h) => [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
   const oct = (x0, y0, x1, y1, k) => [[x0 + k, y0], [x1 - k, y0], [x1, y0 + k], [x1, y1 - k], [x1 - k, y1], [x0 + k, y1], [x0, y1 - k], [x0, y0 + k]];
-  /* Canchas: cada hoyo entra entero en 100 × 160 unidades */
+  /* Canchas: 100 de ancho y len de largo (la cámara se desplaza) */
   const MAPS = [
     { id:"plaza", n:"La Plaza", sub:"Pasto, bancos y fuente", flag:"#EE3B2B", holes:[
-      { n:"Calentamiento", par:3, tee:[50, 146], hole:[50, 22], poly:oct(5, 5, 95, 155, 11), bumpers:[[50, 94, 5, "pot"], [28, 120, 2.2, "lamp"], [72, 120, 2.2, "lamp"], [34, 40, 2.2, "lamp"], [66, 40, 2.2, "lamp"]], blocks:[R4(14, 64, 17, 4.5), R4(69, 64, 17, 4.5)], zones:[{ t:"rough", rect:[5, 80, 12, 30] }, { t:"rough", rect:[83, 80, 12, 30] }, { t:"sand", ell:[50, 36, 8, 3.6] }] },
-      { n:"La ele", par:3, tee:[23, 144], hole:[80, 26], poly:[[13, 5], [95, 5], [95, 64], [42, 64], [42, 155], [5, 155], [5, 13]], bumpers:[[22, 96, 4.5, "tree"], [16, 26, 4.2, "tree"], [62, 30, 4, "pot"], [30, 124, 2.2, "lamp"]], blocks:[R4(70, 46, 15, 4.5)], zones:[{ t:"rough", rect:[30, 40, 12, 24] }, { t:"water", ell:[84, 52, 9, 5.5] }, { t:"water", circ:[18, 52, 5] }] },
-      { n:"La fuente", par:3, tee:[50, 146], hole:[50, 20], poly:oct(5, 5, 95, 155, 13), bumpers:[[50, 84, 11, "fountain"], [24, 56, 2.6, "post"], [76, 56, 2.6, "post"], [24, 112, 2.6, "post"], [76, 112, 2.6, "post"]], blocks:[R4(12, 28, 4.5, 16), R4(83.5, 28, 4.5, 16)], movers:[{ t:"bird", x:50, y:124, ax:22, ay:3, per:5, r:2.2 }, { t:"bird", x:50, y:46, ax:-18, ay:2, per:4.2, r:2.2 }], zones:[{ t:"rough", circ:[50, 84, 18] }, { t:"water", ell:[30, 22, 7, 4] }, { t:"water", ell:[70, 22, 7, 4] }] } ] },
+      { n:"Calentamiento", par:4, len:230, tee:[50, 216], hole:[50, 22], poly:oct(5, 5, 95, 225, 11),
+        bumpers:[[50, 164, 5, "pot"], [28, 196, 2.2, "lamp"], [72, 196, 2.2, "lamp"], [24, 104, 4.4, "tree"], [77, 92, 4.4, "tree"], [34, 40, 2.2, "lamp"], [66, 40, 2.2, "lamp"]],
+        blocks:[R4(32, 184, 36, 4.5), R4(14, 134, 17, 4.5), R4(69, 134, 17, 4.5), R4(36, 68, 28, 4.5)], zones:[{ t:"rough", rect:[5, 144, 12, 32] }, { t:"rough", rect:[83, 144, 12, 32] }, { t:"rough", rect:[40, 90, 20, 22] }, { t:"sand", ell:[50, 36, 8, 3.6] }, { t:"water", ell:[20, 58, 6, 4] }, { t:"water", ell:[28, 22, 6, 4] }, { t:"water", ell:[72, 22, 6, 4] }] },
+      { n:"La ele", par:4, len:250, tee:[24, 234], hole:[80, 26], poly:[[13, 5], [95, 5], [95, 74], [44, 74], [44, 245], [5, 245], [5, 13]],
+        bumpers:[[16, 186, 4.2, "tree"], [34, 150, 4.2, "tree"], [14, 108, 4.2, "tree"], [16, 26, 4.2, "tree"], [62, 30, 4, "pot"], [31, 214, 2.2, "lamp"]], blocks:[R4(70, 50, 15, 4.5)],
+        zones:[{ t:"water", ell:[25, 128, 6, 4] }, { t:"rough", rect:[30, 40, 14, 34] }, { t:"rough", rect:[5, 160, 12, 16] }, { t:"water", ell:[84, 62, 8, 5] }, { t:"water", circ:[18, 56, 5] }] },
+      { n:"La fuente", par:4, len:260, tee:[50, 246], hole:[50, 20], poly:oct(5, 5, 95, 255, 13),
+        bumpers:[[50, 150, 11, "fountain"], [24, 122, 2.6, "post"], [76, 122, 2.6, "post"], [24, 178, 2.6, "post"], [76, 178, 2.6, "post"], [20, 82, 4.4, "tree"], [80, 82, 4.4, "tree"]],
+        blocks:[R4(5, 212, 30, 4.5), R4(65, 212, 30, 4.5), R4(12, 28, 4.5, 16), R4(83.5, 28, 4.5, 16)],
+        movers:[{ t:"bird", x:50, y:194, ax:22, ay:3, per:5, r:2.2 }, { t:"bird", x:50, y:100, ax:-24, ay:2, per:4.6, r:2.2 }, { t:"bird", x:50, y:48, ax:-18, ay:2, per:4.2, r:2.2 }],
+        zones:[{ t:"rough", circ:[50, 150, 19] }, { t:"water", circ:[14, 150, 5] }, { t:"water", circ:[86, 150, 5] }, { t:"water", ell:[30, 22, 7, 4] }, { t:"water", ell:[70, 22, 7, 4] }, { t:"sand", ell:[50, 66, 9, 4] }, { t:"sand", ell:[50, 38, 7, 3.4] }] } ] },
     { id:"playa", n:"La Playa", sub:"Arena, mar y cangrejos", flag:"#FF7DB0", holes:[
-      { n:"Bunkers", par:3, tee:[50, 146], hole:[54, 20], poly:oct(5, 5, 95, 155, 12), zones:[{ t:"sand", ell:[30, 112, 14, 7] }, { t:"sand", ell:[70, 82, 14, 7] }, { t:"sand", ell:[34, 50, 12, 6] }, { t:"sand", ell:[74, 26, 9, 5] }, { t:"water", circ:[17, 76, 8] }, { t:"water", ell:[54, 9, 11, 3.4] }, { t:"sand", ell:[42, 22, 5, 7] }], bumpers:[[78, 120, 4, "umb"], [22, 28, 4, "umb"], [60, 54, 4, "castle"]] },
-      { n:"El cangrejo", par:3, tee:[24, 145], hole:[72, 18], poly:[[5, 155], [50, 155], [95, 100], [95, 5], [42, 5], [5, 58]], zones:[{ t:"sand", ell:[78, 58, 9, 6] }, { t:"sand", ell:[26, 92, 8, 5] }, { t:"water", circ:[40, 68, 6] }, { t:"water", ell:[86, 18, 6, 9] }, { t:"sand", ell:[62, 20, 5, 6] }], bumpers:[[34, 120, 4, "umb"], [56, 26, 3.6, "castle"]], movers:[{ t:"crab", x:54, y:94, ax:18, ay:0, per:3.2, r:3.6 }, { t:"crab", x:62, y:44, ax:14, ay:0, per:2.1, r:3.6 }] },
-      { n:"La ola", par:3, tee:[22, 145], hole:[76, 22], poly:oct(5, 5, 95, 155, 10), blocks:[R4(5, 112, 58, 5), R4(37, 62, 58, 5)], zones:[{ t:"slope", rect:[5, 70, 90, 39], acc:[-24, 0] }, { t:"sand", ell:[30, 26, 10, 5] }], bumpers:[[56, 32, 3.6, "castle"], [82, 132, 4, "umb"]], movers:[{ t:"ball", x:50, y:134, ax:24, ay:0, per:4, r:3 }] } ] },
+      { n:"Bunkers", par:4, len:240, tee:[50, 226], hole:[54, 20], poly:oct(5, 5, 95, 235, 12),
+        zones:[{ t:"sand", ell:[30, 192, 14, 7] }, { t:"sand", ell:[70, 160, 14, 7] }, { t:"sand", ell:[32, 126, 12, 6] }, { t:"sand", ell:[68, 94, 12, 6] }, { t:"sand", ell:[34, 58, 12, 6] }, { t:"sand", ell:[74, 26, 9, 5] }, { t:"sand", ell:[42, 22, 5, 7] },
+          { t:"water", circ:[17, 152, 8] }, { t:"water", circ:[84, 120, 7] }, { t:"water", ell:[50, 110, 9, 5] }, { t:"water", ell:[54, 9, 11, 3.4] }, { t:"sand", ell:[64, 16, 5, 6] }], bumpers:[[80, 204, 4, "umb"], [22, 28, 4, "umb"], [24, 92, 4, "umb"], [60, 54, 4, "castle"], [52, 132, 3.6, "castle"]] },
+      { n:"El cangrejo", par:4, len:260, tee:[24, 244], hole:[72, 18], poly:[[5, 255], [50, 255], [95, 200], [95, 5], [42, 5], [5, 58]],
+        zones:[{ t:"sand", ell:[78, 58, 9, 6] }, { t:"sand", ell:[26, 96, 8, 5] }, { t:"sand", ell:[72, 150, 9, 6] }, { t:"water", circ:[40, 70, 6] }, { t:"water", circ:[46, 178, 6] }, { t:"water", ell:[86, 18, 6, 9] }, { t:"sand", ell:[62, 20, 5, 6] }],
+        blocks:[R4(5, 192, 40, 4.5), R4(56, 96, 39, 4.5)], bumpers:[[32, 220, 4, "umb"], [56, 26, 3.6, "castle"], [24, 140, 3.6, "castle"]],
+        movers:[{ t:"crab", x:50, y:204, ax:20, ay:0, per:2.8, r:3.6 }, { t:"crab", x:54, y:118, ax:18, ay:0, per:3.2, r:3.6 }, { t:"crab", x:62, y:44, ax:14, ay:0, per:2.1, r:3.6 }] },
+      { n:"La ola", par:5, len:290, tee:[22, 274], hole:[24, 24], poly:oct(5, 5, 95, 285, 10), blocks:[R4(5, 236, 58, 5), R4(37, 176, 58, 5), R4(5, 116, 58, 5)],
+        zones:[{ t:"slope", rect:[5, 184, 90, 49], acc:[-24, 0] }, { t:"slope", rect:[5, 124, 90, 49], acc:[24, 0] }, { t:"sand", ell:[50, 30, 10, 5] }, { t:"sand", ell:[80, 84, 8, 5] }, { t:"water", circ:[40, 70, 6] }],
+        bumpers:[[64, 40, 3.6, "castle"], [82, 262, 4, "umb"], [16, 70, 4, "umb"]], movers:[{ t:"ball", x:50, y:260, ax:24, ay:0, per:4, r:3 }, { t:"ball", x:56, y:92, ax:-26, ay:0, per:3.4, r:3 }] } ] },
     { id:"glaciar", n:"El Glaciar", sub:"Hielo que resbala", flag:"#2F7FE8", holes:[
-      { n:"Pista de hielo", par:3, tee:[50, 146], hole:[50, 20], poly:oct(9, 5, 91, 155, 11), zones:[{ t:"ice", rect:[9, 30, 82, 102] }, { t:"water", ell:[50, 9.5, 9, 3.2] }], blocks:[R4(22, 78, 8, 8), R4(46, 98, 8, 8), R4(70, 78, 8, 8), R4(46, 56, 8, 8)], bumpers:[[24, 40, 4, "snowman"], [76, 40, 4, "snowman"]] },
-      { n:"Pingüinos", par:3, tee:[50, 147], hole:[50, 18], poly:oct(5, 5, 95, 155, 13), zones:[{ t:"ice", rect:[5, 64, 90, 34] }, { t:"ice", rect:[30, 14, 40, 20] }, { t:"water", ell:[50, 9, 10, 3.4] }, { t:"water", circ:[16, 80, 5] }, { t:"water", circ:[84, 80, 5] }], bumpers:[[16, 132, 3.6, "snowman"], [84, 30, 3.6, "snowman"]], movers:[{ t:"peng", x:50, y:116, ax:26, ay:0, per:3.6, r:3.8 }, { t:"peng", x:50, y:80, ax:-26, ay:0, per:3, r:3.8 }, { t:"peng", x:50, y:44, ax:22, ay:0, per:2.6, r:3.8 }] },
-      { n:"La grieta", par:3, tee:[22, 145], hole:[74, 20], poly:[[5, 155], [5, 62], [34, 62], [34, 5], [95, 5], [95, 108], [64, 108], [64, 155]], zones:[{ t:"ice", rect:[5, 62, 90, 46] }, { t:"water", rect:[45, 77, 11, 15] }], bumpers:[[82, 44, 4, "snowman"], [16, 128, 3.4, "rockS"]], blocks:[R4(52, 26, 7, 7)] } ] },
+      { n:"Pista de hielo", par:4, len:240, tee:[50, 226], hole:[50, 20], poly:oct(9, 5, 91, 235, 11), zones:[{ t:"ice", rect:[9, 30, 82, 178] }, { t:"water", ell:[50, 9.5, 9, 3.2] }, { t:"water", circ:[82, 74, 4.5] }],
+        blocks:[R4(22, 164, 8, 8), R4(46, 186, 8, 8), R4(70, 164, 8, 8), R4(46, 136, 8, 8), R4(22, 104, 8, 8), R4(70, 104, 8, 8), R4(46, 76, 8, 8)], bumpers:[[24, 40, 4, "snowman"], [76, 40, 4, "snowman"]] },
+      { n:"Pingüinos", par:4, len:260, tee:[50, 247], hole:[50, 18], poly:oct(5, 5, 95, 255, 13),
+        zones:[{ t:"ice", rect:[5, 150, 90, 36] }, { t:"ice", rect:[5, 64, 90, 34] }, { t:"ice", rect:[30, 14, 40, 20] }, { t:"water", ell:[50, 9, 10, 3.4] }, { t:"water", circ:[16, 168, 5] }, { t:"water", circ:[84, 168, 5] }, { t:"water", circ:[16, 80, 5] }, { t:"water", circ:[84, 80, 5] }],
+        bumpers:[[16, 222, 3.6, "snowman"], [84, 30, 3.6, "snowman"], [80, 124, 3.6, "snowman"], [22, 118, 3.4, "rockS"]],
+        movers:[{ t:"peng", x:50, y:204, ax:26, ay:0, per:3.6, r:3.8 }, { t:"peng", x:50, y:168, ax:-26, ay:0, per:3, r:3.8 }, { t:"peng", x:50, y:120, ax:20, ay:0, per:3.2, r:3.8 }, { t:"peng", x:50, y:80, ax:-26, ay:0, per:3, r:3.8 }, { t:"peng", x:50, y:44, ax:22, ay:0, per:2.6, r:3.8 }] },
+      { n:"La grieta", par:5, len:290, tee:[24, 272], hole:[24, 26], poly:[[5, 285], [5, 140], [64, 140], [64, 60], [5, 60], [5, 5], [95, 5], [95, 200], [64, 200], [64, 285]],
+        zones:[{ t:"ice", rect:[5, 140, 90, 60] }, { t:"ice", rect:[64, 60, 31, 80] }, { t:"water", rect:[38, 156, 11, 16] }, { t:"ice", rect:[30, 5, 65, 55] }],
+        bumpers:[[80, 100, 4, "snowman"], [58, 38, 3.4, "rockS"], [16, 262, 3.4, "rockS"], [46, 230, 3.4, "rockS"], [84, 172, 3.4, "rockS"]], blocks:[R4(40, 30, 7, 7)] } ] },
     { id:"selva", n:"La Selva", sub:"Río, puente y troncos", flag:"#FFC425", holes:[
-      { n:"El puente", par:3, tee:[50, 146], hole:[50, 18], poly:oct(5, 5, 95, 155, 11), zones:[{ t:"water", rect:[5, 74, 90, 22] }, { t:"bridge", rect:[43, 74, 14, 22] }, { t:"rough", rect:[5, 100, 14, 30] }, { t:"rough", rect:[81, 40, 14, 30] }], blocks:[R4(40.6, 72, 2.4, 26), R4(57, 72, 2.4, 26)], bumpers:[[50, 44, 3.8, "stump"], [24, 118, 3.4, "rock"], [76, 118, 3.4, "rock"], [26, 30, 3.2, "rock"]] },
-      { n:"Troncos huecos", par:3, tee:[50, 146], hole:[76, 20], polys:[oct(5, 100, 95, 155, 9), oct(5, 5, 95, 66, 9)], river:[0, 69, 100, 28], tps:[[80, 112, 20, 56], [20, 112, 80, 56]], bumpers:[[44, 34, 3.4, "rock"], [62, 46, 3.4, "rock"], [50, 128, 3.6, "stump"], [77, 38, 3.4, "rock"]], zones:[{ t:"rough", rect:[5, 5, 16, 30] }] },
-      { n:"Cataratas", par:4, tee:[20, 146], hole:[80, 98], fall:[40, 48, 20, 110], poly:[[12, 5], [95, 5], [95, 112], [64, 112], [64, 44], [36, 44], [36, 155], [5, 155], [5, 12]], zones:[{ t:"water", circ:[86, 15, 4.6] }, { t:"slope", rect:[64, 48, 31, 34], acc:[0, 24] }, { t:"sand", ell:[20, 74, 8, 6] }, { t:"rough", rect:[5, 20, 31, 20] }], bumpers:[[20, 112, 3.4, "rock"], [50, 22, 3.6, "stump"]] } ] },
+      { n:"El puente", par:4, len:250, tee:[50, 236], hole:[50, 18], poly:oct(5, 5, 95, 245, 11),
+        zones:[{ t:"water", rect:[5, 160, 90, 20] }, { t:"bridge", rect:[20, 160, 14, 20] }, { t:"water", rect:[5, 74, 90, 22] }, { t:"bridge", rect:[62, 74, 14, 22] }, { t:"rough", rect:[5, 194, 14, 30] }, { t:"rough", rect:[81, 110, 14, 30] }, { t:"rough", rect:[5, 34, 14, 26] }],
+        blocks:[R4(17.6, 158, 2.4, 24), R4(34, 158, 2.4, 24), R4(59.6, 72, 2.4, 26), R4(76, 72, 2.4, 26)], bumpers:[[50, 44, 3.8, "stump"], [52, 128, 3.8, "stump"], [24, 212, 3.4, "rock"], [76, 212, 3.4, "rock"], [26, 30, 3.2, "rock"], [30, 112, 3.2, "rock"]] },
+      { n:"Troncos huecos", par:4, len:260, tee:[50, 244], hole:[76, 20], polys:[oct(5, 196, 95, 255, 9), oct(5, 100, 95, 163, 9), oct(5, 5, 95, 66, 9)], rivers:[[0, 166, 100, 27], [0, 69, 100, 28]],
+        tps:[[80, 212, 20, 148], [20, 212, 80, 148], [22, 114, 78, 54], [78, 114, 22, 54]], bumpers:[[50, 226, 3.6, "stump"], [50, 128, 3.6, "stump"], [44, 34, 3.4, "rock"], [62, 46, 3.4, "rock"], [77, 38, 3.4, "rock"]], zones:[{ t:"rough", rect:[5, 5, 16, 30] }, { t:"rough", rect:[40, 140, 20, 18] }] },
+      { n:"Cataratas", par:5, len:290, tee:[20, 274], hole:[80, 184], fall:[40, 48, 20, 240], poly:[[12, 5], [95, 5], [95, 200], [64, 200], [64, 44], [36, 44], [36, 285], [5, 285], [5, 12]],
+        zones:[{ t:"water", circ:[86, 15, 4.6] }, { t:"slope", rect:[64, 48, 31, 50], acc:[0, 24] }, { t:"sand", ell:[80, 140, 8, 6] }, { t:"sand", ell:[20, 176, 8, 6] }, { t:"rough", rect:[5, 20, 31, 20] }, { t:"rough", rect:[5, 100, 14, 30] }],
+        bumpers:[[20, 236, 3.4, "rock"], [28, 120, 3.2, "rock"], [12, 70, 3, "rock"], [50, 22, 3.6, "stump"], [72, 116, 3.2, "rock"]] } ] },
     { id:"ciudad", n:"Ciudad de noche", sub:"Molino, autos y neón", flag:"#FF4FD8", holes:[
-      { n:"El molino", par:3, tee:[50, 146], hole:[50, 20], poly:oct(9, 5, 91, 155, 11), blocks:[R4(9, 80, 18, 10), R4(73, 80, 18, 10)], movers:[{ t:"mill", x:50, y:85, L:15, w:1.5, arms:4 }], bumpers:[[30, 124, 2.2, "cone"], [70, 124, 2.2, "cone"], [38, 42, 2.2, "cone"], [62, 42, 2.2, "cone"]] },
-      { n:"La avenida", par:3, tee:[50, 146], hole:[52, 18], poly:oct(5, 5, 95, 155, 11), road:[5, 66, 90, 30], movers:[{ t:"car", y:68, h:11, len:18, v:32, n:2, ph:0, kind:"taxi" }, { t:"car", y:83, h:11, len:26, v:-24, n:2, ph:40, kind:"bus" }], blocks:[R4(36, 108, 28, 5), R4(30, 42, 18, 5), R4(58, 30, 5, 16)], bumpers:[[22, 118, 2.6, "hydrant"], [78, 40, 2.6, "hydrant"], [24, 36, 3, "bin"], [78, 124, 3, "bin"]] },
-      { n:"Gran final", par:4, tee:[24, 146], hole:[58, 20], poly:oct(5, 5, 95, 155, 10), blocks:[R4(5, 112, 58, 5), R4(37, 64, 58, 5)], zones:[{ t:"slope", rect:[5, 72, 90, 38], acc:[-22, 0] }], movers:[{ t:"gate", x:63, y:112, w:32, h:5, dx:32, per:4.2 }], bumpers:[[42, 26, 3, "neon"], [72, 32, 3, "neon"], [80, 136, 2.2, "cone"], [12, 40, 2.6, "hydrant"]] } ] },
+      { n:"El molino", par:4, len:240, tee:[50, 226], hole:[50, 20], poly:oct(9, 5, 91, 235, 11), blocks:[R4(9, 145, 18, 10), R4(73, 145, 18, 10), R4(9, 65, 18, 10), R4(73, 65, 18, 10)],
+        movers:[{ t:"mill", x:50, y:150, L:15, w:1.5, arms:4 }, { t:"mill", x:50, y:70, L:15, w:-1.9, arms:3 }], bumpers:[[30, 200, 2.2, "cone"], [70, 200, 2.2, "cone"], [32, 108, 2.2, "cone"], [68, 108, 2.2, "cone"], [38, 42, 2.2, "cone"], [62, 42, 2.2, "cone"]] },
+      { n:"La avenida", par:4, len:260, tee:[50, 246], hole:[52, 18], poly:oct(5, 5, 95, 255, 11), roads:[[5, 156, 90, 30], [5, 66, 90, 30]],
+        movers:[{ t:"car", y:158, h:11, len:18, v:-30, n:2, ph:20, kind:"taxi" }, { t:"car", y:173, h:11, len:26, v:22, n:2, ph:70, kind:"bus" }, { t:"car", y:68, h:11, len:18, v:32, n:2, ph:0, kind:"taxi" }, { t:"car", y:83, h:11, len:26, v:-24, n:2, ph:40, kind:"bus" }],
+        blocks:[R4(36, 206, 28, 5), R4(58, 118, 26, 5), R4(30, 42, 18, 5), R4(58, 30, 5, 16)], bumpers:[[22, 220, 2.6, "hydrant"], [78, 40, 2.6, "hydrant"], [24, 128, 2.6, "hydrant"], [24, 36, 3, "bin"], [78, 226, 3, "bin"], [80, 136, 3, "bin"]] },
+      { n:"Gran final", par:5, len:290, tee:[24, 274], hole:[58, 20], poly:oct(5, 5, 95, 285, 10), blocks:[R4(5, 236, 58, 5), R4(37, 176, 58, 5), R4(5, 115, 18, 10), R4(77, 115, 18, 10), R4(37, 64, 58, 5)],
+        zones:[{ t:"slope", rect:[5, 184, 90, 49], acc:[-22, 0] }], movers:[{ t:"gate", x:63, y:236, w:32, h:5, dx:32, per:4.2 }, { t:"mill", x:50, y:120, L:15, w:1.6, arms:4 }],
+        bumpers:[[42, 26, 3, "neon"], [72, 32, 3, "neon"], [80, 264, 2.2, "cone"], [12, 40, 2.6, "hydrant"], [24, 150, 3, "neon"], [76, 88, 3, "neon"]] } ] },
     { id:"volcan", n:"El Volcán", sub:"Lava, géiseres y rocas", flag:"#FF7A1A", holes:[
-      { n:"Río de lava", par:3, tee:[50, 146], hole:[50, 20], poly:oct(5, 5, 95, 155, 11), zones:[{ t:"lava", rect:[5, 76, 90, 17] }, { t:"bridge", rect:[17, 76, 15, 17] }, { t:"bridge", rect:[68, 76, 15, 17] }, { t:"boost", rect:[44, 110, 12, 10], dir:[0, -1], k:140 }],
-        bumpers:[[50, 84, 5, "rockV"], [24, 126, 3, "rockV"], [76, 126, 3, "rockV"]], movers:[{ t:"sink", x:32, y:46, r:3.6, per:3.4 }, { t:"sink", x:68, y:46, r:3.6, per:3.4, ph:3.1 }, { t:"sink", x:50, y:34, r:3, per:2.8, ph:1.5 }] },
-      { n:"Géiseres", par:3, tee:[20, 146], hole:[74, 20], poly:oct(5, 5, 95, 155, 10), blocks:[R4(5, 108, 60, 5), R4(35, 60, 60, 5)],
-        zones:[{ t:"boost", rect:[72, 116, 12, 10], dir:[0, -1], k:115 }, { t:"boost", rect:[12, 78, 12, 10], dir:[0, -1], k:115 }, { t:"lava", circ:[52, 86, 7] }, { t:"lava", circ:[62, 36, 5.5] }],
-        bumpers:[[80, 86, 3.2, "rockV"], [26, 40, 3.2, "rockV"], [46, 128, 3.4, "rockV"]], movers:[{ t:"sink", x:44, y:22, r:3.4, per:3.2 }] },
-      { n:"El cráter", par:4, tee:[50, 146], hole:[50, 52], poly:oct(5, 5, 95, 155, 14), zones:[{ t:"lava", circ:[50, 52, 21] }, { t:"bridge", circ:[50, 52, 12.5] }, { t:"bridge", rect:[42, 52, 16, 24] }, { t:"bridge", rect:[42, 28, 16, 24] }, { t:"bridge", rect:[26, 45, 24, 14] }, { t:"bridge", rect:[50, 45, 24, 14] }, { t:"lava", ell:[20, 112, 7, 5] }, { t:"lava", ell:[80, 112, 7, 5] }],
-        bumpers:[[30, 92, 3, "rockV"], [70, 92, 3, "rockV"], [50, 132, 3, "rockV"]], movers:[{ t:"sink", x:38, y:84, r:3, per:3, ph:2 }, { t:"sink", x:62, y:84, r:3, per:3, ph:.5 }] } ] },
+      { n:"Río de lava", par:4, len:250, tee:[50, 236], hole:[50, 20], poly:oct(5, 5, 95, 245, 11),
+        zones:[{ t:"lava", rect:[5, 166, 90, 17] }, { t:"bridge", rect:[17, 166, 15, 17] }, { t:"bridge", rect:[68, 166, 15, 17] }, { t:"boost", rect:[44, 200, 12, 10], dir:[0, -1], k:140 }, { t:"lava", rect:[5, 82, 90, 16] }, { t:"bridge", rect:[39, 82, 22, 16] }],
+        bumpers:[[50, 174, 5, "rockV"], [24, 216, 3, "rockV"], [76, 216, 3, "rockV"], [26, 124, 3, "rockV"], [74, 124, 3, "rockV"]],
+        movers:[{ t:"sink", x:50, y:126, r:3.6, per:3 }, { t:"sink", x:32, y:52, r:3.6, per:3.4 }, { t:"sink", x:68, y:52, r:3.6, per:3.4, ph:3.1 }, { t:"sink", x:50, y:36, r:3, per:2.8, ph:1.5 }] },
+      { n:"Géiseres", par:5, len:260, tee:[20, 246], hole:[74, 20], poly:oct(5, 5, 95, 255, 10), blocks:[R4(5, 200, 60, 5), R4(35, 110, 60, 5)],
+        zones:[{ t:"boost", rect:[72, 210, 12, 10], dir:[0, -1], k:115 }, { t:"boost", rect:[12, 124, 12, 10], dir:[0, -1], k:115 }, { t:"lava", circ:[52, 160, 8] }, { t:"lava", circ:[24, 172, 5] }, { t:"lava", ell:[70, 76, 9, 6] }, { t:"lava", circ:[62, 36, 5.5] }],
+        bumpers:[[80, 160, 3.2, "rockV"], [26, 40, 3.2, "rockV"], [46, 226, 3.4, "rockV"], [60, 132, 3, "rockV"], [36, 84, 3, "rockV"]], movers:[{ t:"sink", x:44, y:22, r:3.4, per:3.2 }, { t:"sink", x:50, y:60, r:3, per:2.6, ph:1 }] },
+      { n:"El cráter", par:5, len:290, tee:[50, 274], hole:[50, 52], poly:oct(5, 5, 95, 285, 14),
+        zones:[{ t:"lava", circ:[50, 52, 21] }, { t:"bridge", circ:[50, 52, 12.5] }, { t:"bridge", rect:[42, 52, 16, 24] }, { t:"bridge", rect:[42, 28, 16, 24] }, { t:"bridge", rect:[26, 45, 24, 14] }, { t:"bridge", rect:[50, 45, 24, 14] },
+          { t:"lava", ell:[20, 112, 7, 5] }, { t:"lava", ell:[80, 112, 7, 5] }, { t:"lava", rect:[5, 172, 90, 16] }, { t:"bridge", rect:[9, 172, 19, 16] }, { t:"bridge", rect:[72, 172, 19, 16] }, { t:"lava", ell:[24, 230, 7, 4] }, { t:"lava", ell:[76, 230, 7, 4] }, { t:"boost", rect:[44, 196, 12, 10], dir:[0, -1], k:120 }],
+        bumpers:[[30, 92, 3, "rockV"], [70, 92, 3, "rockV"], [50, 132, 3, "rockV"], [26, 250, 3, "rockV"], [74, 250, 3, "rockV"]], movers:[{ t:"sink", x:38, y:84, r:3, per:3, ph:2 }, { t:"sink", x:62, y:84, r:3, per:3, ph:.5 }, { t:"sink", x:50, y:152, r:3.4, per:2.8, ph:1 }] } ] },
     { id:"luna", n:"La Luna", sub:"Gravedad y agujeros negros", flag:"#B39CF2", holes:[
-      { n:"Agujero negro", par:3, tee:[50, 146], hole:[50, 20], poly:oct(5, 5, 95, 155, 12), zones:[{ t:"grav", circ:[50, 84, 24], core:2.8, k:72 }, { t:"grav", circ:[74, 34, 11], core:2.2, k:48 }, { t:"crater", ell:[24, 120, 9, 6] }, { t:"crater", ell:[76, 44, 9, 6] }, { t:"crater", ell:[22, 38, 6, 4] }],
-        blocks:[R4(38, 48, 24, 4)], bumpers:[[80, 124, 3.4, "rockM"], [18, 76, 3, "rockM"]], movers:[{ t:"orbit", x:50, y:84, R:15, w:1.1, r:2.6 }] },
-      { n:"Cohetes", par:3, tee:[62, 146], hole:[30, 20], poly:oct(5, 5, 95, 155, 11), zones:[{ t:"grav", circ:[76, 120, 15], core:2.4, k:55 }, { t:"crater", ell:[30, 84, 10, 6] }, { t:"crater", ell:[72, 34, 8, 5] }],
-        tps:[[22, 128, 72, 52]], movers:[{ t:"car", y:60, h:8, len:16, v:36, n:2, ph:0, kind:"rocket" }, { t:"car", y:98, h:8, len:16, v:-30, n:2, ph:50, kind:"rocket" }], bumpers:[[50, 34, 3.2, "rockM"]] },
-      { n:"Anillos", par:3, tee:[76, 146], hole:[22, 30], poly:[[5, 5], [87, 5], [95, 13], [95, 155], [56, 155], [56, 66], [5, 66]], zones:[{ t:"grav", circ:[46, 34, 17], core:2.4, k:62 }, { t:"grav", circ:[76, 72, 9], core:2.2, k:42 }, { t:"crater", ell:[76, 124, 8, 6] }, { t:"crater", ell:[72, 40, 6, 4] }],
-        bumpers:[[76, 96, 6, "planet"]], movers:[{ t:"orbit", x:76, y:96, R:12.5, w:1.3, r:2.4 }, { t:"orbit", x:76, y:96, R:12.5, w:1.3, r:2.4, ph:3.14 }] } ] },
+      { n:"Agujero negro", par:4, len:250, tee:[50, 236], hole:[50, 20], poly:oct(5, 5, 95, 245, 12),
+        zones:[{ t:"grav", circ:[50, 156, 22], core:2.8, k:70 }, { t:"grav", circ:[74, 34, 11], core:2.2, k:48 }, { t:"grav", circ:[26, 92, 12], core:2.2, k:50 }, { t:"crater", ell:[24, 210, 9, 6] }, { t:"crater", ell:[76, 44, 9, 6] }, { t:"crater", ell:[22, 38, 6, 4] }, { t:"crater", ell:[78, 108, 8, 5] }],
+        blocks:[R4(38, 48, 24, 4), R4(5, 120, 33, 4), R4(62, 120, 33, 4)], bumpers:[[80, 214, 3.4, "rockM"], [16, 150, 3, "rockM"], [62, 98, 3, "rockM"]], movers:[{ t:"orbit", x:50, y:156, R:14, w:1.1, r:2.6 }] },
+      { n:"Cohetes", par:4, len:260, tee:[62, 246], hole:[30, 20], poly:oct(5, 5, 95, 255, 11),
+        zones:[{ t:"grav", circ:[76, 214, 14], core:2.4, k:55 }, { t:"crater", ell:[30, 176, 10, 6] }, { t:"crater", ell:[30, 84, 10, 6] }, { t:"crater", ell:[72, 34, 8, 5] }], blocks:[R4(30, 120, 40, 4)],
+        movers:[{ t:"car", y:150, h:8, len:16, v:-34, n:2, ph:30, kind:"rocket" }, { t:"car", y:186, h:8, len:16, v:28, n:2, ph:80, kind:"rocket" }, { t:"car", y:60, h:8, len:16, v:36, n:2, ph:0, kind:"rocket" }, { t:"car", y:98, h:8, len:16, v:-30, n:2, ph:50, kind:"rocket" }],
+        bumpers:[[50, 34, 3.2, "rockM"], [50, 122, 3.2, "rockM"]] },
+      { n:"Anillos", par:5, len:290, tee:[76, 274], hole:[22, 30], poly:[[5, 5], [87, 5], [95, 13], [95, 285], [56, 285], [56, 66], [5, 66]],
+        zones:[{ t:"grav", circ:[46, 34, 17], core:2.4, k:62 }, { t:"grav", circ:[76, 120, 10], core:2.2, k:44 }, { t:"crater", ell:[76, 252, 8, 6] }, { t:"crater", ell:[72, 40, 6, 4] }, { t:"crater", ell:[70, 160, 6, 4] }],
+        bumpers:[[76, 200, 6, "planet"], [64, 86, 3, "rockM"]], movers:[{ t:"orbit", x:76, y:200, R:12.5, w:1.3, r:2.4 }, { t:"orbit", x:76, y:200, R:12.5, w:1.3, r:2.4, ph:3.14 }, { t:"orbit", x:76, y:120, R:13, w:-1, r:2.4 }] } ] },
     { id:"castillo", n:"El Castillo", sub:"Foso, cañones y caballeros", flag:"#7A4FD9", holes:[
-      { n:"El foso", par:3, tee:[50, 146], hole:[50, 20], poly:oct(5, 5, 95, 155, 11), zones:[{ t:"water", rect:[5, 72, 90, 20] }, { t:"bridge", rect:[44, 72, 12, 20], per:4.2, on:.5 }],
-        bumpers:[[16, 120, 5, "tower"], [84, 120, 5, "tower"], [16, 36, 4, "tower"], [84, 36, 4, "tower"]], movers:[{ t:"knight", x:50, y:46, ax:24, ay:0, per:4, r:3.2 }, { t:"knight", x:50, y:108, ax:-20, ay:0, per:3.4, r:3.2 }] },
-      { n:"Cañones", par:3, tee:[50, 146], hole:[50, 20], poly:oct(5, 5, 95, 155, 11), blocks:[R4(22, 126, 18, 5), R4(60, 126, 18, 5), R4(5, 56, 7, 9), R4(88, 98, 7, 9), R4(88, 30, 7, 9)],
-        movers:[{ t:"shot", x:15, y:60.5, dx:1, len:76, sp:40, per:3.2, r:2.4 }, { t:"shot", x:85, y:102.5, dx:-1, len:76, sp:40, per:3.2, r:2.4, ph:1.6 }, { t:"shot", x:85, y:34.5, dx:-1, len:76, sp:46, per:2.8, r:2.4, ph:.8 }], bumpers:[[50, 82, 5, "tower"]] },
-      { n:"El laberinto", par:4, tee:[20, 146], hole:[30, 22], poly:oct(5, 5, 95, 155, 10), blocks:[R4(5, 118, 64, 5), R4(31, 88, 64, 5), R4(5, 58, 64, 5)],
-        movers:[{ t:"knight", x:56, y:104, ax:20, ay:0, per:3.6, r:3.2 }, { t:"knight", x:44, y:74, ax:-20, ay:0, per:3.2, r:3.2 }], bumpers:[[78, 30, 4, "tower"]] } ] },
+      { n:"El foso", par:5, len:250, tee:[50, 236], hole:[50, 20], poly:oct(5, 5, 95, 245, 11), zones:[{ t:"water", rect:[5, 158, 90, 20] }, { t:"bridge", rect:[20, 158, 15, 20] }, { t:"water", rect:[5, 72, 90, 20] }, { t:"bridge", rect:[43, 72, 14, 20], per:4.6, on:.62 }],
+        bumpers:[[16, 212, 5, "tower"], [84, 212, 5, "tower"], [16, 36, 4, "tower"], [84, 36, 4, "tower"], [82, 124, 4.5, "tower"]], movers:[{ t:"knight", x:50, y:196, ax:22, ay:0, per:3.8, r:3.2 }, { t:"knight", x:50, y:118, ax:-20, ay:0, per:3.4, r:3.2 }, { t:"knight", x:50, y:46, ax:24, ay:0, per:4, r:3.2 }] },
+      { n:"Cañones", par:4, len:260, tee:[50, 246], hole:[50, 20], poly:oct(5, 5, 95, 255, 11), blocks:[R4(22, 216, 18, 5), R4(60, 216, 18, 5), R4(5, 146, 7, 9), R4(88, 188, 7, 9), R4(5, 56, 7, 9), R4(88, 98, 7, 9), R4(88, 30, 7, 9)],
+        movers:[{ t:"shot", x:15, y:150.5, dx:1, len:76, sp:42, per:3, r:2.4, ph:.4 }, { t:"shot", x:85, y:192.5, dx:-1, len:76, sp:38, per:3.4, r:2.4, ph:2 }, { t:"shot", x:15, y:60.5, dx:1, len:76, sp:40, per:3.2, r:2.4 }, { t:"shot", x:85, y:102.5, dx:-1, len:76, sp:40, per:3.2, r:2.4, ph:1.6 }, { t:"shot", x:85, y:34.5, dx:-1, len:76, sp:46, per:2.8, r:2.4, ph:.8 }],
+        bumpers:[[50, 82, 5, "tower"], [50, 170, 5, "tower"]] },
+      { n:"El laberinto", par:5, len:290, tee:[20, 274], hole:[72, 24], poly:oct(5, 5, 95, 285, 10), blocks:[R4(5, 240, 64, 5), R4(31, 190, 64, 5), R4(5, 140, 64, 5), R4(31, 90, 64, 5)],
+        movers:[{ t:"knight", x:56, y:216, ax:20, ay:0, per:3.6, r:3.2 }, { t:"knight", x:44, y:166, ax:-20, ay:0, per:3.2, r:3.2 }, { t:"knight", x:56, y:116, ax:20, ay:0, per:3.4, r:3.2 }, { t:"knight", x:50, y:52, ax:-22, ay:0, per:3.8, r:3.2 }],
+        bumpers:[[28, 30, 4, "tower"], [86, 66, 3.6, "tower"]] } ] },
     { id:"feria", n:"La Feria", sub:"Calesita, autitos y payaso", flag:"#FF5FA2", holes:[
-      { n:"La calesita", par:3, tee:[50, 146], hole:[50, 20], poly:oct(5, 5, 95, 155, 11), zones:[{ t:"spin", circ:[50, 84, 19], w:1.9 }], bumpers:[[50, 84, 3, "pole"], [20, 50, 3.4, "mush"], [80, 50, 3.4, "mush"], [20, 118, 3.4, "mush"], [80, 118, 3.4, "mush"], [40, 36, 2.8, "mush"], [60, 36, 2.8, "mush"]] },
-      { n:"Autitos chocadores", par:3, tee:[50, 146], hole:[50, 20], poly:oct(5, 5, 95, 155, 11), zones:[{ t:"arena", rect:[10, 56, 80, 54] }],
-        movers:[{ t:"bcar", x:34, y:74, ax:18, ay:10, per:2.7, py:2.6, r:3.6, col:"#2F7FE8" }, { t:"bcar", x:66, y:92, ax:-16, ay:9, per:2.4, py:3.8, r:3.6, col:"#22A447" }, { t:"bcar", x:50, y:82, ax:22, ay:-12, per:3.5, py:3.2, pyo:1, r:3.6, col:"#FFC425" }], bumpers:[[34, 32, 3.2, "mush"], [66, 32, 3.2, "mush"], [50, 42, 3, "mush"]] },
-      { n:"El payaso", par:3, tee:[24, 146], hole:[80, 22], poly:[[5, 155], [5, 13], [13, 5], [95, 5], [95, 62], [44, 62], [44, 155]], tps:[[24, 98, 52, 50]], zones:[{ t:"spin", circ:[24, 34, 10], w:-1.6 }],
-        bumpers:[[24, 70, 3, "mush"], [70, 48, 3, "mush"], [86, 46, 2.8, "mush"], [66, 22, 2.8, "mush"], [80, 38, 2.8, "mush"]] } ] }
+      { n:"La calesita", par:4, len:250, tee:[50, 236], hole:[50, 20], poly:oct(5, 5, 95, 245, 11), zones:[{ t:"spin", circ:[50, 160, 19], w:1.9 }, { t:"spin", circ:[50, 74, 15], w:-2.2 }], blocks:[R4(5, 114, 30, 4.5), R4(65, 114, 30, 4.5)],
+        bumpers:[[50, 160, 3, "pole"], [50, 74, 3, "pole"], [20, 206, 3.4, "mush"], [80, 206, 3.4, "mush"], [22, 40, 3.2, "mush"], [78, 40, 3.2, "mush"], [40, 34, 2.8, "mush"], [60, 34, 2.8, "mush"]] },
+      { n:"Autitos chocadores", par:4, len:260, tee:[50, 246], hole:[50, 20], poly:oct(5, 5, 95, 255, 11), zones:[{ t:"arena", rect:[10, 146, 80, 54] }, { t:"arena", rect:[10, 56, 80, 54] }],
+        movers:[{ t:"bcar", x:34, y:164, ax:18, ay:10, per:2.5, py:2.9, r:3.6, col:"#EE3B2B" }, { t:"bcar", x:66, y:182, ax:-16, ay:9, per:2.8, py:3.4, r:3.6, col:"#7A4FD9" }, { t:"bcar", x:50, y:172, ax:22, ay:-12, per:3.3, py:2.7, pyo:2, r:3.6, col:"#5CE1A0" },
+          { t:"bcar", x:34, y:74, ax:18, ay:10, per:2.7, py:2.6, r:3.6, col:"#2F7FE8" }, { t:"bcar", x:66, y:92, ax:-16, ay:9, per:2.4, py:3.8, r:3.6, col:"#22A447" }, { t:"bcar", x:50, y:82, ax:22, ay:-12, per:3.5, py:3.2, pyo:1, r:3.6, col:"#FFC425" }],
+        blocks:[R4(5, 126, 36, 4.5), R4(59, 126, 36, 4.5)], bumpers:[[34, 32, 3.2, "mush"], [66, 32, 3.2, "mush"], [50, 42, 3, "mush"], [24, 222, 3.2, "mush"], [76, 222, 3.2, "mush"], [50, 128, 3, "mush"]] },
+      { n:"El payaso", par:4, len:290, tee:[24, 274], hole:[80, 22], poly:[[5, 285], [5, 13], [13, 5], [95, 5], [95, 62], [44, 62], [44, 285]], tps:[[12, 108, 60, 46]],
+        zones:[{ t:"spin", circ:[24, 34, 10], w:-1.6 }, { t:"spin", circ:[24, 200, 12], w:1.8 }],
+        bumpers:[[24, 200, 2.6, "pole"], [24, 244, 3, "mush"], [12, 168, 3, "mush"], [36, 160, 3, "mush"], [14, 96, 3, "mush"], [34, 80, 3, "mush"], [70, 48, 3, "mush"], [86, 46, 2.8, "mush"], [66, 22, 2.8, "mush"], [80, 38, 2.8, "mush"]] } ] }
   ];
   MAPS.forEach((m, mi) => m.holes.forEach((h, hi) => { h.map = m; h.mi = mi; h.hi = hi; }));
 
@@ -12234,7 +12279,7 @@ const GOLF = (() => {
   /* ---------- mapa de distancias al hoyo (para que el robot juegue bien y para validar los hoyos) ---------- */
   function field(w){
     if (w._f) return w._f;
-    const GW = 100, GH = 160, F = new Float64Array(GW * GH).fill(1e9), cost = new Float32Array(GW * GH);
+    const GW = 100, GH = Math.ceil(w.h.len || 160), F = new Float64Array(GW * GH).fill(1e9), cost = new Float32Array(GW * GH);
     for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) { const x = i + .5, y = j + .5, id = j * GW + i;
       if (!w.polys.some(p => inPoly(p, x, y))) { cost[id] = -1; continue; }
       let ok = true; for (const s of w.segs) { const [cx, cy] = closest(s[0], s[1], s[2], s[3], x, y); if ((x - cx) ** 2 + (y - cy) ** 2 < (CR - .25) ** 2) { ok = false; break; } }
@@ -12329,22 +12374,22 @@ const GOLFART = (() => { let LAVA = [];
   function lampTop(x, cx, cy, col){ const g = x.createRadialGradient(cx, cy, .2, cx, cy, 9); g.addColorStop(0, col.replace(")", ",.45)").replace("rgb", "rgba")); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; circle(x, cx, cy, 9); x.fill(); circle(x, cx, cy, 1.6); inked(x, "#FFF4BE", .5); }
   function decorate(x, h, th, B){
     const id = h.map.id, rand = rng(31 + h.mi * 17 + h.hi * 5);
-    x.fillStyle = th.g1; x.fillRect(B[0], B[1], B[2] - B[0], B[3] - B[1]);
-    for (let i = 0; i < 70; i++) { x.fillStyle = rand() < .5 ? th.g2 : "rgba(0,0,0,.05)"; x.beginPath(); x.ellipse(B[0] + rand() * (B[2] - B[0]), B[1] + rand() * (B[3] - B[1]), 3 + rand() * 9, 2 + rand() * 4, rand() * 3, 0, 7); x.fill(); }
+    x.fillStyle = th.g1; x.fillRect(B[0], B[1], B[2] - B[0], B[3] - B[1]); const ak = Math.max(1, (B[2] - B[0]) * (B[3] - B[1]) / 19000), nk = n => Math.round(n * ak);
+    for (let i = 0; i < nk(70); i++) { x.fillStyle = rand() < .5 ? th.g2 : "rgba(0,0,0,.05)"; x.beginPath(); x.ellipse(B[0] + rand() * (B[2] - B[0]), B[1] + rand() * (B[3] - B[1]), 3 + rand() * 9, 2 + rand() * 4, rand() * 3, 0, 7); x.fill(); }
     if (id === "plaza" && B[0] < -3) { x.fillStyle = "#D9C9A3"; x.strokeStyle = "rgba(120,100,70,.35)"; x.lineWidth = .4; for (let y = B[1]; y < B[3]; y += 5) [[B[0], 7], [B[2] - 7, 7]].forEach(([px, ww]) => { x.fillRect(px, y, ww, 4.6); x.strokeRect(px, y, ww, 4.6); }); }
     if (id === "playa") { const g = x.createLinearGradient(0, B[1], 0, B[1] + 10); g.addColorStop(0, "#2D9FD8"); g.addColorStop(1, "#55C2EC"); x.fillStyle = g; x.fillRect(B[0], B[1], B[2] - B[0], 9); x.fillStyle = "rgba(255,255,255,.8)"; for (let px = B[0]; px < B[2]; px += 4) { circle(x, px + 2, B[1] + 9, 2.1); x.fill(); } }
     if (id === "luna") { const ex = B[2] - 4, ey = B[1] + 6; x.save(); x.shadowColor = "#5CC6F0"; x.shadowBlur = 6; circle(x, ex, ey, 9); x.fillStyle = "#2F7FE8"; x.fill(); x.restore(); x.save(); circle(x, ex, ey, 9); x.clip(); x.fillStyle = "#22A447"; [[-3, -2, 4, 2.6], [3, 3, 3.4, 2.4], [-1, 6, 3, 1.6]].forEach(([a, b2, c2, d]) => { x.beginPath(); x.ellipse(ex + a, ey + b2, c2, d, .4, 0, 7); x.fill(); }); x.fillStyle = "rgba(0,0,30,.35)"; circle(x, ex + 4, ey + 3, 9); x.fill(); x.restore(); }
-    if (h.river) { const [rx, ry, rw, rh] = h.river; x.fillStyle = th.water; x.fillRect(rx, ry, rw, rh); x.strokeStyle = "rgba(255,255,255,.35)"; x.lineWidth = .6; for (let k = 0; k < 10; k++) { const px = rand() * 100, py = ry + 3 + rand() * (rh - 6); x.beginPath(); x.moveTo(px, py); x.quadraticCurveTo(px + 3, py - 1.2, px + 6, py); x.stroke(); }
-      x.fillStyle = th.rim; x.fillRect(rx, ry - 1, rw, 1.6); x.fillRect(rx, ry + rh - .6, rw, 1.6); }
+    (h.rivers || (h.river ? [h.river] : [])).forEach(([rx, ry, rw, rh]) => { x.fillStyle = th.water; x.fillRect(rx, ry, rw, rh); x.strokeStyle = "rgba(255,255,255,.35)"; x.lineWidth = .6; for (let k = 0; k < 10; k++) { const px = rand() * 100, py = ry + 3 + rand() * (rh - 6); x.beginPath(); x.moveTo(px, py); x.quadraticCurveTo(px + 3, py - 1.2, px + 6, py); x.stroke(); }
+      x.fillStyle = th.rim; x.fillRect(rx, ry - 1, rw, 1.6); x.fillRect(rx, ry + rh - .6, rw, 1.6); });
     if (h.fall) { const [fx, fy, fw, fh] = h.fall, g = x.createLinearGradient(fx, 0, fx + fw, 0); g.addColorStop(0, "#5FD0E0"); g.addColorStop(.5, "#B8F0F7"); g.addColorStop(1, "#5FD0E0"); x.fillStyle = g; x.fillRect(fx, fy, fw, fh);
       x.strokeStyle = "rgba(255,255,255,.7)"; x.lineWidth = .5; for (let k = 0; k < 7; k++) { const px = fx + 1 + k * fw / 7; x.beginPath(); x.moveTo(px, fy); x.lineTo(px, fy + fh); x.stroke(); } }
-    if (id === "luna") { for (let i = 0; i < 160; i++) { const sx = B[0] + rand() * (B[2] - B[0]), sy = B[1] + rand() * (B[3] - B[1]), q = rand(); x.fillStyle = q < .15 ? "#FFE27A" : q < .3 ? "#B39CF2" : "#FFFFFF"; circle(x, sx, sy, .2 + rand() * .45); x.fill(); } }
+    if (id === "luna") { for (let i = 0; i < nk(160); i++) { const sx = B[0] + rand() * (B[2] - B[0]), sy = B[1] + rand() * (B[3] - B[1]), q = rand(); x.fillStyle = q < .15 ? "#FFE27A" : q < .3 ? "#B39CF2" : "#FFFFFF"; circle(x, sx, sy, .2 + rand() * .45); x.fill(); } }
     if (id === "castillo") { x.strokeStyle = "rgba(60,55,50,.35)"; x.lineWidth = .35; for (let y = B[1]; y < B[3]; y += 3.6) for (let xx = B[0] + ((y / 3.6) % 2 ? 2.4 : 0); xx < B[2]; xx += 4.8) { x.fillStyle = rand() < .5 ? "rgba(255,255,255,.06)" : "rgba(0,0,0,.05)"; x.beginPath(); x.rect(xx, y, 4.6, 3.4); x.fill(); x.stroke(); } }
-    if (id === "volcan") { x.strokeStyle = "rgba(255,110,30,.6)"; x.lineWidth = .5; for (let i = 0; i < 26; i++) { let px = B[0] + rand() * (B[2] - B[0]), py = B[1] + rand() * (B[3] - B[1]); x.beginPath(); x.moveTo(px, py); for (let k = 0; k < 5; k++) { px += (rand() - .5) * 8; py += (rand() - .5) * 8; x.lineTo(px, py); } x.stroke(); } }
-    if (id === "feria") { const cc = ["#FF5FA2", "#FFC425", "#5CC6F0", "#7A4FD9", "#5CE1A0"]; for (let i = 0; i < 140; i++) { x.fillStyle = cc[i % 5]; x.save(); x.translate(B[0] + rand() * (B[2] - B[0]), B[1] + rand() * (B[3] - B[1])); x.rotate(rand() * 3); x.fillRect(-.6, -.25, 1.2, .5); x.restore(); } }
+    if (id === "volcan") { x.strokeStyle = "rgba(255,110,30,.6)"; x.lineWidth = .5; for (let i = 0; i < nk(26); i++) { let px = B[0] + rand() * (B[2] - B[0]), py = B[1] + rand() * (B[3] - B[1]); x.beginPath(); x.moveTo(px, py); for (let k = 0; k < 5; k++) { px += (rand() - .5) * 8; py += (rand() - .5) * 8; x.lineTo(px, py); } x.stroke(); } }
+    if (id === "feria") { const cc = ["#FF5FA2", "#FFC425", "#5CC6F0", "#7A4FD9", "#5CE1A0"]; for (let i = 0; i < nk(140); i++) { x.fillStyle = cc[i % 5]; x.save(); x.translate(B[0] + rand() * (B[2] - B[0]), B[1] + rand() * (B[3] - B[1])); x.rotate(rand() * 3); x.fillRect(-.6, -.25, 1.2, .5); x.restore(); } }
     const placed = [];
     for (let gy = B[1] + 2; gy < B[3]; gy += 6) for (let gx = B[0] + 2; gx < B[2]; gx += 6) { const px = gx + (rand() - .5) * 6, py = gy + (rand() - .5) * 6, roll = rand();
-      if (nearCourse(h, px, py, 2.5) || (h.river && py > h.river[1] - 4 && py < h.river[1] + h.river[3] + 4) || (h.fall && px > h.fall[0] - 3 && px < h.fall[0] + h.fall[2] + 3 && py > h.fall[1] - 3)) continue;
+      if (nearCourse(h, px, py, 2.5) || (h.rivers || (h.river ? [h.river] : [])).some(rv => py > rv[1] - 4 && py < rv[1] + rv[3] + 4) || (h.fall && px > h.fall[0] - 3 && px < h.fall[0] + h.fall[2] + 3 && py > h.fall[1] - 3)) continue;
       if (placed.some(([a, b]) => (a - px) ** 2 + (b - py) ** 2 < 26)) continue; placed.push([px, py]);
       if (id === "plaza") { if (roll < .45) tree(x, px, py, 3 + rand() * 2, "#2F7F3B", "#44A04E", "#7CCB6E"); else if (roll < .7) flowers(x, px, py, 3, rand); else if (roll < .8) bench(x, px, py); }
       else if (id === "playa") { if (py < B[1] + 10) continue; if (roll < .2) umbrella(x, px, py, 3.6, ["#EE3B2B", "#2F7FE8", "#FFC425", "#22A447"][Math.floor(rand() * 4)], "#FFFFFF"); else if (roll < .35) towel(x, px, py, rand() - .5, ["#FF7DB0", "#7A4FD9", "#FFC425"][Math.floor(rand() * 3)]); else if (roll < .7) shell(x, px, py, rand); }
@@ -12449,7 +12494,7 @@ const GOLFART = (() => { let LAVA = [];
   }
   /* Detallecitos sobre el pasto (no chocan): hojas, florcitas, escarcha, papelitos */
   function details(x, h, id){ const rand = rng(77 + h.mi * 13 + h.hi * 7), polys = h.polys || [h.poly], bad = (px, py) => !polys.some(p => inPoly(p, px, py)) || (h.zones || []).some(z => z.t !== "rough" && z.t !== "slope" && inZone(z, px, py)) || (h.bumpers || []).some(b => (b[0] - px) ** 2 + (b[1] - py) ** 2 < (b[2] + 2) ** 2) || (h.hole[0] - px) ** 2 + (h.hole[1] - py) ** 2 < 30 || (h.tee[0] - px) ** 2 + (h.tee[1] - py) ** 2 < 40;
-    for (let i = 0; i < 46; i++) { const px = 6 + rand() * 88, py = 6 + rand() * 148; if (bad(px, py)) continue; const a = rand() * 6, roll = rand();
+    const LN = h.len || 160; for (let i = 0; i < Math.round(46 * LN / 160); i++) { const px = 6 + rand() * 88, py = 6 + rand() * (LN - 12); if (bad(px, py)) continue; const a = rand() * 6, roll = rand();
       if (id === "plaza") { if (roll < .5) leaf(x, px, py, 1.6, a, rand() < .5 ? "#C98A3A" : "#E3B04B", "#8A5A20"); else { x.fillStyle = ["#FFF3C4", "#FFFFFF", "#FF9EC4"][i % 3]; for (let k = 0; k < 4; k++) { circle(x, px + Math.cos(k * 1.57) * .45, py + Math.sin(k * 1.57) * .45, .36); x.fill(); } x.fillStyle = "#E8A21A"; circle(x, px, py, .28); x.fill(); } }
       else if (id === "playa") { if (roll < .55) { x.fillStyle = "rgba(240,215,150,.55)"; x.beginPath(); x.ellipse(px, py, 1.6, .9, a, 0, 7); x.fill(); } else { x.fillStyle = "#FFF4E6"; x.beginPath(); x.ellipse(px, py, .9, .7, a, 0, 7); x.fill(); x.strokeStyle = "#E0BFA0"; x.lineWidth = .2; x.stroke(); } }
       else if (id === "glaciar") { x.strokeStyle = "rgba(255,255,255,.95)"; x.lineWidth = .3; for (let k = 0; k < 3; k++) { const q = a + k * 1.047; x.beginPath(); x.moveTo(px - Math.cos(q) * 1, py - Math.sin(q) * 1); x.lineTo(px + Math.cos(q) * 1, py + Math.sin(q) * 1); x.stroke(); } }
@@ -12465,9 +12510,9 @@ const GOLFART = (() => { let LAVA = [];
     decorate(x, h, th, B);
     polys.forEach(p => { x.fillStyle = "rgba(0,0,0,.3)"; x.save(); x.translate(1, 1.6); path(x, p); x.fill(); x.restore(); });
     polys.forEach(p => { path(x, p); x.fillStyle = th.t1; x.fill(); x.save(); path(x, p); x.clip(); turf(x, p, h, id, th); const r = rng(5);
-      if (h.road) { const [rx, ry, rw, rh] = h.road; x.fillStyle = "#3A3F57"; x.fillRect(rx, ry, rw, rh); x.fillStyle = "rgba(255,255,255,.05)"; for (let i = 0; i < 120; i++) x.fillRect(rx + r() * rw, ry + r() * rh, .5, .5);
+      (h.roads || (h.road ? [h.road] : [])).forEach(([rx, ry, rw, rh]) => { x.fillStyle = "#3A3F57"; x.fillRect(rx, ry, rw, rh); x.fillStyle = "rgba(255,255,255,.05)"; for (let i = 0; i < 120; i++) x.fillRect(rx + r() * rw, ry + r() * rh, .5, .5);
         x.strokeStyle = "#F0B429"; x.lineWidth = .7; x.setLineDash([3, 2.4]); x.beginPath(); x.moveTo(rx, ry + rh / 2); x.lineTo(rx + rw, ry + rh / 2); x.stroke(); x.setLineDash([]);
-        x.fillStyle = "rgba(240,240,232,.8)"; for (let k = 0; k < 6; k++) x.fillRect(42 + k * 3, ry + 1, 1.8, rh - 2); x.fillStyle = "#E9ECF4"; x.fillRect(rx, ry - .6, rw, .9); x.fillRect(rx, ry + rh - .3, rw, .9); }
+        x.fillStyle = "rgba(240,240,232,.8)"; for (let k = 0; k < 6; k++) x.fillRect(42 + k * 3, ry + 1, 1.8, rh - 2); x.fillStyle = "#E9ECF4"; x.fillRect(rx, ry - .6, rw, .9); x.fillRect(rx, ry + rh - .3, rw, .9); });
       details(x, h, id); LAVA = (h.zones || []).filter(z => z.t === "lava" && !z.ell); (h.zones || []).filter(z => z.t !== "bridge").forEach(z => zone(x, z, th, id)); (h.zones || []).filter(z => z.t === "bridge").forEach(z => zone(x, z, th, id));
       x.strokeStyle = "rgba(0,0,0,.16)"; x.lineWidth = 5; path(x, p); x.stroke(); x.restore(); });
     const [tx, ty] = h.tee; x.save(); x.translate(tx, ty); x.fillStyle = "rgba(0,0,0,.18)"; x.beginPath(); x.roundRect ? x.roundRect(-5.5, -3.6, 11, 7.2, 2) : x.rect(-5.5, -3.6, 11, 7.2); x.fill(); x.fillStyle = "rgba(255,255,255,.85)"; circle(x, -3.6, 0, .7); x.fill(); circle(x, 3.6, 0, .7); x.fill(); x.restore();
@@ -12513,17 +12558,18 @@ const GOLF_TIPS = {
   crab:["🦀", "Cangrejo", "Camina de un lado a otro y desvía la pelota si se la cruza."],
   peng:["🐧", "Pingüinos", "Se deslizan por el hielo. Si chocan la pelota, la desvían."],
   ball:["🏐", "Pelota de playa", "Va y viene. Si la toca tu pelota, rebota."],
-  bird:["🐦", "Paloma", "Camina por la plaza y desvía la pelota si se cruza."]
+  bird:["🐦", "Paloma", "Camina por la plaza y desvía la pelota si se cruza."],
+  long:["🗺️", "Cancha larga", "No entra en la pantalla: la cámara sigue a la pelota. Toca el mapita de la esquina para mirar hasta el hoyo."]
 };
-const golfElems = h => { const out = [], add = k => { if (GOLF_TIPS[k] && !out.includes(k)) out.push(k); };
+const golfElems = h => { const out = [], add = k => { if (GOLF_TIPS[k] && !out.includes(k)) out.push(k); }; if ((h.len || 160) > 175) add("long");
   (h.zones || []).forEach(z => add(z.t === "bridge" && z.per ? "bridgeP" : z.t)); if ((h.tps || []).length) add("tps");
   (h.movers || []).forEach(m => add(m.t === "car" && m.kind === "rocket" ? "rocket" : m.t)); (h.bumpers || []).forEach(b => add(b[3])); return out; };
 const golfOpt = () => { const st = arcState(); st.golf = st.golf || {}; if (!GOLF_HOLES.includes(st.golf.n)) st.golf.n = 3; return st.golf; };
 const golfLabel = (s, par, picked) => picked ? "Se levantó" : s === 1 ? "¡HOYO EN UNO!" : s - par <= -3 ? "¡Albatros!" : s - par === -2 ? "¡Águila!" : s - par === -1 ? "¡Birdie!" : s === par ? "Par" : s - par === 1 ? "Bogey" : s - par === 2 ? "Doble bogey" : "+" + (s - par);
 const golfPts = (s, par, picked) => picked ? 3 : s === 1 ? 100 : s - par <= -2 ? 70 : s - par === -1 ? 50 : s === par ? 35 : s - par === 1 ? 20 : s - par === 2 ? 10 : 5;
 let golfLast = null;
-arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot", "duo"],
-  t:"Tito Golf", d:"Minigolf en 9 canchas. Solo, contra el robot o con un amigo en el mismo celu.", col:"g", revive:false, fill:[1.42, 1.72], fsMax:1.08, ctlH:0,
+arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["bot", "duo"],
+  t:"Tito Golf", d:"Minigolf en 9 canchas largas. Contra el robot o con un amigo en el mismo celu.", col:"g", revive:false, fill:[1.42, 1.72], fsMax:1.08, ctlH:0,
   intro:"Arrastra hacia atrás para apuntar y elegir la fuerza, como una gomera. Suelta para pegar.",
   help:"Arrastra hacia atrás y suelta para pegar",
   points: s => s / 5,
@@ -12551,9 +12597,9 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
     <circle cx="20" cy="37" r="2.6" fill="#fff" stroke="${IK}" stroke-width="1.1"/><path d="M20 34 L22 22" stroke="#FFC425" stroke-width="1.6" stroke-dasharray="1.6 1.6"/>${thumbTito(24, 22, .14, "happy")}</g><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, H, c, cv } = api, A = GOLFART, M = GOLF, dpr = Math.min(2, window.devicePixelRatio || 1);
-    const hudH = 34, s = Math.min(W / 100, (H - hudH - 6) / 160), ox = (W - 100 * s) / 2, oy = hudH + 2 + (H - hudH - 6 - 160 * s) / 2;
-    const B = [-ox / s - 2, -oy / s - 2, (W - ox) / s + 2, (H - oy) / s + 2];
-    const toC = (px, py) => [(px - ox) / s, (py - oy) / s];
+    const hudH = 34, s = Math.min(W / 100, (H - hudH - 6) / 150), ox = (W - 100 * s) / 2, VT = hudH + 2, VH = (H - hudH - 6) / s;
+    /* Cámara: las canchas largas se desplazan. cam.y = primera fila de cancha que se ve arriba (en unidades) */
+    let oy = VT; const cam = { y:0, v:0, g:0, lo:0, hi:0, peek:0 }; let mini = null;
     const FONT = n => `${n}px "Luckiest Guy", Fredoka, sans-serif`, BOLD = n => `700 ${n}px Fredoka, sans-serif`;
     let T = 0, phase = "ready", plan = [], hi = 0, hole = null, w = null, stat = null, ps = [], cur = 0, mode = "solo", lastTurn = -1, timer = 0, ai = null, aiShot = null, aiT = 0;
     let tips = null, noTips = false, drag = null, aimA = 0, aimP = 0, swing = 0, parts = [], pops = [], banner = null, roul = null, sndWall = 0, lvl = "normal", tiles = null, preview = null, prevKey = "";
@@ -12561,6 +12607,33 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
     /* ---- capa fija de cada hoyo ---- */
     function buildStatic(h, ww, hh, sc, x0, y0, bounds){ const cvs = document.createElement("canvas"); cvs.width = Math.ceil(ww * dpr); cvs.height = Math.ceil(hh * dpr); const x = cvs.getContext("2d");
       x.setTransform(dpr * sc, 0, 0, dpr * sc, dpr * x0, dpr * y0); A.paint(x, h, bounds); return cvs; }
+    const HL = h => h.len || 160, clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+    function camRange(h){ const L = HL(h); let lo = -3, hi = L + 3 - VH; if (hi < lo) lo = hi = (L - VH) / 2; return [lo, hi]; }
+    /* La capa fija cubre todo el recorrido de la cámara, así desplazarse es solo copiar otra parte de la imagen */
+    function holeStatic(h){ const [lo, hi] = camRange(h), yT = lo - VT / s - 2, yB = hi + (H - VT) / s + 2, y0 = Math.round(-yT * s * dpr) / dpr;
+      return { cv:buildStatic(h, W, (yB - yT) * s + 2, s, ox, y0, [-ox / s - 2, yT, (W - ox) / s + 2, yB]), y0 }; }
+    function drawStatic(){ const cvs = stat.cv, syD = Math.max(0, Math.round((stat.y0 - oy) * dpr)), hD = Math.min(Math.ceil(H * dpr), cvs.height - syD); c.drawImage(cvs, 0, syD, cvs.width, hD, 0, 0, cvs.width / dpr, hD / dpr); }
+    /* Mapita de la cancha entera (se achica de a mitades para que se vea prolijo) */
+    function buildMini(h){ const L = HL(h) + 6; let mw = 32, mh = mw * L / 100; if (mh > H * .3) { mh = H * .3; mw = mh * 100 / L; }
+      let src = stat.cv, sx = Math.round(ox * dpr), sy = Math.round((stat.y0 - 3 * s) * dpr), sw = Math.round(100 * s * dpr), sh = Math.round(L * s * dpr); const tw = Math.ceil(mw * dpr), th = Math.ceil(mh * dpr);
+      while (sw > tw * 2.2) { const t = document.createElement("canvas"); t.width = Math.ceil(sw / 2); t.height = Math.ceil(sh / 2); t.getContext("2d").drawImage(src, sx, sy, sw, sh, 0, 0, t.width, t.height); src = t; sx = sy = 0; sw = t.width; sh = t.height; }
+      const out = document.createElement("canvas"); out.width = tw; out.height = th; const ox2 = out.getContext("2d"); ox2.imageSmoothingQuality = "high"; ox2.drawImage(src, sx, sy, sw, sh, 0, 0, tw, th);
+      return { cv:out, w:mw, h:mh, x:W - mw - 8, y:VT + 8, L, a:1 }; }
+    const cupCam = () => hole.hole[1] - VH * .42;
+    function aimCam(b){ const m = Math.min(30, VH * .2), t = (b.y + hole.hole[1]) / 2 - VH / 2; return clamp(t, b.y - VH + m + 6, b.y - m); }
+    function camStep(dt){ if (!hole) return; const p = ps[cur], b = p && p.b; cam.peek = Math.max(0, cam.peek - dt); let st = .5;
+      if (cam.lo === cam.hi) { cam.y = cam.lo; cam.v = 0; }
+      else { if (cam.peek > 0) { cam.g = cupCam(); st = .42; }
+        else if (phase === "intro") { cam.g = banner && banner.t < .7 ? cupCam() : aimCam(b); st = .5; }
+        else if (phase === "roll" || phase === "splash" || phase === "after" || phase === "holeEnd" || phase === "over") { const ly = b.y + clamp(b.vy * .3, -45, 45), top = VH * .32, bot = VH * .66;
+          if (ly < cam.g + top) cam.g = ly - top; else if (ly > cam.g + bot) cam.g = ly - bot; st = .24; }
+        else cam.g = aimCam(b);
+        cam.g = clamp(cam.g, cam.lo, cam.hi);
+        /* resorte críticamente amortiguado: arranca y frena suave, sin saltos */
+        const om = 2 / st, x = om * dt, ex = 1 / (1 + x + .48 * x * x + .235 * x * x * x), ch = cam.y - cam.g, tmp = (cam.v + om * ch) * dt;
+        cam.v = (cam.v - om * tmp) * ex; cam.y = cam.g + (ch + tmp) * ex; if (Math.abs(cam.y - cam.g) < .01 && Math.abs(cam.v) < .05) { cam.y = cam.g; cam.v = 0; } }
+      oy = Math.round((VT - cam.y * s) * dpr) / dpr; }
+    const introLim = () => cam.lo !== cam.hi ? 2.5 : 1.9;
     const playerImg = (p, mood) => p.kind === "bot" ? robotImg(mood === "sad" ? "sad" : mood === "happy" ? "happy" : "normal") : titoImg(p.tito || {}, mood || "normal", 120);
     /* ---- ruleta de canchas ---- */
     const SNAKE = [0, 1, 2, 5, 4, 3, 6, 7, 8];
@@ -12594,7 +12667,8 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
     function rrect(x, y, ww, hh, r){ c.beginPath(); if (c.roundRect) c.roundRect(x, y, ww, hh, r); else c.rect(x, y, ww, hh); }
     /* ---- hoyos y turnos ---- */
     function startHole(){
-      hole = plan[hi]; w = M.compile(hole); stat = buildStatic(hole, W, H, s, ox, oy, B); M.field(w);
+      hole = plan[hi]; w = M.compile(hole); [cam.lo, cam.hi] = camRange(hole); stat = holeStatic(hole); mini = cam.lo !== cam.hi ? buildMini(hole) : null; M.field(w);
+      cam.y = cam.g = clamp(cupCam(), cam.lo, cam.hi); cam.v = 0; cam.peek = 0; oy = Math.round((VT - cam.y * s) * dpr) / dpr;
       ps.forEach(p => { p.b = { x:hole.tee[0], y:hole.tee[1], vx:0, vy:0, fr:"grass", tp:0, lip:0, rx:hole.tee[0], ry:hole.tee[1], done:false, s:0, sink:0, pk:false, a:1 }; });
       cur = ps.length > 1 ? hi % ps.length : 0; lastTurn = -1; parts = []; pops = []; preview = null;
       banner = { k:"intro", t:0 }; phase = "intro"; api.info(`Hoyo ${hi + 1} de ${plan.length} · ${esc(hole.map.n)}`); SND.fx("whoosh");
@@ -12646,7 +12720,8 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
       if (phase === "roul") { if (!roul.done) { roul.steps.forEach(st => st.d = .012); } return; }
       if (phase === "intro" || phase === "holeEnd") { if (banner && banner.t > .35) banner.t = 99; return; }
       if (phase === "tips") { tipsNext(); return; }
-      if (phase !== "aim" || timer > 0 || ps[cur].kind === "bot") return; drag = { x:px, y:py, cx:px, cy:py }; try { cv.setPointerCapture(e.pointerId); } catch(_){} });
+      if (mini && px > mini.x - 10 && px < mini.x + mini.w + 10 && py > mini.y - 10 && py < mini.y + mini.h + 10 && (phase === "aim" || phase === "think" || phase === "botAim")) { cam.peek = cam.peek > 0 ? 0 : 1.7; SND.tap(); return; }
+      if (phase !== "aim" || timer > 0 || ps[cur].kind === "bot") return; cam.peek = 0; drag = { x:px, y:py, cx:px, cy:py }; try { cv.setPointerCapture(e.pointerId); } catch(_){} });
     api.on(cv, "pointermove", e => { if (!drag) return; const [px, py] = pos(e); drag.cx = px; drag.cy = py; const dx = drag.x - px, dy = drag.y - py, L = Math.hypot(dx, dy);
       aimP = Math.min(1, L / (W * .42)); if (L > 6) aimA = Math.atan2(dy, dx); });
     const up = () => { if (!drag) return; const ok = aimP > .045; drag = null; if (ok && phase === "aim") shoot(aimA, aimP); else { aimP = 0; preview = null; } };
@@ -12665,7 +12740,7 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
       if (phase === "tips") { tips.t += dt; return; }
       if (!hole || phase === "over") return;
       if (timer > 0) timer -= dt;
-      if (phase === "intro" || phase === "holeEnd") { banner.t += dt; const lim = phase === "intro" ? 1.9 : 2.6;
+      if (phase === "intro" || phase === "holeEnd") { banner.t += dt; const lim = phase === "intro" ? introLim() : 2.6;
         if (banner.t >= lim) { banner = null; if (phase === "intro") { if (tips) showTips(); else beginTurn(); } else if (hi + 1 < plan.length) { hi++; startHole(); } else finish(); } return; }
       const p = ps[cur];
       /* pelotas quietas que las empuja algo que se mueve (autos, molino, pingüinos) */
@@ -12680,11 +12755,12 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
         else if (r === "water") { p.b.s++; SND.fx("splash"); for (let i = 0; i < 16; i++) parts.push({ x:p.b.x, y:p.b.y, vx:(R() - .5) * 46, vy:-R() * 40, g:90, life:.7, r:.8 + R() * .7, col:"#BFEFFF" });
           pops.push({ x:p.b.x, y:p.b.y, t:0, tx:p.b.haz === "lava" ? "+1 · a la lava" : p.b.haz === "hole" ? "+1 · ¡se la tragó!" : "+1 · al agua" }); if (p.b.haz === "lava") { SND.fx("steam"); parts.slice(-16).forEach(q => q.col = ["#FFD34A", "#FF7A1A", "#555"][Math.floor(R() * 3)]); } if (p.b.haz === "hole") { SND.fx("warp"); parts.slice(-16).forEach(q => q.col = "#B39CF2"); } p.b.wet = { x:p.b.x, y:p.b.y }; p.b.vx = p.b.vy = 0; p.b.a = 0; phase = "splash"; timer = .9; }
         else if (r === "rest" || timer > 12) { p.b.vx = p.b.vy = 0; p.b.rx = p.b.x; p.b.ry = p.b.y; phase = "after"; timer = .35;
-          if (p.b.s >= M.MAXS) { p.b.done = true; p.b.pk = true; p.b.s = M.MAXS + 1; pops.push({ x:p.b.x, y:p.b.y, t:0, tx:"Se levantó la pelota" }); timer = 1; } } }
-      else if (phase === "splash") { if (timer <= 0) { p.b.x = p.b.rx; p.b.y = p.b.ry; p.b.a = 1; p.b.wet = null; if (p.b.s >= M.MAXS) { p.b.done = true; p.b.pk = true; p.b.s = M.MAXS + 1; } phase = "after"; timer = .25; } }
+          if (p.b.s >= hole.par + 4) { p.b.done = true; p.b.pk = true; p.b.s = hole.par + 5; pops.push({ x:p.b.x, y:p.b.y, t:0, tx:"Se levantó la pelota" }); timer = 1; } } }
+      else if (phase === "splash") { if (timer <= 0) { p.b.x = p.b.rx; p.b.y = p.b.ry; p.b.a = 1; p.b.wet = null; if (p.b.s >= hole.par + 4) { p.b.done = true; p.b.pk = true; p.b.s = hole.par + 5; } phase = "after"; timer = .25; } }
       else if (phase === "after") { if (p.b.sink) p.b.sink += dt; if (timer <= 0) nextTurn(); }
       if (phase === "aim" && aimP > .045) calcPreview();
     }
+    function stepAll(dt){ step(dt); camStep(dt); }
     function confettiAt(x, y, n){ const cols = ["#FFC425", "#EE3B2B", "#2F7FE8", "#22A447", "#FF7DB0", "#FFFFFF"]; for (let i = 0; i < n; i++) { const a = R() * 7, sp = 20 + R() * 60; parts.push({ x, y, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp - 30, g:60, life:1 + R() * .8, r:.9 + R() * .6, col:cols[i % 6], sq:1, rot:R() * 6 }); } }
     /* ---- dibujo ---- */
     function drawMovers(){ if (!w.movers.length) return; const sh = M.moverShapes(w, T, { segs:[], circ:[] });
@@ -12695,7 +12771,7 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
           A.circle(c, m.x, m.y, 3.6); A.inked(c, "#7A4FD9", .8); A.circle(c, m.x, m.y, 1.4); c.fillStyle = "#FFE27A"; c.fill(); }
         else if (m.t === "car" || m.t === "gate") { const mine = sh.segs.filter(q => q.m === mi), xs = w.polys.flat().map(q => q[0]), X0 = Math.min(...xs) + GOLF.WT, X1 = Math.max(...xs) - GOLF.WT;
           for (let k = 0; k < mine.length; k += 4) { const x0 = mine[k].ax, y0 = mine[k].ay, ww = mine[k + 1].ax - x0;
-            if (m.t === "gate") { c.save(); c.beginPath(); c.rect(X0, 0, X1 - X0, 160); c.clip(); c.fillStyle = "rgba(0,0,0,.3)"; c.fillRect(x0 + .8, y0 + 1, ww, m.h); c.beginPath(); c.rect(x0, y0, ww, m.h); A.inked(c, "#FFFFFF", .7); c.fillStyle = "#EE3B2B"; for (let q = x0 + 1; q < x0 + ww - 2; q += 5) c.fillRect(q, y0, 2.5, m.h); c.fillStyle = Math.floor(T * 3) % 2 ? "#FF4332" : "#FFE27A"; c.beginPath(); c.arc(x0 + 1.6, y0 + m.h / 2, 1, 0, 7); c.fill(); c.restore(); continue; }
+            if (m.t === "gate") { c.save(); c.beginPath(); c.rect(X0, 0, X1 - X0, hole.len || 160); c.clip(); c.fillStyle = "rgba(0,0,0,.3)"; c.fillRect(x0 + .8, y0 + 1, ww, m.h); c.beginPath(); c.rect(x0, y0, ww, m.h); A.inked(c, "#FFFFFF", .7); c.fillStyle = "#EE3B2B"; for (let q = x0 + 1; q < x0 + ww - 2; q += 5) c.fillRect(q, y0, 2.5, m.h); c.fillStyle = Math.floor(T * 3) % 2 ? "#FF4332" : "#FFE27A"; c.beginPath(); c.arc(x0 + 1.6, y0 + m.h / 2, 1, 0, 7); c.fill(); c.restore(); continue; }
             c.save(); c.beginPath(); c.rect(X0, m.y - 2, X1 - X0, m.h + 4); c.clip(); const bus = m.kind === "bus", body = bus ? "#2F7FE8" : "#1B1D2A", dir = m.v > 0 ? 1 : -1;
             if (m.kind === "rocket") { const mid = y0 + m.h / 2, tail = dir > 0 ? x0 : x0 + ww, nose = dir > 0 ? x0 + ww : x0, fl = 4 + Math.sin(T * 30) * 1.2; c.fillStyle = "#FF8A2A"; c.beginPath(); c.moveTo(tail, mid - 1.8); c.lineTo(tail - dir * fl, mid); c.lineTo(tail, mid + 1.8); c.fill(); c.fillStyle = "#FFE27A"; c.beginPath(); c.moveTo(tail, mid - .9); c.lineTo(tail - dir * fl * .55, mid); c.lineTo(tail, mid + .9); c.fill();
               c.beginPath(); c.moveTo(tail, y0 + 1.4); c.lineTo(nose - dir * 4, y0 + 1.4); c.quadraticCurveTo(nose, mid, nose - dir * 4, y0 + m.h - 1.4); c.lineTo(tail, y0 + m.h - 1.4); c.closePath(); A.inked(c, "#F4F6FA", .6); c.fillStyle = "#EE3B2B"; c.fillRect(Math.min(tail, tail + dir * 3), y0 + 1.4, 3, m.h - 2.8);
@@ -12732,7 +12808,7 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
       for (let k = 0; k < 6; k++) { const px = x0 + ((k * 37 + T * 6 + i * 13) % (ww + 10)) - 5, py = y0 + 2 + (k * 7.3 % Math.max(4, hh - 4)); c.beginPath(); c.moveTo(px, py); c.quadraticCurveTo(px + 2, py - 1, px + 4, py); c.stroke(); } c.restore(); });
       (w.zones || []).forEach((z, i) => {
         if (z.t === "lava") { c.save(); c.beginPath(); if (z.rect) c.rect(...z.rect); else if (z.circ) c.arc(z.circ[0], z.circ[1], z.circ[2], 0, 7); else c.ellipse(z.ell[0], z.ell[1], z.ell[2], z.ell[3], 0, 0, 7); c.clip();
-          w.zones.filter(b => b.t === "bridge" && !b.per).forEach(b => { c.beginPath(); c.rect(-50, -50, 200, 260); if (b.rect) c.rect(...b.rect); else { c.moveTo(b.circ[0] + b.circ[2], b.circ[1]); c.arc(b.circ[0], b.circ[1], b.circ[2], 0, 7); } c.clip("evenodd"); }); const [x0, y0, ww, hh] = z.rect || [(z.circ || z.ell)[0] - 24, (z.circ || z.ell)[1] - 24, 48, 48];
+          w.zones.filter(b => b.t === "bridge" && !b.per).forEach(b => { c.beginPath(); c.rect(-50, -50, 200, 500); if (b.rect) c.rect(...b.rect); else { c.moveTo(b.circ[0] + b.circ[2], b.circ[1]); c.arc(b.circ[0], b.circ[1], b.circ[2], 0, 7); } c.clip("evenodd"); }); const [x0, y0, ww, hh] = z.rect || [(z.circ || z.ell)[0] - 24, (z.circ || z.ell)[1] - 24, 48, 48];
           c.fillStyle = `rgba(255,230,120,${.12 + Math.sin(T * 2 + i) * .08})`; c.fillRect(x0, y0, ww, hh); for (let k = 0; k < 7; k++) { const ph = (T * .7 + k * .37 + i * .21) % 1, bx = x0 + ((k * 41 + i * 17) % 97) / 97 * ww, by = y0 + ((k * 23 + i * 11) % 89) / 89 * hh; c.strokeStyle = `rgba(255,240,180,${.8 * (1 - ph)})`; c.lineWidth = .4; c.beginPath(); c.arc(bx, by, .4 + ph * 1.6, 0, 7); c.stroke(); } c.restore(); }
         else if (z.t === "boost") { const [bx, by, bw, bh] = z.rect; for (let k = 0; k < 4; k++) { const ph = (T * 1.4 + k * .25) % 1, px = bx + bw * (.2 + k * .2) + Math.sin(T * 3 + k) * .6, py = by + bh / 2 + z.dir[1] * ph * 12 + z.dir[0] * 0; c.fillStyle = `rgba(240,240,245,${.5 * (1 - ph)})`; c.beginPath(); c.arc(px + z.dir[0] * ph * 12, py, 1 + ph * 2.2, 0, 7); c.fill(); } }
         else if (z.t === "grav") { const [gx, gy, gr] = z.circ; c.save(); c.translate(gx, gy); c.rotate(T * 1.2); c.lineCap = "round"; for (let k = 0; k < 4; k++) { c.rotate(1.5708); c.strokeStyle = `rgba(200,170,255,.42)`; c.lineWidth = .8; c.beginPath(); for (let a = 0; a < 2.4; a += .1) { const rr2 = (z.core || 2.6) + 1 + a / 2.4 * (gr * .75); c.lineTo(Math.cos(a) * rr2, Math.sin(a) * rr2); } c.stroke(); } c.restore();
@@ -12783,7 +12859,7 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
         c.fillStyle = p.col; c.beginPath(); c.arc(x + 11, hudH / 2, 5, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 1.2; c.stroke(); c.fillStyle = "#CFD6FF"; c.font = BOLD(10.5); c.save(); c.beginPath(); c.rect(x + 19, 0, nw, hudH); c.clip(); c.fillText(nm, x + 19, hudH / 2 + 1); c.restore();
         c.fillStyle = "#fff"; c.font = FONT(14); c.fillText(tx, x + 23 + nw, hudH / 2 + 1); x -= 6; });
       c.textBaseline = "alphabetic"; }
-    function drawBanner(){ if (!banner) return; const k = banner.k, t = banner.t, lim = k === "intro" ? 1.9 : 2.6, ain = Math.min(1, t / .3), aout = Math.min(1, Math.max(0, (lim - t) / .3)), a = Math.min(ain, aout);
+    function drawBanner(){ if (!banner) return; const k = banner.k, t = banner.t, lim = k === "intro" ? introLim() : 2.6, ain = Math.min(1, t / .3), aout = Math.min(1, Math.max(0, (lim - t) / .3)), a = Math.min(ain, aout);
       c.fillStyle = `rgba(8,10,30,${.42 * a})`; c.fillRect(0, hudH, W, H - hudH); c.save(); c.globalAlpha = a; c.translate(0, (1 - ain) * -30);
       const bw2 = Math.min(W - 40, 300), bx = (W - bw2) / 2, rows = k === "end" ? ps.length : 0, bh = k === "intro" ? 118 : 86 + rows * 36, by = H * .38 - bh / 2;
       c.fillStyle = "rgba(0,0,0,.35)"; rrect(bx + 3, by + 6, bw2, bh, 18); c.fill(); rrect(bx, by, bw2, bh, 18); c.fillStyle = "#FBFAFF"; c.fill(); c.strokeStyle = IK; c.lineWidth = 3.5; c.stroke();
@@ -12797,21 +12873,35 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
       c.textAlign = "left"; c.restore(); }
     function draw(state){
       if (phase === "roul") { drawRoulette(); drawParts(true); return; }
-      if (!hole) { const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#2B1D5C"); g.addColorStop(1, "#122E6B"); c.fillStyle = g; c.fillRect(0, 0, W, H); if (!stat) stat = buildStatic(M.MAPS[0].holes[0], W, H, s, ox, oy, B); c.drawImage(stat, 0, 0, W, H); return; }
-      c.drawImage(stat, 0, 0, W, H);
+      if (!hole) { const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#2B1D5C"); g.addColorStop(1, "#122E6B"); c.fillStyle = g; c.fillRect(0, 0, W, H); if (!stat) { const h0 = M.MAPS[0].holes[0]; stat = holeStatic(h0); oy = Math.round((VT - camRange(h0)[0] * s) * dpr) / dpr; } drawStatic(); return; }
+      drawStatic();
       c.save(); c.translate(ox, oy); c.scale(s, s);
       drawWater(); drawMovers(); drawFlag();
       ps.forEach((p, i) => { if (i !== cur) drawBall(p, i); }); drawAim(); drawBall(ps[cur], cur); drawGolfer(); drawParts(false);
       pops.forEach(q => { const a = 1 - q.t / 1.6; c.globalAlpha = Math.max(0, a); c.font = "bold 3.6px Fredoka, sans-serif"; c.textAlign = "center"; c.lineWidth = .9; c.strokeStyle = IK; c.strokeText(q.tx, q.x, q.y - 4 - q.t * 6); c.fillStyle = "#fff"; c.fillText(q.tx, q.x, q.y - 4 - q.t * 6); c.textAlign = "left"; c.globalAlpha = 1; });
       if (ps[cur] && ps[cur].b.wet) { const q = ps[cur].b.wet, k = 1 - timer / .9; c.strokeStyle = `rgba(230,245,255,${Math.max(0, .9 - k)})`; c.lineWidth = .7; for (let j = 0; j < 2; j++) { c.beginPath(); c.ellipse(q.x, q.y, 1 + k * 7 + j * 2.5, (1 + k * 7 + j * 2.5) * .7, 0, 0, 7); c.stroke(); } }
-      c.restore(); drawHUD(); drawBanner(); if (phase === "tips" && tips) drawTips();
+      c.restore(); drawGuide(); drawMini(); drawHUD(); drawBanner(); if (phase === "tips" && tips) drawTips();
     }
+    /* Si el hoyo no se ve, una flechita en el borde dice dónde está */
+    function drawGuide(){ if (!mini || !(phase === "aim" || phase === "think" || phase === "botAim") || cam.peek > 0) return; const [hx, hy] = hole.hole, sy = oy + hy * s, sx = ox + hx * s;
+      const up = sy < VT + 4, dn = sy > H - 4; if (!up && !dn) return; const bob = Math.sin(T * 5) * 2.5, px = clamp(sx, 26, W - (mini ? mini.w + 30 : 26)), py = up ? VT + 18 + bob : H - 18 - bob;
+      c.save(); c.translate(px, py); c.fillStyle = "rgba(0,0,0,.3)"; rrect(-17, -11, 34, 24, 12); c.fill(); c.fillStyle = "#FBFAFF"; rrect(-17, -13, 34, 24, 12); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke();
+      c.fillStyle = IK; c.beginPath(); if (up) { c.moveTo(-12, 3); c.lineTo(-7, -6); c.lineTo(-2, 3); } else { c.moveTo(-12, -5); c.lineTo(-7, 4); c.lineTo(-2, -5); } c.closePath(); c.fill();
+      c.strokeStyle = IK; c.lineWidth = 1.6; c.beginPath(); c.moveTo(4, 6); c.lineTo(4, -8); c.stroke(); c.fillStyle = hole.map.flag; c.beginPath(); c.moveTo(4.5, -8); c.lineTo(13, -5); c.lineTo(4.5, -2); c.closePath(); c.fill(); c.lineWidth = 1; c.stroke(); c.restore(); }
+    function drawMini(){ if (!mini || phase === "tips") return; const m = mini, L = m.L, k = m.h / L, X = m.x, Y = m.y;
+      const near = [...ps.filter(p => !p.b.done).map(p => [p.b.x, p.b.y]), hole.hole].some(([x, y]) => { const sx = ox + x * s, sy = oy + y * s; return sx > X - 14 && sx < X + m.w + 14 && sy > Y - 14 && sy < Y + m.h + 14; });
+      m.a += ((near ? .28 : 1) - m.a) * .15; c.save(); c.globalAlpha = m.a;
+      c.fillStyle = "rgba(0,0,0,.35)"; rrect(X - 1, Y + 1, m.w + 4, m.h + 4, 6); c.fill(); c.save(); rrect(X, Y, m.w, m.h, 5); c.clip(); c.drawImage(m.cv, X, Y, m.w, m.h);
+      const vy = Y + (cam.y + 3) * k, vh = VH * k; c.fillStyle = "rgba(255,255,255,.16)"; c.fillRect(X, vy, m.w, vh); c.strokeStyle = "#FFFFFF"; c.lineWidth = 1.6; c.strokeRect(X + .8, vy + .8, m.w - 1.6, vh - 1.6); c.restore();
+      const [hx, hy] = hole.hole, fx = X + hx / 100 * m.w, fy = Y + (hy + 3) * k; c.strokeStyle = IK; c.lineWidth = 1.2; c.beginPath(); c.moveTo(fx, fy); c.lineTo(fx, fy - 7); c.stroke(); c.fillStyle = hole.map.flag; c.beginPath(); c.moveTo(fx, fy - 7); c.lineTo(fx + 5.5, fy - 5); c.lineTo(fx, fy - 3); c.closePath(); c.fill(); c.lineWidth = .8; c.stroke();
+      ps.forEach((p, i) => { if (p.b.done) return; const bx = X + p.b.x / 100 * m.w, by = Y + (p.b.y + 3) * k; c.fillStyle = p.col; c.beginPath(); c.arc(bx, by, i === cur ? 2.9 : 2.3, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 1.2; c.stroke(); });
+      c.strokeStyle = IK; c.lineWidth = 2.2; rrect(X, Y, m.w, m.h, 5); c.stroke(); c.restore(); }
     function drawParts(screen){ if (screen) return; parts.forEach(q => { c.globalAlpha = Math.min(1, q.life * 2.5); c.fillStyle = q.col; if (q.sq) { c.save(); c.translate(q.x, q.y); c.rotate(q.rot + T * 6); c.fillRect(-q.r, -q.r * .5, q.r * 2, q.r); c.restore(); } else { c.beginPath(); c.arc(q.x, q.y, q.r, 0, 7); c.fill(); } }); c.globalAlpha = 1; }
     function reset(){ const m = arcModeOf("golf"); mode = m.m; lvl = m.lvl; const cols = ["#FFFFFF", "#FFD54A"], pl = arcPlayers("golf");
       ps = pl.map((p, i) => Object.assign({}, p, { col:p.kind === "bot" ? "#9FDBFF" : cols[i] || "#FFD54A", st:[], pk:[], tot:0, pts:0, b:null })); hole = null; banner = null; parts = []; pops = []; T = 0;
       ps.forEach(p => playerImg(p, "normal") && playerImg(p, "happy") && playerImg(p, "sad"));
       if (api.playing()) startRoulette(); else phase = "ready"; }
-    return { reset:() => { reset(); setTimeout(() => { if (phase === "ready" && api.playing()) startRoulette(); }, 0); }, step, draw, dbg:() => ({ get phase(){ return phase; }, get ps(){ return ps; }, get hole(){ return hole; }, get hi(){ return hi; }, get plan(){ return plan; }, get cur(){ return cur; }, shoot, noTips:(v) => { noTips = v !== false; }, tipsNext, get tips(){ return tips; }, skipRoul:() => { if (roul) roul.steps.forEach(st => st.d = .001); }, goto:(i, intro) => { plan = []; M.MAPS.forEach(m => m.holes.forEach(h => plan.push(h))); hi = i; startHole(); if (!intro) { banner = null; tips = null; beginTurn(); timer = 0; } }, aim:(a, pw) => { aimA = a; aimP = pw; prevKey = ""; calcPreview(); } }) };
+    return { reset:() => { reset(); setTimeout(() => { if (phase === "ready" && api.playing()) startRoulette(); }, 0); }, step:stepAll, draw, dbg:() => ({ get phase(){ return phase; }, get ps(){ return ps; }, get hole(){ return hole; }, get hi(){ return hi; }, get plan(){ return plan; }, get cur(){ return cur; }, shoot, noTips:(v) => { noTips = v !== false; }, tipsNext, get tips(){ return tips; }, skipRoul:() => { if (roul) roul.steps.forEach(st => st.d = .001); }, goto:(i, intro) => { plan = []; M.MAPS.forEach(m => m.holes.forEach(h => plan.push(h))); hi = i; startHole(); if (!intro) { banner = null; tips = null; beginTurn(); timer = 0; } }, aim:(a, pw) => { aimA = a; aimP = pw; prevKey = ""; calcPreview(); } }) };
   }
 });
 /* Tito Golf va primero en la lista del arcade */
@@ -13145,7 +13235,7 @@ Object.assign(POSTER, {
     <rect x="132" y="252" width="34" height="9" rx="3" fill="#F2F6F0" stroke="${PK}" stroke-width="2"/>${pSpark(176, 90, 6)}` }
 });
 
-const APP_VER = "11/11 14:34";
+const APP_VER = "11/11 15:16";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -15598,10 +15688,11 @@ const HOWTO = {
     ["Apunta y pega", "Pon el dedo en cualquier parte de la cancha y arrastra hacia atrás, como una gomera. Cuanto más arrastras, más fuerte sale. Suelta para pegar."],
     ["Mira la guía", "La flecha marca hacia dónde va y la línea punteada el camino hasta el primer rebote. ¿Te arrepentiste? Vuelve el dedo cerca de donde empezaste y suelta."],
     ["Rebota a tu favor", "La pelota rebota en las paredes y en los obstáculos: puedes usarlos para llegar al hoyo por el costado."],
-    ["El par", "Cada hoyo tiene un par: los golpes que debería llevar. Menos que el par es excelente y un hoyo en uno es lo máximo. Con 7 golpes se levanta la pelota."],
+    ["El par", "Cada hoyo tiene un par: los golpes que debería llevar. Menos que el par es excelente y un hoyo en uno es lo máximo. Si llegas a 4 golpes más que el par, se levanta la pelota."],
     ["Agua y lava", "Si la pelota cae al agua o a la lava, sumas 1 golpe y vuelves a pegar desde donde estabas."],
     ["Cosas nuevas", "Hielo, géiseres, agujeros negros, calesitas… La primera vez que aparece algo nuevo, te explicamos cómo funciona antes de jugar el hoyo."],
-    ["Elige cómo jugar", "Solo: sumas puntos, récord y monedas. Contra el robot: Fácil, Normal o Difícil, por turnos, y gana el que hace menos golpes. 2 jugadores: se pasan el celu por turnos y no suma puntos."],
+    ["Canchas largas", "Las canchas no entran en la pantalla: la cámara sigue a la pelota. El mapita de la esquina muestra todo el hoyo; tócalo para mirar hasta la bandera."],
+    ["Elige cómo jugar", "Contra el robot: Fácil, Normal o Difícil, por turnos; gana el que hace menos golpes y sumas puntos y monedas. 2 jugadores: se pasan el celu por turnos y no suma puntos."],
     ["Hoyos y sorteo", "Elige 3, 6 o 9 hoyos. Cada cancha tiene 3 hoyos y salen por sorteo."]] },
   piano:{ goal:"Toca todas las teclas negras y suena la canción.", steps:[["Toca las negras", "Siempre la de más abajo primero. Puedes tocar un poco antes o después: hay margen."], ["Mantén las largas", "Las teclas altas se mantienen apretadas hasta que se llenan."], ["No toques el blanco", "Si tocas una parte blanca o se te escapa una tecla, se termina."]] },
   rescate:{ goal:"Pinta a todos los robots y derrota al jefe de cada nivel.", steps:[["Toca para disparar", "Toca a los robots para pintarlos."], ["Mantén CUBRIRSE", "Cuando ves un círculo rojo te van a atacar: cúbrete. Cubrirte también recarga la pintura."], ["No les dispares a los vecinos", "Vecinos, turistas y manifestantes te restan puntos y una vida. Rompe los cajones con estrella: tienen armas."]] },
