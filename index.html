@@ -7746,13 +7746,19 @@ arcRegister("cross", {
     }
     const L = r => { if (r < 0) return NEG[r] || (NEG[r] = { type:"grass", blocked:{}, coin:-1, seed:-r * 7 + 99 }); while (lanes.length <= r) lanes.push(gen(lanes.length)); return lanes[r]; };
     /* Escenarios: hora del día y clima, uno al azar por partida */
-    const SCENES = [{ k:"dia", n:"De día", w:4 }, { k:"tarde", n:"Atardecer", w:2 }, { k:"noche", n:"De noche", w:2.5 }, { k:"lluvia", n:"Con lluvia", w:2 }];
+    const SCENES = [{ k:"dia", n:"De día", w:3.5 }, { k:"otono", n:"Otoño", w:2 }, { k:"noche", n:"De noche", w:2.2 }, { k:"lluvia", n:"Con lluvia", w:1.8 }, { k:"nieve", n:"Nieve", w:1.5 }];
+    let flakes = [];
     let scene = SCENES[0], LIGHTS = [], dark = null, drops = [], bolt = 0, nextBolt = 9;
     const pickScene = () => { const tot = SCENES.reduce((a, q) => a + q.w, 0); let x = rnd() * tot; for (const q of SCENES) { x -= q.w; if (x <= 0) return q; } return SCENES[0]; };
     function atmos(){
       const k = scene.k; if (k === "dia") return;
-      if (k === "tarde") { const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "rgba(255,120,70,.3)"); g.addColorStop(.5, "rgba(255,160,50,.2)"); g.addColorStop(1, "rgba(150,60,140,.2)"); c.fillStyle = g; c.fillRect(0, 0, W, H);
-        c.save(); c.globalCompositeOperation = "lighter"; LIGHTS.forEach(l => { if (!l.warm) return; const gg = c.createRadialGradient(l.x, l.y, 1, l.x, l.y, l.r * .5); gg.addColorStop(0, "rgba(255,200,120,.35)"); gg.addColorStop(1, "rgba(255,200,120,0)"); c.fillStyle = gg; c.fillRect(l.x - l.r, l.y - l.r, l.r * 2, l.r * 2); }); c.restore(); return; }
+      if (k === "otono" || k === "nieve") { const sn = k === "nieve";
+        if (sn) { c.fillStyle = "rgba(225,238,255,.12)"; c.fillRect(0, 0, W, H); }
+        if (!flakes.length) for (let i = 0; i < (sn ? 70 : 16); i++) flakes.push({ x:rnd() * W, y:rnd() * H, v:sn ? 30 + rnd() * 40 : 40 + rnd() * 30, r:sn ? 1.2 + rnd() * 2.4 : cs * (.08 + rnd() * .05), ph:rnd() * 6, col:["#E0702A", "#C9471E", "#F2B33A", "#B5651D"][Math.floor(rnd() * 4)] });
+        flakes.forEach(f2 => { const yy = mod(f2.y + T * f2.v, H + 20) - 10, xx = mod(f2.x + Math.sin(T * (sn ? 1.2 : 1.6) + f2.ph) * (sn ? 14 : 26) + T * (sn ? 6 : 12), W);
+          if (sn) { c.fillStyle = "rgba(255,255,255,.9)"; c.beginPath(); c.arc(xx, yy, f2.r, 0, 7); c.fill(); }
+          else { c.save(); c.translate(xx, yy); c.rotate(T * 2.2 + f2.ph); c.scale(1, .55 + .45 * Math.sin(T * 3 + f2.ph)); leaf(0, 0, f2.r, f2.col); c.restore(); } });
+        return; }
       if (k === "noche") {
         if (!dark) { dark = document.createElement("canvas"); dark.width = Math.ceil(W * dpr); dark.height = Math.ceil(H * dpr); }
         const d = dark.getContext("2d"); d.setTransform(dpr, 0, 0, dpr, 0, 0); d.globalCompositeOperation = "source-over"; d.clearRect(0, 0, W, H); d.fillStyle = "rgba(10,14,48,.66)"; d.fillRect(0, 0, W, H);
@@ -7771,10 +7777,10 @@ arcRegister("cross", {
         if (bolt > 0) { c.fillStyle = `rgba(235,240,255,${bolt * .5})`; c.fillRect(0, 0, W, H); } }
     }
     const reset = () => {
-      scene = pickScene(); drops = []; bolt = 0; nextBolt = 8 + rnd() * 8;
+      scene = pickScene(); drops = []; flakes = []; bolt = 0; nextBolt = 8 + rnd() * 8;
       R = rng(Math.floor(rnd() * 1e9)); lanes = []; segLeft = 0; segType = "grass"; pathCol = 4; lastRiverDir = 1; T = 0;
       tito = { cx:4.5, row:1, hop:null }; cam = 0; camFloor = 0; maxRow = 1; taps = 0; awarded = 0; ARC.cross._got = 0; dead = false; deadT = 0; deathKind = ""; overCalled = false; inv = 0; started = false; queued = null; honkCD = 0; bellCD = 0; parts = []; bump = 0; milestone = 25; flash = 0; landT = 0; pops = [];
-      L(ROWS + 8); api.info(scene.k === "dia" ? "Llega lo más lejos que puedas" : scene.k === "noche" ? "🌙 De noche: ¡ojo con los autos!" : scene.k === "lluvia" ? "🌧️ Día de lluvia" : "🌅 Atardecer en la ciudad");
+      L(ROWS + 8); api.info(scene.k === "dia" ? "Llega lo más lejos que puedas" : scene.k === "noche" ? "🌙 De noche: ¡ojo con los autos!" : scene.k === "lluvia" ? "🌧️ Día de lluvia" : scene.k === "nieve" ? "❄️ ¡Nevó en Buenos Aires!" : "🍂 Otoño en la ciudad");
     };
     reset();
     const sy = r => H - (r - cam + 1) * cs;
@@ -7832,6 +7838,21 @@ arcRegister("cross", {
     const mixC = (a, b, k) => { const h = v => [1, 3, 5].map(i => parseInt(v.slice(i, i + 2), 16)), A = h(a), B = h(b); return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, "0")).join(""); };
     const dk = (a, k) => mixC(a, "#0B0F24", k), lt = (a, k) => mixC(a, "#FFFFFF", k);
     const vgr = (g, y0, y1, stops) => { const gr = g.createLinearGradient(0, y0, 0, y1); stops.forEach((s, i) => gr.addColorStop(i / (stops.length - 1), s)); return gr; };
+    function leaf(x0, y0, r2, col, ctx){ const q = ctx || c; q.fillStyle = col; q.beginPath(); q.moveTo(x0, y0 - r2); q.quadraticCurveTo(x0 + r2 * .9, y0 - r2 * .2, x0, y0 + r2); q.quadraticCurveTo(x0 - r2 * .9, y0 - r2 * .2, x0, y0 - r2); q.fill(); q.strokeStyle = "rgba(90,40,10,.55)"; q.lineWidth = .7; q.beginPath(); q.moveTo(x0, y0 - r2 * .8); q.lineTo(x0, y0 + r2 * 1.15); q.stroke(); }
+    /* Estaciones: hojas secas de otoño o nieve sobre el pasto, las veredas y la calle */
+    function season(cv, ln, r){ const k = scene.k; if (k !== "otono" && k !== "nieve") return cv; const x = cv.getContext("2d"), q = rng((ln.seed || 7) + 99); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (k === "otono") { if (ln.type === "grass") { x.globalCompositeOperation = "source-atop"; x.fillStyle = "rgba(210,160,40,.22)"; x.fillRect(0, 0, W, cs); x.globalCompositeOperation = "source-over"; }
+        const n = ln.type === "grass" ? 16 : ln.type === "road" ? 6 : ln.type === "rail" ? 5 : 0;
+        for (let i = 0; i < n; i++) { const lx = q() * W, ly = ln.type === "road" ? (q() < .5 ? cs * (.05 + q() * .12) : cs * (.8 + q() * .15)) : cs * (.1 + q() * .8); x.save(); x.translate(lx, ly); x.rotate(q() * 6.28); x.scale(1, .7); leaf(0, 0, cs * (.06 + q() * .05), ["#E0702A", "#C9471E", "#F2B33A", "#B5651D", "#D9902A"][Math.floor(q() * 5)], x); x.restore(); } }
+      else { if (ln.type === "grass") { const g = x.createLinearGradient(0, 0, 0, cs); g.addColorStop(0, "#F7FAFF"); g.addColorStop(1, "#E6EEF8"); x.globalCompositeOperation = "source-atop"; x.fillStyle = g; x.globalAlpha = .93; x.fillRect(0, 0, W, cs); x.globalAlpha = 1; x.globalCompositeOperation = "source-over";
+          for (let i = 0; i < 9; i++) { const dx = q() * W, dy = cs * (.2 + q() * .65), dw = 14 + q() * 26; const sg = x.createLinearGradient(0, dy - 4, 0, dy + 4); sg.addColorStop(0, "rgba(255,255,255,0)"); sg.addColorStop(1, "rgba(170,195,225,.35)"); x.fillStyle = sg; x.beginPath(); x.ellipse(dx, dy, dw, 4, 0, 0, Math.PI); x.fill(); }
+          x.strokeStyle = "rgba(60,120,60,.55)"; x.lineWidth = 1.1; x.beginPath(); for (let i = 0; i < 7; i++) { const gx = q() * W, gy = cs * (.3 + q() * .55); x.moveTo(gx - 2, gy); x.lineTo(gx - 1, gy - 4); x.moveTo(gx + 1, gy); x.lineTo(gx + 2, gy - 5); } x.stroke();
+          x.fillStyle = "rgba(255,255,255,1)"; for (let i = 0; i < 14; i++) { x.beginPath(); x.arc(q() * W, q() * cs, .8, 0, 7); x.fill(); } }
+        else if (ln.type === "road") { [[0, cs * .16], [cs * .84, cs * .16]].forEach(([y0, h]) => { const g = x.createLinearGradient(0, y0, 0, y0 + h); g.addColorStop(y0 ? 1 : 0, "rgba(250,252,255,.92)"); g.addColorStop(y0 ? 0 : 1, "rgba(250,252,255,0)"); x.fillStyle = g; x.fillRect(0, y0, W, h); });
+          x.fillStyle = "rgba(235,242,252,.55)"; for (let i = 0; i < 10; i++) { x.beginPath(); x.ellipse(q() * W, cs * (.25 + q() * .5), 6 + q() * 14, 1.5 + q() * 2, 0, 0, 7); x.fill(); } }
+        else if (ln.type === "rail") { x.fillStyle = "rgba(250,252,255,.6)"; x.fillRect(0, 0, W, cs); }
+        else if (ln.type === "river") { x.fillStyle = "rgba(225,240,255,.25)"; x.fillRect(0, 0, W, cs); } }
+      return cv; }
     function texture(ln, r){
       const cv = document.createElement("canvas"); cv.width = Math.ceil(W * dpr); cv.height = Math.ceil(cs * dpr); const x = cv.getContext("2d"); x.scale(dpr, dpr);
       const rr0 = rng(ln.seed || 7), below = L(r - 1), above = L(r + 1);
@@ -7892,7 +7913,8 @@ arcRegister("cross", {
     const shadow = (x, b, rw, rh) => { c.fillStyle = "rgba(10,20,30,.2)"; c.beginPath(); c.ellipse(x + 2, b, rw, rh, 0, 0, 7); c.fill(); };
     const blob = (pts, fill) => { c.fillStyle = fill; c.beginPath(); pts.forEach(([px, py, pr]) => { c.moveTo(px + pr, py); c.arc(px, py, pr, 0, 7); }); c.fill(); };
     function tree(x, y, k){ const b = y + cs * .84, big = k % 2, jac = k % 5 === 0, u = cs;
-      const C = jac ? ["#6E48B0", "#8F67D2", "#B191EA"] : ["#2D7F3E", "#3FA352", "#62C36E"];
+      const AUT = [["#B8321E", "#D9532A", "#F08A3C"], ["#C9711A", "#E8962A", "#F7C04A"], ["#C99A1A", "#E8BE2A", "#F7DC6A"]], sk = scene.k;
+      const C = sk === "otono" ? AUT[k % 3] : sk === "nieve" ? (jac ? ["#5E4A8A", "#7A64A8", "#9A86C4"] : ["#24603A", "#2F7A48", "#4A9660"]) : jac ? ["#6E48B0", "#8F67D2", "#B191EA"] : ["#2D7F3E", "#3FA352", "#62C36E"];
       shadow(x, b, u * .38, u * .1);
       if (jac) { c.fillStyle = "#B191EA"; for (let i = 0; i < 6; i++) { c.beginPath(); c.arc(x + Math.cos(i * 2.4 + k) * u * .3, b + Math.sin(i * 1.7) * u * .05, 1.4, 0, 7); c.fill(); } }
       c.fillStyle = vgr(c, b - u * .32, b, ["#8A5A34", "#6B4126"]); c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.moveTo(x - u * .08, b); c.lineTo(x - u * .06, b - u * .32); c.lineTo(x + u * .06, b - u * .32); c.lineTo(x + u * .09, b); c.closePath(); c.fill(); c.stroke();
@@ -7903,13 +7925,17 @@ arcRegister("cross", {
       blob(P.map(([px, py, pr]) => [px - pr * .12, py - pr * .16, pr * .82]), C[1]);
       blob([[x - R0 * .35, cy - R0 * .55, R0 * .42], [x - R0 * 1.05, cy + R0 * .1, R0 * .3]], C[2]);
       c.fillStyle = "rgba(255,255,255,.28)"; c.beginPath(); c.arc(x - R0 * .45, cy - R0 * .7, R0 * .14, 0, 7); c.fill();
-      if (!jac && k % 3 === 0) { c.fillStyle = "#E0412E"; [[-.5, .3], [.6, .5], [.15, .75]].forEach(([a, bb]) => { c.beginPath(); c.arc(x + a * R0, cy + bb * R0, 2.4, 0, 7); c.fill(); }); }
+      if (sk === "nieve") { blob([[x, cy - R0 * .55, R0 * .72], [x - R0 * .85, cy + R0 * .08, R0 * .5], [x + R0 * .85, cy + R0 * .08, R0 * .5]].map(([px, py, pr]) => [px, py - pr * .25, pr * .78]), "#F7FAFF"); c.fillStyle = "rgba(170,200,235,.5)"; c.beginPath(); c.ellipse(x + R0 * .2, cy - R0 * .2, R0 * .4, R0 * .1, 0, 0, 7); c.fill(); return; }
+      if (sk === "otono") { c.fillStyle = AUT[(k + 1) % 3][1]; for (let i = 0; i < 4; i++) { c.beginPath(); c.ellipse(x + (i - 1.5) * R0 * .5, b + 1 + (i % 2) * 2, 3, 1.6, i, 0, 7); c.fill(); } }
+      if (!jac && k % 3 === 0 && sk !== "otono") { c.fillStyle = "#E0412E"; [[-.5, .3], [.6, .5], [.15, .75]].forEach(([a, bb]) => { c.beginPath(); c.arc(x + a * R0, cy + bb * R0, 2.4, 0, 7); c.fill(); }); }
       if (jac) { c.fillStyle = "#D2BBF5"; for (let i = 0; i < 7; i++) { c.beginPath(); c.arc(x + Math.cos(i * 2.1 + k) * R0 * 1.1, cy + Math.sin(i * 1.3 + k) * R0 * .7, 1.3, 0, 7); c.fill(); } } }
     function bush(x, y){ const b = y + cs * .82, u = cs; shadow(x, b, u * .34, u * .09);
       const P = [[x - u * .15, b - u * .17, u * .17], [x + u * .15, b - u * .17, u * .17], [x, b - u * .3, u * .2]];
       c.strokeStyle = IK; c.lineWidth = 4; c.beginPath(); P.forEach(([px, py, pr]) => { c.moveTo(px + pr, py); c.arc(px, py, pr, 0, 7); }); c.stroke();
-      blob(P, "#2F8B45"); blob(P.map(([px, py, pr]) => [px - pr * .1, py - pr * .15, pr * .8]), "#43A95A"); blob([[x - u * .06, b - u * .38, u * .07]], "#6CC777");
-      c.fillStyle = "#F27FAE"; [[.1, -.36], [-.14, -.22], [.2, -.18]].forEach(([a, bb]) => { c.beginPath(); c.arc(x + a * u, b + bb * u, u * .04, 0, 7); c.fill(); }); }
+      const sk = scene.k, BC = sk === "otono" ? ["#B5541C", "#D9782A", "#F2A84A"] : ["#2F8B45", "#43A95A", "#6CC777"];
+      blob(P, BC[0]); blob(P.map(([px, py, pr]) => [px - pr * .1, py - pr * .15, pr * .8]), BC[1]); blob([[x - u * .06, b - u * .38, u * .07]], BC[2]);
+      if (sk === "nieve") { blob(P.map(([px, py, pr]) => [px, py - pr * .35, pr * .72]), "#F7FAFF"); return; }
+      c.fillStyle = sk === "otono" ? "#FFD34A" : "#F27FAE"; [[.1, -.36], [-.14, -.22], [.2, -.18]].forEach(([a, bb]) => { c.beginPath(); c.arc(x + a * u, b + bb * u, u * .04, 0, 7); c.fill(); }); }
     function rock(x, y){ const b = y + cs * .82, u = cs; shadow(x, b, u * .32, u * .08);
       c.fillStyle = vgr(c, b - u * .38, b, ["#A9B1C0", "#7C8496"]); c.strokeStyle = IK; c.lineWidth = 2; c.beginPath(); c.moveTo(x - u * .3, b); c.lineTo(x - u * .26, b - u * .24); c.lineTo(x - u * .08, b - u * .38); c.lineTo(x + u * .16, b - u * .34); c.lineTo(x + u * .3, b - u * .16); c.lineTo(x + u * .28, b); c.closePath(); c.fill(); c.stroke();
       c.fillStyle = "rgba(255,255,255,.35)"; c.beginPath(); c.moveTo(x - u * .22, b - u * .24); c.lineTo(x - u * .07, b - u * .34); c.lineTo(x + u * .02, b - u * .28); c.lineTo(x - u * .14, b - u * .2); c.closePath(); c.fill();
@@ -8058,6 +8084,7 @@ arcRegister("cross", {
         c.fillStyle = o.fil || "#F7D46E"; for (let fx = px + u * .54; fx < px + w - u * .3; fx += u * .44) { c.beginPath(); c.arc(fx, fy, 1.6, 0, 7); c.fill(); }
         c.fillStyle = "rgba(0,0,0,.18)"; c.fillRect(px, top + h * .92, w, h * .08);
         c.restore(); c.strokeStyle = IK; c.lineWidth = 2; rr(c, px, top, w, h, u * .12); c.stroke();
+        if (scene.k === "nieve") { c.fillStyle = "#F7FAFF"; c.lineWidth = 1.5; rr(c, px + u * .1, top - u * .06, w - u * .2, u * .09, u * .045); c.fill(); c.stroke(); c.lineWidth = 2; }
         [.06, .28, .5].forEach(t => { glass(X(t, .19), top + h * .13, w * .19, h * .36, 3); c.strokeStyle = IK; c.lineWidth = 1.6; c.stroke(); });
         glass(X(.88, .1), top + h * .1, w * .1, h * .44, 4); c.stroke();
         c.fillStyle = dk(o.col, .3); rr(c, X(.73, .12), top + h * .12, w * .12, h * .82, 3); c.fill(); glass(X(.74, .045), top + h * .16, w * .045, h * .5, 2); glass(X(.795, .045), top + h * .16, w * .045, h * .5, 2);
@@ -8068,6 +8095,7 @@ arcRegister("cross", {
       const taxi = o.kind === "taxi", h = u * .38, top = b - u * .1 - h, body = taxi ? "#262833" : o.col, roof = taxi ? "#F0B429" : o.col, ct = top - u * .27;
       if (taxi) { c.fillStyle = "#F7F1E2"; rr(c, px + w * .37, ct - u * .11, w * .26, u * .12, 2); c.fill(); c.stroke(); c.fillStyle = IK; c.font = `bold ${Math.round(u * .085)}px Fredoka, sans-serif`; c.textAlign = "center"; c.fillText("TAXI", px + w * .5, ct - u * .02); c.textAlign = "left"; }
       c.fillStyle = vgr(c, ct, top + 2, [lt(roof, .2), roof, dk(roof, .08)]); rr(c, X(.16, .54), ct, w * .54, u * .32, u * .1); c.fill(); c.stroke();
+      if (scene.k === "nieve") { c.fillStyle = "#F7FAFF"; c.strokeStyle = IK; c.lineWidth = 1.5; rr(c, X(.18, .5), ct - u * .06, w * .5, u * .09, u * .045); c.fill(); c.stroke(); c.lineWidth = 2; }
       glass(X(.21, .19), ct + u * .06, w * .19, u * .19, 3); glass(X(.46, .19), ct + u * .06, w * .19, u * .19, 3);
       c.fillStyle = vgr(c, top, top + h, [lt(body, .2), body, dk(body, .32)]); rr(c, px, top, w, h, u * .12); c.fill(); c.stroke();
       c.fillStyle = "rgba(255,255,255,.32)"; rr(c, px + 6, top + 2.5, w - 12, 2, 1); c.fill();
@@ -8100,7 +8128,7 @@ arcRegister("cross", {
       }
     }
     function ground(ln, r, y){
-      if (!ln.tex && L(r + 1)) ln.tex = texture(ln, r);
+      if (!ln.tex && L(r + 1)) ln.tex = season(texture(ln, r), ln, r);
       c.drawImage(ln.tex, 0, Math.floor(y), W, cs + 1);
       if (ln.type === "river") {
         c.strokeStyle = "rgba(225,242,255,.3)"; c.lineWidth = 1.8; const dx = (ln.dir || 1) * T * cs * .45;
@@ -8163,12 +8191,15 @@ arcRegister("cross", {
       const sp = sprite(im, TW, TH); if (!sp) return;
       c.fillStyle = "rgba(0,0,0,.2)"; c.beginPath(); c.ellipse(x, base, TW * .3 * (1 - lift / cs * .5), TW * .08, 0, 0, 7); c.fill();
       if (inv > 0 && Math.floor(T * 12) % 2) return;
-      c.save(); c.globalAlpha = a; c.translate(x, base - lift); c.rotate(rot); c.scale(sq, st); c.drawImage(sp, -TW / 2, -TH, TW, TH); c.restore();
+      c.save(); c.globalAlpha = a; c.translate(x, base - lift); c.rotate(rot); c.scale(sq, st); c.drawImage(sp, -TW / 2, -TH, TW, TH);
+      if (scene.k === "nieve") { const ny = -TH * .36, nw = TW * .36, sw = Math.sin(T * 6) * 2; c.lineCap = "round"; c.strokeStyle = IK; c.lineWidth = TH * .11; c.beginPath(); c.moveTo(-nw, ny); c.quadraticCurveTo(0, ny + TH * .07, nw, ny); c.stroke(); c.strokeStyle = "#E23A3A"; c.lineWidth = TH * .075; c.stroke(); c.strokeStyle = "#FFFFFF"; c.lineWidth = TH * .075; c.setLineDash([3, 5]); c.stroke(); c.setLineDash([]);
+        c.strokeStyle = IK; c.lineWidth = TH * .09; c.beginPath(); c.moveTo(nw * .5, ny + TH * .03); c.lineTo(nw * .75 + sw, ny + TH * .2); c.stroke(); c.strokeStyle = "#E23A3A"; c.lineWidth = TH * .055; c.stroke(); c.lineCap = "butt"; }
+      c.restore();
       if (dead && deathKind !== "water" && deathKind !== "train") { c.fillStyle = "#FFC425"; for (let i = 0; i < 3; i++) { const an = T * 4 + i * 2.1; c.beginPath(); c.arc(x + Math.cos(an) * TW * .4, base - TH * .55 * st - 6 + Math.sin(an) * 4, 3, 0, 7); c.fill(); } }
     }
     return {
       reset,
-      dbg(){ return { lanes, tito, L, scene:(k) => { scene = SCENES.find(q => q.k === k) || scene; drops = []; }, jump(r){ tito.row = r; tito.cx = 4.5; cam = r - 3.2; camFloor = cam; }, god(){ inv = 1e9; } }; },
+      dbg(){ return { lanes, tito, L, scene:(k) => { scene = SCENES.find(q => q.k === k) || scene; drops = []; flakes = []; lanes.forEach(l => { if (l) l.tex = null; }); }, jump(r){ tito.row = r; tito.cx = 4.5; cam = r - 3.2; camFloor = cam; }, god(){ inv = 1e9; } }; },
       revive(){
         let r = tito.row; while (r > 0 && L(r).type !== "grass") r--; if (L(r).type !== "grass") r = 0;
         const ln = L(r); let q = 4; for (let k = 0; k < COLS; k++) { const qq = 4 + (k % 2 ? -(k + 1) / 2 : k / 2); if (qq >= 0 && qq < COLS && !ln.blocked[qq]) { q = qq; break; } }
@@ -12637,7 +12668,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("golf"), 1); ARC_ORDER.unshift("golf");
 ARC_SHARE.golf = { e:"⛳", f:(n, r) => { const g = golfLast; if (!g) return `Terminé un recorrido de Tito Golf`; const me = g.ps[0], dif = me.tot - g.par, rel = dif === 0 ? "al par" : dif < 0 ? dif + " bajo par" : "+" + dif + " sobre el par";
   return g.mode === "duo" ? (g.win < 0 ? `Empatamos en ${g.holes.length} hoyos de Tito Golf` : `${g.ps[g.win].name} ganó en ${g.holes.length} hoyos de Tito Golf`) : `Hice ${me.tot} golpes en ${g.holes.length} hoyos (${rel})${g.mode === "bot" ? (g.win === 0 ? " y le gané al robot" : g.win < 0 ? " y empaté con el robot" : "") : ""}`; } };
 
-const APP_VER = "11/11 00:39";
+const APP_VER = "11/11 00:50";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
