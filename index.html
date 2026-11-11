@@ -1590,6 +1590,15 @@ html.ios-gap .app.playing main{padding-bottom:8px}
 .nw-strip{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 14px;padding:10px 12px;text-align:left;background:linear-gradient(100deg,var(--y),#FFE27A);color:#1B1D2A;border:2.5px solid var(--K);box-shadow:0 4px 0 var(--K);font:inherit;border-radius:18px}
 .nw-strip b{display:block;font-size:.98em}.nw-strip small{display:block;font-size:.78em;font-weight:700;opacity:.85;line-height:1.25}.nw-strip i{font-style:normal;font-size:1.6em;font-weight:800;margin-left:auto}
 .arc-new.duo{background:#7A4FD9;font-size:.7em}
+/* Vista previa de tableros */
+.chpv{text-align:center}
+.chpv-stage{position:relative;display:flex;align-items:center;justify-content:center;gap:6px}
+.chpv-stage canvas{display:block;border-radius:16px;box-shadow:0 6px 0 rgba(11,15,36,.35),0 14px 30px -10px rgba(11,15,36,.6);animation:chpvIn .3s ease-out}
+@keyframes chpvIn{from{opacity:0;transform:scale(.94)}}
+.chpv-nav{flex:none;width:30px;height:46px;border-radius:12px;border:2.5px solid var(--K);background:var(--surface-2);color:var(--ink);font:800 1.6em/1 Fredoka,sans-serif;box-shadow:0 3px 0 var(--K);display:flex;align-items:center;justify-content:center;padding:0 0 3px}
+.chpv-nav:active{transform:translateY(2px);box-shadow:0 1px 0 var(--K)}
+.chpv-dots{display:flex;justify-content:center;gap:5px;margin:10px 0 4px}.chpv-dots i{width:7px;height:7px;border-radius:50%;background:rgba(11,15,36,.2)}.chpv-dots i.on{background:var(--y);box-shadow:0 0 0 2px var(--K)}
+.chpv-n{margin:4px 0 6px;display:flex;flex-direction:column;align-items:center}.chpv-n b{font-size:1.15em}.chpv-n small{display:flex;align-items:center;gap:4px;font-weight:800;color:var(--muted)}
 
 </style>
 </head>
@@ -7130,18 +7139,54 @@ function chPaintScene(x, th, G){
   x.font = `700 ${Math.max(8, Math.round(fm * .62))}px Fredoka, sans-serif`; x.textAlign = "center"; x.fillStyle = th.co;
   for (let i = 0; i < 8; i++) { x.fillText("abcdefgh"[i], bx + i * cs + cs / 2, by + bs + fm * .78); x.fillText(8 - i, fm / 2, by + i * cs + cs / 2 + fm * .22); }
 }
+/* Piezas con volumen: degradé, brillo, borde de luz y sombra */
+function chPiece(c, p, x, y, s, lift){
+  const w = CH.isW(p), k = p.toLowerCase();
+  c.save(); c.translate(x, y); c.scale(s, s);
+  c.fillStyle = `rgba(11,15,36,${lift ? .16 : .26})`; c.beginPath(); c.ellipse(.52, .9, lift ? .27 : .31, .06, 0, 0, 7); c.fill();
+  if (lift) c.translate(0, -lift);
+  const g = c.createLinearGradient(.22, .1, .78, .85);
+  if (w) { g.addColorStop(0, "#FFFFFF"); g.addColorStop(.45, "#FFF3DC"); g.addColorStop(1, "#D2B98F"); } else { g.addColorStop(0, "#6A7198"); g.addColorStop(.42, "#363B57"); g.addColorStop(1, "#14151F"); }
+  c.fillStyle = g; c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.lineJoin = "round"; c.lineCap = "round";
+  const hl = w ? "rgba(255,255,255,.95)" : "rgba(170,185,255,.45)", dt2 = w ? "#C2AE8C" : "#7A82A8";
+  const fillStroke = () => { c.fill(); c.stroke(); };
+  const base = (y0) => { c.beginPath(); rr(c, .19, y0, .62, .11, .05); fillStroke(); c.beginPath(); c.moveTo(.26, y0 + .04); c.lineTo(.74, y0 + .04); c.strokeStyle = dt2; c.lineWidth = 1.2 / s; c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; };
+  const collar = (y0, rx) => { c.beginPath(); c.ellipse(.5, y0, rx, .036, 0, 0, 7); fillStroke(); };
+  const gem = (gx, gy, r2, col) => { c.beginPath(); c.arc(gx, gy, r2, 0, 7); c.fillStyle = col; fillStroke(); c.fillStyle = "rgba(255,255,255,.8)"; c.beginPath(); c.arc(gx - r2 * .3, gy - r2 * .3, r2 * .35, 0, 7); c.fill(); c.fillStyle = g; };
+  c.beginPath();
+  if (k === "p") { c.moveTo(.37, .5); c.quadraticCurveTo(.4, .68, .29, .8); c.lineTo(.71, .8); c.quadraticCurveTo(.6, .68, .63, .5); c.closePath(); fillStroke(); collar(.5, .15); c.beginPath(); c.arc(.5, .33, .13, 0, 7); fillStroke(); c.fillStyle = hl; c.beginPath(); c.arc(.45, .28, .04, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+  else if (k === "r") { c.moveTo(.32, .8); c.lineTo(.35, .42); c.lineTo(.65, .42); c.lineTo(.68, .8); c.closePath(); fillStroke(); c.beginPath(); c.moveTo(.27, .41); c.lineTo(.27, .17); c.lineTo(.37, .17); c.lineTo(.37, .25); c.lineTo(.45, .25); c.lineTo(.45, .17); c.lineTo(.55, .17); c.lineTo(.55, .25); c.lineTo(.63, .25); c.lineTo(.63, .17); c.lineTo(.73, .17); c.lineTo(.73, .41); c.closePath(); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 1.2 / s; c.beginPath(); c.moveTo(.36, .55); c.lineTo(.64, .55); c.moveTo(.35, .67); c.lineTo(.65, .67); c.moveTo(.5, .55); c.lineTo(.5, .67); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = hl; c.fillRect(.31, .2, .03, .17); c.fillRect(.385, .45, .025, .3); c.fillStyle = g; base(.8); }
+  else if (k === "n") { c.moveTo(.3, .8); c.bezierCurveTo(.3, .64, .36, .56, .47, .5); c.bezierCurveTo(.4, .5, .3, .55, .24, .5); c.bezierCurveTo(.18, .46, .2, .39, .27, .34); c.lineTo(.43, .2); c.bezierCurveTo(.45, .13, .49, .09, .52, .13); c.bezierCurveTo(.56, .1, .61, .13, .63, .17); c.bezierCurveTo(.76, .3, .78, .56, .71, .8); c.closePath(); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 1.6 / s; c.beginPath(); c.moveTo(.6, .2); c.bezierCurveTo(.7, .32, .72, .5, .68, .7); c.stroke(); c.strokeStyle = w ? "#E8B04A" : "#FFC425"; c.lineWidth = 2.2 / s; c.beginPath(); c.moveTo(.56, .16); c.bezierCurveTo(.66, .22, .7, .34, .7, .46); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = w ? IK : "#fff"; c.beginPath(); c.arc(.44, .27, .032, 0, 7); c.fill(); c.beginPath(); c.arc(.28, .44, .018, 0, 7); c.fill(); c.fillStyle = hl; c.beginPath(); c.ellipse(.36, .62, .025, .08, .3, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+  else if (k === "b") { c.moveTo(.5, .17); c.bezierCurveTo(.67, .31, .67, .52, .59, .64); c.lineTo(.65, .8); c.lineTo(.35, .8); c.lineTo(.41, .64); c.bezierCurveTo(.33, .52, .33, .31, .5, .17); c.closePath(); fillStroke(); collar(.64, .14); gem(.5, .135, .05, "#5CC6F0"); c.strokeStyle = dt2; c.lineWidth = 2 / s; c.beginPath(); c.moveTo(.44, .34); c.lineTo(.57, .47); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = hl; c.beginPath(); c.ellipse(.43, .45, .025, .07, .2, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+  else if (k === "q") { c.moveTo(.31, .74); c.lineTo(.21, .3); c.lineTo(.36, .5); c.lineTo(.41, .22); c.lineTo(.5, .48); c.lineTo(.59, .22); c.lineTo(.64, .5); c.lineTo(.79, .3); c.lineTo(.69, .74); c.closePath(); fillStroke(); collar(.74, .2); [[.21, .28], [.41, .2], [.59, .2], [.79, .28]].forEach(([a2, b2]) => gem(a2, b2, .045, "#FFC425")); gem(.5, .6, .04, "#EE3B6B"); c.fillStyle = hl; c.beginPath(); c.ellipse(.38, .58, .025, .08, .15, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+  else if (k === "k") { c.moveTo(.32, .76); c.bezierCurveTo(.25, .58, .3, .4, .5, .4); c.bezierCurveTo(.7, .4, .75, .58, .68, .76); c.closePath(); fillStroke(); collar(.76, .2); c.beginPath(); c.rect(.465, .1, .07, .27); c.rect(.39, .17, .22, .07); c.fillStyle = "#FFC425"; fillStroke(); c.fillStyle = "rgba(255,255,255,.7)"; c.fillRect(.475, .115, .02, .22); gem(.5, .56, .045, "#EE3B2B"); c.fillStyle = hl; c.beginPath(); c.ellipse(.38, .58, .025, .09, .15, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+  c.restore();
+}
 /* Muestra chiquita del tablero para el selector */
 const chSwatch = (th, px) => { let sq = ""; for (let r = 0; r < 4; r++) for (let q = 0; q < 4; q++) sq += `<rect x="${6 + q * 9}" y="${6 + r * 9}" width="9" height="9" fill="${(q + r) % 2 ? th.D : th.L}"/>`;
   return `<svg viewBox="0 0 48 48" width="${px}" height="${px}" aria-hidden="true"><defs><linearGradient id="sw${th.k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${th.f[0]}"/><stop offset="1" stop-color="${th.f[1]}"/></linearGradient></defs><rect x="1.5" y="1.5" width="45" height="45" rx="8" fill="url(#sw${th.k})" stroke="${IK}" stroke-width="3"/>${sq}<rect x="5.5" y="5.5" width="37" height="37" fill="none" stroke="${th.line}" stroke-width="1.2"/></svg>`; };
 function chBoardsHTML(){ const b = chbState();
   return `<div class="chb"><span class="chb-t">Tablero</span><div class="chb-row">${CH_THEMES.map(th => { const own = b.own.includes(th.k), on = b.sel === th.k;
     return `<button class="chb-it ${on ? "on" : ""} ${own ? "" : "lock"}" data-act="arc-chb:${th.k}" aria-pressed="${on}">${chSwatch(th, 46)}<b>${esc(th.n)}</b><small>${own ? (on ? "En uso" : "Usar") : `${coin}${NUM.format(th.p)}`}</small></button>`; }).join("")}</div></div>`; }
+/* Vista previa de un tablero antes de comprarlo: el escenario real con las piezas en su lugar */
+function chPreviewOpen(k){ const i = CH_THEMES.findIndex(t => t.k === k), th = CH_THEMES[i], b = chbState(), own = b.own.includes(k), N = CH_THEMES.length; if (!th) return;
+  const prev = CH_THEMES[(i - 1 + N) % N].k, next = CH_THEMES[(i + 1) % N].k;
+  openSheet("Vista previa", `<div class="chpv"><div class="chpv-stage"><button class="chpv-nav l" data-act="arc-chpv:${prev}" aria-label="Anterior">‹</button><canvas id="chPv"></canvas><button class="chpv-nav r" data-act="arc-chpv:${next}" aria-label="Siguiente">›</button></div>
+    <div class="chpv-dots">${CH_THEMES.map(t => `<i class="${t.k === k ? "on" : ""}"></i>`).join("")}</div><p class="chpv-n"><b>${esc(th.n)}</b>${own ? `<small>Ya es tuyo</small>` : `<small>${coin}${NUM.format(th.p)}</small>`}</p>
+    ${own ? `<div class="btn-row"><button class="btn" data-act="close-sheet">Cerrar</button><button class="btn primary" data-act="arc-chuse:${k}">${b.sel === k ? "En uso" : "Usar este"}</button></div>`
+      : `<p class="small" style="margin:0 0 8px">Queda tuyo para siempre y lo puedes cambiar cuando quieras.</p><div class="btn-row"><button class="btn" data-act="close-sheet">Ahora no</button>${S.coins >= th.p ? `<button class="btn green" data-act="arc-chbuy:${k}">${coin}${NUM.format(th.p)} · Comprar</button>` : `<button class="btn" data-act="need:${th.p}">Faltan ${NUM.format(th.p - S.coins)}</button>`}</div>`}</div>`, { center:true });
+  SND.tap(); requestAnimationFrame(() => chPreviewDraw(th)); }
+function chPreviewDraw(th){ const cv = document.getElementById("chPv"); if (!cv) return; const W = Math.min(280, Math.round(cv.parentElement.clientWidth - 70)), fm = Math.round(W * .035), bs = W - fm * 2, cs = bs / 8, FH = bs + fm * 2, H = Math.round(FH + 40), FY = 20, dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + "px"; cv.style.height = H + "px"; const x = cv.getContext("2d"); x.scale(dpr, dpr);
+  const bx = fm, by = FY + fm; chPaintScene(x, th, { W, H, FY, fm, bx, by, bs, cs });
+  const st = CH.start(); st.b[36] = st.b[52]; st.b[52] = ""; st.b.forEach((p, s2) => { if (p) chPiece(x, p, bx + (s2 & 7) * cs, by + (s2 >> 3) * cs, cs); });
+  x.fillStyle = "rgba(255,196,37,.5)"; x.fillRect(bx + 4 * cs, by + 4 * cs, cs, cs); x.fillRect(bx + 4 * cs, by + 6 * cs, cs, cs); }
 function chBoardsAct(k, v, run){
   if (k === "arc-chb") { const th = CH_THEMES.find(x => x.k === v), b = chbState(); if (!th) return true;
     if (b.own.includes(v)) { b.sel = v; save(); SND.tap(); const sc = document.querySelector(".chb-row"), x = sc ? sc.scrollLeft : 0; if (run.game) run.game.reset(); run.showReady(); const s2 = document.querySelector(".chb-row"); if (s2) s2.scrollLeft = x; return true; }
-    openSheet("Nuevo tablero", `<div style="text-align:center"><div class="chb-big">${chSwatch(th, 132)}</div><p style="margin:8px 0 2px"><b>${esc(th.n)}</b></p><p class="small">Queda tuyo para siempre y lo puedes cambiar cuando quieras.</p>
-      <div class="btn-row"><button class="btn" data-act="close-sheet">Ahora no</button>${S.coins >= th.p ? `<button class="btn green" data-act="arc-chbuy:${v}">${coin}${NUM.format(th.p)} · Comprar</button>` : `<button class="btn" data-act="need:${th.p}">Faltan ${NUM.format(th.p - S.coins)}</button>`}</div></div>`, { center:true });
-    return true; }
+    chPreviewOpen(v); return true; }
+  if (k === "arc-chpv") { chPreviewOpen(v); return true; }
+  if (k === "arc-chuse") { const b = chbState(); if (!b.own.includes(v)) return true; b.sel = v; save(); SND.tap(); closeSheet(); if (run.game) run.game.reset(); run.showReady(); return true; }
   if (k === "arc-chbuy") { const th = CH_THEMES.find(x => x.k === v), b = chbState(); if (!th || S.coins < th.p || b.own.includes(v)) return true;
     S.coins -= th.p; b.own.push(v); b.sel = v; save(); renderHeader(); closeSheet(); SND.buy(); toast(`¡Nuevo tablero: ${th.n}!`, "ok"); if (typeof logEv === "function") logEv("spend_virtual_currency", { item_name:"tablero:" + v, virtual_currency_name:"puntos", value:th.p });
     if (run.game) run.game.reset(); run.showReady(); return true; }
@@ -7246,28 +7291,7 @@ arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
       if (p && CH.isW(p) === st.w) { sel = s; moves = CH.legal(st).filter(m => m.f === s); SND.fx("open"); } else { sel = -1; moves = []; }
     });
     /* Piezas con volumen: degradé, brillo, borde de luz y sombra */
-    function piece(p, x, y, sz, lift){
-      const w = CH.isW(p), k = p.toLowerCase(), s = sz || cs;
-      c.save(); c.translate(x, y); c.scale(s, s);
-      c.fillStyle = `rgba(11,15,36,${lift ? .16 : .26})`; c.beginPath(); c.ellipse(.52, .9, lift ? .27 : .31, .06, 0, 0, 7); c.fill();
-      if (lift) c.translate(0, -lift);
-      const g = c.createLinearGradient(.22, .1, .78, .85);
-      if (w) { g.addColorStop(0, "#FFFFFF"); g.addColorStop(.45, "#FFF3DC"); g.addColorStop(1, "#D2B98F"); } else { g.addColorStop(0, "#6A7198"); g.addColorStop(.42, "#363B57"); g.addColorStop(1, "#14151F"); }
-      c.fillStyle = g; c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.lineJoin = "round"; c.lineCap = "round";
-      const hl = w ? "rgba(255,255,255,.95)" : "rgba(170,185,255,.45)", dt2 = w ? "#C2AE8C" : "#7A82A8";
-      const fillStroke = () => { c.fill(); c.stroke(); };
-      const base = (y0) => { c.beginPath(); rr(c, .19, y0, .62, .11, .05); fillStroke(); c.beginPath(); c.moveTo(.26, y0 + .04); c.lineTo(.74, y0 + .04); c.strokeStyle = dt2; c.lineWidth = 1.2 / s; c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; };
-      const collar = (y0, rx) => { c.beginPath(); c.ellipse(.5, y0, rx, .036, 0, 0, 7); fillStroke(); };
-      const gem = (gx, gy, r2, col) => { c.beginPath(); c.arc(gx, gy, r2, 0, 7); c.fillStyle = col; fillStroke(); c.fillStyle = "rgba(255,255,255,.8)"; c.beginPath(); c.arc(gx - r2 * .3, gy - r2 * .3, r2 * .35, 0, 7); c.fill(); c.fillStyle = g; };
-      c.beginPath();
-      if (k === "p") { c.moveTo(.37, .5); c.quadraticCurveTo(.4, .68, .29, .8); c.lineTo(.71, .8); c.quadraticCurveTo(.6, .68, .63, .5); c.closePath(); fillStroke(); collar(.5, .15); c.beginPath(); c.arc(.5, .33, .13, 0, 7); fillStroke(); c.fillStyle = hl; c.beginPath(); c.arc(.45, .28, .04, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      else if (k === "r") { c.moveTo(.32, .8); c.lineTo(.35, .42); c.lineTo(.65, .42); c.lineTo(.68, .8); c.closePath(); fillStroke(); c.beginPath(); c.moveTo(.27, .41); c.lineTo(.27, .17); c.lineTo(.37, .17); c.lineTo(.37, .25); c.lineTo(.45, .25); c.lineTo(.45, .17); c.lineTo(.55, .17); c.lineTo(.55, .25); c.lineTo(.63, .25); c.lineTo(.63, .17); c.lineTo(.73, .17); c.lineTo(.73, .41); c.closePath(); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 1.2 / s; c.beginPath(); c.moveTo(.36, .55); c.lineTo(.64, .55); c.moveTo(.35, .67); c.lineTo(.65, .67); c.moveTo(.5, .55); c.lineTo(.5, .67); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = hl; c.fillRect(.31, .2, .03, .17); c.fillRect(.385, .45, .025, .3); c.fillStyle = g; base(.8); }
-      else if (k === "n") { c.moveTo(.3, .8); c.bezierCurveTo(.3, .64, .36, .56, .47, .5); c.bezierCurveTo(.4, .5, .3, .55, .24, .5); c.bezierCurveTo(.18, .46, .2, .39, .27, .34); c.lineTo(.43, .2); c.bezierCurveTo(.45, .13, .49, .09, .52, .13); c.bezierCurveTo(.56, .1, .61, .13, .63, .17); c.bezierCurveTo(.76, .3, .78, .56, .71, .8); c.closePath(); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 1.6 / s; c.beginPath(); c.moveTo(.6, .2); c.bezierCurveTo(.7, .32, .72, .5, .68, .7); c.stroke(); c.strokeStyle = w ? "#E8B04A" : "#FFC425"; c.lineWidth = 2.2 / s; c.beginPath(); c.moveTo(.56, .16); c.bezierCurveTo(.66, .22, .7, .34, .7, .46); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = w ? IK : "#fff"; c.beginPath(); c.arc(.44, .27, .032, 0, 7); c.fill(); c.beginPath(); c.arc(.28, .44, .018, 0, 7); c.fill(); c.fillStyle = hl; c.beginPath(); c.ellipse(.36, .62, .025, .08, .3, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      else if (k === "b") { c.moveTo(.5, .17); c.bezierCurveTo(.67, .31, .67, .52, .59, .64); c.lineTo(.65, .8); c.lineTo(.35, .8); c.lineTo(.41, .64); c.bezierCurveTo(.33, .52, .33, .31, .5, .17); c.closePath(); fillStroke(); collar(.64, .14); gem(.5, .135, .05, "#5CC6F0"); c.strokeStyle = dt2; c.lineWidth = 2 / s; c.beginPath(); c.moveTo(.44, .34); c.lineTo(.57, .47); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = hl; c.beginPath(); c.ellipse(.43, .45, .025, .07, .2, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      else if (k === "q") { c.moveTo(.31, .74); c.lineTo(.21, .3); c.lineTo(.36, .5); c.lineTo(.41, .22); c.lineTo(.5, .48); c.lineTo(.59, .22); c.lineTo(.64, .5); c.lineTo(.79, .3); c.lineTo(.69, .74); c.closePath(); fillStroke(); collar(.74, .2); [[.21, .28], [.41, .2], [.59, .2], [.79, .28]].forEach(([a2, b2]) => gem(a2, b2, .045, "#FFC425")); gem(.5, .6, .04, "#EE3B6B"); c.fillStyle = hl; c.beginPath(); c.ellipse(.38, .58, .025, .08, .15, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      else if (k === "k") { c.moveTo(.32, .76); c.bezierCurveTo(.25, .58, .3, .4, .5, .4); c.bezierCurveTo(.7, .4, .75, .58, .68, .76); c.closePath(); fillStroke(); collar(.76, .2); c.beginPath(); c.rect(.465, .1, .07, .27); c.rect(.39, .17, .22, .07); c.fillStyle = "#FFC425"; fillStroke(); c.fillStyle = "rgba(255,255,255,.7)"; c.fillRect(.475, .115, .02, .22); gem(.5, .56, .045, "#EE3B2B"); c.fillStyle = hl; c.beginPath(); c.ellipse(.38, .58, .025, .09, .15, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      c.restore();
-    }
+    const piece = (p, x, y, sz, lift) => chPiece(c, p, x, y, sz || cs, lift);
     /* Piezas comidas: lo que falta de cada color respecto del comienzo */
     const START = { p:8, n:2, b:2, r:2, q:1 }, VAL = { p:1, n:3, b:3, r:5, q:9 };
     function captured(){ const cnt = { w:{}, b:{} }; st.b.forEach(p => { if (!p) return; const sd = CH.isW(p) ? "w" : "b", k = p.toLowerCase(); cnt[sd][k] = (cnt[sd][k] || 0) + 1; });
@@ -12565,7 +12589,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("golf"), 1); ARC_ORDER.unshift("golf");
 ARC_SHARE.golf = { e:"⛳", f:(n, r) => { const g = golfLast; if (!g) return `Terminé un recorrido de Tito Golf`; const me = g.ps[0], dif = me.tot - g.par, rel = dif === 0 ? "al par" : dif < 0 ? dif + " bajo par" : "+" + dif + " sobre el par";
   return g.mode === "duo" ? (g.win < 0 ? `Empatamos en ${g.holes.length} hoyos de Tito Golf` : `${g.ps[g.win].name} ganó en ${g.holes.length} hoyos de Tito Golf`) : `Hice ${me.tot} golpes en ${g.holes.length} hoyos (${rel})${g.mode === "bot" ? (g.win === 0 ? " y le gané al robot" : g.win < 0 ? " y empaté con el robot" : "") : ""}`; } };
 
-const APP_VER = "11/11 00:12";
+const APP_VER = "11/11 00:16";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
