@@ -5891,6 +5891,17 @@ const SND = (() => {
       if (!sfxOn()) return; v = v || 0;
       const F = {
         jump:() => tone(380, 0, .16, "square", .05, 820),
+        /* Ajedrez: madera al mover, golpe según quién ataca y un sonido propio para cada pieza comida */
+        chmove:() => { const k = [0, 1, 2, 3, 4, 5][v] || 0; tone(520 - k * 30, 0, .05, "sine", .16, 300 - k * 15); noise(0, .045, .1, 1700 - k * 120, null, "bandpass"); tone(150, 0, .07, "sine", .1, 90); },
+        chatk:() => { const k = v || 0; tone(330 - k * 30, 0, .09, "square", .05, 140); noise(0, .07, .13, 900, null, "lowpass"); tone(110, 0, .12, "sine", .16, 60); },
+        chcap_p:() => { tone(880, 0, .07, "triangle", .1, 520); tone(660, .06, .1, "triangle", .07, 380); noise(.02, .05, .06, 3000); },
+        chcap_n:() => { [0, .08, .16].forEach((d, i) => { noise(d, .05, .14, 700, null, "lowpass"); tone(240 - i * 20, d, .05, "sine", .1, 150); }); tone(820, .22, .32, "sawtooth", .03, 1100); tone(1100, .32, .22, "sawtooth", .025, 640); },
+        chcap_b:() => { tone(N(84), 0, .55, "sine", .1); tone(N(91), .02, .45, "sine", .05); tone(N(96), .05, .3, "triangle", .03); },
+        chcap_r:() => { tone(140, 0, .3, "square", .07, 55); noise(0, .38, .2, 500, null, "lowpass"); noise(.06, .18, .08, 2200, null, "bandpass"); tone(70, .02, .32, "sine", .18, 40); },
+        chcap_q:() => { [76, 72, 67, 64].forEach((n, i) => tone(N(n), i * .09, .28, "triangle", .08)); tone(N(52), .34, .5, "sawtooth", .04, N(40)); noise(.34, .3, .05, 1500, null, "bandpass"); },
+        chcastle:() => { [0, .11].forEach(d => { tone(480, d, .05, "sine", .14, 280); noise(d, .04, .1, 1600, null, "bandpass"); }); [72, 76, 79].forEach((n, i) => tone(N(n), .24 + i * .07, .16, "triangle", .06)); },
+        chpromo:() => { [67, 71, 74, 79, 83].forEach((n, i) => tone(N(n), i * .06, .22, "triangle", .08)); tone(N(86), .32, .4, "sine", .07); },
+        chmate:() => { tone(N(48), 0, .5, "sawtooth", .05, N(36)); [60, 64, 67, 72].forEach((n, i) => tone(N(n), .35 + i * .1, .4, "triangle", .08)); },
         /* Tito Golf */
         putt:() => { const k = Math.max(.15, Math.min(1, v || .5)); tone(1250, 0, .045, "square", .025 + k * .03, 600); noise(0, .05, .1 + k * .2, 2600, null, "bandpass"); tone(230, 0, .09, "sine", .12 + k * .16, 120); },
         gwall:() => { const k = Math.max(.1, Math.min(1, v || .4)); tone(170 + k * 70, 0, .07, "triangle", .05 + k * .1, 105); noise(0, .05, .05 + k * .1, 900, null, "lowpass"); },
@@ -6087,7 +6098,7 @@ function arcModeHTML(id){
 /* Pantalla de inicio estándar de los juegos con modos (ajedrez, 4 en línea…) */
 function arcModesBox(id, intro){ const g = ARC[id], m = arcModeOf(id);
   return `<div class="arc-box golf-box"><div class="pno-head"><span class="arc-thumb">${g.thumb()}</span><span><b>${esc(g.t)}</b><small>${intro || g.intro}</small></span></div>${arcModeHTML(id)}
-    <button class="btn big-cta block" data-act="arc-start">¡JUGAR! <small>${m.m === "bot" ? "contra el robot · " + ARC_LVLS.find(l => l[0] === m.lvl)[1] : m.m === "duo" ? "con " + esc(arcP2Name(id)) : "solo"}</small></button></div>`; }
+    <button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`; }
 /* Barra de jugadores para juegos de tablero: quién juega con qué color y a quién le toca */
 function arcVsBar(ps, cur, subs, done){
   return `<div class="arc-vs">${ps.map((p, i) => `<span class="av-chip ${p.kind} ${i === cur && !done ? "on" : ""}"><span class="av-av">${arcAvatar(p, 30, "happy")}</span><span class="av-tx"><b>${esc(p.name)}</b><small>${subs[i] || ""}</small></span>${i === cur && !done ? `<i class="av-dot"></i>` : ""}</span>`).join(`<span class="av-vs">VS</span>`)}</div>`; }
@@ -6987,9 +6998,24 @@ const CH = (() => {
   }
   return { start, legal, make, inCheck, key, insufficient, best, isW };
 })();
+const arcAvImg = (p, mood) => p.kind === "bot" ? robotImg(mood === "sad" ? "sad" : mood === "happy" ? "happy" : "normal") : titoImg(p.tito || {}, mood || "normal", 120);
+/* Tarjeta de jugador dibujada en el canvas (juegos de tablero): avatar, nombre, estado y color */
+function arcPanel(c, W, y0, h, p, o){
+  const x0 = 8, w0 = W - 16, ch = Math.min(h - 10, 92), cy = y0 + (h - ch) / 2, on = o.on, t = o.t || 0, FB = n => `700 ${n}px Fredoka, sans-serif`;
+  c.save(); c.fillStyle = "rgba(0,0,0,.28)"; rr(c, x0 + 2, cy + 4, w0, ch, 16); c.fill();
+  rr(c, x0, cy, w0, ch, 16); if (on) { const g = c.createLinearGradient(0, cy, 0, cy + ch); g.addColorStop(0, o.danger ? "#FF7A6B" : "#FFD95A"); g.addColorStop(1, o.danger ? "#E2402F" : "#F5B700"); c.fillStyle = g; } else c.fillStyle = "rgba(255,255,255,.09)"; c.fill();
+  c.lineWidth = on ? 3 : 2; c.strokeStyle = on ? IK : "rgba(255,255,255,.18)"; c.stroke();
+  if (on) { c.save(); rr(c, x0, cy, w0, ch, 16); c.clip(); c.fillStyle = "rgba(255,255,255,.28)"; c.fillRect(x0, cy, w0, ch * .38); c.restore(); }
+  const av = arcAvImg(p, o.mood || (o.danger ? "sad" : on ? "happy" : "normal")), ah = ch - 12, aw = ah * .86, bob = on ? Math.sin(t * 5) * 2 : 0;
+  if (av && av.complete && av.naturalWidth) c.drawImage(av, x0 + 8, cy + 6 + bob, aw, ah);
+  const tx = x0 + 14 + aw; c.textAlign = "left"; c.fillStyle = on ? "#1B1D2A" : "#F2F3FF"; const nf = Math.max(14, Math.min(19, ch * .24)); c.font = FB(nf); c.fillText(p.name, tx, cy + ch * .42);
+  c.font = FB(nf * .72); c.fillStyle = on ? (o.danger ? "#3A0E08" : "#5A4300") : "rgba(220,224,255,.6)"; c.fillText(o.sub || "", tx, cy + ch * .42 + nf * .95);
+  if (o.chip) { c.beginPath(); c.arc(x0 + w0 - 17, cy + 17, 8, 0, 7); c.fillStyle = o.chip; c.fill(); c.lineWidth = 2; c.strokeStyle = IK; c.stroke(); c.fillStyle = "rgba(255,255,255,.6)"; c.beginPath(); c.arc(x0 + w0 - 19.5, cy + 14.5, 2.4, 0, 7); c.fill(); }
+  if (on) { c.fillStyle = "#22A447"; c.beginPath(); c.arc(x0 + 6, cy + 6, 6 + Math.sin(t * 7) * 1.2, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 2; c.stroke(); }
+  c.restore(); return { tx, cy, ch, x0, w0 }; }
 let chessLast = null;
 arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
-  t:"Ajedrez", d:"Contra el robot o con un amigo en el mismo celu.", col:"b", revive:false, noCount:true, ratio:1, ctlH:124,
+  t:"Ajedrez", d:"Contra el robot o con un amigo en el mismo celu.", col:"b", revive:false, noCount:true, fill:[1.28, 1.62], ctlH:60,
   intro:"Toca una pieza para ver a dónde puede ir. Tiene todas las reglas: enroque, captura al paso y coronación.",
   help:"Toca una pieza y después la casilla a la que la quieres mover",
   overText:"Ganó el robot",
@@ -6998,54 +7024,74 @@ arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
   readyBox: () => arcModesBox("chess", "Toca una pieza para ver a dónde puede ir. Contra el robot juegas con las blancas; con un amigo, los colores se turnan cada partida."),
   overTitle(){ const r = chessLast; if (!r) return "Partida terminada"; if (r.res === "draw") return "¡Tablas!"; if (r.duo) return "¡Jaque mate! Ganó " + esc(r.win); return r.res === "win" ? (r.resign ? "¡Ganaste!" : "¡Jaque mate! Le ganaste al robot") : r.resign ? "Te rendiste" : "Ganó el robot"; },
   points: s => s / 6,
-  thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#EEF1F7"/>${[...Array(24)].map((_, i) => (i + Math.floor(i / 6)) % 2 ? `<rect x="${2 + (i % 6) * 10}" y="${Math.floor(i / 6) * 12}" width="10" height="12" fill="#7E8FC4"/>` : "").join("")}<rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/><path d="M14 42 C14 33 17 29 22 26 C19 26 14 28 11 25 C9 23 10 20 13 18 L21 11 C22 8 24 6 25 8 C27 7 29 8 30 10 C36 16 37 29 34 42 Z" fill="#FFF7E8" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/><circle cx="21" cy="15" r="1.4" fill="${IK}"/><path d="M40 42 C37 32 39 25 47 25 C55 25 57 32 54 42 Z" fill="#2A2D3E" stroke="${IK}" stroke-width="2"/><path d="M45.5 13 h3 v4 h4 v3 h-4 v6 h-3 v-6 h-4 v-3 h4 z" fill="#FFC425" stroke="${IK}" stroke-width="1.4"/><rect x="36" y="41" width="22" height="4" rx="2" fill="#2A2D3E" stroke="${IK}" stroke-width="1.6"/><rect x="10" y="41" width="27" height="4" rx="2" fill="#FFF7E8" stroke="${IK}" stroke-width="1.6"/></svg>`,
+  thumb: () => { const cols = 6, rows = 3, Y0 = 27, Y1 = 47, L0 = 9, R0 = 55, L1 = -2, R1 = 66; let sq = "";
+    for (let r = 0; r < rows; r++) for (let q = 0; q < cols; q++) { const ya = Y0 + (Y1 - Y0) * r / rows, yb = Y0 + (Y1 - Y0) * (r + 1) / rows, la = L0 + (L1 - L0) * r / rows, ra = R0 + (R1 - R0) * r / rows, lb = L0 + (L1 - L0) * (r + 1) / rows, rb = R0 + (R1 - R0) * (r + 1) / rows;
+      const xa = k => la + (ra - la) * k / cols, xb = k => lb + (rb - lb) * k / cols; sq += `<path d="M${xa(q).toFixed(1)} ${ya.toFixed(1)} L${xa(q + 1).toFixed(1)} ${ya.toFixed(1)} L${xb(q + 1).toFixed(1)} ${yb.toFixed(1)} L${xb(q).toFixed(1)} ${yb.toFixed(1)}Z" fill="${(q + r) % 2 ? "#7E8FC4" : "#EEF1F7"}"/>`; }
+    return `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><linearGradient id="chBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3F86"/><stop offset="1" stop-color="#1C2050"/></linearGradient><linearGradient id="chW" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#FFF3DC"/><stop offset="1" stop-color="#D2B98F"/></linearGradient><linearGradient id="chB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6A7198"/><stop offset=".45" stop-color="#363B57"/><stop offset="1" stop-color="#14151F"/></linearGradient><clipPath id="chCl"><rect width="64" height="48" rx="8"/></clipPath></defs>
+    <g clip-path="url(#chCl)"><rect width="64" height="48" fill="url(#chBg)"/><circle cx="44" cy="6" r=".9" fill="#fff" opacity=".7"/><circle cx="58" cy="12" r=".7" fill="#fff" opacity=".6"/><circle cx="31" cy="4" r=".6" fill="#fff" opacity=".5"/>${sq}<path d="M9 27 H55" stroke="#FFD95A" stroke-width="1" opacity=".8"/>
+    <ellipse cx="22" cy="43.5" rx="11" ry="2.2" fill="rgba(0,0,0,.3)"/><ellipse cx="45" cy="40" rx="9" ry="2" fill="rgba(0,0,0,.3)"/>
+    <g transform="translate(34 7) scale(.62)"><path d="M10 52 C6 40 9 30 18 30 C27 30 30 40 26 52 Z" fill="url(#chB)" stroke="${IK}" stroke-width="3"/><rect x="5" y="50" width="26" height="6" rx="3" fill="url(#chB)" stroke="${IK}" stroke-width="3"/><rect x="15.5" y="4" width="5" height="22" fill="#FFC425" stroke="${IK}" stroke-width="2.4"/><rect x="10" y="9" width="16" height="5" fill="#FFC425" stroke="${IK}" stroke-width="2.4"/><ellipse cx="18" cy="29" rx="10" ry="3" fill="url(#chB)" stroke="${IK}" stroke-width="3"/><circle cx="18" cy="41" r="2.6" fill="#EE3B2B" stroke="${IK}" stroke-width="1.4"/><path d="M12 36 q-1 6 1 11" stroke="rgba(170,185,255,.6)" stroke-width="2" fill="none" stroke-linecap="round"/></g>
+    <path d="M12 44 C12 34 15 30 21 27 C17 27 12 29 9 26 C7 24 8 20 11 18 L19 10 C20 6 23 4 24 7 C26 5 29 6 30 9 C37 15 38 30 34 44 Z" fill="url(#chW)" stroke="${IK}" stroke-width="2.2" stroke-linejoin="round"/><path d="M27 9 C32 13 34 20 34 27" stroke="#E8B04A" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="20" cy="14" r="1.5" fill="${IK}"/><path d="M15 33 q-1 4 0 8" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <rect x="8" y="42" width="30" height="4.5" rx="2.2" fill="url(#chW)" stroke="${IK}" stroke-width="1.8"/>
+    <path d="M55 20 l1 2.4 2.4 1 -2.4 1 -1 2.4 -1 -2.4 -2.4 -1 2.4 -1z" fill="#FFE27A"/><path d="M6 8 l.7 1.6 1.6 .7 -1.6 .7 -.7 1.6 -.7 -1.6 -1.6 -.7 1.6 -.7z" fill="#fff" opacity=".8"/></g><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`; },
   make(api){
-    const { W, c } = api, cs = W / 8, LV = { facil:"facil", normal:"medio", dificil:"dificil" }; let lvl = "medio", duo = false, ps = [], wIdx = 0, games = 0;
-    let st, sel, moves, last, over, thinking, promo, undoUsed, hist, t, anims = [];
+    const { W, H, c } = api, LV = { facil:"facil", normal:"medio", dificil:"dificil" }; let lvl = "medio", duo = false, ps = [], wIdx = 0, games = 0;
+    const fm = Math.round(W * .03), bs = W - fm * 2, cs = bs / 8, PH = Math.max(52, (H - bs - fm * 2) / 2), FY = PH, bx = fm, by = PH + fm;
+    let st, sel, moves, last, over, thinking, promo, undoUsed, hist, t, anims = [], fx = [], capT = {}, chkT = 0;
     const sideOf = w => w ? wIdx : 1 - wIdx, myTurn = () => duo || st.w;
-    const reset = () => { const m = arcModeOf("chess"); duo = m.m === "duo"; lvl = LV[m.lvl] || "medio"; ps = arcPlayers("chess"); wIdx = duo ? games % 2 : 0; chessLast = null; st = CH.start(); sel = -1; moves = []; last = null; over = false; thinking = false; promo = null; undoUsed = false; hist = []; t = 0; st.reps = {}; st.reps[CH.key(st)] = 1; status(); ctl(); };
+    const reset = () => { const m = arcModeOf("chess"); duo = m.m === "duo"; lvl = LV[m.lvl] || "medio"; ps = arcPlayers("chess"); wIdx = duo ? games % 2 : 0; chessLast = null; st = CH.start(); sel = -1; moves = []; last = null; over = false; thinking = false; promo = null; undoUsed = false; hist = []; t = 0; anims = []; fx = []; capT = {}; st.reps = {}; st.reps[CH.key(st)] = 1; status(); ctl(); };
     const status = (txt) => { if (txt) return api.info(txt); if (over) return api.info(""); const chk = CH.inCheck(st, st.w);
       if (duo) return api.info(`${chk ? "¡Jaque! " : ""}Turno de ${esc(ps[sideOf(st.w)].name)} · ${st.w ? "blancas" : "negras"}`);
       api.info(thinking ? "El robot está pensando…" : chk ? "¡Jaque! Te toca" : "Te toca mover"); };
     function ctl(){
-      const bar = arcVsBar(ps, sideOf(st.w), ps.map((_, i) => i === wIdx ? "Blancas" : "Negras"), over), undoN = duo ? 1 : 2;
-      api.ctl.innerHTML = bar + (promo ? `<div class="arc-btns">${["Q","R","B","N"].map(p => `<button class="arc-btn" data-pr="${p}">${{ Q:"Dama", R:"Torre", B:"Alfil", N:"Caballo" }[p]}</button>`).join("")}</div>`
-        : `<div class="arc-btns"><button class="arc-btn" id="chUndo" ${undoUsed || hist.length < undoN || thinking || over ? "disabled" : ""}>${isPrem() ? "Deshacer" : "Deshacer · video"}</button><button class="arc-btn" id="chResign" ${over ? "disabled" : ""}>${duo ? "Rendirse" : "Rendirme"}</button></div>`);
+      const undoN = duo ? 1 : 2;
+      api.ctl.innerHTML = promo ? `<div class="arc-btns ch-promo">${["Q","R","B","N"].map(p => `<button class="arc-btn" data-pr="${p}">${{ Q:"Dama", R:"Torre", B:"Alfil", N:"Caballo" }[p]}</button>`).join("")}</div>`
+        : `<div class="arc-btns"><button class="arc-btn" id="chUndo" ${undoUsed || hist.length < undoN || thinking || over ? "disabled" : ""}>${isPrem() ? "Deshacer" : "Deshacer · video"}</button><button class="arc-btn" id="chResign" ${over ? "disabled" : ""}>${duo ? "Rendirse" : "Rendirme"}</button></div>`;
       api.ctl.querySelectorAll("[data-pr]").forEach(b => b.onclick = () => { const m = promo.find(x => x.promo.toUpperCase() === b.dataset.pr); promo = null; doMove(m); });
       const u = $("#chUndo"); if (u) u.onclick = () => showRewarded("deshacer la jugada", () => { if (hist.length >= undoN) { if (!duo) hist.pop(); st = hist.pop(); undoUsed = true; last = null; sel = -1; moves = []; status(); ctl(); } });
       const r = $("#chResign"); if (r) r.onclick = () => { if (!api.playing() || over) return; if (duo) endDuo(sideOf(!st.w), true); else end("lose", true); };
     }
     reset();
     function endDuo(wi, resign){ over = true; games++; chessLast = { duo:true, res:wi < 0 ? "draw" : "win", win:wi >= 0 ? ps[wi].name : "", wp:wi >= 0 ? ps[wi] : null, resign }; api.score(0);
-      if (wi >= 0) { api.win(); status(resign ? `${esc(ps[1 - wi].name)} se rindió` : `¡Jaque mate! Ganó ${esc(ps[wi].name)}`); } else { api.draw(); status("Tablas"); } ctl(); setTimeout(() => api.over(), wi >= 0 ? 900 : 700); }
+      if (wi >= 0) { api.win(); if (!resign) SND.fx("chmate"); status(resign ? `${esc(ps[1 - wi].name)} se rindió` : `¡Jaque mate! Ganó ${esc(ps[wi].name)}`); } else { api.draw(); status("Tablas"); } ctl(); setTimeout(() => api.over(), wi >= 0 ? 1300 : 700); }
     function end(res, resign){
       if (duo) { endDuo(res === "draw" ? -1 : sideOf(res === "win"), resign); return; }
       over = true; games++; chessLast = { duo:false, res, resign }; const base = { facil:300, medio:600, dificil:1000 }[lvl] || 600;
       api.score(res === "win" ? base : res === "draw" ? Math.round(base / 3) : 0);
-      if (res === "win") api.win();
+      if (res === "win") { api.win(); if (!resign) SND.fx("chmate"); }
       status(res === "win" ? "¡Jaque mate! Ganaste" : res === "draw" ? "Tablas" : "Ganó el robot");
       if (res === "draw") api.draw();
-      ctl(); setTimeout(() => api.over(), res === "win" ? 900 : 700);
+      ctl(); setTimeout(() => api.over(), res === "win" ? 1300 : 800);
     }
     function after(){
       const k = CH.key(st); st.reps[k] = (st.reps[k] || 0) + 1;
       const ms = CH.legal(st);
       if (!ms.length) { if (CH.inCheck(st, st.w)) end(st.w ? "lose" : "win"); else end("draw"); return true; }
       if (st.half >= 100 || st.reps[k] >= 3 || CH.insufficient(st.b)) { end("draw"); return true; }
-      if (CH.inCheck(st, st.w)) SND.fx("check");
+      if (CH.inCheck(st, st.w)) { chkT = t; setTimeout(() => SND.fx("check"), 260); }
       return false;
     }
+    const sqXY = s => [bx + (s & 7) * cs, by + (s >> 3) * cs];
     function anímate(m){
       anims = [{ p:m.promo || m.p, f:m.f, t:m.t, k:0 }];
       if (m.castle === "k") anims.push({ p:m.p === "K" ? "R" : "r", f:m.t + 1, t:m.t - 1, k:0 });
       if (m.castle === "q") anims.push({ p:m.p === "K" ? "R" : "r", f:m.t - 2, t:m.t + 1, k:0 });
-      SND.fx("slide"); setTimeout(() => SND.fx(m.c ? "capture" : "move"), 190);
+      SND.fx("slide");
+      if (m.c) { const cap = m.epc ? m.t + (CH.isW(m.p) ? 8 : -8) : m.t, [x, y] = sqXY(cap), kind = m.c.toLowerCase(); capT[CH.isW(m.c) ? "w" : "b"] = t;
+        fx.push({ k:"ghost", p:m.c, x, y, t0:t + .17 });
+        const col = CH.isW(m.c) ? ["#FFF4E0", "#FFFFFF", "#FFC425"] : ["#33374D", "#5C6283", "#FFC425"];
+        for (let i = 0; i < 16; i++) { const a = rnd() * 6.28, v = cs * (1.2 + rnd() * 2.4); fx.push({ k:"spark", x:x + cs / 2, y:y + cs / 2, vx:Math.cos(a) * v, vy:Math.sin(a) * v - cs, col:col[i % 3], t0:t + .17, life:.5 + rnd() * .3 }); }
+        fx.push({ k:"ring", x:x + cs / 2, y:y + cs / 2, t0:t + .17 });
+        SND.fx("chatk", "pnbrqk".indexOf(m.p.toLowerCase())); setTimeout(() => SND.fx("chcap_" + kind), 170); }
+      else if (m.castle) setTimeout(() => SND.fx("chcastle"), 180);
+      else setTimeout(() => SND.fx("chmove", "pnbrqk".indexOf(m.p.toLowerCase())), 180);
+      if (m.promo) { setTimeout(() => SND.fx("chpromo"), 260); const [x, y] = sqXY(m.t); for (let i = 0; i < 18; i++) { const a = i / 18 * 6.28; fx.push({ k:"spark", x:x + cs / 2, y:y + cs / 2, vx:Math.cos(a) * cs * 2.2, vy:Math.sin(a) * cs * 2.2, col:"#FFC425", t0:t + .2, life:.6 }); } }
     }
     function doMove(m){
       hist.push(st); const reps = Object.assign({}, st.reps); st = CH.make(st, m); st.reps = reps; last = m; sel = -1; moves = [];
       anímate(m);
       if (after()) return;
-      if (!st.w && !duo) { thinking = true; status(); ctl(); setTimeout(aiMove, 520); } else { status(); ctl(); }
+      if (!st.w && !duo) { thinking = true; status(); ctl(); setTimeout(aiMove, 560); } else { status(); ctl(); }
     }
     function aiMove(){
       if (!api.playing() || over) { thinking = false; return; }
@@ -7055,52 +7101,86 @@ arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
     }
     api.on(api.stage, "pointerup", e => {
       if (!api.playing() || over || thinking || promo || !myTurn()) return;
-      const rc = api.cv.getBoundingClientRect(), q = Math.floor((e.clientX - rc.left) / cs), r = Math.floor((e.clientY - rc.top) / cs); if (q < 0 || r < 0 || q > 7 || r > 7) return;
+      const rc = api.cv.getBoundingClientRect(), sx = (e.clientX - rc.left) * W / rc.width, sy = (e.clientY - rc.top) * H / rc.height, q = Math.floor((sx - bx) / cs), r = Math.floor((sy - by) / cs); if (q < 0 || r < 0 || q > 7 || r > 7) return;
       const s = r * 8 + q, p = st.b[s];
       const opts = moves.filter(m => m.t === s);
       if (sel >= 0 && opts.length) { if (opts.length > 1 && opts[0].promo) { promo = opts; ctl(); return; } doMove(opts[0]); return; }
       if (p && CH.isW(p) === st.w) { sel = s; moves = CH.legal(st).filter(m => m.f === s); SND.fx("open"); } else { sel = -1; moves = []; }
     });
-    /* Piezas con volumen: degradé, brillo y sombra */
-    function piece(p, x, y){
-      const w = CH.isW(p), k = p.toLowerCase(), s = cs;
+    /* Piezas con volumen: degradé, brillo, borde de luz y sombra */
+    function piece(p, x, y, sz, lift){
+      const w = CH.isW(p), k = p.toLowerCase(), s = sz || cs;
       c.save(); c.translate(x, y); c.scale(s, s);
-      c.fillStyle = "rgba(11,15,36,.18)"; c.beginPath(); c.ellipse(.5, .9, .3, .05, 0, 0, 7); c.fill();
-      const g = c.createLinearGradient(.2, 0, .8, 0);
-      if (w) { g.addColorStop(0, "#FFFFFF"); g.addColorStop(.55, "#FFF4E0"); g.addColorStop(1, "#D9C7A6"); } else { g.addColorStop(0, "#5C6283"); g.addColorStop(.5, "#33374D"); g.addColorStop(1, "#1A1C29"); }
+      c.fillStyle = `rgba(11,15,36,${lift ? .16 : .26})`; c.beginPath(); c.ellipse(.52, .9, lift ? .27 : .31, .06, 0, 0, 7); c.fill();
+      if (lift) c.translate(0, -lift);
+      const g = c.createLinearGradient(.22, .1, .78, .85);
+      if (w) { g.addColorStop(0, "#FFFFFF"); g.addColorStop(.45, "#FFF3DC"); g.addColorStop(1, "#D2B98F"); } else { g.addColorStop(0, "#6A7198"); g.addColorStop(.42, "#363B57"); g.addColorStop(1, "#14151F"); }
       c.fillStyle = g; c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.lineJoin = "round"; c.lineCap = "round";
-      const hl = w ? "rgba(255,255,255,.9)" : "rgba(255,255,255,.28)", dt2 = w ? "#C2AE8C" : "#6B7190";
+      const hl = w ? "rgba(255,255,255,.95)" : "rgba(170,185,255,.45)", dt2 = w ? "#C2AE8C" : "#7A82A8";
       const fillStroke = () => { c.fill(); c.stroke(); };
-      const base = (y0) => { c.beginPath(); rr(c, .2, y0, .6, .1, .045); fillStroke(); c.beginPath(); c.moveTo(.26, y0 + .035); c.lineTo(.74, y0 + .035); c.strokeStyle = dt2; c.lineWidth = 1.2 / s; c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; };
-      const collar = (y0, rx) => { c.beginPath(); c.ellipse(.5, y0, rx, .035, 0, 0, 7); fillStroke(); };
+      const base = (y0) => { c.beginPath(); rr(c, .19, y0, .62, .11, .05); fillStroke(); c.beginPath(); c.moveTo(.26, y0 + .04); c.lineTo(.74, y0 + .04); c.strokeStyle = dt2; c.lineWidth = 1.2 / s; c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; };
+      const collar = (y0, rx) => { c.beginPath(); c.ellipse(.5, y0, rx, .036, 0, 0, 7); fillStroke(); };
+      const gem = (gx, gy, r2, col) => { c.beginPath(); c.arc(gx, gy, r2, 0, 7); c.fillStyle = col; fillStroke(); c.fillStyle = "rgba(255,255,255,.8)"; c.beginPath(); c.arc(gx - r2 * .3, gy - r2 * .3, r2 * .35, 0, 7); c.fill(); c.fillStyle = g; };
       c.beginPath();
-      if (k === "p") { c.moveTo(.37, .5); c.quadraticCurveTo(.4, .68, .29, .8); c.lineTo(.71, .8); c.quadraticCurveTo(.6, .68, .63, .5); c.closePath(); fillStroke(); collar(.5, .15); c.beginPath(); c.arc(.5, .33, .13, 0, 7); fillStroke(); c.fillStyle = hl; c.beginPath(); c.arc(.45, .28, .035, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      else if (k === "r") { c.moveTo(.32, .8); c.lineTo(.35, .42); c.lineTo(.65, .42); c.lineTo(.68, .8); c.closePath(); fillStroke(); c.beginPath(); c.moveTo(.27, .41); c.lineTo(.27, .17); c.lineTo(.37, .17); c.lineTo(.37, .25); c.lineTo(.45, .25); c.lineTo(.45, .17); c.lineTo(.55, .17); c.lineTo(.55, .25); c.lineTo(.63, .25); c.lineTo(.63, .17); c.lineTo(.73, .17); c.lineTo(.73, .41); c.closePath(); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 1.2 / s; c.beginPath(); c.moveTo(.36, .55); c.lineTo(.64, .55); c.moveTo(.35, .67); c.lineTo(.65, .67); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = hl; c.fillRect(.31, .2, .03, .17); c.fillStyle = g; base(.8); }
-      else if (k === "n") { c.moveTo(.3, .8); c.bezierCurveTo(.3, .64, .36, .56, .47, .5); c.bezierCurveTo(.4, .5, .3, .55, .24, .5); c.bezierCurveTo(.18, .46, .2, .39, .27, .34); c.lineTo(.43, .2); c.bezierCurveTo(.45, .13, .49, .09, .52, .13); c.bezierCurveTo(.56, .1, .61, .13, .63, .17); c.bezierCurveTo(.76, .3, .78, .56, .71, .8); c.closePath(); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 1.6 / s; c.beginPath(); c.moveTo(.6, .2); c.bezierCurveTo(.7, .32, .72, .5, .68, .7); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = w ? IK : "#fff"; c.beginPath(); c.arc(.44, .27, .03, 0, 7); c.fill(); c.beginPath(); c.arc(.28, .44, .018, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      else if (k === "b") { c.moveTo(.5, .17); c.bezierCurveTo(.67, .31, .67, .52, .59, .64); c.lineTo(.65, .8); c.lineTo(.35, .8); c.lineTo(.41, .64); c.bezierCurveTo(.33, .52, .33, .31, .5, .17); c.closePath(); fillStroke(); collar(.64, .14); c.beginPath(); c.arc(.5, .14, .05, 0, 7); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 2 / s; c.beginPath(); c.moveTo(.44, .34); c.lineTo(.57, .47); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = hl; c.beginPath(); c.ellipse(.43, .45, .025, .07, .2, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      else if (k === "q") { c.moveTo(.31, .74); c.lineTo(.21, .3); c.lineTo(.36, .5); c.lineTo(.41, .22); c.lineTo(.5, .48); c.lineTo(.59, .22); c.lineTo(.64, .5); c.lineTo(.79, .3); c.lineTo(.69, .74); c.closePath(); fillStroke(); collar(.74, .2); [[.21, .28], [.41, .2], [.59, .2], [.79, .28]].forEach(([a2, b2]) => { c.beginPath(); c.arc(a2, b2, .045, 0, 7); c.fillStyle = "#FFC425"; fillStroke(); }); c.fillStyle = g; c.fillStyle = hl; c.beginPath(); c.ellipse(.38, .58, .025, .08, .15, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
-      else if (k === "k") { c.moveTo(.32, .76); c.bezierCurveTo(.25, .58, .3, .4, .5, .4); c.bezierCurveTo(.7, .4, .75, .58, .68, .76); c.closePath(); fillStroke(); collar(.76, .2); c.beginPath(); c.rect(.465, .1, .07, .27); c.rect(.39, .17, .22, .07); c.fillStyle = "#FFC425"; fillStroke(); c.fillStyle = hl; c.beginPath(); c.ellipse(.38, .58, .025, .09, .15, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+      if (k === "p") { c.moveTo(.37, .5); c.quadraticCurveTo(.4, .68, .29, .8); c.lineTo(.71, .8); c.quadraticCurveTo(.6, .68, .63, .5); c.closePath(); fillStroke(); collar(.5, .15); c.beginPath(); c.arc(.5, .33, .13, 0, 7); fillStroke(); c.fillStyle = hl; c.beginPath(); c.arc(.45, .28, .04, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+      else if (k === "r") { c.moveTo(.32, .8); c.lineTo(.35, .42); c.lineTo(.65, .42); c.lineTo(.68, .8); c.closePath(); fillStroke(); c.beginPath(); c.moveTo(.27, .41); c.lineTo(.27, .17); c.lineTo(.37, .17); c.lineTo(.37, .25); c.lineTo(.45, .25); c.lineTo(.45, .17); c.lineTo(.55, .17); c.lineTo(.55, .25); c.lineTo(.63, .25); c.lineTo(.63, .17); c.lineTo(.73, .17); c.lineTo(.73, .41); c.closePath(); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 1.2 / s; c.beginPath(); c.moveTo(.36, .55); c.lineTo(.64, .55); c.moveTo(.35, .67); c.lineTo(.65, .67); c.moveTo(.5, .55); c.lineTo(.5, .67); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = hl; c.fillRect(.31, .2, .03, .17); c.fillRect(.385, .45, .025, .3); c.fillStyle = g; base(.8); }
+      else if (k === "n") { c.moveTo(.3, .8); c.bezierCurveTo(.3, .64, .36, .56, .47, .5); c.bezierCurveTo(.4, .5, .3, .55, .24, .5); c.bezierCurveTo(.18, .46, .2, .39, .27, .34); c.lineTo(.43, .2); c.bezierCurveTo(.45, .13, .49, .09, .52, .13); c.bezierCurveTo(.56, .1, .61, .13, .63, .17); c.bezierCurveTo(.76, .3, .78, .56, .71, .8); c.closePath(); fillStroke(); c.strokeStyle = dt2; c.lineWidth = 1.6 / s; c.beginPath(); c.moveTo(.6, .2); c.bezierCurveTo(.7, .32, .72, .5, .68, .7); c.stroke(); c.strokeStyle = w ? "#E8B04A" : "#FFC425"; c.lineWidth = 2.2 / s; c.beginPath(); c.moveTo(.56, .16); c.bezierCurveTo(.66, .22, .7, .34, .7, .46); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = w ? IK : "#fff"; c.beginPath(); c.arc(.44, .27, .032, 0, 7); c.fill(); c.beginPath(); c.arc(.28, .44, .018, 0, 7); c.fill(); c.fillStyle = hl; c.beginPath(); c.ellipse(.36, .62, .025, .08, .3, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+      else if (k === "b") { c.moveTo(.5, .17); c.bezierCurveTo(.67, .31, .67, .52, .59, .64); c.lineTo(.65, .8); c.lineTo(.35, .8); c.lineTo(.41, .64); c.bezierCurveTo(.33, .52, .33, .31, .5, .17); c.closePath(); fillStroke(); collar(.64, .14); gem(.5, .135, .05, "#5CC6F0"); c.strokeStyle = dt2; c.lineWidth = 2 / s; c.beginPath(); c.moveTo(.44, .34); c.lineTo(.57, .47); c.stroke(); c.strokeStyle = IK; c.lineWidth = 2.4 / s; c.fillStyle = hl; c.beginPath(); c.ellipse(.43, .45, .025, .07, .2, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+      else if (k === "q") { c.moveTo(.31, .74); c.lineTo(.21, .3); c.lineTo(.36, .5); c.lineTo(.41, .22); c.lineTo(.5, .48); c.lineTo(.59, .22); c.lineTo(.64, .5); c.lineTo(.79, .3); c.lineTo(.69, .74); c.closePath(); fillStroke(); collar(.74, .2); [[.21, .28], [.41, .2], [.59, .2], [.79, .28]].forEach(([a2, b2]) => gem(a2, b2, .045, "#FFC425")); gem(.5, .6, .04, "#EE3B6B"); c.fillStyle = hl; c.beginPath(); c.ellipse(.38, .58, .025, .08, .15, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+      else if (k === "k") { c.moveTo(.32, .76); c.bezierCurveTo(.25, .58, .3, .4, .5, .4); c.bezierCurveTo(.7, .4, .75, .58, .68, .76); c.closePath(); fillStroke(); collar(.76, .2); c.beginPath(); c.rect(.465, .1, .07, .27); c.rect(.39, .17, .22, .07); c.fillStyle = "#FFC425"; fillStroke(); c.fillStyle = "rgba(255,255,255,.7)"; c.fillRect(.475, .115, .02, .22); gem(.5, .56, .045, "#EE3B2B"); c.fillStyle = hl; c.beginPath(); c.ellipse(.38, .58, .025, .09, .15, 0, 7); c.fill(); c.fillStyle = g; base(.8); }
+      c.restore();
+    }
+    /* Piezas comidas: lo que falta de cada color respecto del comienzo */
+    const START = { p:8, n:2, b:2, r:2, q:1 }, VAL = { p:1, n:3, b:3, r:5, q:9 };
+    function captured(){ const cnt = { w:{}, b:{} }; st.b.forEach(p => { if (!p) return; const sd = CH.isW(p) ? "w" : "b", k = p.toLowerCase(); cnt[sd][k] = (cnt[sd][k] || 0) + 1; });
+      const out = { w:[], b:[] }; let mat = 0; ["w", "b"].forEach(sd => "qrbnp".split("").forEach(k => { const miss = Math.max(0, START[k] - (cnt[sd][k] || 0)); for (let i = 0; i < miss; i++) out[sd].push(sd === "w" ? k.toUpperCase() : k); }));
+      "qrbnp".split("").forEach(k => mat += ((cnt.w[k] || 0) - (cnt.b[k] || 0)) * VAL[k]); return { out, mat }; }
+    const FT = n => `${n}px "Luckiest Guy", Fredoka, sans-serif`, FB = n => `700 ${n}px Fredoka, sans-serif`;
+    function panel(white, y0, h, cap){
+      const p = ps[sideOf(white)] || { name:"", kind:"me" }, on = !over && st.w === white, chk = on && CH.inCheck(st, st.w), think = thinking && on && p.kind === "bot";
+      const { tx, cy, ch } = arcPanel(c, W, y0, h, p, { on, danger:chk, t, mood:over ? (chessLast && chessLast.wp === p ? "happy" : "normal") : null, chip:white ? "#FFF3DC" : "#272B40",
+        sub:chk ? "¡Jaque!" : think ? "Pensando" + ".".repeat(1 + Math.floor(t * 3) % 3) : (white ? "Blancas" : "Negras") + (on ? " · le toca" : "") }); c.save();
+      /* piezas que comió este jugador */
+      const list = cap.out[white ? "b" : "w"], small = ch < 74, ps2 = small ? Math.min(22, ch * .42) : Math.min(26, ch * .36), gap = ps2 * .56, fresh = t - (capT[white ? "b" : "w"] || -9);
+      let tw = 0, pv = null; list.forEach(q => { if (pv && pv !== q) tw += ps2 * .25; tw += gap; pv = q; }); const adv0 = white ? cap.mat : -cap.mat; if (adv0 > 0) tw += ps2 * 1.4;
+      const cx0 = small ? W - 8 - 34 - tw : tx, cyy = small ? cy + (ch - ps2) / 2 + 3 : cy + ch - ps2 - 4;
+      let px = cx0, prev = null; list.forEach((q, i) => { if (prev && prev !== q) px += ps2 * .25; const pop = i === list.length - 1 && fresh < .5 ? 1 + Math.sin(Math.min(1, fresh / .5) * Math.PI) * .45 : 1; if (pop !== 1) { c.save(); c.translate(px + ps2 / 2, cyy + ps2 / 2); c.scale(pop, pop); piece(q, -ps2 / 2, -ps2 / 2, ps2); c.restore(); } else piece(q, px, cyy, ps2); px += gap; prev = q; });
+      const adv = white ? cap.mat : -cap.mat; if (adv > 0) { c.font = FT(Math.round(ps2 * .62)); c.fillStyle = on ? "#1B1D2A" : "#FFC425"; c.fillText("+" + adv, px + ps2 * .5, cyy + ps2 * .78); }
       c.restore();
     }
     return {
       reset,
       revive(){},
-      step(dt){ t += dt; anims.forEach(an => { an.k = Math.min(1, an.k + dt / .2); }); anims = anims.filter(an => an.k < 1); },
+      step(dt){ t += dt; anims.forEach(an => { an.k = Math.min(1, an.k + dt / .2); }); anims = anims.filter(an => an.k < 1); fx = fx.filter(f => t - f.t0 < (f.life || .6)); },
       draw(){
+        const bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, "#2A2F66"); bg.addColorStop(1, "#191C44"); c.fillStyle = bg; c.fillRect(0, 0, W, H);
+        c.fillStyle = "rgba(255,255,255,.05)"; for (let i = 0; i < 18; i++) { const x = (i * 97) % W, y = (i * 53) % H; c.save(); c.translate(x, y); c.rotate(i); c.font = `${14 + (i % 3) * 6}px serif`; c.fillText("♞♝♜♛♟♚"[i % 6], 0, 0); c.restore(); }
+        const cap = captured();
+        panel(false, 0, PH, cap); panel(true, H - PH, PH, cap);
+        /* marco del tablero */
+        c.fillStyle = "rgba(0,0,0,.35)"; rr(c, 3, FY + 5, W - 6, bs + fm * 2, 14); c.fill();
+        const fg = c.createLinearGradient(0, FY, 0, FY + bs + fm * 2); fg.addColorStop(0, "#4A4F8C"); fg.addColorStop(1, "#2C3066"); c.fillStyle = fg; rr(c, 2, FY, W - 4, bs + fm * 2, 14); c.fill(); c.lineWidth = 3; c.strokeStyle = IK; c.stroke();
+        c.strokeStyle = "rgba(255,212,90,.7)"; c.lineWidth = 1.5; c.strokeRect(bx - 2.5, by - 2.5, bs + 5, bs + 5);
         const chk = !over && CH.inCheck(st, st.w) ? st.b.indexOf(st.w ? "K" : "k") : -1;
         for (let s = 0; s < 64; s++) {
-          const x = (s & 7) * cs, y = (s >> 3) * cs;
-          c.fillStyle = ((s & 7) + (s >> 3)) % 2 ? "#7E8FC4" : "#EEF1F7"; c.fillRect(x, y, cs, cs);
-          if (last && (s === last.f || s === last.t)) { c.fillStyle = "rgba(255,196,37,.45)"; c.fillRect(x, y, cs, cs); }
-          if (s === sel) { c.fillStyle = "rgba(34,164,71,.5)"; c.fillRect(x, y, cs, cs); }
-          if (s === chk) { const g = c.createRadialGradient(x + cs / 2, y + cs / 2, 2, x + cs / 2, y + cs / 2, cs * .7); g.addColorStop(0, "rgba(238,59,43,.95)"); g.addColorStop(1, "rgba(238,59,43,0)"); c.fillStyle = g; c.fillRect(x, y, cs, cs); }
+          const [x, y] = sqXY(s), dark = ((s & 7) + (s >> 3)) % 2;
+          c.fillStyle = dark ? "#7E8FC4" : "#EEF1F7"; c.fillRect(x, y, cs + .5, cs + .5);
+          if (last && (s === last.f || s === last.t)) { c.fillStyle = "rgba(255,196,37,.5)"; c.fillRect(x, y, cs, cs); }
+          if (s === sel) { c.fillStyle = "rgba(34,164,71,.55)"; c.fillRect(x, y, cs, cs); c.strokeStyle = "#1E8F3E"; c.lineWidth = 3; c.strokeRect(x + 1.5, y + 1.5, cs - 3, cs - 3); }
+          if (s === chk) { const k2 = .75 + Math.sin(t * 8) * .25, g = c.createRadialGradient(x + cs / 2, y + cs / 2, 2, x + cs / 2, y + cs / 2, cs * .72); g.addColorStop(0, `rgba(238,59,43,${k2})`); g.addColorStop(1, "rgba(238,59,43,0)"); c.fillStyle = g; c.fillRect(x, y, cs, cs); }
         }
-        c.font = `bold ${Math.round(cs * .2)}px Fredoka, sans-serif`;
-        for (let i = 0; i < 8; i++) { c.fillStyle = i % 2 ? "#EEF1F7" : "#7E8FC4"; c.fillText("abcdefgh"[i], i * cs + cs - cs * .2, W - 3); c.fillStyle = i % 2 ? "#7E8FC4" : "#EEF1F7"; c.fillText(8 - i, 3, i * cs + cs * .24); }
+        const sh = c.createLinearGradient(bx, by, bx + bs, by + bs); sh.addColorStop(0, "rgba(255,255,255,.12)"); sh.addColorStop(.5, "rgba(255,255,255,0)"); sh.addColorStop(1, "rgba(0,0,30,.12)"); c.fillStyle = sh; c.fillRect(bx, by, bs, bs);
+        c.font = FB(Math.max(8, Math.round(fm * .62))); c.textAlign = "center"; c.fillStyle = "rgba(230,234,255,.75)";
+        for (let i = 0; i < 8; i++) { c.fillText("abcdefgh"[i], bx + i * cs + cs / 2, by + bs + fm * .78); c.fillText(8 - i, fm / 2, by + i * cs + cs / 2 + fm * .22); }
+        c.textAlign = "left";
         const moving = new Set(anims.map(an => an.t));
-        for (let s = 0; s < 64; s++) if (st.b[s] && !moving.has(s)) piece(st.b[s], (s & 7) * cs, (s >> 3) * cs);
-        anims.forEach(an => { const e = 1 - Math.pow(1 - an.k, 3), fx = (an.f & 7) * cs, fy = (an.f >> 3) * cs, tx = (an.t & 7) * cs, ty = (an.t >> 3) * cs, lift = Math.sin(an.k * Math.PI) * cs * .12; piece(an.p, fx + (tx - fx) * e, fy + (ty - fy) * e - lift); });
-        moves.forEach(m => { const x = (m.t & 7) * cs + cs / 2, y = (m.t >> 3) * cs + cs / 2; c.fillStyle = "rgba(11,15,36,.28)"; c.beginPath(); if (st.b[m.t] || m.epc) { c.lineWidth = cs * .08; c.strokeStyle = "rgba(11,15,36,.35)"; c.arc(x, y, cs * .42, 0, 7); c.stroke(); } else { c.arc(x, y, cs * .14, 0, 7); c.fill(); } });
+        for (let s = 0; s < 64; s++) if (st.b[s] && !moving.has(s)) { const [x, y] = sqXY(s); piece(st.b[s], x, y, cs, s === sel ? .08 + Math.sin(t * 6) * .02 : 0); }
+        fx.forEach(f => { const k = (t - f.t0) / (f.life || .6); if (k < 0) return;
+          if (f.k === "ghost") { const e = Math.min(1, k * 1.6); c.save(); c.globalAlpha = 1 - e; c.translate(f.x + cs / 2, f.y + cs / 2); c.rotate(e * .9); c.scale(1 - e * .6, 1 - e * .6); piece(f.p, -cs / 2, -cs / 2); c.restore(); }
+          else if (f.k === "ring") { c.strokeStyle = `rgba(255,212,90,${1 - k})`; c.lineWidth = 4 * (1 - k); c.beginPath(); c.arc(f.x, f.y, cs * (.3 + k * .7), 0, 7); c.stroke(); }
+          else { const tt = t - f.t0; c.globalAlpha = Math.max(0, 1 - k); c.fillStyle = f.col; c.beginPath(); c.arc(f.x + f.vx * tt, f.y + f.vy * tt + cs * 3 * tt * tt, Math.max(.5, cs * .07 * (1 - k)), 0, 7); c.fill(); c.globalAlpha = 1; } });
+        anims.forEach(an => { const e = 1 - Math.pow(1 - an.k, 3), [fx0, fy0] = sqXY(an.f), [tx, ty] = sqXY(an.t), lift = Math.sin(an.k * Math.PI) * cs * .16; piece(an.p, fx0 + (tx - fx0) * e, fy0 + (ty - fy0) * e - lift); });
+        moves.forEach(m => { const [x0, y0] = sqXY(m.t), x = x0 + cs / 2, y = y0 + cs / 2, pulse = 1 + Math.sin(t * 6) * .08; c.beginPath(); if (st.b[m.t] || m.epc) { c.lineWidth = cs * .09; c.strokeStyle = "rgba(238,59,43,.7)"; c.arc(x, y, cs * .43, 0, 7); c.stroke(); } else { c.fillStyle = "rgba(20,110,50,.45)"; c.arc(x, y, cs * .15 * pulse, 0, 7); c.fill(); } });
       },
       destroy(){}
     };
@@ -7324,7 +7404,7 @@ arcRegister("flappy", {
 /* =================== 4 EN LÍNEA =================== */
 let c4Last = null;
 arcRegister("connect", { noPause:true, noBig:true, modes:["bot", "duo"],
-  t:"4 en línea", d:"Haz cuatro en línea contra el robot o con un amigo.", col:"g", revive:false, noCount:true, ratio:1, ctlH:58,
+  t:"4 en línea", d:"Haz cuatro en línea contra el robot o con un amigo.", col:"g", revive:false, noCount:true, fill:[1.3, 1.62], ctlH:0,
   intro:"Toca una columna para soltar tu ficha. Gana el primero que junta cuatro seguidas: en fila, en columna o en diagonal.",
   help:"Toca una columna para soltar la ficha",
   overText:"Ganó el robot",
@@ -7335,10 +7415,11 @@ arcRegister("connect", { noPause:true, noBig:true, modes:["bot", "duo"],
   points: s => s / 4, limit:5,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#DCEBFF"/><rect x="4" y="13" width="56" height="32" rx="4" fill="#2F7FE8" stroke="${IK}" stroke-width="1.4"/>${[...Array(24)].map((_,i) => { const q = i%6, r = Math.floor(i/6), x = 9.5 + q*9, y = 18 + r*7.5, k = {"3,2":"y","3,3":"r","2,3":"y","4,3":"r","4,2":"r","1,3":"y","4,1":"y"}[q+","+r]; return `<circle cx="${x}" cy="${y}" r="3.2" fill="${k === "r" ? "#EE3B2B" : k === "y" ? "#FFC425" : "#DCEBFF"}" stroke="${IK}" stroke-width=".8"/>`; }).join("")}<circle cx="27.5" cy="6" r="3.6" fill="#EE3B2B" stroke="${IK}" stroke-width=".9"/><path d="M27.5 3.6 l.8 1.6 1.7 .2 -1.2 1.2 .3 1.7 -1.6 -.9 -1.6 .9 .3 -1.7 -1.2 -1.2 1.7 -.2z" fill="#fff"/><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
-    const { W, c } = api, C = 7, R = 6, cs = W / C, top = cs;
+    const { W, H, c } = api, C = 7, R = 6, PH = Math.max(58, Math.min(96, H * .14)), MH = H - PH * 2, cs = Math.min((W - 26) / 7.32, (MH - 14) / 7.5), pad = cs * .16, bx0 = (W - cs * 7) / 2,
+      ly = PH + Math.max(4, (MH - (cs * 7 + pad * 2 + cs * .45)) / 2), top = ly + cs + pad;
     let b, turn, over, win, lvl, starter = 0, fall, hover = -1, t, lock, duo = false, ps = [];
     const nm2 = who => ps[who - 1] ? esc(ps[who - 1].name) : "", human = () => duo || turn === 1;
-    const bar = () => { api.ctl.innerHTML = arcVsBar(ps, turn - 1, ["Fichas rojas", "Fichas amarillas"], over); };
+    const bar = () => {};
     const at = (r, q) => b[r * C + q];
     const dropRow = (bd, q) => { for (let r = R - 1; r >= 0; r--) if (!bd[r * C + q]) return r; return -1; };
     const lines = bd => { for (let r = 0; r < R; r++) for (let q = 0; q < C; q++) { const v = bd[r * C + q]; if (!v) continue; for (const [dr, dq] of [[0,1],[1,0],[1,1],[1,-1]]) { const cells = [[r, q]]; for (let k = 1; k < 4; k++) { const rr2 = r + dr * k, qq = q + dq * k; if (rr2 < 0 || rr2 >= R || qq < 0 || qq >= C || bd[rr2 * C + qq] !== v) break; cells.push([rr2, qq]); } if (cells.length === 4) return [v, cells]; } } return null; };
@@ -7368,7 +7449,7 @@ arcRegister("connect", { noPause:true, noBig:true, modes:["bot", "duo"],
       api.info(duo ? `Empieza ${nm2(turn)}` : turn === 1 ? "Empiezas tú" : "Empieza el robot"); bar(); if (turn === 2 && !duo) { lock = true; setTimeout(ai, 600); } };
     function drop(q, who){
       const r = dropRow(b, q); if (r < 0) return false;
-      fall = { q, r, who, y:top - cs * .5, vy:0, bounced:false }; lock = true; return true;
+      fall = { q, r, who, y:ly + cs / 2, vy:0, bounced:false }; lock = true; return true;
     }
     function landed(){
       const { q, r, who } = fall; b[r * C + q] = who; fall = null; SND.fx("drop");
@@ -7382,7 +7463,7 @@ arcRegister("connect", { noPause:true, noBig:true, modes:["bot", "duo"],
     }
     function ai(){ if (over || !api.playing()) { lock = false; return; } drop(aiCol(), 2); }
     reset();
-    const colAt = e => { const rc = api.cv.getBoundingClientRect(), q = Math.floor((e.clientX - rc.left) / cs); return q >= 0 && q < C ? q : -1; };
+    const colAt = e => { const rc = api.cv.getBoundingClientRect(), q = Math.floor(((e.clientX - rc.left) * W / rc.width - bx0) / cs); return q >= 0 && q < C ? q : -1; };
     api.on(api.stage, "pointermove", e => { hover = colAt(e); });
     api.on(api.stage, "pointerdown", e => { hover = colAt(e); });
     api.on(api.stage, "pointerup", e => { if (!api.playing() || over || lock || !human()) return; const q = colAt(e); if (q >= 0 && drop(q, turn)) SND.fx("open"); });
@@ -7395,6 +7476,7 @@ arcRegister("connect", { noPause:true, noBig:true, modes:["bot", "duo"],
       if (who === 2 && !duo) { c.fillStyle = "#1F2547"; c.beginPath(); if (c.roundRect) c.roundRect(x - rr2 * .5, y - rr2 * .36, rr2, rr2 * .62, rr2 * .22); else c.rect(x - rr2 * .5, y - rr2 * .36, rr2, rr2 * .62); c.fill(); c.strokeStyle = IK; c.lineWidth = 1.5; c.stroke(); c.fillStyle = "#5CE1E6"; c.fillRect(x - rr2 * .33, y - rr2 * .2, rr2 * .18, rr2 * .26); c.fillRect(x + rr2 * .15, y - rr2 * .2, rr2 * .18, rr2 * .26); c.strokeStyle = IK; c.lineWidth = 1.6; c.beginPath(); c.moveTo(x, y - rr2 * .36); c.lineTo(x, y - rr2 * .62); c.stroke(); c.fillStyle = "#EE3B2B"; c.beginPath(); c.arc(x, y - rr2 * .66, rr2 * .1, 0, 7); c.fill(); }
       else if (who === 2) { c.fillStyle = IK; c.beginPath(); c.arc(x - rr2 * .25, y - rr2 * .08, rr2 * .1, 0, 7); c.arc(x + rr2 * .25, y - rr2 * .08, rr2 * .1, 0, 7); c.fill(); c.lineWidth = 2; c.strokeStyle = IK; c.beginPath(); c.arc(x, y + rr2 * .12, rr2 * .2, .2, Math.PI - .2); c.stroke(); }
       else { c.fillStyle = "rgba(255,255,255,.85)"; c.beginPath(); for (let i = 0; i < 10; i++) { const an = -Math.PI / 2 + i * Math.PI / 5, r3 = i % 2 ? rr2 * .18 : rr2 * .42; c.lineTo(x + r3 * Math.cos(an), y + r3 * Math.sin(an)); } c.closePath(); c.fill(); }
+      c.fillStyle = "rgba(255,255,255,.32)"; c.beginPath(); c.ellipse(x - rr2 * .32, y - rr2 * .5, rr2 * .42, rr2 * .17, -.5, 0, 7); c.fill();
       if (glow) { c.strokeStyle = `rgba(255,255,255,${.6 + .4 * Math.sin(t * 8)})`; c.lineWidth = 4; c.beginPath(); c.arc(x, y, rr2 + 3, 0, 7); c.stroke(); }
     }
     return {
@@ -7404,14 +7486,29 @@ arcRegister("connect", { noPause:true, noBig:true, modes:["bot", "duo"],
         if (fall) { fall.vy += cs * 40 * dt; fall.y += fall.vy * dt; const ty = top + fall.r * cs + cs / 2; if (fall.y >= ty) { if (!fall.bounced && fall.vy > cs * 6) { fall.bounced = true; fall.y = ty; fall.vy = -fall.vy * .25; SND.fx("drop"); } else { fall.y = ty; landed(); } } }
       },
       draw(){
-        c.fillStyle = "#DCEBFF"; c.fillRect(0, 0, W, W);
-        if (!over && !lock && human() && hover >= 0 && api.playing()) { c.globalAlpha = .5; disc(hover * cs + cs / 2, top / 2, turn); c.globalAlpha = 1; }
-        b.forEach((v, i) => { if (v) { const r = Math.floor(i / C), q = i % C; disc(q * cs + cs / 2, top + r * cs + cs / 2, v, win && win.some(([a2, b3]) => a2 === r && b3 === q)); } });
-        if (fall) disc(fall.q * cs + cs / 2, fall.y, fall.who);
-        c.save(); c.beginPath(); c.rect(0, top, W, R * cs); for (let r = 0; r < R; r++) for (let q = 0; q < C; q++) { c.moveTo(q * cs + cs / 2 + cs * .4, top + r * cs + cs / 2); c.arc(q * cs + cs / 2, top + r * cs + cs / 2, cs * .4, 0, Math.PI * 2, true); }
-        c.fillStyle = "#2F7FE8"; c.fill("evenodd"); c.restore();
-        c.strokeStyle = IK; c.lineWidth = 2; for (let r = 0; r < R; r++) for (let q = 0; q < C; q++) { c.beginPath(); c.arc(q * cs + cs / 2, top + r * cs + cs / 2, cs * .4, 0, 7); c.stroke(); }
-        c.strokeStyle = IK; c.lineWidth = 3; c.strokeRect(1.5, top, W - 3, R * cs - 1.5);
+        const bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, "#22327A"); bg.addColorStop(1, "#141E52"); c.fillStyle = bg; c.fillRect(0, 0, W, H);
+        for (let i = 0; i < 14; i++) { const x = (i * 83 + 20) % W, y = (i * 131 + 40) % H, r2 = 6 + (i % 4) * 5; c.fillStyle = i % 2 ? "rgba(238,59,43,.09)" : "rgba(255,196,37,.09)"; c.beginPath(); c.arc(x, y + Math.sin(t * .6 + i) * 4, r2, 0, 7); c.fill(); }
+        const pc = who => who === 1 ? "#EE3B2B" : "#FFC425";
+        [[2, 0], [1, H - PH]].forEach(([who, y0]) => { const p = ps[who - 1] || { name:"", kind:"me" }, on = !over && turn === who, think = on && lock && !duo && who === 2;
+          const winner = over && win && b[win[0][0] * C + win[0][1]] === who;
+          arcPanel(c, W, y0, PH, p, { on:on || winner, t, chip:pc(who), mood:over ? (winner ? "happy" : win ? "sad" : "normal") : null,
+            sub:winner ? "¡Cuatro en línea!" : think ? "Pensando" + ".".repeat(1 + Math.floor(t * 3) % 3) : (who === 1 ? "Fichas rojas" : "Fichas amarillas") + (on ? " · le toca" : "") }); });
+        if (!over && !lock && human() && hover >= 0 && api.playing()) { const hx = bx0 + hover * cs + cs / 2; c.fillStyle = "rgba(255,255,255,.08)"; c.fillRect(bx0 + hover * cs, ly, cs, cs * 7 + pad * 2); c.save(); c.translate(0, Math.sin(t * 6) * 2.5); disc(hx, ly + cs / 2, turn); c.restore();
+          c.fillStyle = "rgba(255,255,255,.7)"; c.beginPath(); c.moveTo(hx - 5, top - pad - 7); c.lineTo(hx + 5, top - pad - 7); c.lineTo(hx, top - pad - 1); c.fill(); }
+        b.forEach((v, i) => { if (v) { const r = Math.floor(i / C), q = i % C; disc(bx0 + q * cs + cs / 2, top + r * cs + cs / 2, v, win && win.some(([a2, b3]) => a2 === r && b3 === q)); } });
+        if (fall) disc(bx0 + fall.q * cs + cs / 2, fall.y, fall.who);
+        /* tablero de plástico con agujeros, patas y tornillos */
+        const fx0 = bx0 - pad, fy0 = top - pad, fw = cs * 7 + pad * 2, fh = cs * 6 + pad * 2;
+        c.fillStyle = "#1B4FB0"; [[fx0 - cs * .1, 1], [fx0 + fw + cs * .1, -1]].forEach(([lx, d]) => { c.beginPath(); c.moveTo(lx, fy0 + fh * .55); c.lineTo(lx + d * cs * .22, fy0 + fh + cs * .42); c.lineTo(lx - d * cs * .55, fy0 + fh + cs * .42); c.lineTo(lx - d * cs * .2, fy0 + fh * .55); c.closePath(); c.fill(); c.strokeStyle = IK; c.lineWidth = 2.5; c.stroke(); });
+        c.fillStyle = "rgba(0,0,0,.3)"; rr(c, fx0 + 3, fy0 + 6, fw, fh, cs * .3); c.fill();
+        c.save(); rr(c, fx0, fy0, fw, fh, cs * .3); for (let r = 0; r < R; r++) for (let q = 0; q < C; q++) { const hx = bx0 + q * cs + cs / 2, hy = top + r * cs + cs / 2; c.moveTo(hx + cs * .4, hy); c.arc(hx, hy, cs * .4, 0, Math.PI * 2, true); }
+        const g = c.createLinearGradient(0, fy0, 0, fy0 + fh); g.addColorStop(0, "#4A9BFF"); g.addColorStop(.5, "#2F7FE8"); g.addColorStop(1, "#1D5FC4"); c.fillStyle = g; c.fill("evenodd"); c.restore();
+        c.save(); rr(c, fx0, fy0, fw, fh, cs * .3); c.clip(); c.fillStyle = "rgba(255,255,255,.16)"; c.fillRect(fx0, fy0, fw, pad * .9); c.restore();
+        for (let r = 0; r < R; r++) for (let q = 0; q < C; q++) { const hx = bx0 + q * cs + cs / 2, hy = top + r * cs + cs / 2; c.lineWidth = 2; c.strokeStyle = IK; c.beginPath(); c.arc(hx, hy, cs * .4, 0, 7); c.stroke();
+          c.strokeStyle = "rgba(255,255,255,.35)"; c.lineWidth = 1.6; c.beginPath(); c.arc(hx, hy, cs * .45, 2.3, 4.2); c.stroke(); c.strokeStyle = "rgba(0,20,80,.35)"; c.beginPath(); c.arc(hx, hy, cs * .45, 5.4, 7.3); c.stroke(); }
+        rr(c, fx0, fy0, fw, fh, cs * .3); c.lineWidth = 3; c.strokeStyle = IK; c.stroke();
+        [[fx0 + pad * .55, fy0 + pad * .55], [fx0 + fw - pad * .55, fy0 + pad * .55], [fx0 + pad * .55, fy0 + fh - pad * .55], [fx0 + fw - pad * .55, fy0 + fh - pad * .55]].forEach(([x, y]) => { c.fillStyle = "#C9D6F2"; c.beginPath(); c.arc(x, y, pad * .3, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 1.2; c.stroke(); });
+        if (win) { const [a0, b0] = win[0], [a1, b1] = win[3], x1 = bx0 + b0 * cs + cs / 2, y1 = top + a0 * cs + cs / 2, x2 = bx0 + b1 * cs + cs / 2, y2 = top + a1 * cs + cs / 2; c.lineCap = "round"; c.strokeStyle = `rgba(255,255,255,${.55 + .35 * Math.sin(t * 8)})`; c.lineWidth = cs * .16; c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); c.strokeStyle = "rgba(34,164,71,.9)"; c.lineWidth = cs * .07; c.stroke(); }
       },
       destroy(){}
     };
@@ -12061,7 +12158,7 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
     return `<div class="arc-box golf-box"><div class="pno-head"><span class="arc-thumb">${ARC.golf.thumb()}</span><span><b>Tito Golf</b><small>Arrastra hacia atrás, apunta y suelta. Las canchas salen por sorteo.</small></span></div>
       ${arcModeHTML("golf")}
       <div class="golf-holes"><span>Hoyos</span><div class="seg seg3">${GOLF_HOLES.map(n => `<button data-act="arc-gn:${n}" aria-pressed="${o.n === n}">${n}<small>${n / 3 === 1 ? "1 cancha" : n / 3 + " canchas"}</small></button>`).join("")}</div></div>
-      <button class="btn big-cta block" data-act="arc-start">¡JUGAR! <small>${m.m === "bot" ? "contra el robot · " + ARC_LVLS.find(l => l[0] === m.lvl)[1] : m.m === "duo" ? "con " + esc(arcP2Name("golf")) : "solo"}</small></button></div>`; },
+      <button class="btn big-cta block" data-act="arc-start">¡JUGAR!</button></div>`; },
   act(k, v, run){ if (k === "arc-gn") { golfOpt().n = +v; save(); SND.tap(); run.showReady(); const e = $("#arcRec"), rv = arcState().rec[arcRecKey("golf")]; if (e) e.textContent = rv != null ? NUM.format(rv) : "—"; return true; } return false; },
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><defs><clipPath id="thcG"><rect width="64" height="48" rx="8"/></clipPath></defs><g clip-path="url(#thcG)"><rect width="64" height="48" fill="#4E9A3A"/>
     <path d="M10 44 V10 Q10 5 15 5 H52 Q57 5 57 10 V24 Q57 29 52 29 H32 V44 Z" fill="#80D95B" stroke="${IK}" stroke-width="2.4" stroke-linejoin="round"/><path d="M14 44 L44 5 M24 44 L54 5" stroke="#74CC50" stroke-width="5"/>
@@ -12340,7 +12437,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("golf"), 1); ARC_ORDER.unshift("golf");
 ARC_SHARE.golf = { e:"⛳", f:(n, r) => { const g = golfLast; if (!g) return `Terminé un recorrido de Tito Golf`; const me = g.ps[0], dif = me.tot - g.par, rel = dif === 0 ? "al par" : dif < 0 ? dif + " bajo par" : "+" + dif + " sobre el par";
   return g.mode === "duo" ? (g.win < 0 ? `Empatamos en ${g.holes.length} hoyos de Tito Golf` : `${g.ps[g.win].name} ganó en ${g.holes.length} hoyos de Tito Golf`) : `Hice ${me.tot} golpes en ${g.holes.length} hoyos (${rel})${g.mode === "bot" ? (g.win === 0 ? " y le gané al robot" : g.win < 0 ? " y empaté con el robot" : "") : ""}`; } };
 
-const APP_VER = "10/11 23:26";
+const APP_VER = "10/11 23:50";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -14779,7 +14876,7 @@ const HOWTO = {
   snake:{ goal:"Come frutas y crece sin chocarte.", steps:[["Desliza para doblar", "Desliza el dedo hacia donde quieres ir, o usa las flechas de abajo."], ["Come las frutas", "Cada fruta suma y te hace más largo. La estrellita vale triple."], ["No te choques", "Si tocas la pared o tu propia cola, se termina."]] },
   bricks:{ goal:"Rompe todos los ladrillos de cada nivel.", steps:[["Arrastra el dedo", "Así mueves la barra. Toca para lanzar la pelota."], ["Que no se caiga la pelota", "Hazla rebotar en la barra para romper ladrillos."], ["Atrapa los premios", "Barra larga, triple pelota, fuego, imán, escudo y vida. Esquiva los malos: barra chica y pelota rápida."]] },
   mines:{ goal:"Abre todas las casillas sin pisar un huevo podrido.", steps:[["Toca para abrir", "Toca una casilla para ver qué hay."], ["Lee los números", "Cada número dice cuántos huevos podridos hay en las casillas de alrededor."], ["Marca con banderita", "Mantén apretado (o activa la banderita) para marcar donde crees que hay uno."]] },
-  chess:{ goal:"Dale jaque mate al rey rival: que esté atacado y no tenga cómo salvarse.", steps:[["Elige cómo jugar", "Contra el robot (Fácil, Normal o Difícil) juegas con las blancas. Con un amigo se pasan el celu y los colores se turnan cada partida."], ["Toca una pieza", "Se marcan las casillas a las que puede ir: un punto es para moverse y un círculo es para comer."], ["Toca la casilla", "La pieza se mueve ahí y le toca al otro. Arriba ves a quién le toca."], ["Jaque", "Si tu rey está atacado, se pone rojo: tienes que salvarlo sí o sí."], ["Reglas completas", "Hay enroque, captura al paso y coronación: si un peón llega al final, eliges en qué pieza se convierte."], ["Deshacer y rendirse", "Puedes deshacer una jugada por partida. Si ves que está perdida, puedes rendirte."]] },
+  chess:{ goal:"Dale jaque mate al rey rival: que esté atacado y no tenga cómo salvarse.", steps:[["Elige cómo jugar", "Contra el robot (Fácil, Normal o Difícil) juegas con las blancas. Con un amigo se pasan el celu y los colores se turnan cada partida."], ["Toca una pieza", "Se marcan las casillas a las que puede ir: un punto es para moverse y un círculo es para comer."], ["Toca la casilla", "La pieza se mueve ahí y le toca al otro. Arriba ves a quién le toca."], ["Jaque", "Si tu rey está atacado, se pone rojo: tienes que salvarlo sí o sí."], ["Piezas comidas", "En la tarjeta de cada jugador ves las piezas que comió. El número (+3, +5…) muestra quién va ganando en material."], ["Reglas completas", "Hay enroque, captura al paso y coronación: si un peón llega al final, eliges en qué pieza se convierte."], ["Deshacer y rendirse", "Puedes deshacer una jugada por partida. Si ves que está perdida, puedes rendirte."]] },
   t2048:{ goal:"Junta fichas iguales hasta llegar a 2048.", steps:[["Desliza", "Hacia cualquier lado: todas las fichas se mueven juntas."], ["Suma las iguales", "Dos fichas con el mismo número se unen en una del doble."], ["No llenes el tablero", "Si no queda lugar ni movimientos, se termina."]] },
   memo:{ goal:"Encuentra todos los pares.", steps:[["Toca dos cartas", "Se dan vuelta de a dos."], ["Si son iguales, quedan", "Si no, se vuelven a tapar: recuerda dónde estaban."], ["Hazlo rápido", "Menos movimientos y menos tiempo dan más puntos."]] },
   flappy:{ goal:"Pasa entre las columnas todo lo que puedas.", steps:[["Toca para subir", "Cada toque le da un impulso a Tito. Si no tocas, cae."], ["Pasa por el hueco", "Cada columna que pasas es un punto."], ["No toques nada", "Si chocas una columna o el piso, se termina."]] },
