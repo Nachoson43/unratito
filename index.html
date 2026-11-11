@@ -1548,6 +1548,20 @@ html.ios-gap .app.playing main{padding-bottom:8px}
 .golf-card td.gc-name{text-align:left;padding-left:7px;max-width:74px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .golf-card td.gc-un{color:#1E9A54}.golf-card td.gc-ov{color:#DE3F2D}.golf-card td.gc-pk{color:#DE3F2D}
 .golf-card tr.gc-win td{background:color-mix(in srgb,var(--y) 28%,transparent)}
+/* Modos de 2 opciones y barra de jugadores de tablero */
+.arc-modes.two{grid-template-columns:repeat(2,1fr)}
+.arc-vs{display:flex;align-items:center;gap:6px;width:100%;margin-bottom:8px}
+.av-chip{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border:2.5px solid var(--K);border-radius:14px;background:var(--surface-2);box-shadow:0 3px 0 var(--K);opacity:.62;transition:opacity .2s,transform .2s}
+.av-chip.on{opacity:1;background:var(--y);transform:translateY(-2px);box-shadow:0 5px 0 var(--K)}
+.av-chip.on b,.av-chip.on small{color:#1B1D2A}
+.av-av svg{height:34px;width:auto;display:block}
+.av-tx{min-width:0;display:flex;flex-direction:column;line-height:1.1}
+.av-tx b{font-size:.86em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av-tx small{font-size:.68em;font-weight:700;color:var(--muted)}
+.av-vs{font-family:var(--display);font-size:.8em;color:var(--muted);flex:none}
+.av-dot{position:absolute;top:-5px;right:-5px;width:12px;height:12px;border-radius:50%;background:#22A447;border:2.5px solid var(--K);animation:avPulse 1s ease-in-out infinite}
+@keyframes avPulse{50%{transform:scale(1.25)}}
+.arc-ovav{display:block;margin:0 auto 2px}.arc-ovav svg{height:78px;width:auto;display:block;margin:0 auto;animation:ovHop .9s ease-in-out infinite}@keyframes ovHop{50%{transform:translateY(-6px) rotate(3deg)}}
 
 </style>
 </head>
@@ -6065,11 +6079,18 @@ const arcAvatar = (p, px, mood) => p.kind === "bot" ? ROBOT_SVG(px, mood) : tito
 function arcModeHTML(id){
   const g = ARC[id], ms = g.modes || ["solo"], m = arcModeOf(id); if (ms.length < 2) return "";
   const L = { solo:["Solo", "Récord y monedas", arcAvatar({ kind:"me", tito:S.tito }, 34)], bot:["Contra el robot", "Elige la dificultad", ROBOT_SVG(34)], duo:["2 jugadores", "Mismo celu, por turnos", `<span class="am-duo">${arcAvatar({ kind:"me", tito:S.tito }, 30)}${arcAvatar({ kind:"p2", tito:arcP2Tito() }, 30)}</span>`] };
-  let h = `<div class="arc-modes">${ms.map(k => `<button class="am-card ${m.m === k ? "on" : ""}" data-act="arc-mode:${k}" aria-pressed="${m.m === k}"><span class="am-av">${L[k][2]}</span><b>${L[k][0]}</b><small>${L[k][1]}</small></button>`).join("")}</div>`;
+  let h = `<div class="arc-modes ${ms.length === 2 ? "two" : ""}">${ms.map(k => `<button class="am-card ${m.m === k ? "on" : ""}" data-act="arc-mode:${k}" aria-pressed="${m.m === k}"><span class="am-av">${L[k][2]}</span><b>${L[k][0]}</b><small>${L[k][1]}</small></button>`).join("")}</div>`;
   if (m.m === "bot") h += `<div class="seg seg3 am-lvl">${ARC_LVLS.map(([k, l]) => `<button data-act="arc-lvl:${k}" aria-pressed="${m.lvl === k}">${l}</button>`).join("")}</div>`;
   if (m.m === "duo") h += `<label class="am-p2"><span class="am-p2av">${arcAvatar({ kind:"p2", tito:arcP2Tito() }, 30)}</span><input class="arc-p2" data-id="${id}" maxlength="12" placeholder="Nombre" value="${esc(m.p2)}" autocomplete="off"><small>No suma puntos</small></label>`;
   return h;
 }
+/* Pantalla de inicio estándar de los juegos con modos (ajedrez, 4 en línea…) */
+function arcModesBox(id, intro){ const g = ARC[id], m = arcModeOf(id);
+  return `<div class="arc-box golf-box"><div class="pno-head"><span class="arc-thumb">${g.thumb()}</span><span><b>${esc(g.t)}</b><small>${intro || g.intro}</small></span></div>${arcModeHTML(id)}
+    <button class="btn big-cta block" data-act="arc-start">¡JUGAR! <small>${m.m === "bot" ? "contra el robot · " + ARC_LVLS.find(l => l[0] === m.lvl)[1] : m.m === "duo" ? "con " + esc(arcP2Name(id)) : "solo"}</small></button></div>`; }
+/* Barra de jugadores para juegos de tablero: quién juega con qué color y a quién le toca */
+function arcVsBar(ps, cur, subs, done){
+  return `<div class="arc-vs">${ps.map((p, i) => `<span class="av-chip ${p.kind} ${i === cur && !done ? "on" : ""}"><span class="av-av">${arcAvatar(p, 30, "happy")}</span><span class="av-tx"><b>${esc(p.name)}</b><small>${subs[i] || ""}</small></span>${i === cur && !done ? `<i class="av-dot"></i>` : ""}</span>`).join(`<span class="av-vs">VS</span>`)}</div>`; }
 document.addEventListener("input", e => { const t = e.target; if (t && t.classList && t.classList.contains("arc-p2")) { arcModeOf(t.dataset.id).p2 = t.value.slice(0, 12); save(); } });
 
 /* Imagen de Tito para dibujar en canvas (con su ropa) */
@@ -6199,7 +6220,7 @@ function arcMount(){
     let gLine = "";
     if (typeof arcGroupOn === "function" && arcGroupOn(run.id)) { const gv = run.id === "cabezazo" ? (g._r ? g._r.gf - g._r.ga : null) : run.score, nb = gArcRecord(arcGroup.code, arcGroup.day, gv), b = myArcBest(arcGroup.code, arcGroup.day);
       gLine = `<span class="arc-gline">${nb ? "¡Tu mejor de hoy en el grupo!" : "Tu mejor de hoy en el grupo:"} <b>${fmtArc(run.id, b)}</b></span>`; }
-    show(`<div class="arc-box">${party && typeof danceHTML === "function" ? danceHTML(64, "in-box") : ""}${run.score ? `<span class="arc-big">${NUM.format(run.score)}</span>` : ""}<b>${g.overTitle ? g.overTitle(isRec && prev != null) : isRec && prev != null ? "¡Nuevo récord!" : run.won ? "¡Ganaste!" : run.drawn ? "¡Empate!" : g.overText || "¡Uh, se terminó!"}</b>
+    const ovAv = g.overAv ? g.overAv() : ""; show(`<div class="arc-box">${ovAv ? `<span class="arc-ovav">${ovAv}</span>` : party && typeof danceHTML === "function" ? danceHTML(64, "in-box") : ""}${run.score ? `<span class="arc-big">${NUM.format(run.score)}</span>` : ""}<b>${g.overTitle ? g.overTitle(isRec && prev != null) : isRec && prev != null ? "¡Nuevo récord!" : run.won ? "¡Ganaste!" : run.drawn ? "¡Empate!" : g.overText || "¡Uh, se terminó!"}</b>
       <span class="small">${duo ? "Partida entre amigos: no suma puntos" : run.practice ? "Partida de práctica: ya sumaste puntos "+g.limit+" veces hoy en este juego" : (pts ? "Ganas <b>+"+pts+" puntos</b>"+(run.first ? " (×2 primera del día)" : "")+(isRec && prev ? " (con bonus de récord)" : "") : "Esta vez no sumaste puntos")}</span>${gLine}${run.candy ? `<span class="arc-candy">${typeof CANDY_SVG !== "undefined" ? CANDY_SVG : ""}<b>+1 caramelo</b></span>` : ""}${g.overExtra ? g.overExtra() : ""}
       ${canRevive ? `<button class="btn reward block" data-act="arc-revive">${isPrem() ? "Seguir jugando (PREMIUM)" : "Revivir · ver video"}</button>` : ""}
       ${run.score > 0 || run.won || run.drawn ? `<button class="btn yellow share-btn block" data-act="arc-share">${typeof SHARE_ICO !== "undefined" ? SHARE_ICO : ""}Compartir resultado</button>` : ""}
@@ -6258,7 +6279,7 @@ function arcAction(k, v){
   if (k === "arc-restart") { run.state = "over"; run.finalize(); run.state = "ready"; run.paused = false; run.startNew(); return true; }
   if (k === "arc-quit") { run.paused = false; run.state = "over"; run.finalize(); if (run.hasMenu) run.toMenu(); else { arcStop(); setView("arcade"); } return true; }
   if (k === "arc-opt") { if (typeof arcGroupOn === "function" && arcGroupOn(run.id)) return true; const st = arcState(); st.opt = st.opt || {}; st.opt[run.id] = v; save(); if (ARC[run.id].onOpt) arcMount(); else run.showReady(); if (ARC[run.id].recKey) { const rv = st.rec[arcRecKey(run.id)], e = $("#arcRec"); if (e) e.textContent = rv != null ? NUM.format(rv) : "—"; } return true; }
-  if (k === "arc-mode" || k === "arc-lvl") { const m = arcModeOf(run.id); if (k === "arc-mode") m.m = v; else m.lvl = v; save(); SND.tap(); run.showReady(); const e = $("#arcRec"), rv = arcState().rec[arcRecKey(run.id)]; if (e) e.textContent = rv != null ? NUM.format(rv) : "—"; return true; }
+  if (k === "arc-mode" || k === "arc-lvl") { const m = arcModeOf(run.id); if (k === "arc-mode") m.m = v; else m.lvl = v; save(); SND.tap(); if (run.state !== "play" && run.game) run.game.reset(); run.showReady(); const e = $("#arcRec"), rv = arcState().rec[arcRecKey(run.id)]; if (e) e.textContent = rv != null ? NUM.format(rv) : "—"; return true; }
   if (k === "arc-again") { run.finalize(); const go = () => { run.state = "ready"; run.startNew(); }; if (arcState().games % 3 === 0) showInterstitial("Aparece cada 3 partidas de arcade", go); else go(); return true; }
   if (k === "arc-share") { if (run.res && typeof shareOut === "function") shareOut(arcShareText(run.id, run.res)); return true; }
   if (k === "arc-revive") { showRewarded("seguir jugando", () => { run.revived = true; run.game.revive(); run.countdown(); }, () => toast("Saliste antes de terminar el video.")); return true; }
@@ -6966,32 +6987,43 @@ const CH = (() => {
   }
   return { start, legal, make, inCheck, key, insufficient, best, isW };
 })();
-arcRegister("chess", { noPause:true, noBig:true,
-  t:"Ajedrez", d:"Juega una partida contra Tito. Tres niveles.", col:"b", revive:false, noCount:true, ratio:1, ctlH:76,
-  options:[{ k:"facil", l:"Fácil" }, { k:"medio", l:"Medio" }, { k:"dificil", l:"Difícil" }],
-  intro:"Juegas con las blancas. Toca una pieza para ver a dónde puede ir. Tiene todas las reglas: enroque, captura al paso y coronación.",
+let chessLast = null;
+arcRegister("chess", { noPause:true, noBig:true, modes:["bot", "duo"],
+  t:"Ajedrez", d:"Contra el robot o con un amigo en el mismo celu.", col:"b", revive:false, noCount:true, ratio:1, ctlH:124,
+  intro:"Toca una pieza para ver a dónde puede ir. Tiene todas las reglas: enroque, captura al paso y coronación.",
   help:"Toca una pieza y después la casilla a la que la quieres mover",
-  overText:"Ganó Tito esta vez",
+  overText:"Ganó el robot",
+  duo: () => arcModeOf("chess").m === "duo",
+  overAv: () => chessLast && chessLast.wp && chessLast.wp.kind === "p2" ? arcAvatar(chessLast.wp, 70, "happy") : "",
+  readyBox: () => arcModesBox("chess", "Toca una pieza para ver a dónde puede ir. Contra el robot juegas con las blancas; con un amigo, los colores se turnan cada partida."),
+  overTitle(){ const r = chessLast; if (!r) return "Partida terminada"; if (r.res === "draw") return "¡Tablas!"; if (r.duo) return "¡Jaque mate! Ganó " + esc(r.win); return r.res === "win" ? (r.resign ? "¡Ganaste!" : "¡Jaque mate! Le ganaste al robot") : r.resign ? "Te rendiste" : "Ganó el robot"; },
   points: s => s / 6,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#EEF1F7"/>${[...Array(24)].map((_, i) => (i + Math.floor(i / 6)) % 2 ? `<rect x="${2 + (i % 6) * 10}" y="${Math.floor(i / 6) * 12}" width="10" height="12" fill="#7E8FC4"/>` : "").join("")}<rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/><path d="M14 42 C14 33 17 29 22 26 C19 26 14 28 11 25 C9 23 10 20 13 18 L21 11 C22 8 24 6 25 8 C27 7 29 8 30 10 C36 16 37 29 34 42 Z" fill="#FFF7E8" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/><circle cx="21" cy="15" r="1.4" fill="${IK}"/><path d="M40 42 C37 32 39 25 47 25 C55 25 57 32 54 42 Z" fill="#2A2D3E" stroke="${IK}" stroke-width="2"/><path d="M45.5 13 h3 v4 h4 v3 h-4 v6 h-3 v-6 h-4 v-3 h4 z" fill="#FFC425" stroke="${IK}" stroke-width="1.4"/><rect x="36" y="41" width="22" height="4" rx="2" fill="#2A2D3E" stroke="${IK}" stroke-width="1.6"/><rect x="10" y="41" width="27" height="4" rx="2" fill="#FFF7E8" stroke="${IK}" stroke-width="1.6"/></svg>`,
   make(api){
-    const { W, c } = api, cs = W / 8; let lvl = api.opt();
+    const { W, c } = api, cs = W / 8, LV = { facil:"facil", normal:"medio", dificil:"dificil" }; let lvl = "medio", duo = false, ps = [], wIdx = 0, games = 0;
     let st, sel, moves, last, over, thinking, promo, undoUsed, hist, t, anims = [];
-    const reset = () => { lvl = api.opt(); st = CH.start(); sel = -1; moves = []; last = null; over = false; thinking = false; promo = null; undoUsed = false; hist = []; t = 0; st.reps = {}; st.reps[CH.key(st)] = 1; status(); ctl(); };
-    const status = (txt) => api.info(txt || (over ? "" : thinking ? "Tito está pensando…" : CH.inCheck(st, st.w) ? "¡Jaque! Te toca" : "Te toca mover"));
+    const sideOf = w => w ? wIdx : 1 - wIdx, myTurn = () => duo || st.w;
+    const reset = () => { const m = arcModeOf("chess"); duo = m.m === "duo"; lvl = LV[m.lvl] || "medio"; ps = arcPlayers("chess"); wIdx = duo ? games % 2 : 0; chessLast = null; st = CH.start(); sel = -1; moves = []; last = null; over = false; thinking = false; promo = null; undoUsed = false; hist = []; t = 0; st.reps = {}; st.reps[CH.key(st)] = 1; status(); ctl(); };
+    const status = (txt) => { if (txt) return api.info(txt); if (over) return api.info(""); const chk = CH.inCheck(st, st.w);
+      if (duo) return api.info(`${chk ? "¡Jaque! " : ""}Turno de ${esc(ps[sideOf(st.w)].name)} · ${st.w ? "blancas" : "negras"}`);
+      api.info(thinking ? "El robot está pensando…" : chk ? "¡Jaque! Te toca" : "Te toca mover"); };
     function ctl(){
-      api.ctl.innerHTML = promo ? `<div class="arc-btns">${["Q","R","B","N"].map(p => `<button class="arc-btn" data-pr="${p}">${{ Q:"Dama", R:"Torre", B:"Alfil", N:"Caballo" }[p]}</button>`).join("")}</div>`
-        : `<div class="arc-btns"><button class="arc-btn" id="chUndo" ${undoUsed || hist.length < 2 || thinking || over ? "disabled" : ""}>${isPrem() ? "Deshacer" : "Deshacer · video"}</button><button class="arc-btn" id="chResign" ${over ? "disabled" : ""}>Rendirme</button></div>`;
-      api.ctl.querySelectorAll("[data-pr]").forEach(b => b.onclick = () => { const m = promo.find(x => x.promo === b.dataset.pr); promo = null; doMove(m); });
-      const u = $("#chUndo"); if (u) u.onclick = () => showRewarded("deshacer la jugada", () => { if (hist.length >= 2) { hist.pop(); st = hist.pop(); undoUsed = true; last = null; sel = -1; moves = []; status(); ctl(); } });
-      const r = $("#chResign"); if (r) r.onclick = () => { if (!api.playing()) return; end("lose"); };
+      const bar = arcVsBar(ps, sideOf(st.w), ps.map((_, i) => i === wIdx ? "Blancas" : "Negras"), over), undoN = duo ? 1 : 2;
+      api.ctl.innerHTML = bar + (promo ? `<div class="arc-btns">${["Q","R","B","N"].map(p => `<button class="arc-btn" data-pr="${p}">${{ Q:"Dama", R:"Torre", B:"Alfil", N:"Caballo" }[p]}</button>`).join("")}</div>`
+        : `<div class="arc-btns"><button class="arc-btn" id="chUndo" ${undoUsed || hist.length < undoN || thinking || over ? "disabled" : ""}>${isPrem() ? "Deshacer" : "Deshacer · video"}</button><button class="arc-btn" id="chResign" ${over ? "disabled" : ""}>${duo ? "Rendirse" : "Rendirme"}</button></div>`);
+      api.ctl.querySelectorAll("[data-pr]").forEach(b => b.onclick = () => { const m = promo.find(x => x.promo.toUpperCase() === b.dataset.pr); promo = null; doMove(m); });
+      const u = $("#chUndo"); if (u) u.onclick = () => showRewarded("deshacer la jugada", () => { if (hist.length >= undoN) { if (!duo) hist.pop(); st = hist.pop(); undoUsed = true; last = null; sel = -1; moves = []; status(); ctl(); } });
+      const r = $("#chResign"); if (r) r.onclick = () => { if (!api.playing() || over) return; if (duo) endDuo(sideOf(!st.w), true); else end("lose", true); };
     }
     reset();
-    function end(res){
-      over = true; const base = { facil:300, medio:600, dificil:1000 }[lvl] || 600;
+    function endDuo(wi, resign){ over = true; games++; chessLast = { duo:true, res:wi < 0 ? "draw" : "win", win:wi >= 0 ? ps[wi].name : "", wp:wi >= 0 ? ps[wi] : null, resign }; api.score(0);
+      if (wi >= 0) { api.win(); status(resign ? `${esc(ps[1 - wi].name)} se rindió` : `¡Jaque mate! Ganó ${esc(ps[wi].name)}`); } else { api.draw(); status("Tablas"); } ctl(); setTimeout(() => api.over(), wi >= 0 ? 900 : 700); }
+    function end(res, resign){
+      if (duo) { endDuo(res === "draw" ? -1 : sideOf(res === "win"), resign); return; }
+      over = true; games++; chessLast = { duo:false, res, resign }; const base = { facil:300, medio:600, dificil:1000 }[lvl] || 600;
       api.score(res === "win" ? base : res === "draw" ? Math.round(base / 3) : 0);
       if (res === "win") api.win();
-      status(res === "win" ? "¡Jaque mate! Ganaste" : res === "draw" ? "Tablas" : "Ganó Tito");
+      status(res === "win" ? "¡Jaque mate! Ganaste" : res === "draw" ? "Tablas" : "Ganó el robot");
       if (res === "draw") api.draw();
       ctl(); setTimeout(() => api.over(), res === "win" ? 900 : 700);
     }
@@ -7013,7 +7045,7 @@ arcRegister("chess", { noPause:true, noBig:true,
       hist.push(st); const reps = Object.assign({}, st.reps); st = CH.make(st, m); st.reps = reps; last = m; sel = -1; moves = [];
       anímate(m);
       if (after()) return;
-      if (!st.w) { thinking = true; status(); ctl(); setTimeout(aiMove, 520); } else { status(); ctl(); }
+      if (!st.w && !duo) { thinking = true; status(); ctl(); setTimeout(aiMove, 520); } else { status(); ctl(); }
     }
     function aiMove(){
       if (!api.playing() || over) { thinking = false; return; }
@@ -7022,12 +7054,12 @@ arcRegister("chess", { noPause:true, noBig:true,
       if (!after()) { status(); ctl(); }
     }
     api.on(api.stage, "pointerup", e => {
-      if (!api.playing() || over || thinking || promo || !st.w) return;
+      if (!api.playing() || over || thinking || promo || !myTurn()) return;
       const rc = api.cv.getBoundingClientRect(), q = Math.floor((e.clientX - rc.left) / cs), r = Math.floor((e.clientY - rc.top) / cs); if (q < 0 || r < 0 || q > 7 || r > 7) return;
       const s = r * 8 + q, p = st.b[s];
       const opts = moves.filter(m => m.t === s);
       if (sel >= 0 && opts.length) { if (opts.length > 1 && opts[0].promo) { promo = opts; ctl(); return; } doMove(opts[0]); return; }
-      if (p && CH.isW(p)) { sel = s; moves = CH.legal(st).filter(m => m.f === s); SND.fx("open"); } else { sel = -1; moves = []; }
+      if (p && CH.isW(p) === st.w) { sel = s; moves = CH.legal(st).filter(m => m.f === s); SND.fx("open"); } else { sel = -1; moves = []; }
     });
     /* Piezas con volumen: degradé, brillo y sombra */
     function piece(p, x, y){
@@ -7290,17 +7322,23 @@ arcRegister("flappy", {
 });
 
 /* =================== 4 EN LÍNEA =================== */
-arcRegister("connect", { noPause:true, noBig:true,
-  t:"4 en línea", d:"Suelta tus fichas y haz cuatro en línea antes que Tito.", col:"g", revive:false, noCount:true, ratio:1, ctlH:0,
-  options:[{ k:"facil", l:"Fácil" }, { k:"dificil", l:"Difícil" }],
-  intro:"Toca una columna para soltar tu ficha roja. Gana el primero que junta cuatro seguidas: en fila, en columna o en diagonal.",
+let c4Last = null;
+arcRegister("connect", { noPause:true, noBig:true, modes:["bot", "duo"],
+  t:"4 en línea", d:"Haz cuatro en línea contra el robot o con un amigo.", col:"g", revive:false, noCount:true, ratio:1, ctlH:58,
+  intro:"Toca una columna para soltar tu ficha. Gana el primero que junta cuatro seguidas: en fila, en columna o en diagonal.",
   help:"Toca una columna para soltar la ficha",
-  overText:"Ganó Tito",
+  overText:"Ganó el robot",
+  duo: () => arcModeOf("connect").m === "duo",
+  overAv: () => c4Last && c4Last.wp && c4Last.wp.kind === "p2" ? arcAvatar(c4Last.wp, 70, "happy") : "",
+  readyBox: () => arcModesBox("connect", "Toca una columna para soltar tu ficha. Gana el primero que junta cuatro seguidas: en fila, en columna o en diagonal."),
+  overTitle(){ const r = c4Last; if (!r) return "Partida terminada"; if (r.draw) return "¡Empate!"; return r.duo ? "¡Ganó " + esc(r.win) + "!" : r.me ? "¡Le ganaste al robot!" : "Ganó el robot"; },
   points: s => s / 4, limit:5,
   thumb: () => `<svg viewBox="0 0 64 48" aria-hidden="true"><rect width="64" height="48" rx="8" fill="#DCEBFF"/><rect x="4" y="13" width="56" height="32" rx="4" fill="#2F7FE8" stroke="${IK}" stroke-width="1.4"/>${[...Array(24)].map((_,i) => { const q = i%6, r = Math.floor(i/6), x = 9.5 + q*9, y = 18 + r*7.5, k = {"3,2":"y","3,3":"r","2,3":"y","4,3":"r","4,2":"r","1,3":"y","4,1":"y"}[q+","+r]; return `<circle cx="${x}" cy="${y}" r="3.2" fill="${k === "r" ? "#EE3B2B" : k === "y" ? "#FFC425" : "#DCEBFF"}" stroke="${IK}" stroke-width=".8"/>`; }).join("")}<circle cx="27.5" cy="6" r="3.6" fill="#EE3B2B" stroke="${IK}" stroke-width=".9"/><path d="M27.5 3.6 l.8 1.6 1.7 .2 -1.2 1.2 .3 1.7 -1.6 -.9 -1.6 .9 .3 -1.7 -1.2 -1.2 1.7 -.2z" fill="#fff"/><rect width="64" height="48" rx="8" fill="none" stroke="${IK}" stroke-width="2"/></svg>`,
   make(api){
     const { W, c } = api, C = 7, R = 6, cs = W / C, top = cs;
-    let b, turn, over, win, lvl, starter = 0, fall, hover = -1, t, lock;
+    let b, turn, over, win, lvl, starter = 0, fall, hover = -1, t, lock, duo = false, ps = [];
+    const nm2 = who => ps[who - 1] ? esc(ps[who - 1].name) : "", human = () => duo || turn === 1;
+    const bar = () => { api.ctl.innerHTML = arcVsBar(ps, turn - 1, ["Fichas rojas", "Fichas amarillas"], over); };
     const at = (r, q) => b[r * C + q];
     const dropRow = (bd, q) => { for (let r = R - 1; r >= 0; r--) if (!bd[r * C + q]) return r; return -1; };
     const lines = bd => { for (let r = 0; r < R; r++) for (let q = 0; q < C; q++) { const v = bd[r * C + q]; if (!v) continue; for (const [dr, dq] of [[0,1],[1,0],[1,1],[1,-1]]) { const cells = [[r, q]]; for (let k = 1; k < 4; k++) { const rr2 = r + dr * k, qq = q + dq * k; if (rr2 < 0 || rr2 >= R || qq < 0 || qq >= C || bd[rr2 * C + qq] !== v) break; cells.push([rr2, qq]); } if (cells.length === 4) return [v, cells]; } } return null; };
@@ -7320,11 +7358,14 @@ arcRegister("connect", { noPause:true, noBig:true,
     function aiCol(){
       const free = ORDER.filter(q => dropRow(b, q) >= 0);
       if (lvl === "facil" && rnd() < .3) return free[Math.floor(rnd() * free.length)];
-      const depth = lvl === "facil" ? 2 : 6; let bq = free[0], bv = -1e9;
-      for (const q of free) { const r = dropRow(b, q); b[r * C + q] = 2; const v = nm(b, depth - 1, -1e9, 1e9, false) + (lvl === "facil" ? (rnd() - .5) * 4 : 0); b[r * C + q] = 0; if (v > bv) { bv = v; bq = q; } }
+      if (lvl === "normal" && rnd() < .08) return free[Math.floor(rnd() * free.length)];
+      const depth = lvl === "facil" ? 2 : lvl === "normal" ? 4 : 6, noise = lvl === "facil" ? 4 : lvl === "normal" ? 1.5 : 0; let bq = free[0], bv = -1e9;
+      for (const q of free) { const r = dropRow(b, q); b[r * C + q] = 2; const v = nm(b, depth - 1, -1e9, 1e9, false) + (noise ? (rnd() - .5) * noise : 0); b[r * C + q] = 0; if (v > bv) { bv = v; bq = q; } }
       return bq;
     }
-    const reset = () => { lvl = api.opt(); b = Array(R * C).fill(0); over = false; win = null; fall = null; lock = false; t = 0; starter = 1 - starter; turn = starter ? 2 : 1; api.info(turn === 1 ? "Empiezas tú" : "Empieza Tito"); if (turn === 2) { lock = true; setTimeout(ai, 600); } };
+    const info = () => api.info(duo ? `Turno de ${nm2(turn)}` : turn === 1 ? "Te toca" : "El robot piensa…");
+    const reset = () => { const m = arcModeOf("connect"); duo = m.m === "duo"; lvl = m.lvl; ps = arcPlayers("connect"); c4Last = null; b = Array(R * C).fill(0); over = false; win = null; fall = null; lock = false; t = 0; starter = 1 - starter; turn = starter ? 2 : 1;
+      api.info(duo ? `Empieza ${nm2(turn)}` : turn === 1 ? "Empiezas tú" : "Empieza el robot"); bar(); if (turn === 2 && !duo) { lock = true; setTimeout(ai, 600); } };
     function drop(q, who){
       const r = dropRow(b, q); if (r < 0) return false;
       fall = { q, r, who, y:top - cs * .5, vy:0, bounced:false }; lock = true; return true;
@@ -7332,25 +7373,27 @@ arcRegister("connect", { noPause:true, noBig:true,
     function landed(){
       const { q, r, who } = fall; b[r * C + q] = who; fall = null; SND.fx("drop");
       const L = lines(b);
-      if (L) { over = true; win = L[1]; const res = L[0] === 1 ? "win" : "lose"; api.score(res === "win" ? (lvl === "dificil" ? 220 : 100) : 0); if (res === "win") api.win(); api.info(res === "win" ? "¡Le ganaste a Tito!" : "Ganó Tito"); setTimeout(() => api.over(), 1100); return; }
-      if (b.every(Boolean)) { over = true; api.draw(); api.score(lvl === "dificil" ? 90 : 40); api.info("Empate"); setTimeout(() => api.over(), 900); return; }
-      turn = who === 1 ? 2 : 1;
-      if (turn === 2) { api.info("Tito piensa…"); setTimeout(ai, 420); } else { lock = false; api.info("Te toca"); }
+      const PTS = { facil:80, normal:150, dificil:220 }[lvl] || 150;
+      if (L) { over = true; win = L[1]; bar(); if (duo) { c4Last = { duo:true, win:ps[L[0] - 1].name, wp:ps[L[0] - 1] }; api.score(0); api.win(); api.info(`¡Ganó ${nm2(L[0])}!`); setTimeout(() => api.over(), 1100); return; }
+        const res = L[0] === 1 ? "win" : "lose"; c4Last = { me:res === "win" }; api.score(res === "win" ? PTS : 0); if (res === "win") api.win(); api.info(res === "win" ? "¡Le ganaste al robot!" : "Ganó el robot"); setTimeout(() => api.over(), 1100); return; }
+      if (b.every(Boolean)) { over = true; c4Last = { draw:true, duo }; bar(); api.draw(); api.score(duo ? 0 : Math.round(PTS * .4)); api.info("Empate"); setTimeout(() => api.over(), 900); return; }
+      turn = who === 1 ? 2 : 1; bar();
+      if (turn === 2 && !duo) { info(); setTimeout(ai, 420); } else { lock = false; info(); }
     }
     function ai(){ if (over || !api.playing()) { lock = false; return; } drop(aiCol(), 2); }
     reset();
-    api.ctl.innerHTML = "";
     const colAt = e => { const rc = api.cv.getBoundingClientRect(), q = Math.floor((e.clientX - rc.left) / cs); return q >= 0 && q < C ? q : -1; };
     api.on(api.stage, "pointermove", e => { hover = colAt(e); });
     api.on(api.stage, "pointerdown", e => { hover = colAt(e); });
-    api.on(api.stage, "pointerup", e => { if (!api.playing() || over || lock || turn !== 1) return; const q = colAt(e); if (q >= 0 && drop(q, 1)) SND.fx("open"); });
+    api.on(api.stage, "pointerup", e => { if (!api.playing() || over || lock || !human()) return; const q = colAt(e); if (q >= 0 && drop(q, turn)) SND.fx("open"); });
     function disc(x, y, who, glow){
       const rr2 = cs * .4;
       c.fillStyle = "rgba(0,0,0,.22)"; c.beginPath(); c.arc(x + 2, y + 3, rr2, 0, 7); c.fill();
       const g = c.createRadialGradient(x - rr2 * .3, y - rr2 * .3, 2, x, y, rr2); if (who === 1) { g.addColorStop(0, "#FF7A6B"); g.addColorStop(1, "#D42A1C"); } else { g.addColorStop(0, "#FFE680"); g.addColorStop(1, "#E9A800"); }
       c.fillStyle = g; c.beginPath(); c.arc(x, y, rr2, 0, 7); c.fill(); c.strokeStyle = IK; c.lineWidth = 2.4; c.stroke();
       c.strokeStyle = who === 1 ? "#B01F14" : "#C98F00"; c.lineWidth = 2; c.beginPath(); c.arc(x, y, rr2 * .7, 0, 7); c.stroke();
-      if (who === 2) { c.fillStyle = IK; c.beginPath(); c.arc(x - rr2 * .25, y - rr2 * .08, rr2 * .1, 0, 7); c.arc(x + rr2 * .25, y - rr2 * .08, rr2 * .1, 0, 7); c.fill(); c.lineWidth = 2; c.strokeStyle = IK; c.beginPath(); c.arc(x, y + rr2 * .12, rr2 * .2, .2, Math.PI - .2); c.stroke(); }
+      if (who === 2 && !duo) { c.fillStyle = "#1F2547"; c.beginPath(); if (c.roundRect) c.roundRect(x - rr2 * .5, y - rr2 * .36, rr2, rr2 * .62, rr2 * .22); else c.rect(x - rr2 * .5, y - rr2 * .36, rr2, rr2 * .62); c.fill(); c.strokeStyle = IK; c.lineWidth = 1.5; c.stroke(); c.fillStyle = "#5CE1E6"; c.fillRect(x - rr2 * .33, y - rr2 * .2, rr2 * .18, rr2 * .26); c.fillRect(x + rr2 * .15, y - rr2 * .2, rr2 * .18, rr2 * .26); c.strokeStyle = IK; c.lineWidth = 1.6; c.beginPath(); c.moveTo(x, y - rr2 * .36); c.lineTo(x, y - rr2 * .62); c.stroke(); c.fillStyle = "#EE3B2B"; c.beginPath(); c.arc(x, y - rr2 * .66, rr2 * .1, 0, 7); c.fill(); }
+      else if (who === 2) { c.fillStyle = IK; c.beginPath(); c.arc(x - rr2 * .25, y - rr2 * .08, rr2 * .1, 0, 7); c.arc(x + rr2 * .25, y - rr2 * .08, rr2 * .1, 0, 7); c.fill(); c.lineWidth = 2; c.strokeStyle = IK; c.beginPath(); c.arc(x, y + rr2 * .12, rr2 * .2, .2, Math.PI - .2); c.stroke(); }
       else { c.fillStyle = "rgba(255,255,255,.85)"; c.beginPath(); for (let i = 0; i < 10; i++) { const an = -Math.PI / 2 + i * Math.PI / 5, r3 = i % 2 ? rr2 * .18 : rr2 * .42; c.lineTo(x + r3 * Math.cos(an), y + r3 * Math.sin(an)); } c.closePath(); c.fill(); }
       if (glow) { c.strokeStyle = `rgba(255,255,255,${.6 + .4 * Math.sin(t * 8)})`; c.lineWidth = 4; c.beginPath(); c.arc(x, y, rr2 + 3, 0, 7); c.stroke(); }
     }
@@ -7362,7 +7405,7 @@ arcRegister("connect", { noPause:true, noBig:true,
       },
       draw(){
         c.fillStyle = "#DCEBFF"; c.fillRect(0, 0, W, W);
-        if (!over && !lock && turn === 1 && hover >= 0 && api.playing()) { c.globalAlpha = .5; disc(hover * cs + cs / 2, top / 2, 1); c.globalAlpha = 1; }
+        if (!over && !lock && human() && hover >= 0 && api.playing()) { c.globalAlpha = .5; disc(hover * cs + cs / 2, top / 2, turn); c.globalAlpha = 1; }
         b.forEach((v, i) => { if (v) { const r = Math.floor(i / C), q = i % C; disc(q * cs + cs / 2, top + r * cs + cs / 2, v, win && win.some(([a2, b3]) => a2 === r && b3 === q)); } });
         if (fall) disc(fall.q * cs + cs / 2, fall.y, fall.who);
         c.save(); c.beginPath(); c.rect(0, top, W, R * cs); for (let r = 0; r < R; r++) for (let q = 0; q < C; q++) { c.moveTo(q * cs + cs / 2 + cs * .4, top + r * cs + cs / 2); c.arc(q * cs + cs / 2, top + r * cs + cs / 2, cs * .4, 0, Math.PI * 2, true); }
@@ -12005,6 +12048,7 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
   points: s => s / 5,
   duo: () => arcModeOf("golf").m === "duo",
   recKey: () => arcModeOf("golf").m + golfOpt().n,
+  overAv: () => golfLast && golfLast.mode === "duo" && golfLast.win > 0 ? arcAvatar(golfLast.ps[golfLast.win], 70, "happy") : "",
   overTitle(rec){ const r = golfLast; if (!r) return "¡Recorrido terminado!";
     if (r.mode === "duo") return r.win < 0 ? "¡Empate!" : "¡Ganó " + esc(r.ps[r.win].name) + "!";
     if (r.mode === "bot") return r.win === 0 ? "¡Le ganaste al robot!" : r.win < 0 ? "¡Empate con el robot!" : "Ganó el robot";
@@ -12113,7 +12157,7 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["solo", "bot"
       if (mode === "bot") { if (win === 0) { ps[0].pts += 60; api.win(); } else if (win < 0) ps[0].pts += 25; api.score(ps[0].pts); }
       if (mode === "solo") { api.score(ps[0].pts); if (ps[0].tot <= par) api.win(); }
       if (mode === "duo") { api.score(0); if (win >= 0) api.win(); else api.draw(); }
-      golfLast = { mode, win, par, holes:plan.slice(), ps:ps.map(p => ({ name:p.name, st:p.st, pk:p.pk, tot:p.tot })) };
+      golfLast = { mode, win, par, holes:plan.slice(), ps:ps.map(p => ({ name:p.name, kind:p.kind, tito:p.tito, st:p.st, pk:p.pk, tot:p.tot })) };
       phase = "over"; api.over(); }
     /* ---- entrada táctil ---- */
     const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
@@ -12296,7 +12340,7 @@ ARC_ORDER.splice(ARC_ORDER.indexOf("golf"), 1); ARC_ORDER.unshift("golf");
 ARC_SHARE.golf = { e:"⛳", f:(n, r) => { const g = golfLast; if (!g) return `Terminé un recorrido de Tito Golf`; const me = g.ps[0], dif = me.tot - g.par, rel = dif === 0 ? "al par" : dif < 0 ? dif + " bajo par" : "+" + dif + " sobre el par";
   return g.mode === "duo" ? (g.win < 0 ? `Empatamos en ${g.holes.length} hoyos de Tito Golf` : `${g.ps[g.win].name} ganó en ${g.holes.length} hoyos de Tito Golf`) : `Hice ${me.tot} golpes en ${g.holes.length} hoyos (${rel})${g.mode === "bot" ? (g.win === 0 ? " y le gané al robot" : g.win < 0 ? " y empaté con el robot" : "") : ""}`; } };
 
-const APP_VER = "10/11 23:10";
+const APP_VER = "10/11 23:26";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
@@ -14735,11 +14779,11 @@ const HOWTO = {
   snake:{ goal:"Come frutas y crece sin chocarte.", steps:[["Desliza para doblar", "Desliza el dedo hacia donde quieres ir, o usa las flechas de abajo."], ["Come las frutas", "Cada fruta suma y te hace más largo. La estrellita vale triple."], ["No te choques", "Si tocas la pared o tu propia cola, se termina."]] },
   bricks:{ goal:"Rompe todos los ladrillos de cada nivel.", steps:[["Arrastra el dedo", "Así mueves la barra. Toca para lanzar la pelota."], ["Que no se caiga la pelota", "Hazla rebotar en la barra para romper ladrillos."], ["Atrapa los premios", "Barra larga, triple pelota, fuego, imán, escudo y vida. Esquiva los malos: barra chica y pelota rápida."]] },
   mines:{ goal:"Abre todas las casillas sin pisar un huevo podrido.", steps:[["Toca para abrir", "Toca una casilla para ver qué hay."], ["Lee los números", "Cada número dice cuántos huevos podridos hay en las casillas de alrededor."], ["Marca con banderita", "Mantén apretado (o activa la banderita) para marcar donde crees que hay uno."]] },
-  chess:{ goal:"Dale jaque mate a Tito. Juegas con las blancas.", steps:[["Toca una pieza", "Se marcan las casillas a las que puede ir."], ["Toca la casilla", "La pieza se mueve ahí. Después juega Tito."], ["Reglas completas", "Hay enroque, captura al paso y coronación. Puedes elegir entre tres niveles."]] },
+  chess:{ goal:"Dale jaque mate al rey rival: que esté atacado y no tenga cómo salvarse.", steps:[["Elige cómo jugar", "Contra el robot (Fácil, Normal o Difícil) juegas con las blancas. Con un amigo se pasan el celu y los colores se turnan cada partida."], ["Toca una pieza", "Se marcan las casillas a las que puede ir: un punto es para moverse y un círculo es para comer."], ["Toca la casilla", "La pieza se mueve ahí y le toca al otro. Arriba ves a quién le toca."], ["Jaque", "Si tu rey está atacado, se pone rojo: tienes que salvarlo sí o sí."], ["Reglas completas", "Hay enroque, captura al paso y coronación: si un peón llega al final, eliges en qué pieza se convierte."], ["Deshacer y rendirse", "Puedes deshacer una jugada por partida. Si ves que está perdida, puedes rendirte."]] },
   t2048:{ goal:"Junta fichas iguales hasta llegar a 2048.", steps:[["Desliza", "Hacia cualquier lado: todas las fichas se mueven juntas."], ["Suma las iguales", "Dos fichas con el mismo número se unen en una del doble."], ["No llenes el tablero", "Si no queda lugar ni movimientos, se termina."]] },
   memo:{ goal:"Encuentra todos los pares.", steps:[["Toca dos cartas", "Se dan vuelta de a dos."], ["Si son iguales, quedan", "Si no, se vuelven a tapar: recuerda dónde estaban."], ["Hazlo rápido", "Menos movimientos y menos tiempo dan más puntos."]] },
   flappy:{ goal:"Pasa entre las columnas todo lo que puedas.", steps:[["Toca para subir", "Cada toque le da un impulso a Tito. Si no tocas, cae."], ["Pasa por el hueco", "Cada columna que pasas es un punto."], ["No toques nada", "Si chocas una columna o el piso, se termina."]] },
-  connect:{ goal:"Junta cuatro fichas seguidas antes que Tito.", steps:[["Toca una columna", "Tu ficha roja cae hasta el fondo de esa columna."], ["Cuatro en línea", "Vale en fila, en columna o en diagonal."], ["Bloquea a Tito", "Si él tiene tres seguidas, tápale el lugar."]] },
+  connect:{ goal:"Junta cuatro fichas de tu color seguidas antes que el otro.", steps:[["Elige cómo jugar", "Contra el robot (Fácil, Normal o Difícil) o con un amigo en el mismo celu, por turnos."], ["Toca una columna", "Tu ficha cae hasta el fondo de esa columna. Rojas contra amarillas."], ["Cuatro en línea", "Vale en fila, en columna o en diagonal."], ["Bloquea", "Si el otro tiene tres seguidas, tápale el lugar antes de que complete."], ["Se turnan para empezar", "Cada partida empieza un jugador distinto."]] },
   cross:{ goal:"Cruza calles, vías y ríos lo más lejos que puedas.", steps:[["Toca para avanzar", "Cada toque es un salto hacia adelante."], ["Desliza para moverte", "A los costados o hacia atrás, para esquivar."], ["Cuidado con todo", "Autos, colectivos, motos y trenes te pisan. En el río, salta sobre los troncos. Junta tapitas."]] },
   penal:{ goal:"Mete todos los goles que puedas. Con 3 fallos se termina.", steps:[["Primer toque: dirección", "Frena la flecha donde quieres apuntar."], ["Segundo toque: altura", "Elige si va abajo, al medio o arriba."], ["Tercer toque: potencia", "Un gol vale 1 y al ángulo vale 3."]] },
   tower:{ goal:"Apila tapitas lo más alto que puedas.", steps:[["Toca para soltar", "La tapita se mueve sola: tócala cuando esté justo encima."], ["Lo que sobra se cae", "La siguiente tapita queda más chica."], ["Busca el ¡Perfecto!", "Si la dejas justo encima no pierdes nada, y con tres seguidas vuelve a crecer."]] },
