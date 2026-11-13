@@ -1662,6 +1662,11 @@ html.ios-gap .app.playing main{padding-bottom:8px}
 .pc-chip.x2,.pc-chip.x2 svg{width:31px;height:31px}
 .pc-chip.duo{width:31px;height:31px;border-width:2px}.pc-chip.duo svg{width:23px;height:23px;transform:translateY(-1px)}
 
+/* Ruleta: la sombra y el brillo van en un fondo quieto; la rueda solo gira (en iPhone, girar con filtro se quedaba sin memoria) */
+.wheel{filter:none !important;will-change:transform;transform-origin:50% 50%;position:relative;z-index:1}
+.wheel-wrap::before{content:"";position:absolute;inset:.9%;z-index:0;border-radius:50%;box-shadow:0 7px 0 var(--K),0 0 18px rgba(255,210,90,.35);pointer-events:none}
+.wheel-wrap.spinning .wheel .wl{animation:none}
+
 </style>
 </head>
 <body>
@@ -12607,6 +12612,8 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["bot", "duo"]
     /* ---- capa fija de cada hoyo ---- */
     function buildStatic(h, ww, hh, sc, x0, y0, bounds){ const cvs = document.createElement("canvas"); cvs.width = Math.ceil(ww * dpr); cvs.height = Math.ceil(hh * dpr); const x = cvs.getContext("2d");
       x.setTransform(dpr * sc, 0, 0, dpr * sc, dpr * x0, dpr * y0); A.paint(x, h, bounds); return cvs; }
+    /* En iPhone la memoria de un canvas no se libera sola: hay que vaciarlo a mano */
+    const freeCv = cv => { if (cv) { cv.width = 0; cv.height = 0; } };
     const HL = h => h.len || 160, clamp = (v, a, b) => v < a ? a : v > b ? b : v;
     function camRange(h){ const L = HL(h); let lo = -3, hi = L + 3 - VH; if (hi < lo) lo = hi = (L - VH) / 2; return [lo, hi]; }
     /* La capa fija cubre todo el recorrido de la cámara, así desplazarse es solo copiar otra parte de la imagen */
@@ -12616,8 +12623,8 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["bot", "duo"]
     /* Mapita de la cancha entera (se achica de a mitades para que se vea prolijo) */
     function buildMini(h){ const L = HL(h) + 6; let mw = 32, mh = mw * L / 100; if (mh > H * .3) { mh = H * .3; mw = mh * 100 / L; }
       let src = stat.cv, sx = Math.round(ox * dpr), sy = Math.round((stat.y0 - 3 * s) * dpr), sw = Math.round(100 * s * dpr), sh = Math.round(L * s * dpr); const tw = Math.ceil(mw * dpr), th = Math.ceil(mh * dpr);
-      while (sw > tw * 2.2) { const t = document.createElement("canvas"); t.width = Math.ceil(sw / 2); t.height = Math.ceil(sh / 2); t.getContext("2d").drawImage(src, sx, sy, sw, sh, 0, 0, t.width, t.height); src = t; sx = sy = 0; sw = t.width; sh = t.height; }
-      const out = document.createElement("canvas"); out.width = tw; out.height = th; const ox2 = out.getContext("2d"); ox2.imageSmoothingQuality = "high"; ox2.drawImage(src, sx, sy, sw, sh, 0, 0, tw, th);
+      while (sw > tw * 2.2) { const t = document.createElement("canvas"); t.width = Math.ceil(sw / 2); t.height = Math.ceil(sh / 2); t.getContext("2d").drawImage(src, sx, sy, sw, sh, 0, 0, t.width, t.height); if (src !== stat.cv) freeCv(src); src = t; sx = sy = 0; sw = t.width; sh = t.height; }
+      const out = document.createElement("canvas"); out.width = tw; out.height = th; const ox2 = out.getContext("2d"); ox2.imageSmoothingQuality = "high"; ox2.drawImage(src, sx, sy, sw, sh, 0, 0, tw, th); if (src !== stat.cv) freeCv(src);
       return { cv:out, w:mw, h:mh, x:W - mw - 8, y:VT + 8, L, a:1 }; }
     const cupCam = () => hole.hole[1] - VH * .42;
     function aimCam(b){ const m = Math.min(30, VH * .2), t = (b.y + hole.hole[1]) / 2 - VH / 2; return clamp(t, b.y - VH + m + 6, b.y - m); }
@@ -12667,7 +12674,7 @@ arcRegister("golf", { noBig:true, noCount:true, isNew:true, modes:["bot", "duo"]
     function rrect(x, y, ww, hh, r){ c.beginPath(); if (c.roundRect) c.roundRect(x, y, ww, hh, r); else c.rect(x, y, ww, hh); }
     /* ---- hoyos y turnos ---- */
     function startHole(){
-      hole = plan[hi]; w = M.compile(hole); [cam.lo, cam.hi] = camRange(hole); stat = holeStatic(hole); mini = cam.lo !== cam.hi ? buildMini(hole) : null; M.field(w);
+      hole = plan[hi]; w = M.compile(hole); [cam.lo, cam.hi] = camRange(hole); freeCv(stat && stat.cv); freeCv(mini && mini.cv); stat = holeStatic(hole); mini = cam.lo !== cam.hi ? buildMini(hole) : null; M.field(w);
       cam.y = cam.g = clamp(cupCam(), cam.lo, cam.hi); cam.v = 0; cam.peek = 0; oy = Math.round((VT - cam.y * s) * dpr) / dpr;
       ps.forEach(p => { p.b = { x:hole.tee[0], y:hole.tee[1], vx:0, vy:0, fr:"grass", tp:0, lip:0, rx:hole.tee[0], ry:hole.tee[1], done:false, s:0, sink:0, pk:false, a:1 }; });
       cur = ps.length > 1 ? hi % ps.length : 0; lastTurn = -1; parts = []; pops = []; preview = null;
@@ -13235,7 +13242,7 @@ Object.assign(POSTER, {
     <rect x="132" y="252" width="34" height="9" rx="3" fill="#F2F6F0" stroke="${PK}" stroke-width="2"/>${pSpark(176, 90, 6)}` }
 });
 
-const APP_VER = "11/11 15:16";
+const APP_VER = "13/11 17:54";
 /* Pantalla fija: sin zoom con dos dedos, y alto completo en el iPhone cuando está instalada en el inicio */
 (function(){
   try {
